@@ -36,8 +36,6 @@ export function getSpecCatalog(store?: CatalogStore): SpecCatalog {
   return specCatalogInstance
 }
 
-// --- Query Helpers Seam ---
-
 export function isDirective(tagName: string): tagName is BloggerDirectiveName {
   return getSpecCatalog().isDirective(tagName)
 }

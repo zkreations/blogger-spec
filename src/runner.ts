@@ -50,7 +50,6 @@ export function runConformance(
     fixtures = resolveDefaultManifest().fixtures
   }
 
-  // Apply filters if provided
   if (options?.filter) {
     const { kind, covers, evidence, ids } = options.filter
     fixtures = fixtures.filter((f) => {
@@ -79,7 +78,6 @@ export function runConformance(
   for (const fixture of fixtures) {
     const { id, input, expected } = fixture
 
-    // 1. Rejected Diagnostics Cases
     if (expected.outcome === 'rejected') {
       if (!adapter.analyze) {
         report.skipped++
@@ -122,7 +120,6 @@ export function runConformance(
       continue
     }
 
-    // 2. Expression Evaluation Cases
     if (input.kind === 'expression') {
       if (!adapter.evaluateExpression) {
         report.skipped++
@@ -158,7 +155,6 @@ export function runConformance(
       continue
     }
 
-    // 3. Template Rendering Cases
     if (input.kind === 'template') {
       if (!adapter.renderTemplate) {
         report.skipped++

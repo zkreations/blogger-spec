@@ -22,10 +22,6 @@ export interface BloggerNodeBase {
   loc?: BloggerSourceLocation
 }
 
-// ---------------------------------------------------------------------------
-// Expression AST Nodes (Pratt DSL)
-// ---------------------------------------------------------------------------
-
 export interface BloggerLiteralNode extends BloggerNodeBase {
   type: 'Literal'
   value: string | number | boolean
@@ -128,10 +124,6 @@ export type BloggerExpressionNode
     | BloggerObjectExpressionNode
     | BloggerArrayExpressionNode
     | BloggerMemberExpressionNode
-
-// ---------------------------------------------------------------------------
-// Template / Host XML AST Nodes
-// ---------------------------------------------------------------------------
 
 export interface BloggerAttributeNode extends BloggerNodeBase {
   type: 'Attribute'

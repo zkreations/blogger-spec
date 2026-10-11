@@ -290,7 +290,6 @@ export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): Veri
   const paths = getWorkspacePaths()
   const items: VerificationFreshnessItem[] = []
 
-  // 1. TypeScript definitions freshness
   if (options?.checkDts ?? true) {
     if (!existsSync(paths.dts)) {
       items.push({ name: 'dist/index.d.ts', valid: false, error: 'File does not exist.' })
@@ -307,7 +306,6 @@ export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): Veri
     }
   }
 
-  // 2. Fixtures manifest sync
   if (!existsSync(paths.fixturesManifest)) {
     items.push({ name: 'fixtures/index.json', valid: false, error: 'File does not exist.' })
   }

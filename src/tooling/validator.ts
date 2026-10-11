@@ -32,7 +32,6 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     fixturesChecked: 0,
   }
 
-  // 1. AJV Draft 2020-12 Schema Validation
   log('-> 1. Validating catalogs against JSON Schemas (Draft 2020-12)...')
   const ajv = new (Ajv2020 as unknown as new (opts: any) => any)({ allErrors: true, strict: true, allowUnionTypes: true });
   (addFormats as unknown as (ajv: any) => void)(ajv)
@@ -75,7 +74,6 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     }
   }
 
-  // 2. Catalogs Referential Integrity
   log('-> 2. Validating catalogs referential integrity...')
   const operatorsCatalog = getOperators()
   const operators = operatorsCatalog.operators || {}
@@ -91,10 +89,8 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     log('  [PASS] Catalogs referential integrity validated.')
   }
 
-  // 3 & 4. Artifacts Freshness Verification (Unified via compiler module)
   const freshness = verifyArtifactsFreshness({ checkDts: options?.checkDtsFreshness ?? true })
 
-  // 3. Validate TypeScript Definitions Freshness
   log('-> 3. Validating TypeScript definitions freshness...')
   const checkFreshness = options?.checkDtsFreshness ?? true
   if (checkFreshness) {
@@ -110,7 +106,6 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     log('  [SKIP] dist/index.d.ts check skipped via options.')
   }
 
-  // 4. Validate Fixtures Manifest Sync
   log('-> 4. Validating fixtures manifest...')
   const manifestItem = freshness.items.find(i => i.name === 'fixtures/index.json')
   if (manifestItem && !manifestItem.valid) {

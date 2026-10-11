@@ -430,7 +430,6 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       expect(validation.valid).toBe(true)
       expect(validation.missingRequired).toEqual([])
 
-      // Additional 6 domain catalogs indexed in SpecCatalog
       expect(spec.isWidget('Blog')).toBe(true)
       expect(spec.isWidget('NonExistentWidget')).toBe(false)
       expect(spec.getWidget('Blog')?.description).toBeDefined()

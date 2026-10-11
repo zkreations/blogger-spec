@@ -145,8 +145,6 @@ export class SpecCatalog {
     }
   }
 
-  // --- Directives ---
-
   isDirective(tagName: string): tagName is BloggerDirectiveName {
     return this.directiveMap.has(tagName)
   }
@@ -237,8 +235,6 @@ export class SpecCatalog {
     }
   }
 
-  // --- Operators ---
-
   isOperator(op: string): op is BloggerOperatorName {
     return this.operatorMap.has(op)
   }
@@ -259,8 +255,6 @@ export class SpecCatalog {
     return this.getOperator(op)?.precedence_level
   }
 
-  // --- Diagnostics ---
-
   isDiagnosticCode(code: string): code is BloggerDiagnosticCode {
     return this.diagnosticMap.has(code)
   }
@@ -276,8 +270,6 @@ export class SpecCatalog {
     }
     return result
   }
-
-  // --- Widgets ---
 
   isWidget(name: string): boolean {
     return this.widgetMap.has(name)
@@ -295,8 +287,6 @@ export class SpecCatalog {
     return result
   }
 
-  // --- Settings ---
-
   getWidgetSettings(widgetName: string): any {
     return this.settingMap.get(widgetName)
   }
@@ -308,8 +298,6 @@ export class SpecCatalog {
     }
     return result
   }
-
-  // --- Globals ---
 
   isGlobal(name: string): boolean {
     return this.globalMap.has(name)
@@ -327,8 +315,6 @@ export class SpecCatalog {
     return result
   }
 
-  // --- Messages ---
-
   isMessage(key: string): boolean {
     return this.messageMap.has(key)
   }
@@ -344,8 +330,6 @@ export class SpecCatalog {
     }
     return result
   }
-
-  // --- Scopes ---
 
   isScope(name: string): boolean {
     return this.scopeMap.has(name)
@@ -366,8 +350,6 @@ export class SpecCatalog {
   getScopePrecedence(): string[] {
     return [...this.scopeOrder]
   }
-
-  // --- Types ---
 
   isType(name: string): boolean {
     return this.typeMap.has(name)
