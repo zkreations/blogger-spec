@@ -31,12 +31,14 @@ blogger-spec/
 │   ├── templates/            # Rendering and scoping fixtures
 │   ├── diagnostics/          # Negative fixtures (code Blogger server rejects)
 │   └── index.json            # Consolidated manifest (compiled via build)
-├── src/                      # Tooling engine & standard specification modules
-│   ├── ast.ts                # Canonical AST specification interfaces
-│   ├── helpers.ts            # Zero-runtime-dependency query & validation utilities
+├── src/                      # Spec modules, runtime helpers, and tooling
+│   ├── ast.ts                # Formal AST specification interfaces
 │   ├── catalogs/             # Typed CatalogStore and SpecCatalog domain models
+│   ├── helpers.ts            # Zero-runtime-dependency query & validation utilities
+│   ├── paths.ts              # Workspace path resolution utilities
 │   ├── runner.ts             # Conformance harness engine
-│   ├── tooling/              # Build pipeline and specification validator
+│   ├── tooling/              # Build pipeline, schema validator, and compiler
+│   ├── types.ts              # Canonical models, catalog types, and fixture interfaces
 │   └── index.ts              # Canonical root package entry point
 └── dist/                     # Distribution package artifacts (zero runtime dependencies)
     ├── index.js / index.d.ts # Canonical entry point and TypeScript types
@@ -60,20 +62,21 @@ npm install blogger-spec
 Consume only what your tool requires:
 
 ```typescript
-// Import TypeScript types
-import type {
-  BloggerDirectiveName,
-  BloggerFixture,
-  BloggerOperatorDefinition,
-} from 'blogger-spec'
+// Query helpers & canonical AST nodes
+import type { BloggerDirectiveName, BloggerFixture } from 'blogger-spec'
+import type { BloggerDirectiveNode, BloggerExpressionNode } from 'blogger-spec/ast'
+import {
+  getDiagnosticRule,
+  isDirective,
+  validateDirectiveAttributes,
+} from 'blogger-spec/helpers'
+```
 
-// Import canonical diagnostics rules
+Or import raw JSON catalogs directly:
+
+```typescript
 import diagnostics from 'blogger-spec/diagnostics'
-
-// Import directives and tags catalog
 import directives from 'blogger-spec/directives'
-
-// Import operators catalog
 import operators from 'blogger-spec/operators'
 ```
 
@@ -86,7 +89,7 @@ To verify that your parser, evaluator, or linter conforms to the Blogger specifi
 ```typescript
 import { runSpecConformance } from 'blogger-spec/runner'
 
-const results = await runSpecConformance({
+const results = runSpecConformance({
   evaluateExpression(expr, context) {
     return myEngine.eval(expr, context)
   },
@@ -100,6 +103,12 @@ const results = await runSpecConformance({
 
 console.log(`Passed ${results.passed} / ${results.total} fixtures.`)
 ```
+
+---
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our single source of truth architecture, empirical fixture requirements, and the verification pipeline (`pnpm run test:spec`).
 
 ---
 
