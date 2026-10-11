@@ -1,30 +1,29 @@
 # Blogger Spec — Agent Guidelines
 
-Standalone, zero-runtime-dependency specification authority for Blogger XML templates and expressions. Houses canonical catalogs and empirical conformance fixtures.
+Zero-runtime-dependency specification authority for Blogger XML templates and expressions. Houses canonical catalogs and empirical conformance fixtures.
 
-## Architecture Pointers
+## Architecture
 
-- `catalogs/*.json`: **Canonical Single Source of Truth** (Master JSON catalogs for all 9 domains). Edit here!
-- `catalogs/schemas/`: Draft 2020-12 canonical schemas for validating each catalog.
-- `fixtures/`: Empirical conformance suite (`expressions/`, `templates/`, `diagnostics/`, and generated manifest `index.json`).
-- `src/`: Core specification modules (`ast.ts`, `helpers.ts`, `catalogs/`, `runner.ts`, `types.ts`, `tooling/`).
-- `dist/`: Generated TypeScript definitions and ESM distribution bundles. Never edit manually.
+- `catalogs/*.json`: **Single Source of Truth** (SSOT for all 9 domains).
+- `catalogs/schemas/`: Draft 2020-12 canonical validation schemas.
+- `fixtures/`: Empirical test suite (`expressions/`, `templates/`, `diagnostics/`).
+- `src/`: Spec modules (`ast.ts`, `catalogs/`, `helpers.ts`, `runner.ts`, `tooling/`, `types.ts`).
+- `dist/`: Bundles and `.d.ts` generated via `pnpm run build`.
 
 ## Verification Loop
 
-Run all commands using `pnpm` (`pnpm.cmd` on Windows):
+Run via `pnpm` (`pnpm.cmd` on Windows):
 
 ```bash
+pnpm run build        # Compile dist/ and sync fixtures manifest
+pnpm run test:spec    # Validate schemas (AJV Draft 2020-12), integrity & .d.ts freshness
+pnpm run typecheck    # Strict TypeScript check (tsc --noEmit)
 pnpm run lint         # ESLint check (@antfu/eslint-config)
-pnpm run typecheck    # TypeScript strict check (tsc --noEmit)
-pnpm run test:spec    # AJV Draft 2020-12 schema validation, d.ts freshness
-pnpm run test         # Vitest conformance test suite
-pnpm run build        # Recompile fixtures manifest and dist/
+pnpm run test         # Vitest conformance suite
 ```
 
-## Change Invariants
+## Invariants
 
-- **Catalog edit cycle**: Edit JSON in `catalogs/<catalog>.json` -> run `pnpm run test:spec` -> run `pnpm run build`.
-- **Fixture contract**: All fixtures must follow the `BloggerFixture` discriminated union (`input.kind`, `expected.outcome`, `covers[]`, `verifiedAt`).
-- **Zero runtime dependencies**: Production export must maintain `dependencies: {}`.
-
+- **Catalog edit cycle**: Edit `catalogs/<catalog>.json` -> `pnpm run build` -> `pnpm run test:spec`.
+- **Fixture contract**: Conforms to `BloggerFixture` union (`input.kind`, `expected.outcome`, `covers[]`, `verifiedAt`).
+- **Zero runtime dependencies**: Production export requires `dependencies: {}`.
