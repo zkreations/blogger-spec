@@ -5,6 +5,14 @@
   "description": "Canonical single source of truth for the Blogger XML template and expression language specification, types, and conformance fixtures.",
   "author": "Blogger Spec Authors & Contributors",
   "license": "MIT",
+  "homepage": "https://github.com/zkreations/blogger-spec#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zkreations/blogger-spec.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zkreations/blogger-spec/issues"
+  },
   "keywords": [
     "blogger",
     "blogspot",
@@ -14,6 +22,9 @@
     "schema",
     "linter"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -60,7 +71,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:spec": "tsx src/tooling/validate-spec.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^9.5.1",
