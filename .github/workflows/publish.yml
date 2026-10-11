@@ -31,15 +31,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build
+        run: pnpm run build
+
       - name: Verification
         run: |
           pnpm run test:spec
           pnpm run typecheck
           pnpm run lint
           pnpm run test
-
-      - name: Build
-        run: pnpm run build
 
       - name: Publish to npm (OIDC Trusted Publishing)
         run: pnpm publish --provenance --access public --no-git-checks
