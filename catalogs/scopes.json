@@ -1,0 +1,118 @@
+{
+  "$schema": "./schemas/scopes.schema.json",
+  "title": "Blogger Scope & Resolution Model Catalog",
+  "description": "Machine-readable contract defining variable introduction, visibility boundaries, inheritance, and shadowing rules across Blogger XML execution scopes.",
+  "resolution_precedence": [
+    "lambda",
+    "loop",
+    "with",
+    "includable",
+    "widget",
+    "global"
+  ],
+  "scopes": {
+    "lambda": {
+      "name": "Lambda Predicate Scope",
+      "description": "Ultra-narrow scope inside lambda pipelines (filter, map, count, etc.). Introduces iterator identifier.",
+      "boundary_tag": null,
+      "inherits": true,
+      "introduces": [
+        "iterator_identifier"
+      ],
+      "data_prefix_required": false,
+      "visibility": "local_only",
+      "shadowing": "local-wins",
+      "evidence": "official",
+      "notes": "Iterator member properties MUST be accessed directly without 'data:' prefix (e.g. p.title, NOT data:p.title)."
+    },
+    "loop": {
+      "name": "Loop Block Scope",
+      "description": "Iteration block scope inside <b:loop>. Introduces current item variable and optional zero-based index.",
+      "boundary_tag": "b:loop",
+      "inherits": true,
+      "introduces": [
+        "var",
+        "index"
+      ],
+      "data_prefix_required": true,
+      "visibility": "descendants",
+      "shadowing": "local-wins",
+      "evidence": "official",
+      "notes": "Nested loops reusing the same 'var' identifier will shadow outer variables. 'index' counter always increments forward 0..N."
+    },
+    "with": {
+      "name": "Scoped Variable Alias Scope",
+      "description": "Block scope inside <b:with>. Aliases an evaluated expression to an identifier to prevent 40-token quota overflow.",
+      "boundary_tag": "b:with",
+      "inherits": true,
+      "introduces": [
+        "var"
+      ],
+      "data_prefix_required": true,
+      "visibility": "descendants",
+      "shadowing": "local-wins",
+      "evidence": "official",
+      "notes": "Used extensively for decomposing expressions and caching expensive collection operations."
+    },
+    "includable": {
+      "name": "Subroutine Scope",
+      "description": "Template subroutine container <b:includable>. Introduces parameter variable passed via <b:include data='...'>.",
+      "boundary_tag": "b:includable",
+      "inherits": true,
+      "introduces": [
+        "var"
+      ],
+      "data_prefix_required": true,
+      "visibility": "descendants",
+      "shadowing": "local-wins",
+      "evidence": "official",
+      "notes": "Standard entrypoint is id='main'. The 'var' attribute names the incoming data parameter (conventionally 'this' or custom name)."
+    },
+    "widget": {
+      "name": "Host Widget Scope",
+      "description": "Gadget isolation boundary <b:widget> and default markups <b:defaultmarkup>. Exposes widget-specific dictionary and common data:widget metadata inside <b:includable>.",
+      "boundary_tag": "b:widget",
+      "inherits": true,
+      "introduces": [
+        "widget_dictionary",
+        "data:widget"
+      ],
+      "data_prefix_required": true,
+      "visibility": "descendants",
+      "shadowing": "none",
+      "evidence": "official",
+      "notes": "Direct access to private widget data (e.g. data:posts, data:title) and common metadata data:widget (instanceId, sectionId, type, version) strictly within child nodes of <b:includable> inside <b:widget> or <b:defaultmarkup>. Inaccessible from sibling widgets or outside includables; data:widgets provides layout descriptors and specific summary models per data-widgets catalog, not full private widget dictionaries."
+    },
+    "section": {
+      "name": "Layout Section Scope",
+      "description": "Structural layout container <b:section>. Binds section ID and layout visibility conditional.",
+      "boundary_tag": "b:section",
+      "inherits": true,
+      "introduces": [],
+      "data_prefix_required": true,
+      "visibility": "descendants",
+      "shadowing": "none",
+      "evidence": "official",
+      "notes": "Does not inject custom template variables into child gadgets, but controls section-level conditional rendering via 'cond'."
+    },
+    "global": {
+      "name": "Global Template Scope",
+      "description": "Root scope available everywhere across the entire theme XML hierarchy.",
+      "boundary_tag": null,
+      "inherits": false,
+      "introduces": [
+        "data:blog",
+        "data:view",
+        "data:messages",
+        "data:skin",
+        "data:widgets",
+        "data:template"
+      ],
+      "data_prefix_required": true,
+      "visibility": "global",
+      "shadowing": "none",
+      "evidence": "official",
+      "notes": "Universal read-only datasets provided by the Blogger platform runtime. data:widgets provides layout descriptors and specific summary models per data-widgets catalog, not full private widget dictionaries."
+    }
+  }
+}

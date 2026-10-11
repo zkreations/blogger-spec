@@ -1,0 +1,204 @@
+{
+  "subsystem": "logical_and_comparisons",
+  "fixtures": [
+    {
+      "id": "expressions/logical_and_comparisons/equality-numbers",
+      "title": "Equality Numbers",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:=="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "5 == 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/relational-greater-than",
+      "title": "Relational Greater Than",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 > 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/logical-and-short-circuit",
+      "title": "Logical And Short Circuit",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:and"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "true and false",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/logical-or-truthy",
+      "title": "Logical Or Truthy",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:or"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "false or true",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/logical-not",
+      "title": "Logical Not",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:not"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "not false",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/elvis-fallback-triggered",
+      "title": "Elvis Fallback Triggered",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:missing ?: \"Default\"",
+        "context": {
+          "missing": null
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Default"
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/elvis-fallback-empty-string",
+      "title": "Elvis Fallback Empty String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:emptyTitle ?: \"Untitled\"",
+        "context": {
+          "emptyTitle": ""
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": ""
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/ternary-conditional",
+      "title": "Ternary Conditional",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:isPost ? \"article\" : \"section\"",
+        "context": {
+          "isPost": true
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "article"
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/missing-property-equality-empty-string",
+      "title": "Missing Property Equality Empty String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:=="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:item.author == \"\"",
+        "context": {
+          "item": {
+            "id": 1
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/nested-missing-property-elvis-fallback",
+      "title": "Nested Missing Property Elvis Fallback",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:item.author.name ?: \"FALLBACK\"",
+        "context": {
+          "item": {
+            "id": 1
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "FALLBACK"
+      }
+    }
+  ]
+}

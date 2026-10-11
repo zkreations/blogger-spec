@@ -1,0 +1,266 @@
+/**
+ * Shared TypeScript types for Blogger Specification models, catalogs, and test fixtures.
+ */
+
+export type BloggerEvidenceLevel = 'official' | 'observed' | 'approximate' | 'unknown'
+
+export type BloggerDiagnosticCategory
+  = | 'hallucination'
+    | 'syntax'
+    | 'expressions'
+    | 'quota'
+    | 'structure'
+    | 'deprecation'
+    | 'runtime'
+
+export type BloggerDiagnosticSeverity = 'error' | 'warning' | 'info'
+
+export type BloggerDiagnosticCode = string
+export type BloggerDirectiveName = string
+export type BloggerOperatorName = string
+
+export interface BloggerDiagnosticRule {
+  code: string
+  name: string
+  category: BloggerDiagnosticCategory
+  severity: BloggerDiagnosticSeverity
+  message: string
+  replacement?: string
+  evidence: BloggerEvidenceLevel
+  verifiedAt: string
+}
+
+export interface BloggerOperatorOperand {
+  name: string
+  types: string[]
+  required: boolean
+  description?: string
+}
+
+export interface BloggerOperatorOverload {
+  signature: string
+  description?: string
+  operands: BloggerOperatorOperand[]
+  return_type: string
+}
+
+export interface BloggerOperatorSyntax {
+  supports_infix: boolean
+  supports_functional: boolean
+  functional_identifier: string | null
+  variadic: boolean
+  infix?: string | null
+  functional?: string | null
+}
+
+export interface BloggerOperatorDefinition {
+  family: string
+  description: string
+  syntax: BloggerOperatorSyntax
+  precedence_level: number
+  operands: BloggerOperatorOperand[]
+  return_type: string
+  aliases?: string[]
+  overloads?: BloggerOperatorOverload[]
+  examples?: Array<{
+    expression: string
+    result: string
+    description: string
+  }>
+}
+
+export interface BloggerDirectiveAttribute {
+  type?: string
+  attribute_kind?: 'native_expression' | 'prefixed_expression' | 'static_literal'
+  description?: string
+  required?: boolean
+  expr?: boolean
+  allowed_values?: any[]
+}
+
+export interface BloggerDirectiveDefinition {
+  category: string
+  namespace: string
+  description: string
+  closure_mode?: 'self_closing' | 'container' | 'dual'
+  self_closing?: boolean
+  grammar?: {
+    valid_parents?: string[]
+    valid_children?: string[]
+  }
+  attributes?: Record<string, BloggerDirectiveAttribute>
+  deprecated_attributes?: Record<string, any>
+  constraints?: Record<string, any>
+}
+
+export interface BloggerFixture {
+  id: string
+  title: string
+  evidence: BloggerEvidenceLevel
+  verifiedAt: string
+  covers: string[]
+  input: {
+    kind: 'expression' | 'template'
+    source: string
+    mode?: 'fragment' | 'full_document'
+    context?: Record<string, any>
+  }
+  expected: {
+    outcome: 'value' | 'html' | 'rejected'
+    value?: any
+    html?: string
+    canonicalDom?: boolean
+    diagnosticCodes?: string[]
+    stage?: 'parser' | 'compiler' | 'quota' | 'linter'
+  }
+}
+
+export interface BloggerFixturesManifest {
+  version: string
+  generatedAt: string
+  metrics: {
+    totalFixtures: number
+    positiveFixtures: number
+    negativeFixtures: number
+    coveredSpecEntities: number
+  }
+  fixtures: BloggerFixture[]
+}
+
+export interface BloggerDirectivesCatalog {
+  $schema?: string
+  version?: string
+  title?: string
+  description?: string
+  directives: Record<string, BloggerDirectiveDefinition>
+  domain_metadata?: Record<string, any>
+  [key: string]: any
+}
+
+export interface BloggerPrecedenceHierarchyLevel {
+  level: number
+  category: string
+  associativity: string
+  operators: string[]
+}
+
+export interface BloggerOperatorsCatalog {
+  $schema?: string
+  version?: string
+  title?: string
+  description?: string
+  precedence_hierarchy?: BloggerPrecedenceHierarchyLevel[]
+  operators: Record<string, BloggerOperatorDefinition>
+  families?: Record<string, any>
+  evaluation_contexts?: Record<string, any>
+  [key: string]: any
+}
+
+export interface BloggerDiagnosticsCatalog {
+  $schema?: string
+  version?: string
+  rules: Record<string, BloggerDiagnosticRule>
+}
+
+export interface BloggerTypesCatalog {
+  $schema?: string
+  version?: string
+  types?: Record<string, any>
+  modifiers?: Record<string, any>
+  [key: string]: any
+}
+
+export interface BloggerGlobalsCatalog {
+  $schema?: string
+  version?: string
+  objects: Record<string, any>
+  [key: string]: any
+}
+
+export interface BloggerWidgetsCatalog {
+  $schema?: string
+  version?: string
+  widgets: Record<string, any>
+  [key: string]: any
+}
+
+export interface BloggerSettingsCatalog {
+  $schema?: string
+  version?: string
+  settings?: Record<string, any>
+  [key: string]: any
+}
+
+export interface BloggerMessagesCatalog {
+  $schema?: string
+  version?: string
+  messages?: Record<string, any>
+  [key: string]: any
+}
+
+export interface BloggerScopesCatalog {
+  $schema?: string
+  version?: string
+  scopes?: Record<string, any>
+  [key: string]: any
+}
+
+export type BloggerCatalogName
+  = | 'directives'
+    | 'operators'
+    | 'types'
+    | 'widgets'
+    | 'settings'
+    | 'globals'
+    | 'messages'
+    | 'scopes'
+    | 'diagnostics'
+
+export interface BloggerCatalogMap {
+  directives: BloggerDirectivesCatalog
+  operators: BloggerOperatorsCatalog
+  types: BloggerTypesCatalog
+  widgets: BloggerWidgetsCatalog
+  settings: BloggerSettingsCatalog
+  globals: BloggerGlobalsCatalog
+  messages: BloggerMessagesCatalog
+  scopes: BloggerScopesCatalog
+  diagnostics: BloggerDiagnosticsCatalog
+}
+
+export interface BloggerEngineAdapter {
+  evaluateExpression?: (expr: string, context?: Record<string, any>) => any
+  renderTemplate?: (template: string, context?: Record<string, any>) => string
+  analyze?: (source: string, mode: 'expression' | 'template') => Array<{ code: string }>
+}
+
+export type SpecConsumerAdapter = BloggerEngineAdapter
+
+export interface ConformanceFilter {
+  kind?: 'expression' | 'template'
+  covers?: string[]
+  evidence?: BloggerEvidenceLevel[]
+  ids?: string[]
+}
+
+export interface ConformanceOptions {
+  fixtures?: BloggerFixture[] | BloggerFixturesManifest
+  filter?: ConformanceFilter
+  normalizeHtml?: (html?: string) => string
+}
+
+export interface ConformanceCaseResult {
+  id: string
+  passed: boolean
+  message?: string
+  expected: any
+  actual?: any
+}
+
+export interface ConformanceReport {
+  total: number
+  passed: number
+  failed: number
+  skipped: number
+  results: ConformanceCaseResult[]
+}

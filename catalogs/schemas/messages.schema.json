@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "messages.schema.json",
+  "title": "Blogger System Messages Master Catalog Schema",
+  "description": "JSON Schema specification for the Blogger system localization messages catalog.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "title",
+    "description",
+    "messages"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "messages": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/messageDefinition"
+      }
+    },
+    "patterns": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/patternDefinition"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "messageDefinition": {
+      "type": "object",
+      "required": [
+        "type",
+        "description"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "message"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "direct_invocation": {
+          "type": "boolean",
+          "description": "Specifies whether direct tag invocation (<data:messages.key/>) is allowed. Forbidden (false) for parameterized messages requiring <b:message>."
+        },
+        "parameters": {
+          "type": "array",
+          "description": "Positional substitution parameters required by this message via child <b:param> tags.",
+          "items": {
+            "$ref": "#/$defs/parameterDefinition"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "parameterDefinition": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Reserved parameter identifier name for the b:param tag."
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the parameter value to interpolate."
+        }
+      },
+      "additionalProperties": false
+    },
+    "patternDefinition": {
+      "type": "object",
+      "required": [
+        "template",
+        "type",
+        "description"
+      ],
+      "properties": {
+        "template": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

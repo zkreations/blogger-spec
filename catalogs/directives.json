@@ -1,0 +1,1573 @@
+{
+  "$schema": "./schemas/directives.schema.json",
+  "title": "Blogger XML Directives & Tags Master Catalog",
+  "description": "Registry of Blogger XML directives, syntax grammar constraints, styling components, and attribute migration paths.",
+  "domain_metadata": {
+    "inclusion_classifications": {
+      "universal": {
+        "description": "Backend-hosted global inclusion available within a specific scope that can be overridden or replaced by custom definitions in the theme.",
+        "location": "Back-End",
+        "super_inclusion": false,
+        "default_markup": false
+      },
+      "common": {
+        "description": "Inclusion that can operate across multiple gadgets or throughout the blog.",
+        "location": "Back-End",
+        "super_inclusion": true,
+        "default_markup": true
+      },
+      "widget": {
+        "description": "Inclusion restricted to a specific widget. Its call must be located inside that widget.",
+        "location": "XML editor and/or Back-End",
+        "super_inclusion": true,
+        "default_markup": true
+      }
+    },
+    "super_inclusion": {
+      "syntax": "super.INCLUDABLE_ID",
+      "description": "References the original backend inclusion using the super prefix.",
+      "requirements": [
+        "The inclusion in the default widget template must be customized, closed, or empty."
+      ]
+    }
+  },
+  "directives": {
+    "b:section": {
+      "category": "Structuring",
+      "namespace": "b",
+      "description": "Container declaration for a theme section that can contain Blogger gadgets.",
+      "grammar": {
+        "valid_parents": [
+          "body"
+        ],
+        "valid_children": [
+          "b:widget"
+        ]
+      },
+      "attributes": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for DOM manipulation and Layout UI targeting.",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "class": {
+          "type": "string",
+          "description": "Custom CSS classes. The engine always appends 'section' (and 'no-items' if empty).",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "name": {
+          "type": "string",
+          "description": "Display label in the Layout GUI. Defaults to id if omitted.",
+          "expr": true,
+          "attribute_kind": "prefixed_expression"
+        },
+        "tag": {
+          "type": "string",
+          "description": "HTML element used for output ('header', 'nav', 'main', 'aside', 'footer'). Defaults to 'div'.",
+          "expr": true,
+          "attribute_kind": "prefixed_expression"
+        },
+        "maxwidgets": {
+          "type": "number",
+          "description": "Maximum allowed widgets. Deprecated in Layouts v3.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "showaddelement": {
+          "type": "boolean",
+          "description": "Shows the 'Add a Gadget' button in Layout UI. Values: 'yes' / 'true' (default, visible), 'no' / 'false' (hidden).",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "preferred": {
+          "type": "boolean",
+          "description": "Preferred section. Indicates whether the section is considered the main section. Values: 'yes' / 'true', 'no' / 'false' (default). Maintained for legacy compatibility, functional in modern themes.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "cond": {
+          "type": "boolean",
+          "description": "Render condition. If false, the section and its widgets are omitted.",
+          "attribute_kind": "native_expression",
+          "expr": true
+        },
+        "ads": {
+          "type": "boolean",
+          "description": "Set to 'true' if the section is reserved exclusively for AdSense gadgets.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "growth": {
+          "type": "string",
+          "description": "Deprecated layout alignment in legacy GUI ('vertical' default, or 'horizontal').",
+          "expr": true,
+          "attribute_kind": "prefixed_expression"
+        }
+      },
+      "constraints": {
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:section elements cannot be nested within another b:section or b:widget."
+        },
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:section does not operate inside CDATA sections."
+        }
+      },
+      "deprecated_attributes": {
+        "maxwidgets": {
+          "status": "deprecated_in_layout_v3",
+          "action": "migrate",
+          "type": "number",
+          "replacement": "showaddelement='no' (or 'false') and CSS layout",
+          "reason": "Hard ceiling on widget addition deprecated in Layouts v3."
+        },
+        "growth": {
+          "status": "deprecated_in_layout_v3",
+          "action": "migrate",
+          "type": "string",
+          "replacement": "CSS Flexbox / Grid",
+          "reason": "Legacy horizontal/vertical layout hint in deprecated GUI."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:widget": {
+      "category": "Structuring",
+      "namespace": "b",
+      "description": "Container declaration for a Blogger gadget, containing its XML code and optional configuration structures.",
+      "grammar": {
+        "valid_parents": [
+          "b:section"
+        ],
+        "valid_children": [
+          "b:includable",
+          "b:widget-settings"
+        ]
+      },
+      "attributes": {
+        "id": {
+          "type": "string",
+          "description": "Unique widget identifier consisting of the widget type followed by an integer from 1 to 999.",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "type": {
+          "type": "string",
+          "description": "Canonical widget type identifier (e.g., 'Blog', 'Header', 'HTML', 'Label', 'PopularPosts').",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "title": {
+          "type": "string",
+          "description": "Display title shown in the Blogger dashboard Layout manager (max 100 characters). Optional during development: if omitted or declared empty, Blogger auto-inserts an empty title='' without raising a compile error.",
+          "required": false,
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "cond": {
+          "type": "boolean",
+          "description": "Conditional expression evaluated at request time. If false, the widget does not render.",
+          "attribute_kind": "native_expression",
+          "expr": true
+        },
+        "locked": {
+          "type": "boolean",
+          "description": "When 'true' (or 'yes'), prevents users from moving or deleting the gadget in Layout UI. Values: 'true' / 'yes', 'false' / 'no'. Default: 'false'.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "When 'true' (or 'yes'), the gadget is active and exposed in data:widgets global dictionary. Values: 'true' / 'yes' (default), 'false' / 'no'.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "version": {
+          "type": "number",
+          "description": "Gadget engine version: 1 (legacy) or 2 (modern). Rendered as data-version='...' on HTML container.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "mobile": {
+          "type": "string",
+          "description": "Legacy mobile template visibility filter: 'yes' (default), 'no' (desktop only), 'only' (mobile only).",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "pageType": {
+          "type": "string",
+          "description": "Deprecated legacy view-type filter from v1 themes. Replaced by cond with data:view conditions.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        }
+      },
+      "constraints": {
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:widget elements cannot be nested within another b:widget."
+        },
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:widget does not operate inside CDATA sections."
+        },
+        "inclusions": {
+          "required_ids": [
+            "main"
+          ],
+          "description": "A b:widget must contain at least one b:includable with id='main'."
+        }
+      },
+      "deprecated_attributes": {
+        "mobile": {
+          "status": "ignored_in_layout_v3",
+          "action": "migrate",
+          "type": "string",
+          "replacement": "CSS media queries or data:blog.isMobileRequest",
+          "reason": "Mobile visibility control is active only for Version 1 gadgets."
+        },
+        "pageType": {
+          "status": "deprecated_in_layout_v3",
+          "action": "migrate",
+          "type": "string",
+          "replacement": "cond='data:view...' or other data:view flags",
+          "reason": "Legacy attribute used to control widget display on designated page types."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:includable": {
+      "category": "Structuring",
+      "namespace": "b",
+      "description": "Reusable template block that contains XML markup and can be invoked by a b:include tag.",
+      "grammar": {
+        "valid_parents": [
+          "b:widget",
+          "b:defaultmarkup"
+        ],
+        "valid_children": [
+          "Template markup",
+          "Blogger instruction tags"
+        ]
+      },
+      "attributes": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier within the enclosing widget. id='main' is the entry point.",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "var": {
+          "type": "string",
+          "description": "Name of the scoped variable receiving the dataset forwarded by b:include data='...'.",
+          "attribute_kind": "prefixed_expression",
+          "expr": true
+        }
+      },
+      "constraints": {
+        "widget": {
+          "required_ids": [
+            "main"
+          ],
+          "description": "A b:widget must contain at least one b:includable with the id 'main'."
+        },
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:includable elements cannot be nested within one another."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:include": {
+      "category": "Structuring",
+      "namespace": "b",
+      "description": "Invokes a b:includable block and can pass a data alias or condition to the called inclusion.",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": []
+      },
+      "attributes": {
+        "name": {
+          "type": "string",
+          "description": "Target includable identifier. Prefix super. calls the platform backend default.",
+          "required": true,
+          "expr": true,
+          "attribute_kind": "prefixed_expression"
+        },
+        "data": {
+          "type": "expression",
+          "description": "Dataset or object forwarded to the includable's var. Properties become data:VAR.property.",
+          "attribute_kind": "native_expression",
+          "expr": true
+        },
+        "cond": {
+          "type": "boolean",
+          "description": "Invocation condition. If false, the inclusion is skipped.",
+          "attribute_kind": "native_expression",
+          "expr": true
+        }
+      },
+      "constraints": {
+        "data_alias": {
+          "allowed_values": [
+            "data name",
+            "data object"
+          ],
+          "prefix": "data:",
+          "status": "forbidden",
+          "reason": "Aliases must not contain the data: prefix."
+        },
+        "alias_scope": {
+          "status": "allowed",
+          "description": "The alias is passed to child inclusions and is overwritten when another alias is defined in a child node."
+        },
+        "server_resolution": {
+          "status": "allowed",
+          "description": "Server-hosted universal subroutines (all-head-content, urlParamsAsFormInput, etc.), common library subroutines (responsiveImageStyle, openGraphMetaData, widget-title), and super.NAME resolve against platform backend defaults and do not require local includable declarations."
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "b:defaultmarkups": {
+      "category": "Structuring",
+      "namespace": "b",
+      "description": "Container for defining default markup and inclusions specific to the current Blogger theme.",
+      "grammar": {
+        "valid_parents": [
+          "head",
+          "body"
+        ],
+        "valid_children": [
+          "b:defaultmarkup"
+        ]
+      },
+      "attributes": {},
+      "constraints": {
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:defaultmarkups cannot be nested within sections, widgets, or other defaultmarkups containers."
+        },
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:defaultmarkups does not operate inside CDATA sections."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:defaultmarkup": {
+      "category": "Structuring",
+      "namespace": "b",
+      "description": "Defines default inclusions for one or more gadget types or for common inclusions specific to the current theme.",
+      "grammar": {
+        "valid_parents": [
+          "b:defaultmarkups"
+        ],
+        "valid_children": [
+          "b:includable"
+        ]
+      },
+      "attributes": {
+        "type": {
+          "type": "string",
+          "description": "Specifies the gadget type or types whose default inclusions are defined. Can also be 'Common' or 'All'.",
+          "required": true,
+          "accepted_forms": [
+            "WIDGET_TYPE",
+            "WIDGET_TYPE_1, WIDGET_TYPE_2, ...",
+            "Common",
+            "All"
+          ],
+          "attribute_kind": "static_literal",
+          "expr": false
+        }
+      },
+      "constraints": {
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:defaultmarkup must be placed directly inside b:defaultmarkups."
+        },
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:defaultmarkup does not operate inside CDATA sections."
+        }
+      },
+      "spec_extensions": {
+        "behavior": {
+          "gadget_defaults": {
+            "description": "When the applicable gadget is installed or reset, the inclusions defined here are automatically added to the gadget."
+          },
+          "override": {
+            "description": "Using the ID of an existing original inclusion overrides that inclusion."
+          },
+          "creation": {
+            "description": "New inclusions can also be defined by using new inclusion IDs."
+          },
+          "common": {
+            "description": "Using type='Common' defines common inclusions that can be called from arbitrary locations in the theme and can modify the Back-End versions of common inclusions."
+          },
+          "multiple_gadgets": {
+            "description": "A single b:defaultmarkup can target multiple gadget types by listing their types as a comma-separated value."
+          }
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:widget-settings": {
+      "category": "Structuring",
+      "namespace": "b",
+      "description": "Container for storing gadget settings defined by the user through the Blogger dashboard.",
+      "grammar": {
+        "valid_parents": [
+          "b:widget"
+        ],
+        "valid_children": [
+          "b:widget-setting"
+        ]
+      },
+      "attributes": {},
+      "constraints": {
+        "multiplicity": {
+          "min": 0,
+          "max": 1,
+          "per_parent": "b:widget",
+          "description": "A b:widget can contain at most one b:widget-settings element."
+        },
+        "generation": {
+          "status": "automatic",
+          "action": "do_not_modify",
+          "description": "The element is generated automatically and cannot be created, deleted, or moved manually."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:widget-setting": {
+      "category": "Structuring",
+      "namespace": "b",
+      "description": "Storage element containing an individual gadget setting.",
+      "grammar": {
+        "valid_parents": [
+          "b:widget-settings"
+        ],
+        "valid_children": [
+          "#text"
+        ]
+      },
+      "attributes": {
+        "name": {
+          "type": "string",
+          "description": "Predefined setting identifier specific to the enclosing widget type (e.g., 'showShareButtons', 'authorLabel').",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        }
+      },
+      "constraints": {
+        "multiplicity": {
+          "min": 0,
+          "max": null,
+          "per_parent": "b:widget-settings",
+          "description": "Multiple b:widget-setting elements may be present."
+        },
+        "generation": {
+          "status": "automatic",
+          "action": "do_not_modify",
+          "description": "The element is generated automatically and cannot be created, deleted, or moved manually."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:loop": {
+      "category": "Logic",
+      "namespace": "b",
+      "description": "Loop tag that iterates over an array and executes its child markup for each item.",
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": [
+          "Template markup",
+          "Blogger instruction tags"
+        ]
+      },
+      "attributes": {
+        "values": {
+          "type": "array",
+          "description": "The array or collection to iterate over. Literal array, data reference, or array-yielding expression.",
+          "required": true,
+          "attribute_kind": "native_expression",
+          "expr": true
+        },
+        "var": {
+          "type": "string",
+          "description": "Scoped identifier for the current item, accessed as data:VAR or data:VAR.property.",
+          "required": true,
+          "attribute_kind": "prefixed_expression",
+          "expr": true
+        },
+        "index": {
+          "type": "string",
+          "description": "Scoped identifier for the zero-based iteration index, accessed as data:INDEX.",
+          "attribute_kind": "prefixed_expression",
+          "expr": true
+        },
+        "reverse": {
+          "type": "boolean",
+          "description": "Reverses iteration order when true (or 'yes'). Values: 'true' / 'yes', 'false' / 'no'. Defaults to false. Does not reverse index numbering.",
+          "default": false,
+          "attribute_kind": "prefixed_expression",
+          "expr": true
+        }
+      },
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:loop does not work inside CDATA."
+        },
+        "nesting": {
+          "status": "allowed",
+          "description": "b:loop elements can be nested."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:with": {
+      "category": "Logic",
+      "namespace": "b",
+      "description": "Instruction tag that creates a variable alias from an explicit value, data value, or Blogger expression for use within child nodes.",
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": [
+          "Template markup",
+          "Blogger instruction tags"
+        ]
+      },
+      "attributes": {
+        "value": {
+          "type": "any",
+          "description": "Expression, data reference, or literal whose resolved value is assigned to the alias.",
+          "required": true,
+          "attribute_kind": "native_expression",
+          "expr": true
+        },
+        "var": {
+          "type": "string",
+          "description": "Identifier name for the alias. Bound value is accessed downstream via data:VAR_NAME.",
+          "required": true,
+          "attribute_kind": "prefixed_expression",
+          "expr": true
+        }
+      },
+      "constraints": {
+        "nesting": {
+          "status": "allowed",
+          "description": "b:with elements may be nested."
+        },
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:with does not operate inside CDATA sections."
+        },
+        "alias_scope": {
+          "description": "The alias is available through its variable name in child nodes."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:if": {
+      "category": "Logic",
+      "namespace": "b",
+      "description": "Conditional control tag that executes its child markup when the specified condition evaluates to true.",
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": [
+          "Template markup",
+          "Blogger instruction tags",
+          "b:elseif",
+          "b:else"
+        ]
+      },
+      "attributes": {
+        "cond": {
+          "type": "boolean",
+          "description": "Condition determining branch execution. Boolean literal, data property, or expression.",
+          "required": true,
+          "attribute_kind": "native_expression",
+          "expr": true
+        }
+      },
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "Conditional tags do not work inside CDATA."
+        },
+        "nesting": {
+          "status": "allowed",
+          "description": "b:if elements can be nested to create more complex conditional structures."
+        },
+        "missing_cond": {
+          "status": "ignored",
+          "reason": "A b:if without the cond attribute has no effect and is ignored by Blogger."
+        },
+        "branches": {
+          "description": "A b:if container evaluates conditions sequentially with optional trailing b:elseif and b:else delimiters."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:elseif": {
+      "category": "Logic",
+      "namespace": "b",
+      "description": "Conditional branch tag that evaluates an additional condition when the preceding b:if or b:elseif condition is false.",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "b:if"
+        ],
+        "valid_children": []
+      },
+      "attributes": {
+        "cond": {
+          "type": "boolean",
+          "description": "Condition determining branch execution. Boolean literal, data property, or expression.",
+          "required": true,
+          "attribute_kind": "native_expression",
+          "expr": true
+        }
+      },
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "Conditional tags do not work inside CDATA."
+        },
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:elseif is a branch of a b:if chain and cannot contain child markup."
+        },
+        "ordering": {
+          "position": "before_else",
+          "description": "All b:elseif branches must precede any trailing b:else branch."
+        },
+        "multiplicity": {
+          "min": 0,
+          "max": null,
+          "per_parent": "b:if",
+          "description": "Multiple b:elseif branches may be used in the same b:if sequence."
+        },
+        "missing_cond": {
+          "status": "ignored",
+          "reason": "A b:elseif without the cond attribute has no effect and is ignored by Blogger."
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "b:else": {
+      "category": "Logic",
+      "namespace": "b",
+      "description": "Fallback branch tag that executes when all preceding conditions in the enclosing b:if sequence are false.",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "b:if"
+        ],
+        "valid_children": []
+      },
+      "attributes": {},
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "Conditional tags do not work inside CDATA."
+        },
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:else is a branch of a b:if chain and does not have its own condition or child markup."
+        },
+        "multiplicity": {
+          "min": 0,
+          "max": 1,
+          "per_parent": "b:if",
+          "description": "At most one b:else branch may exist in a b:if sequence."
+        },
+        "ordering": {
+          "position": "last",
+          "description": "When present, b:else must be the final branch in the conditional sequence."
+        },
+        "attributes": {
+          "status": "forbidden",
+          "reason": "b:else does not accept attributes."
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "b:switch": {
+      "category": "Logic",
+      "namespace": "b",
+      "description": "Switch instruction that evaluates a value and executes the corresponding case branch when a matching case value is found.",
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": [
+          "b:case",
+          "b:default",
+          "Template markup",
+          "Blogger instruction tags"
+        ]
+      },
+      "attributes": {
+        "var": {
+          "type": "scalar",
+          "description": "The value or expression to evaluate and compare across cases.",
+          "required": true,
+          "accepted_types": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "attribute_kind": "native_expression",
+          "expr": true
+        }
+      },
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:switch, b:case, and b:default do not work inside CDATA."
+        },
+        "nesting": {
+          "status": "allowed",
+          "description": "b:switch elements can be nested."
+        },
+        "branches": {
+          "min_cases": 1,
+          "description": "A b:switch container requires at least one b:case child branch."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:case": {
+      "category": "Logic",
+      "namespace": "b",
+      "description": "Switch branch that matches its value against the value evaluated by the enclosing b:switch.",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "b:switch"
+        ],
+        "valid_children": []
+      },
+      "attributes": {
+        "value": {
+          "type": "scalar",
+          "description": "Value compared against var. Supports dynamic expressions via expr:value.",
+          "required": true,
+          "expr": true,
+          "accepted_types": [
+            "string",
+            "number",
+            "boolean"
+          ],
+          "attribute_kind": "prefixed_expression"
+        }
+      },
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:case does not work inside CDATA."
+        },
+        "multiplicity": {
+          "min": 1,
+          "max": null,
+          "per_parent": "b:switch",
+          "description": "A b:switch must contain one or more b:case branches."
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "b:default": {
+      "category": "Logic",
+      "namespace": "b",
+      "description": "Fallback switch branch that executes when none of the preceding b:case branches match.",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "b:switch"
+        ],
+        "valid_children": []
+      },
+      "attributes": {},
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:default does not work inside CDATA."
+        },
+        "multiplicity": {
+          "min": 0,
+          "max": 1,
+          "per_parent": "b:switch",
+          "description": "At most one b:default branch may be used within a b:switch."
+        },
+        "ordering": {
+          "position": "last",
+          "description": "When present, b:default must be the final branch in the b:switch sequence."
+        },
+        "attributes": {
+          "status": "forbidden",
+          "reason": "b:default does not accept attributes."
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "b:tag": {
+      "category": "DOM Gen",
+      "namespace": "b",
+      "description": "Dynamic XML instruction that generates an HTML tag in the rendered output.",
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": [
+          "Template markup",
+          "Blogger instruction tags"
+        ],
+        "arbitrary_attributes": true
+      },
+      "attributes": {
+        "name": {
+          "type": "string",
+          "description": "The HTML element tag name to render ('div', 'span', 'h1', 'article', etc.).",
+          "required": true,
+          "expr": true,
+          "attribute_kind": "prefixed_expression"
+        },
+        "cond": {
+          "type": "boolean",
+          "description": "Render condition. If false, the tag and its children are omitted.",
+          "attribute_kind": "native_expression",
+          "expr": true
+        }
+      },
+      "constraints": {
+        "nesting": {
+          "status": "allowed",
+          "description": "b:tag elements may be nested."
+        },
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:tag does not operate inside CDATA sections."
+        },
+        "name_attribute_conflict": {
+          "status": "restricted",
+          "description": "The name attribute is reserved for specifying the generated tag name.",
+          "workaround": "Use b:attr to add a name attribute to the generated HTML element."
+        },
+        "arbitrary_attributes": {
+          "status": "allowed",
+          "description": "Standard HTML attributes may be passed statically or dynamically via expr: (e.g., class, expr:href)."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:attr": {
+      "category": "DOM Gen",
+      "namespace": "b",
+      "description": "Instruction tag that adds an attribute and its value to the parent element.",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": []
+      },
+      "attributes": {
+        "name": {
+          "type": "string",
+          "description": "Target attribute name. Literal or dynamic (expr:name).",
+          "required": true,
+          "expr": true,
+          "attribute_kind": "prefixed_expression"
+        },
+        "value": {
+          "type": "string",
+          "description": "Target attribute value. Literal or dynamic (expr:value). If empty or non-existent, the attribute is omitted.",
+          "required": true,
+          "expr": true,
+          "attribute_kind": "prefixed_expression"
+        },
+        "cond": {
+          "type": "boolean",
+          "description": "Execution condition. If false, tag does not execute and attribute is omitted.",
+          "attribute_kind": "native_expression",
+          "expr": true
+        }
+      },
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:attr does not work inside CDATA."
+        },
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:attr elements cannot be nested within one another."
+        },
+        "multiplicity": {
+          "min": 0,
+          "max": null,
+          "description": "Multiple b:attr elements can be applied to the same parent element."
+        },
+        "self_closing_parent": {
+          "description": "Using b:attr inside a self-closing element such as img, input, link, or meta causes an editor error; b:tag should be used to convert the element to a paired tag before adding b:attr."
+        },
+        "b:whitespace": {
+          "status": "beta",
+          "description": "A b:attr with name='b:whitespace' and value='remove' can be used inside b:tag to close a self-closing element."
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "b:class": {
+      "category": "DOM Gen",
+      "namespace": "b",
+      "description": "Instruction tag that adds a class value to the class attribute of the parent element.",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": []
+      },
+      "attributes": {
+        "name": {
+          "type": "string",
+          "description": "Target class name to append. Supports dynamic string expressions via expr:name.",
+          "required": true,
+          "expr": true,
+          "attribute_kind": "prefixed_expression"
+        },
+        "cond": {
+          "type": "boolean",
+          "description": "Execution condition. If false, tag does not execute and class is not appended.",
+          "attribute_kind": "native_expression",
+          "expr": true
+        }
+      },
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:class does not work inside CDATA."
+        },
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:class elements cannot be nested within one another."
+        },
+        "multiplicity": {
+          "min": 0,
+          "max": null,
+          "description": "Multiple b:class elements can be applied to the same parent element."
+        },
+        "existing_class": {
+          "status": "preserved",
+          "description": "Existing classes on the parent element are preserved when b:class adds a new class."
+        },
+        "conditional_execution": {
+          "description": "When cond evaluates to false, the class is not added to the parent element."
+        },
+        "dynamic_name": {
+          "description": "The expr:name form accepts a string data value or a Blogger expression whose result is a string."
+        },
+        "overwrite": {
+          "status": "unsupported",
+          "description": "b:class adds a class to the existing class attribute rather than replacing it. Use b:attr to overwrite the class attribute."
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "b:eval": {
+      "category": "Output",
+      "namespace": "b",
+      "description": "Instruction tag that explicitly outputs the value resulting from a Blogger expression.",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": []
+      },
+      "attributes": {
+        "expr": {
+          "type": "expression",
+          "description": "The Blogger expression to evaluate and render. Literal values, data references, operators, or lambda expressions.",
+          "required": true,
+          "attribute_kind": "native_expression",
+          "expr": false
+        }
+      },
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:eval does not work inside CDATA."
+        },
+        "self_closing": {
+          "status": "required",
+          "reason": "b:eval is an auto-closing tag."
+        },
+        "expression": {
+          "description": "The expr attribute can contain an explicit value, a data reference, or a Blogger expression."
+        },
+        "indexed_data": {
+          "description": "When accessing an item by index, the existence of the corresponding data set should be verified with conditions before evaluating the expression.",
+          "reason": "If the data set does not exist, the containing inclusion will not be executed."
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "data:*": {
+      "category": "Output",
+      "namespace": "data",
+      "description": "Self-closing output tag for scalar data properties (recognized in parsers/linters by namespace prefix 'data:' matching any <data:PROPERTY_PATH/>; 'data:*' is documentation wildcard notation).",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": []
+      },
+      "attributes": {},
+      "constraints": {
+        "attributes": {
+          "status": "forbidden",
+          "reason": "data:* tags do not accept attributes."
+        },
+        "nesting": {
+          "status": "forbidden",
+          "reason": "data:* tags cannot be nested."
+        },
+        "array_index": {
+          "status": "forbidden",
+          "reason": "Array data cannot be extracted by index with a data:* tag."
+        }
+      },
+      "syntax_patterns": {
+        "item": {
+          "syntax": "<data:itemName/>",
+          "description": "Extracts a simple data item."
+        },
+        "object_item": {
+          "syntax": "<data:objectName.itemName/>",
+          "description": "Extracts an item contained in an object."
+        },
+        "nested_object_item": {
+          "syntax": "<data:objectName1.objectName2.itemName/>",
+          "description": "Extracts an item through multiple nested objects."
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "b:message": {
+      "category": "Localization",
+      "namespace": "b",
+      "description": "Tag that explicitly outputs a Blogger message data value. Dual closure mode: self-closing when unparameterized (<b:message name='...'/>) or a container when nesting b:param tags for parameter interpolation.",
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": [
+          "b:param"
+        ]
+      },
+      "attributes": {
+        "name": {
+          "type": "string",
+          "description": "Message alias without data: prefix (e.g., 'messages.home', 'messages.postedByAuthor').",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        }
+      },
+      "constraints": {
+        "closure_mode": {
+          "status": "dual",
+          "description": "b:message is self-closing (<b:message name='...'/>) when referencing unparameterized system messages. It operates as a paired container (<b:message>...</b:message>) strictly when enclosing child b:param tags."
+        },
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:message and b:param do not work inside CDATA."
+        },
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:message elements cannot be nested within one another."
+        },
+        "parameters": {
+          "status": "conditional",
+          "description": "One or more b:param elements must be nested inside b:message when referencing parameterized messages. Parameter assignment is positional based on child tag sequence."
+        },
+        "direct_invocation": {
+          "status": "forbidden",
+          "reason": "Parameterized messages (authorSaid, authorSaidWithLink, byAuthor, byAuthorLink, numberOfComments, postedByAuthor, postedByAuthorLink, poweredByBloggerLink, templateImagesBy, templateImagesByLink) cannot be invoked via <data:messages.../> and strictly require <b:message>."
+        },
+        "message_data": {
+          "description": "The name attribute is an alias for a Blogger data value of type message and must reference a valid message alias."
+        }
+      },
+      "closure_mode": "dual",
+      "self_closing": false
+    },
+    "b:param": {
+      "category": "Localization",
+      "namespace": "b",
+      "description": "Tag that supplies a parameter value to a parent b:message.",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "b:message"
+        ],
+        "valid_children": []
+      },
+      "attributes": {
+        "name": {
+          "type": "string",
+          "description": "Optional parameter identifier (placeholder substitution is resolved positionally based on child tag sequence), except for messages.numberOfComments which strictly requires name='numComments'.",
+          "required": false,
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "value": {
+          "type": "string",
+          "description": "Value or expression to interpolate into the message. Accepts explicit literal values of any type via value='...' or dynamic expressions via expr:value='...'.",
+          "required": true,
+          "expr": true,
+          "attribute_kind": "prefixed_expression"
+        }
+      },
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:param does not work inside CDATA."
+        },
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:param is self-closing and cannot contain child nodes."
+        },
+        "positional_assignment": {
+          "description": "Parameter replacement in b:message is resolved positionally based on child b:param order, not by parameter name."
+        },
+        "multiplicity": {
+          "min": 0,
+          "max": null,
+          "per_parent": "b:message",
+          "description": "Multiple b:param elements can be used within the same b:message."
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "b:skin": {
+      "category": "Styling",
+      "namespace": "b",
+      "description": "Required theme component that encapsulates CSS declarations and skin variables used to customize the blog's appearance.",
+      "grammar": {
+        "valid_parents": [
+          "head"
+        ],
+        "valid_children": [
+          "CDATA"
+        ],
+        "cdata_content": [
+          "Group",
+          "Variable",
+          "CSS declarations"
+        ]
+      },
+      "attributes": {},
+      "constraints": {
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:skin cannot be nested inside sections, widgets, or other skin tags."
+        },
+        "cdata": {
+          "status": "required",
+          "description": "b:skin CSS declarations and variable definitions must be enclosed in a CDATA section."
+        },
+        "multiplicity": {
+          "min": 1,
+          "max": 1,
+          "per_parent": "head",
+          "description": "Exactly one b:skin element is permitted per theme."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:template-skin": {
+      "category": "Styling",
+      "namespace": "b",
+      "description": "Theme component used for styles specifically applicable to the Layout tab of the Blogger dashboard.",
+      "grammar": {
+        "valid_parents": [
+          "head"
+        ],
+        "valid_children": [
+          "CDATA"
+        ],
+        "cdata_content": [
+          "CSS declarations"
+        ]
+      },
+      "attributes": {},
+      "constraints": {
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:template-skin cannot be nested inside sections or widgets."
+        },
+        "cdata": {
+          "status": "required",
+          "description": "b:template-skin CSS content must be enclosed in a CDATA section."
+        },
+        "version": {
+          "status": "not_allowed",
+          "version": "v1",
+          "reason": "The b:template-skin tag is not allowed in Version 1 themes."
+        },
+        "multiplicity": {
+          "min": 0,
+          "max": 1,
+          "per_parent": "head",
+          "description": "At most one b:template-skin element is permitted per theme."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "Group": {
+      "category": "Styling",
+      "namespace": "skin",
+      "description": "Optional container used to group multiple skin variables under a single menu in the Blogger Theme Designer.",
+      "grammar": {
+        "valid_parents": [
+          "CDATA"
+        ],
+        "valid_children": [
+          "Variable"
+        ]
+      },
+      "attributes": {
+        "description": {
+          "type": "string",
+          "description": "Group label displayed in the Theme Designer UI. Supports multilingual system strings.",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "selector": {
+          "type": "string",
+          "description": "HTML element or CSS selector targeted for real-time visual preview when adjusting values in the designer.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        }
+      },
+      "constraints": {
+        "nesting": {
+          "status": "forbidden",
+          "reason": "Group elements cannot be nested within another Group."
+        },
+        "cdata": {
+          "status": "required",
+          "description": "Group elements must reside inside b:skin CDATA."
+        },
+        "container_context": {
+          "status": "restricted",
+          "description": "Group elements must reside inside a CDATA block within b:skin."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "Variable": {
+      "category": "Styling",
+      "namespace": "skin",
+      "description": "Declaration of a skin variable whose value can be configured through the Blogger Theme Designer.",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "CDATA",
+          "Group"
+        ],
+        "valid_children": []
+      },
+      "attributes": {
+        "name": {
+          "type": "string",
+          "description": "Unique identifier (letters, digits, and dots .). Dots map to underscores in data:skin.vars.",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "description": {
+          "type": "string",
+          "description": "Field label displayed next to the control in the Theme Designer.",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "type": {
+          "type": "string",
+          "description": "Data type defining editor controls and value format (color, font, length, background, url, string, automatic).",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "default": {
+          "type": "string",
+          "description": "Factory default value restored when the user resets theme defaults. Optional for type='string'; required for all other variable types.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "value": {
+          "type": "string",
+          "description": "Current active value (overridden when saved in the Theme Designer). Permitted to be empty ('') exclusively for type='string'; non-empty required for all other variable types.",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "color": {
+          "type": "string",
+          "description": "Hex color code or name of another color variable for background variables.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "red": {
+          "type": "number",
+          "description": "Red color component (0-255) for color variables.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "green": {
+          "type": "number",
+          "description": "Green color component (0-255) for color variables.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "blue": {
+          "type": "number",
+          "description": "Blue color component (0-255) for color variables.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "alpha": {
+          "type": "number",
+          "description": "Alpha transparency component (0.0-1.0) for color variables.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "family": {
+          "type": "string",
+          "description": "Font family name for font variables.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "size": {
+          "type": "string",
+          "description": "Font size string for font variables.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "min": {
+          "type": "string",
+          "description": "Minimum length value in px for length variables.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "max": {
+          "type": "string",
+          "description": "Maximum length value in px for length variables.",
+          "attribute_kind": "static_literal",
+          "expr": false
+        },
+        "hideEditor": {
+          "type": "boolean",
+          "description": "Optional flag (defaults to false). When 'true' (or 'yes'), suppresses the interactive control from the Theme Designer UI. Values: 'true' / 'yes', 'false' / 'no'.",
+          "default": false,
+          "attribute_kind": "static_literal",
+          "expr": false
+        }
+      },
+      "constraints": {
+        "cdata": {
+          "status": "required",
+          "description": "Variable declarations must reside inside b:skin CDATA."
+        },
+        "container_context": {
+          "status": "restricted",
+          "description": "Variable declarations must reside inside a CDATA block within b:skin."
+        },
+        "string_variable_defaults": {
+          "status": "allowed",
+          "description": "For type='string', the default attribute is optional and value can be empty (''). For all other types, default is required and value cannot be empty."
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "b:comment": {
+      "category": "Utility",
+      "namespace": "b",
+      "description": "Instruction tag that adds a comment to the Blogger template XML and can optionally render the resulting comment in the generated HTML.",
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": [
+          "Template markup",
+          "Blogger expressions",
+          "Blogger instruction tags"
+        ]
+      },
+      "attributes": {
+        "render": {
+          "type": "boolean",
+          "description": "Controls HTML emission. If true, renders as an HTML comment (<!-- ... -->). If false or omitted, stripped.",
+          "expr": true,
+          "attribute_kind": "prefixed_expression"
+        }
+      },
+      "constraints": {
+        "cdata": {
+          "status": "forbidden",
+          "reason": "b:comment does not work inside CDATA."
+        },
+        "nesting": {
+          "status": "forbidden",
+          "reason": "b:comment elements cannot be nested within one another."
+        },
+        "multiplicity": {
+          "min": 0,
+          "max": null,
+          "description": "Multiple b:comment elements can be used in the same template."
+        },
+        "expressions": {
+          "status": "evaluated",
+          "description": "Blogger expressions contained within the comment are evaluated before the resulting comment is generated."
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    },
+    "b:template-script": {
+      "category": "Utility",
+      "namespace": "b",
+      "description": "Instruction tag that loads a JavaScript file hosted by Blogger and associated with an official Blogger theme.",
+      "self_closing": true,
+      "grammar": {
+        "valid_parents": [
+          "head",
+          "body"
+        ],
+        "valid_children": []
+      },
+      "attributes": {
+        "name": {
+          "type": "string",
+          "description": "Internal asset identifier corresponding to the theme's official script bundle.",
+          "required": true,
+          "attribute_kind": "static_literal",
+          "expr": false
+        }
+      },
+      "constraints": {
+        "scope": {
+          "status": "restricted",
+          "description": "Designed specifically for official Blogger themes."
+        },
+        "implementation": {
+          "status": "implementation_defined",
+          "description": "The syntax and behavior are determined by Blogger engineering for the requirements of its own themes."
+        },
+        "file_compatibility": {
+          "status": "version_specific",
+          "description": "The referenced JavaScript file is designed to match the theme version and its update version."
+        }
+      },
+      "spec_extensions": {
+        "rendering": {
+          "script_url": {
+            "output": "<script type=\"text/javascript\" src=\"https://... .js\" />",
+            "description": "The tag may generate a script element referencing the hosted JavaScript file."
+          },
+          "script_content": {
+            "output": "<script type=\"text/javascript\">/* JS FILE */</script>",
+            "description": "The tag may explicitly generate the contents of the referenced JavaScript file."
+          }
+        }
+      },
+      "closure_mode": "self_closing"
+    },
+    "CDATA": {
+      "category": "Core Syntax",
+      "namespace": "xml",
+      "description": "XML character data section that prevents its contents from being parsed, preserving special characters and preventing Blogger tags and expressions from being interpreted.",
+      "grammar": {
+        "valid_parents": [
+          "Any XML/HTML template node"
+        ],
+        "valid_children": [
+          "#text"
+        ]
+      },
+      "attributes": {},
+      "constraints": {
+        "nesting": {
+          "status": "forbidden",
+          "reason": "CDATA sections cannot be nested."
+        },
+        "blogger_syntax": {
+          "status": "not_interpreted",
+          "reason": "Blogger-specific tags and expressions inside CDATA are not processed."
+        },
+        "special_characters": {
+          "status": "preserved",
+          "description": "Characters such as <, >, ampersands, and quotes are not escaped within the CDATA section."
+        }
+      },
+      "spec_extensions": {
+        "usage": {
+          "b:skin": {
+            "description": "Commonly used inside b:skin to contain CSS without XML escaping or Blogger expression processing."
+          },
+          "css": {
+            "description": "Can be used to write CSS without escaping XML-sensitive characters.",
+            "syntax": "/* <![CDATA[ */ ... /* ]]> */"
+          },
+          "javascript": {
+            "description": "Can be used to prevent XML parsing of JavaScript containing special characters.",
+            "syntax": "// <![CDATA[ ... // ]]>"
+          },
+          "b:widget-setting": {
+            "description": "Can preserve special characters in widget setting values without XML escaping."
+          }
+        }
+      },
+      "closure_mode": "container",
+      "self_closing": false
+    }
+  }
+}

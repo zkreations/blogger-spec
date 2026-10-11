@@ -1,0 +1,42 @@
+import {
+  getAllCatalogs,
+  getCatalog,
+  getDiagnostics,
+  getDirectives,
+  getGlobals,
+  getMessages,
+  getOperators,
+  getScopes,
+  getSettings,
+  getTypes,
+  getWidgets,
+} from './catalogs/index.js'
+
+export const directives = getDirectives()
+export const operators = getOperators()
+export const types = getTypes()
+export const widgets = getWidgets()
+export const settings = getSettings()
+export const globals = getGlobals()
+export const messages = getMessages()
+export const scopes = getScopes()
+export const diagnostics = getDiagnostics()
+
+export {
+  getAllCatalogs,
+  getCatalog,
+  getDiagnostics,
+  getDirectives,
+  getGlobals,
+  getMessages,
+  getOperators,
+  getScopes,
+  getSettings,
+  getTypes,
+  getWidgets,
+}
+
+export * from './ast.js'
+export * from './catalogs/index.js'
+export * from './helpers.js'
+export * from './types.js'

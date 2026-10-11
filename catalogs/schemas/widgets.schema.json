@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "widgets.schema.json",
+  "title": "Blogger Widget Data Dictionaries Master Catalog Schema",
+  "description": "JSON Schema specification for the Blogger widget data dictionary master catalog.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "title",
+    "description",
+    "widgets"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "widgets": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/widgetEntry"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "widgetEntry": {
+      "type": "object",
+      "required": [
+        "description",
+        "canonical"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "canonical": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/canonicalProperty"
+          }
+        },
+        "deprecated": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/deprecatedEntry"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "canonicalProperty": {
+      "type": "object",
+      "required": [
+        "type",
+        "description"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+        },
+        "description": {
+          "type": "string"
+        },
+        "allowed_values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/canonicalProperty"
+          }
+        },
+        "item_properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/canonicalProperty"
+          }
+        },
+        "deprecated": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/deprecatedEntry"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "deprecatedEntry": {
+      "type": "object",
+      "required": [
+        "status",
+        "action",
+        "type",
+        "replacement",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "deprecated_in_widget_v2",
+            "deprecated_in_layout_v3",
+            "ignored_in_layout_v3",
+            "obsolete",
+            "legacy"
+          ]
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "migrate",
+            "remove"
+          ]
+        },
+        "type": {
+          "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+        },
+        "replacement": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

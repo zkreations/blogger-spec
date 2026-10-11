@@ -1,0 +1,51 @@
+{
+  "subsystem": "with_nesting",
+  "fixtures": [
+    {
+      "id": "scopes/with_nesting/with-alias-resolution",
+      "title": "With Alias Resolution",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:with_nesting",
+        "tag:b:with"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:with value='data:post.title ?: \"Default\"' var='safeTitle'><h1><data:safeTitle/></h1></b:with>",
+        "mode": "fragment",
+        "context": {
+          "post": {
+            "title": "Blogger Guide"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<h1>Blogger Guide</h1>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "scopes/with_nesting/with-nested-shadowing",
+      "title": "With Nested Shadowing",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:with_nesting",
+        "tag:b:with"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:with value='\"Outer\"' var='val'><b:with value='\"Inner\"' var='val'><span><data:val/></span></b:with><span><data:val/></span></b:with>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<span>Inner</span><span>Outer</span>",
+        "canonicalDom": true
+      }
+    }
+  ]
+}

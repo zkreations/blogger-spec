@@ -1,0 +1,58 @@
+{
+  "subsystem": "loop_shadowing",
+  "fixtures": [
+    {
+      "id": "scopes/loop_shadowing/nested-loop-shadowing",
+      "title": "Nested Loop Shadowing",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:loop_shadowing",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:loop values='data:posts' var='item'>[POST:<data:item.id/>]<b:loop values='data:item.labels' var='item'>[LABEL:<data:item.name/>]</b:loop>[POST_AFTER:<data:item.id/>]</b:loop>",
+        "mode": "fragment",
+        "context": {
+          "posts": [
+            {
+              "id": "101",
+              "labels": [
+                {
+                  "name": "News"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "[POST:101][LABEL:News][POST_AFTER:101]",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "scopes/loop_shadowing/loop-index-counter",
+      "title": "Loop Index Counter",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:loop_shadowing",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:loop index='i' values='[\"a\", \"b\"]' var='letter'><data:i/>:<data:letter/>;</b:loop>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "0:a;1:b;",
+        "canonicalDom": true
+      }
+    }
+  ]
+}

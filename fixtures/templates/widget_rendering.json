@@ -1,0 +1,79 @@
+{
+  "subsystem": "widget_rendering",
+  "fixtures": [
+    {
+      "id": "rendering/widget_rendering/blog-widget-wrapper-and-includables",
+      "title": "Blog Widget Wrapper And Includables",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:includable"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Header1' title='Blog Posts' type='Header' version='2'><b:includable id='main'><h1><data:title/></h1></b:includable></b:widget>",
+        "mode": "fragment",
+        "context": {
+          "title": "My Tech Blog"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"widget Header\" data-version=\"2\" id=\"Header1\"><h1>My Tech Blog</h1></div>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/widget_rendering/dynamic-tag-and-attributes",
+      "title": "Dynamic Tag And Attributes",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:tag",
+        "tag:b:class",
+        "tag:b:attr"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:tag expr:name='data:isMain ? \"h1\" : \"h2\"'><b:class cond='data:featured' name='is-featured'/><b:attr name='data-id' expr:value='data:postId'/>Hello World</b:tag>",
+        "mode": "fragment",
+        "context": {
+          "isMain": true,
+          "featured": true,
+          "postId": "999"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<h1 class=\"is-featured\" data-id=\"999\">Hello World</h1>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/widget_rendering/eval-closing-tag-tolerance",
+      "title": "Eval Closing Tag Body Ignored Tolerance",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-11",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:eval",
+        "rule:BX1013"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:eval expr='data:title'>ignored body</b:eval>",
+        "mode": "fragment",
+        "context": {
+          "title": "Desarrollo"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Desarrollo",
+        "canonicalDom": true
+      }
+    }
+  ]
+}

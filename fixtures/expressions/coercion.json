@@ -1,0 +1,171 @@
+{
+  "subsystem": "runtime_coercion",
+  "fixtures": [
+    {
+      "id": "expressions/coercion/addition-literal-string-concatenation",
+      "title": "Literal Numeric String Concatenation With Literal Number",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-literal"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + \"10\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "1010"
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-literal-reversed-concatenation",
+      "title": "Reversed Literal Numeric String Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-literal"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"10\" + 10",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "1010"
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-runtime-variable-arithmetic",
+      "title": "Runtime Variable String Numeric Addition",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-runtime-numeric"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + data:numString",
+        "context": {
+          "numString": "10"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-runtime-variable-reversed-arithmetic",
+      "title": "Reversed Runtime Variable String Numeric Addition",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-runtime-numeric"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numString + 10",
+        "context": {
+          "numString": "10"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-runtime-two-variables-arithmetic",
+      "title": "Two Runtime Variable Strings Numeric Addition",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-runtime-numeric"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numStringA + data:numStringB",
+        "context": {
+          "numStringA": "15",
+          "numStringB": "5"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-runtime-non-numeric-text-fallback",
+      "title": "Runtime Non-Numeric String Fallback To Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-runtime-fallback"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + data:textString",
+        "context": {
+          "textString": "posts"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "10posts"
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-runtime-with-literal-string-override",
+      "title": "Literal String Operand Forcing Concatenation On Runtime Number",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-literal-dominance"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numString + \" items\"",
+        "context": {
+          "numString": "10"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "10 items"
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-runtime-numeric-string",
+      "title": "Weak Equality Between Number And Runtime Numeric String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-equality"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numString == 10",
+        "context": {
+          "numString": "10"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    }
+  ]
+}
+

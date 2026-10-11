@@ -1,0 +1,380 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "directives.schema.json",
+  "title": "Blogger XML Directives & Tags Master Catalog Schema",
+  "description": "JSON Schema specification for the Blogger XML directives and tags master catalog.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "title",
+    "description",
+    "directives",
+    "domain_metadata"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "directives": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/directiveDefinition"
+      }
+    },
+    "domain_metadata": {
+      "type": "object",
+      "required": [
+        "inclusion_classifications",
+        "super_inclusion"
+      ],
+      "properties": {
+        "inclusion_classifications": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "description",
+              "location",
+              "super_inclusion",
+              "default_markup"
+            ],
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "location": {
+                "type": "string"
+              },
+              "super_inclusion": {
+                "type": "boolean"
+              },
+              "default_markup": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "super_inclusion": {
+          "type": "object",
+          "required": [
+            "syntax",
+            "description",
+            "requirements"
+          ],
+          "properties": {
+            "syntax": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "requirements": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "directiveDefinition": {
+      "type": "object",
+      "required": [
+        "category",
+        "description",
+        "closure_mode",
+        "grammar",
+        "attributes"
+      ],
+      "properties": {
+        "category": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string",
+          "enum": [
+            "b",
+            "data",
+            "skin",
+            "xml"
+          ],
+          "description": "XML namespace prefix or syntactic domain for this directive."
+        },
+        "description": {
+          "type": "string"
+        },
+        "closure_mode": {
+          "type": "string",
+          "enum": [
+            "self_closing",
+            "container",
+            "dual"
+          ],
+          "description": "Syntactic closure model: 'self_closing' (must self-close with />), 'container' (requires paired closing tag </...>), or 'dual' (self-closing when unparameterized, container when nesting child tags, e.g. b:message)."
+        },
+        "self_closing": {
+          "type": "boolean",
+          "default": false
+        },
+        "grammar": {
+          "$ref": "#/$defs/grammarDefinition"
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/attributeDefinition"
+          }
+        },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string"
+              },
+              "allowed_values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "description": {
+                "type": "string"
+              },
+              "max": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "min": {
+                "type": "integer"
+              },
+              "min_cases": {
+                "type": "integer"
+              },
+              "per_parent": {
+                "type": "string"
+              },
+              "position": {
+                "type": "string"
+              },
+              "prefix": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "required_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "status": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              },
+              "workaround": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "deprecated_attributes": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/deprecatedAttributeEntry"
+          }
+        },
+        "spec_extensions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "output": {
+                  "type": "string"
+                },
+                "syntax": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "syntax_patterns": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "syntax",
+              "description"
+            ],
+            "properties": {
+              "syntax": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "grammarDefinition": {
+      "type": "object",
+      "required": [
+        "valid_parents",
+        "valid_children"
+      ],
+      "properties": {
+        "valid_parents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "valid_children": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "arbitrary_attributes": {
+          "type": "boolean"
+        },
+        "cdata_content": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "attributeDefinition": {
+      "type": "object",
+      "required": [
+        "type",
+        "attribute_kind",
+        "expr",
+        "description"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "types.schema.json#/$defs/directiveAttributeType"
+        },
+        "attribute_kind": {
+          "type": "string",
+          "enum": [
+            "native_expression",
+            "prefixed_expression",
+            "static_literal"
+          ],
+          "description": "Functional compilation classification: 'native_expression' (attribute natively evaluates dynamic expressions in unadorned form; when expr is true, the expr: prefix enables dynamic runtime dereferencing / double-evaluation, e.g. cond, values, value), 'prefixed_expression' (unadorned form evaluates as a static literal; dynamic expression evaluation requires the expr: prefix, e.g. name, value, class), or 'static_literal' (strictly literal value; expr: prefix is strictly prohibited, e.g. id, type, locked)."
+        },
+        "accepted_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required": {
+          "type": "boolean",
+          "default": false
+        },
+        "expr": {
+          "type": "boolean",
+          "description": "Specifies whether the 'expr:' dynamic attribute prefix is allowed for this attribute. Must be false for 'static_literal'. Must be true for 'prefixed_expression'. For 'native_expression', true indicates that expr: prefix is supported to enable dynamic dereferencing / runtime double evaluation, while false indicates expr: prefix is forbidden (e.g. b:eval expr where expr:expr is invalid syntax)."
+        },
+        "description": {
+          "type": "string"
+        },
+        "default": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ],
+          "description": "Default value for the attribute if omitted."
+        },
+        "accepted_forms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "deprecatedAttributeEntry": {
+      "type": "object",
+      "required": [
+        "status",
+        "action",
+        "type",
+        "replacement",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "deprecated_in_widget_v2",
+            "deprecated_in_layout_v3",
+            "ignored_in_layout_v3",
+            "obsolete",
+            "legacy"
+          ]
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "migrate",
+            "remove"
+          ]
+        },
+        "type": {
+          "$ref": "types.schema.json#/$defs/directiveAttributeType"
+        },
+        "replacement": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

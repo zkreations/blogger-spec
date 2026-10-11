@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "globals.schema.json",
+  "title": "Blogger Global Data Objects Master Catalog Schema",
+  "description": "JSON Schema specification for the Blogger global objects and runtime data catalog.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "title",
+    "description",
+    "objects"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "objects": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/globalObject"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "globalObject": {
+      "type": "object",
+      "required": [
+        "cardinality",
+        "description",
+        "canonical"
+      ],
+      "properties": {
+        "cardinality": {
+          "type": "string",
+          "enum": [
+            "singleton",
+            "collection"
+          ]
+        },
+        "item_type": {
+          "type": "string"
+        },
+        "item_properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/canonicalProperty"
+          }
+        },
+        "description": {
+          "type": "string"
+        },
+        "catalog_ref": {
+          "type": "string",
+          "description": "Relative reference to an external catalog providing the full entity dictionary (e.g. 'messages.json')."
+        },
+        "canonical": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/canonicalProperty"
+          }
+        },
+        "patterns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/patternDefinition"
+          }
+        },
+        "deprecated": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/deprecatedEntry"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "canonicalProperty": {
+      "type": "object",
+      "required": [
+        "type",
+        "description"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+        },
+        "item_type": {
+          "type": "string"
+        },
+        "allowed_values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string"
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/canonicalProperty"
+          }
+        },
+        "item_properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/canonicalProperty"
+          }
+        },
+        "deprecated": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/deprecatedEntry"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "patternDefinition": {
+      "type": "object",
+      "required": [
+        "template",
+        "type",
+        "description"
+      ],
+      "properties": {
+        "template": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+        },
+        "supported_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "deprecatedEntry": {
+      "type": "object",
+      "required": [
+        "status",
+        "action",
+        "type",
+        "replacement",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "deprecated_in_widget_v2",
+            "deprecated_in_layout_v3",
+            "ignored_in_layout_v3",
+            "obsolete",
+            "legacy"
+          ]
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "migrate",
+            "remove"
+          ]
+        },
+        "type": {
+          "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+        },
+        "replacement": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,114 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "scopes.schema.json",
+  "title": "Blogger Scope & Resolution Catalog Schema",
+  "description": "JSON Schema specification for the Blogger variable scope rules and includable hierarchy model.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "title",
+    "description",
+    "scopes",
+    "resolution_precedence"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "resolution_precedence": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Ordered precedence list of scopes from narrowest (highest priority) to broadest (fallback)."
+    },
+    "scopes": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/scopeDefinition"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "scopeDefinition": {
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "boundary_tag",
+        "inherits",
+        "introduces",
+        "visibility",
+        "shadowing",
+        "evidence"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "boundary_tag": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "inherits": {
+          "type": "boolean",
+          "description": "Whether this scope inherits symbols from its lexical parent scope."
+        },
+        "introduces": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Variable identifiers introduced into scope (e.g. var, index, alias)."
+        },
+        "data_prefix_required": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether variables in this scope require the 'data:' prefix when accessed."
+        },
+        "visibility": {
+          "type": "string",
+          "enum": [
+            "descendants",
+            "local_only",
+            "global"
+          ]
+        },
+        "shadowing": {
+          "type": "string",
+          "enum": [
+            "local-wins",
+            "prohibited",
+            "none"
+          ]
+        },
+        "evidence": {
+          "type": "string",
+          "enum": [
+            "official",
+            "observed",
+            "documented-project",
+            "approximate",
+            "unknown"
+          ]
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

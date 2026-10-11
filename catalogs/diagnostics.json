@@ -1,0 +1,249 @@
+{
+  "$schema": "./schemas/diagnostics.schema.json",
+  "title": "Blogger Canonical Diagnostics Catalog",
+  "description": "Standard catalogue of diagnostic codes, severities, and validation rules for Blogger template compilers and linters.",
+  "version": "1.0.0",
+  "rules": {
+    "BX1001": {
+      "code": "BX1001",
+      "name": "PROHIBITED_FOR_TAG",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "<b:for> is hallucinated; Blogger uses <b:loop values='...'>.",
+      "replacement": "<b:loop values='...'>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1002": {
+      "code": "BX1002",
+      "name": "PROHIBITED_EACH_TAG",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "<b:each> is hallucinated; Blogger uses <b:loop values='...'>.",
+      "replacement": "<b:loop values='...'>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1003": {
+      "code": "BX1003",
+      "name": "PROHIBITED_SET_TAG",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "<b:set> is hallucinated; Blogger uses <b:with value='...' var='...'>.",
+      "replacement": "<b:with value='...' var='...'>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1004": {
+      "code": "BX1004",
+      "name": "PROHIBITED_VAR_TAG",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "<b:var> is hallucinated; Blogger uses <b:with value='...' var='...'>.",
+      "replacement": "<b:with value='...' var='...'>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1005": {
+      "code": "BX1005",
+      "name": "PROHIBITED_LET_TAG",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "<b:let> is hallucinated; Blogger uses <b:with value='...' var='...'>.",
+      "replacement": "<b:with value='...' var='...'>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1006": {
+      "code": "BX1006",
+      "name": "PROHIBITED_HYPHEN_ELSEIF",
+      "category": "syntax",
+      "severity": "error",
+      "message": "<b:else-if> is invalid; Blogger uses <b:elseif cond='...'>.",
+      "replacement": "<b:elseif cond='...'>",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1007": {
+      "code": "BX1007",
+      "name": "PROHIBITED_CHOOSE_TAG",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "<b:choose> is XSL/JSTL; Blogger uses <b:switch var='...'> or <b:if>.",
+      "replacement": "<b:switch var='...'>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1008": {
+      "code": "BX1008",
+      "name": "PROHIBITED_WHEN_TAG",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "<b:when> is XSL/JSTL; Blogger uses <b:case value='...'>.",
+      "replacement": "<b:case value='...'>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1009": {
+      "code": "BX1009",
+      "name": "PROHIBITED_OTHERWISE_TAG",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "<b:otherwise> is XSL/JSTL; Blogger uses <b:default/>.",
+      "replacement": "<b:default/>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1010": {
+      "code": "BX1010",
+      "name": "PROHIBITED_TEMPLATE_TAG",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "<b:template> is hallucinated; Blogger uses <b:includable id='...'>.",
+      "replacement": "<b:includable id='...'>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1011": {
+      "code": "BX1011",
+      "name": "PROHIBITED_MACRO_TAG",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "<b:macro> is hallucinated; Blogger uses <b:includable id='...'>.",
+      "replacement": "<b:includable id='...'>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1012": {
+      "code": "BX1012",
+      "name": "PROHIBITED_FUNCTION_TAG",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "<b:function> is hallucinated; Blogger uses <b:includable id='...'>.",
+      "replacement": "<b:includable id='...'>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1013": {
+      "code": "BX1013",
+      "name": "PROHIBITED_CLOSING_DELIMITER",
+      "category": "syntax",
+      "severity": "warning",
+      "message": "<b:eval> is canonically self-closing (<b:eval/>). The Blogger compiler tolerates closing tags and ignores inner content, but non-self-closing tags violate template conventions.",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-11"
+    },
+    "BX1014": {
+      "code": "BX1014",
+      "name": "SWITCH_USES_VAR_NOT_EXPR",
+      "category": "syntax",
+      "severity": "error",
+      "message": "<b:switch> requires the 'var' attribute (e.g. <b:switch var='...'>), not 'expr'.",
+      "replacement": "var='...'",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1015": {
+      "code": "BX1015",
+      "name": "INVERTED_INCLUDABLE_ATTR",
+      "category": "syntax",
+      "severity": "error",
+      "message": "<b:includable> requires 'id' attribute, not 'name'.",
+      "replacement": "id='...'",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1016": {
+      "code": "BX1016",
+      "name": "INVERTED_INCLUDE_ATTR",
+      "category": "syntax",
+      "severity": "error",
+      "message": "<b:include> requires 'name' attribute, not 'id'.",
+      "replacement": "name='...'",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1017": {
+      "code": "BX1017",
+      "name": "PROHIBITED_JS_METHOD",
+      "category": "expressions",
+      "severity": "error",
+      "message": "JavaScript method calls are invalid in Blogger expressions. Use native operators and helpers.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1018": {
+      "code": "BX1018",
+      "name": "PROHIBITED_JS_OPERATOR",
+      "category": "expressions",
+      "severity": "error",
+      "message": "Strict equality (===, !==) is not supported in Blogger expressions; use == or !=.",
+      "replacement": "==",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1019": {
+      "code": "BX1019",
+      "name": "PROHIBITED_LAMBDA_DATA_PREFIX",
+      "category": "expressions",
+      "severity": "warning",
+      "message": "Using 'data:' prefix on lambda iterator properties is redundant. The Blogger runtime tolerates it, but accessing iterator properties directly (p.prop) is the canonical practice.",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-11"
+    },
+    "BX1020": {
+      "code": "BX1020",
+      "name": "INVALID_NULL_LITERAL",
+      "category": "expressions",
+      "severity": "error",
+      "message": "Literal 'null' does not exist in Blogger expressions and causes a fatal compilation abort.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1021": {
+      "code": "BX1021",
+      "name": "EXPRESSION_TOKEN_QUOTA_EXCEEDED",
+      "category": "quota",
+      "severity": "warning",
+      "message": "Expression exceeds the 40-token compiler ceiling and will abort evaluation in production.",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1022": {
+      "code": "BX1022",
+      "name": "MANDATORY_ATTRIBUTE_MISSING",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Mandatory directive attribute is missing.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1023": {
+      "code": "BX1023",
+      "name": "PROHIBITED_NESTING",
+      "category": "structure",
+      "severity": "error",
+      "message": "Invalid parent-child nesting for directive in Blogger XML hierarchy.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1024": {
+      "code": "BX1024",
+      "name": "DEPRECATED_ATTRIBUTE",
+      "category": "deprecation",
+      "severity": "warning",
+      "message": "Directive attribute is deprecated in Layouts v3.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10"
+    },
+    "BX1025": {
+      "code": "BX1025",
+      "name": "UNKNOWN_DIRECTIVE",
+      "category": "syntax",
+      "severity": "warning",
+      "message": "Unknown directive in Blogger 'b:' XML namespace.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10"
+    }
+  }
+}

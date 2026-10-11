@@ -1,0 +1,218 @@
+{
+  "subsystem": "negative_syntax",
+  "fixtures": [
+    {
+      "id": "diagnostics/negative_syntax/prohibited-for-tag",
+      "title": "Prohibited <b:for> Loop Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1001"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:for each='p in posts'><data:p.title/></b:for>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1001"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-set-tag",
+      "title": "Prohibited <b:set> Assignment Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1003"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:set var='foo' value='123'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1003"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-hyphen-elseif",
+      "title": "Prohibited Hyphenated <b:else-if>",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1006"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.isPost'><p>A</p><b:else-if cond='data:view.isPage'/><p>B</p></b:if>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1006"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/inverted-includable-attributes",
+      "title": "Inverted Includable Name and Include Id",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1015",
+        "rule:BX1016"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:includable name='mainWidget'><b:include id='mainWidget'/></b:includable>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1015",
+          "BX1016"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-javascript-array-methods",
+      "title": "Prohibited JavaScript Array Filter And Slice Methods",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1017"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.filter(p => p.id).slice(0, 5)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1017"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-javascript-strict-equality",
+      "title": "Prohibited JavaScript Strict Equality Operator",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1018"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:view.pageType === \"item\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1018"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-lambda-data-prefix",
+      "title": "Prohibited Lambda Iterator Data Prefix",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-11",
+      "covers": [
+        "rule:BX1019"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts count (p => data:p.numberOfComments > 0)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1019"
+        ],
+        "stage": "linter"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-null-literal",
+      "title": "Prohibited Literal Null Comparison In Expression",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1020"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.author == null",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1020"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-closing-eval-delimiter",
+      "title": "Prohibited Closing Tag For Self-Closing b:eval Directive",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-11",
+      "covers": [
+        "rule:BX1013"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:eval expr='data:blog.title'></b:eval>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1013"
+        ],
+        "stage": "linter"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/switch-uses-expr-instead-of-var",
+      "title": "b:switch Directive Using expr Instead of var",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1014"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:switch expr='data:view.pageType'><b:case value='item'/>A<b:default/>B</b:switch>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1014"
+        ],
+        "stage": "parser"
+      }
+    }
+  ]
+}
+

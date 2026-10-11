@@ -1,0 +1,397 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "operators.schema.json",
+  "title": "Blogger Operators & Expressions Master Catalog Schema",
+  "description": "JSON Schema specification for the Blogger expression operators master catalog.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "title",
+    "description",
+    "precedence_hierarchy",
+    "evaluation_contexts",
+    "families",
+    "operators"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "precedence_hierarchy": {
+      "type": "array",
+      "description": "Formal 10-level operator precedence hierarchy and associativity rules.",
+      "items": {
+        "$ref": "#/$defs/precedenceLevel"
+      }
+    },
+    "evaluation_contexts": {
+      "type": "object",
+      "required": [
+        "dynamic_attributes",
+        "inert_contexts",
+        "compiler_quotas",
+        "default_allowed_contexts"
+      ],
+      "properties": {
+        "dynamic_attributes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "inert_contexts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "default_allowed_contexts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "cond",
+              "expr",
+              "value",
+              "values",
+              "expr:*"
+            ]
+          }
+        },
+        "compiler_quotas": {
+          "type": "object",
+          "required": [
+            "max_expression_tokens",
+            "token_cost_rules"
+          ],
+          "properties": {
+            "max_expression_tokens": {
+              "type": "integer"
+            },
+            "token_cost_rules": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "families": {
+      "type": "object",
+      "description": "Dictionary of the 14 operator families in Blogger XML.",
+      "additionalProperties": {
+        "$ref": "#/$defs/operatorFamily"
+      }
+    },
+    "operators": {
+      "type": "object",
+      "description": "Dictionary of all individual operators keyed by canonical operator token or keyword.",
+      "additionalProperties": {
+        "$ref": "#/$defs/operatorDefinition"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "precedenceLevel": {
+      "type": "object",
+      "required": [
+        "level",
+        "category",
+        "associativity",
+        "operators"
+      ],
+      "properties": {
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "category": {
+          "type": "string"
+        },
+        "associativity": {
+          "type": "string",
+          "enum": [
+            "left-to-right",
+            "right-to-left",
+            "inner-to-outer",
+            "non-associative"
+          ]
+        },
+        "operators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "operatorFamily": {
+      "type": "object",
+      "required": [
+        "name",
+        "description",
+        "precedence_tiers",
+        "operators"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "precedence_tiers": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "operators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "operatorDefinition": {
+      "type": "object",
+      "required": [
+        "family",
+        "description",
+        "syntax",
+        "precedence_level",
+        "operands",
+        "return_type"
+      ],
+      "properties": {
+        "family": {
+          "type": "string",
+          "enum": [
+            "concatenation",
+            "arithmetic",
+            "comparison",
+            "logical",
+            "membership",
+            "content",
+            "collection",
+            "lambda",
+            "ternary",
+            "elvis",
+            "url",
+            "date",
+            "image",
+            "snippet"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "syntax": {
+          "$ref": "#/$defs/syntaxVariants"
+        },
+        "precedence_level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "associativity": {
+          "type": "string",
+          "enum": [
+            "left-to-right",
+            "right-to-left",
+            "inner-to-outer",
+            "non-associative"
+          ]
+        },
+        "token_cost": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "operands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/operandDefinition"
+          }
+        },
+        "return_type": {
+          "$ref": "#/$defs/operatorDataType"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "allowed_contexts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "cond",
+              "expr",
+              "value",
+              "values",
+              "expr:*"
+            ]
+          }
+        },
+        "overloads": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/operatorOverload"
+          }
+        },
+        "anti_patterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "examples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/operatorExample"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "syntaxVariants": {
+      "type": "object",
+      "required": [
+        "supports_infix",
+        "supports_functional",
+        "functional_identifier",
+        "variadic"
+      ],
+      "properties": {
+        "supports_infix": {
+          "type": "boolean",
+          "description": "Specifies whether the operator supports infix syntax (operand op operand)."
+        },
+        "supports_functional": {
+          "type": "boolean",
+          "description": "Specifies whether the operator supports functional call syntax (func(a, b))."
+        },
+        "functional_identifier": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Canonical function identifier used in functional syntax (e.g. 'eq' for ==, 'take' for take, '+' for +). Null if functional syntax is not supported."
+        },
+        "variadic": {
+          "type": "boolean",
+          "description": "True for associative operators that support 3+ operands in functional syntax (+, and, or, ?:)."
+        },
+        "infix": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Human-readable informational pattern for infix syntax (e.g. 'a + b')."
+        },
+        "functional": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Human-readable informational pattern for functional syntax (e.g. '+(a, b)')."
+        }
+      },
+      "additionalProperties": false
+    },
+    "operandDefinition": {
+      "type": "object",
+      "required": [
+        "name",
+        "types",
+        "required"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/operatorDataType"
+          }
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "operatorOverload": {
+      "type": "object",
+      "required": [
+        "signature",
+        "description",
+        "operands",
+        "return_type"
+      ],
+      "properties": {
+        "signature": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "operands": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/operandDefinition"
+          }
+        },
+        "return_type": {
+          "$ref": "#/$defs/operatorDataType"
+        }
+      },
+      "additionalProperties": false
+    },
+    "operatorDataType": {
+      "description": "Blogger Expression Engine operator and operand data type referenced from types catalog",
+      "$ref": "types.schema.json#/$defs/operatorDataType"
+    },
+    "operatorExample": {
+      "type": "object",
+      "required": [
+        "expression",
+        "result"
+      ],
+      "properties": {
+        "expression": {
+          "type": "string"
+        },
+        "context": {
+          "type": "string"
+        },
+        "result": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

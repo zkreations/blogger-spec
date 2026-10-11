@@ -1,0 +1,277 @@
+{
+  "subsystem": "collections_and_lambdas",
+  "fixtures": [
+    {
+      "id": "expressions/collections_and_lambdas/collection-take",
+      "title": "Collection Take",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:take"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts take 2",
+        "context": {
+          "posts": [
+            {
+              "title": "First"
+            },
+            {
+              "title": "Second"
+            },
+            {
+              "title": "Third"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          {
+            "title": "First"
+          },
+          {
+            "title": "Second"
+          }
+        ]
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-skip",
+      "title": "Collection Skip",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:skip"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numbers skip 2",
+        "context": {
+          "numbers": [
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-count",
+      "title": "Lambda Count",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts count (p => p.comments > 0)",
+        "context": {
+          "posts": [
+            {
+              "comments": 5
+            },
+            {
+              "comments": 0
+            },
+            {
+              "comments": 12
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 2
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-any",
+      "title": "Lambda Any",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts any (p => p.comments > 10)",
+        "context": {
+          "posts": [
+            {
+              "comments": 5
+            },
+            {
+              "comments": 0
+            },
+            {
+              "comments": 12
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-all-falsy",
+      "title": "Lambda All Falsy",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts all (p => p.comments > 10)",
+        "context": {
+          "posts": [
+            {
+              "comments": 5
+            },
+            {
+              "comments": 0
+            },
+            {
+              "comments": 12
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-in-array",
+      "title": "Membership In Array",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"Tech\" in data:labels",
+        "context": {
+          "labels": [
+            "News",
+            "Tech",
+            "Tutorials"
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-take-precedence-contains",
+      "title": "Collection Take Precedence Contains",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains",
+        "operator:take"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "[1, 2, 3, 4] take 2 contains 2",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-chaining-skip-take",
+      "title": "Collection Chaining Skip Take",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains",
+        "operator:take",
+        "operator:skip"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "([1, 2, 3, 4, 5] skip 1 take 2) contains 3",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-take-arithmetic-parens",
+      "title": "Collection Take Arithmetic Parens",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:+",
+        "operator:contains",
+        "operator:take"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "([1, 2, 3, 4, 5] take (1 + 1)) contains 2",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-iterator-data-prefix-tolerance",
+      "title": "Lambda Iterator Data Prefix Tolerance",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-11",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "rule:BX1019"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts count (p => data:p.numberOfComments > 0)",
+        "context": {
+          "posts": [
+            {
+              "numberOfComments": 5
+            },
+            {
+              "numberOfComments": 0
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 1
+      }
+    }
+  ]
+}

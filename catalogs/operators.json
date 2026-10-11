@@ -1,0 +1,2109 @@
+{
+  "$schema": "./schemas/operators.schema.json",
+  "title": "Blogger Operators & Expressions Master Catalog",
+  "description": "Canonical machine-readable catalog of Blogger expression operators, dual-syntax execution grammar, 10-level precedence hierarchy, operand typing, and compiler quotas.",
+  "precedence_hierarchy": [
+    {
+      "level": 1,
+      "category": "Grouping",
+      "associativity": "inner-to-outer",
+      "operators": [
+        "( ... )"
+      ]
+    },
+    {
+      "level": 2,
+      "category": "Arithmetic (Multiplicative)",
+      "associativity": "left-to-right",
+      "operators": [
+        "*",
+        "/",
+        "%"
+      ]
+    },
+    {
+      "level": 3,
+      "category": "Arithmetic (Additive), URL, Date, Image & Snippet Transforms",
+      "associativity": "left-to-right",
+      "operators": [
+        "+",
+        "-",
+        "path",
+        "params",
+        "appendParams",
+        "fragment",
+        "format",
+        "resizeImage",
+        "sourceSet",
+        "snippet"
+      ]
+    },
+    {
+      "level": 4,
+      "category": "Relational, Comparisons & Collection Slices",
+      "associativity": "left-to-right",
+      "operators": [
+        "==",
+        "!=",
+        "<",
+        ">",
+        "<=",
+        ">=",
+        "eq",
+        "neq",
+        "lt",
+        "gt",
+        "lte",
+        "gte",
+        "take",
+        "skip",
+        "limit",
+        "offset",
+        "to"
+      ]
+    },
+    {
+      "level": 5,
+      "category": "Membership & Content",
+      "associativity": "left-to-right",
+      "operators": [
+        "in",
+        "contains"
+      ]
+    },
+    {
+      "level": 6,
+      "category": "Logical NOT",
+      "associativity": "right-to-left",
+      "operators": [
+        "!",
+        "not"
+      ]
+    },
+    {
+      "level": 7,
+      "category": "Logical AND",
+      "associativity": "left-to-right",
+      "operators": [
+        "&&",
+        "and"
+      ]
+    },
+    {
+      "level": 8,
+      "category": "Logical OR",
+      "associativity": "left-to-right",
+      "operators": [
+        "||",
+        "or"
+      ]
+    },
+    {
+      "level": 9,
+      "category": "Ternary & Coalescence",
+      "associativity": "right-to-left",
+      "operators": [
+        "? :",
+        "?:"
+      ]
+    },
+    {
+      "level": 10,
+      "category": "Lambda / Collection Pipelines",
+      "associativity": "left-to-right",
+      "operators": [
+        "where",
+        "map",
+        "select",
+        "filter",
+        "any",
+        "all",
+        "none",
+        "count",
+        "first"
+      ]
+    }
+  ],
+  "evaluation_contexts": {
+    "dynamic_attributes": [
+      "cond",
+      "expr",
+      "value",
+      "values",
+      "expr:*"
+    ],
+    "inert_contexts": [
+      "static attributes",
+      "CDATA"
+    ],
+    "compiler_quotas": {
+      "max_expression_tokens": 40,
+      "token_cost_rules": "1 token per operator (2 for ternary ? :), 1 per literal/operand (including unary negative numbers), 1 per data path (including static and dynamic bracket indexing), 1 per array/object container, 1 per grouping parentheses pair ( ... ), 0 for argument parentheses in function calls/lambdas, and 0 for object property keys and delimiters (, and :)"
+    },
+    "default_allowed_contexts": [
+      "cond",
+      "expr",
+      "value",
+      "values",
+      "expr:*"
+    ]
+  },
+  "families": {
+    "concatenation": {
+      "name": "Concatenation",
+      "description": "String concatenation and scalar text interpolation.",
+      "precedence_tiers": [
+        3
+      ],
+      "operators": [
+        "+"
+      ]
+    },
+    "arithmetic": {
+      "name": "Arithmetic",
+      "description": "Numeric addition, subtraction, multiplication, division, and modulo.",
+      "precedence_tiers": [
+        2,
+        3
+      ],
+      "operators": [
+        "+",
+        "-",
+        "*",
+        "/",
+        "%"
+      ]
+    },
+    "comparison": {
+      "name": "Comparison",
+      "description": "Relational comparisons and value equality checks.",
+      "precedence_tiers": [
+        4
+      ],
+      "operators": [
+        "==",
+        "!=",
+        "<",
+        ">",
+        "<=",
+        ">="
+      ]
+    },
+    "logical": {
+      "name": "Logical",
+      "description": "Logical conjunction, disjunction, and boolean inversion.",
+      "precedence_tiers": [
+        6,
+        7,
+        8
+      ],
+      "operators": [
+        "and",
+        "or",
+        "not"
+      ]
+    },
+    "membership": {
+      "name": "Membership",
+      "description": "Tests whether an item exists within a collection or string.",
+      "precedence_tiers": [
+        5
+      ],
+      "operators": [
+        "in"
+      ]
+    },
+    "content": {
+      "name": "Content",
+      "description": "Substring search and item containment checks.",
+      "precedence_tiers": [
+        5
+      ],
+      "operators": [
+        "contains"
+      ]
+    },
+    "collection": {
+      "name": "Collection",
+      "description": "Array slicing, pagination limits, and numeric sequence generation.",
+      "precedence_tiers": [
+        4
+      ],
+      "operators": [
+        "take",
+        "skip",
+        "to"
+      ]
+    },
+    "lambda": {
+      "name": "Lambda / Collection Pipeline",
+      "description": "Higher-order collection predicates, projection mapping, and aggregation reductions.",
+      "precedence_tiers": [
+        10
+      ],
+      "operators": [
+        "any",
+        "all",
+        "none",
+        "count",
+        "map",
+        "filter",
+        "first"
+      ]
+    },
+    "ternary": {
+      "name": "Ternary / Conditional",
+      "description": "Inline conditional branching expression (cond ? val1 : val2).",
+      "precedence_tiers": [
+        9
+      ],
+      "operators": [
+        "? :"
+      ]
+    },
+    "elvis": {
+      "name": "Coalescence / Fallback",
+      "description": "Fallback value selector for nullish or empty operands (?:).",
+      "precedence_tiers": [
+        9
+      ],
+      "operators": [
+        "?:"
+      ]
+    },
+    "url": {
+      "name": "Transform / URL",
+      "description": "URL path segment joining, query parameter appending, and hash fragmenting.",
+      "precedence_tiers": [
+        3
+      ],
+      "operators": [
+        "path",
+        "params",
+        "appendParams",
+        "fragment"
+      ]
+    },
+    "date": {
+      "name": "Transform / Date",
+      "description": "Localized date formatting using ICU pattern tokens.",
+      "precedence_tiers": [
+        3
+      ],
+      "operators": [
+        "format"
+      ]
+    },
+    "image": {
+      "name": "Transform / Image",
+      "description": "Google CDN image thumbnail resizing and responsive srcset generation.",
+      "precedence_tiers": [
+        3
+      ],
+      "operators": [
+        "resizeImage",
+        "sourceSet"
+      ]
+    },
+    "snippet": {
+      "name": "Transform / Truncation",
+      "description": "Text truncation, snippet extraction, and HTML tag stripping.",
+      "precedence_tiers": [
+        3
+      ],
+      "operators": [
+        "snippet"
+      ]
+    }
+  },
+  "operators": {
+    "+": {
+      "family": "arithmetic",
+      "description": "Performs numeric addition on numbers or string concatenation when at least one operand is text (ad-hoc polymorphism).",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "+",
+        "variadic": true,
+        "infix": "a + b",
+        "functional": "+(a, b)"
+      },
+      "precedence_level": 3,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "number",
+            "string",
+            "skin:length",
+            "scalar"
+          ],
+          "required": true
+        },
+        {
+          "name": "right",
+          "types": [
+            "number",
+            "string",
+            "skin:length",
+            "scalar"
+          ],
+          "required": true
+        }
+      ],
+      "return_type": "scalar",
+      "aliases": [
+        "plus"
+      ],
+      "overloads": [
+        {
+          "signature": "number + number",
+          "description": "Arithmetic addition on numbers or skin dimension lengths",
+          "operands": [
+            {
+              "name": "left",
+              "types": [
+                "number",
+                "skin:length"
+              ],
+              "required": true,
+              "description": "Left numeric operand"
+            },
+            {
+              "name": "right",
+              "types": [
+                "number",
+                "skin:length"
+              ],
+              "required": true,
+              "description": "Right numeric operand"
+            }
+          ],
+          "return_type": "number"
+        },
+        {
+          "signature": "string + any",
+          "description": "String concatenation and scalar text interpolation",
+          "operands": [
+            {
+              "name": "left",
+              "types": [
+                "string"
+              ],
+              "required": true,
+              "description": "Left string operand"
+            },
+            {
+              "name": "right",
+              "types": [
+                "any"
+              ],
+              "required": true,
+              "description": "Right operand to concatenate"
+            }
+          ],
+          "return_type": "string"
+        }
+      ],
+      "examples": [
+        {
+          "expression": "5 + 10",
+          "result": "15",
+          "description": "Numeric addition"
+        },
+        {
+          "expression": "\"Year \" + 2025",
+          "result": "Year 2025",
+          "description": "String concatenation"
+        }
+      ]
+    },
+    "-": {
+      "family": "arithmetic",
+      "description": "Performs arithmetic subtraction on numbers/lengths or unary negation.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "-",
+        "variadic": false,
+        "infix": "a - b",
+        "functional": "-(a, b)"
+      },
+      "precedence_level": 3,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "number",
+            "skin:length"
+          ],
+          "required": true,
+          "description": "Minuend or value to negate"
+        },
+        {
+          "name": "right",
+          "types": [
+            "number",
+            "skin:length"
+          ],
+          "required": false,
+          "description": "Subtrahend (omitted for unary negation)"
+        }
+      ],
+      "return_type": "number",
+      "aliases": [
+        "minus"
+      ],
+      "overloads": [
+        {
+          "signature": "a - b",
+          "description": "Binary subtraction",
+          "operands": [
+            {
+              "name": "left",
+              "types": [
+                "number",
+                "skin:length"
+              ],
+              "required": true,
+              "description": "Minuend"
+            },
+            {
+              "name": "right",
+              "types": [
+                "number",
+                "skin:length"
+              ],
+              "required": true,
+              "description": "Subtrahend"
+            }
+          ],
+          "return_type": "number"
+        },
+        {
+          "signature": "-a",
+          "description": "Unary negation",
+          "operands": [
+            {
+              "name": "value",
+              "types": [
+                "number"
+              ],
+              "required": true,
+              "description": "Value to negate"
+            }
+          ],
+          "return_type": "number"
+        }
+      ],
+      "examples": [
+        {
+          "expression": "10 - 4",
+          "result": "6",
+          "description": "Binary subtraction"
+        }
+      ]
+    },
+    "*": {
+      "family": "arithmetic",
+      "description": "Multiplication of numbers or dimensions.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "*",
+        "variadic": false,
+        "infix": "a * b",
+        "functional": "*(a, b)"
+      },
+      "precedence_level": 2,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "number",
+            "skin:length"
+          ],
+          "required": true
+        },
+        {
+          "name": "right",
+          "types": [
+            "number",
+            "skin:length"
+          ],
+          "required": true
+        }
+      ],
+      "return_type": "number",
+      "aliases": [
+        "multiply"
+      ],
+      "examples": [
+        {
+          "expression": "5 * 10",
+          "result": "50",
+          "description": "Multiplication"
+        }
+      ]
+    },
+    "/": {
+      "family": "arithmetic",
+      "description": "Division of numbers rendered with up to 4 decimal places.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "/",
+        "variadic": false,
+        "infix": "a / b",
+        "functional": "/(a, b)"
+      },
+      "precedence_level": 2,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "number",
+            "skin:length"
+          ],
+          "required": true
+        },
+        {
+          "name": "right",
+          "types": [
+            "number",
+            "skin:length"
+          ],
+          "required": true
+        }
+      ],
+      "return_type": "number",
+      "aliases": [
+        "divide"
+      ],
+      "anti_patterns": [
+        "Division by zero aborts expression evaluation."
+      ],
+      "examples": [
+        {
+          "expression": "7 / 3",
+          "result": "2.3333",
+          "description": "Division rounded to 4 decimals"
+        }
+      ]
+    },
+    "%": {
+      "family": "arithmetic",
+      "description": "Modulo operation calculating integer remainder.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "%",
+        "variadic": false,
+        "infix": "a % b",
+        "functional": "%(a, b)"
+      },
+      "precedence_level": 2,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "number"
+          ],
+          "required": true
+        },
+        {
+          "name": "right",
+          "types": [
+            "number"
+          ],
+          "required": true
+        }
+      ],
+      "return_type": "number",
+      "aliases": [
+        "modulo",
+        "mod"
+      ],
+      "anti_patterns": [
+        "Modulo by zero aborts expression evaluation."
+      ],
+      "examples": [
+        {
+          "expression": "13 % 6",
+          "result": "1",
+          "description": "Modulo remainder"
+        }
+      ]
+    },
+    "==": {
+      "family": "comparison",
+      "description": "Value equality test.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "eq",
+        "variadic": false,
+        "infix": "a == b",
+        "functional": "eq(a, b)"
+      },
+      "precedence_level": 4,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "any"
+          ],
+          "required": true
+        },
+        {
+          "name": "right",
+          "types": [
+            "any"
+          ],
+          "required": true
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [
+        "eq"
+      ],
+      "anti_patterns": [
+        "Do not use JavaScript '===' triple equals in Blogger expressions."
+      ],
+      "examples": [
+        {
+          "expression": "data:view.type == \"item\"",
+          "result": "true",
+          "description": "Equality check"
+        }
+      ]
+    },
+    "!=": {
+      "family": "comparison",
+      "description": "Value inequality test.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "neq",
+        "variadic": false,
+        "infix": "a != b",
+        "functional": "neq(a, b)"
+      },
+      "precedence_level": 4,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "any"
+          ],
+          "required": true
+        },
+        {
+          "name": "right",
+          "types": [
+            "any"
+          ],
+          "required": true
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [
+        "neq"
+      ],
+      "anti_patterns": [
+        "Do not use JavaScript '!==' in Blogger expressions."
+      ],
+      "examples": [
+        {
+          "expression": "data:view.isPost != true",
+          "result": "false",
+          "description": "Inequality check"
+        }
+      ]
+    },
+    "<": {
+      "family": "comparison",
+      "description": "Less than relational comparison.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "lt",
+        "variadic": false,
+        "infix": "a < b",
+        "functional": "lt(a, b)"
+      },
+      "precedence_level": 4,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "number",
+            "string"
+          ],
+          "required": true
+        },
+        {
+          "name": "right",
+          "types": [
+            "number",
+            "string"
+          ],
+          "required": true
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [
+        "lt"
+      ],
+      "examples": [
+        {
+          "expression": "data:posts.size < 5",
+          "result": "true",
+          "description": "Less than check"
+        }
+      ]
+    },
+    ">": {
+      "family": "comparison",
+      "description": "Greater than relational comparison.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "gt",
+        "variadic": false,
+        "infix": "a > b",
+        "functional": "gt(a, b)"
+      },
+      "precedence_level": 4,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "number",
+            "string"
+          ],
+          "required": true
+        },
+        {
+          "name": "right",
+          "types": [
+            "number",
+            "string"
+          ],
+          "required": true
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [
+        "gt"
+      ],
+      "examples": [
+        {
+          "expression": "data:posts.size > 0",
+          "result": "true",
+          "description": "Greater than check"
+        }
+      ]
+    },
+    "<=": {
+      "family": "comparison",
+      "description": "Less than or equal relational comparison.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "lte",
+        "variadic": false,
+        "infix": "a <= b",
+        "functional": "lte(a, b)"
+      },
+      "precedence_level": 4,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "number",
+            "string"
+          ],
+          "required": true
+        },
+        {
+          "name": "right",
+          "types": [
+            "number",
+            "string"
+          ],
+          "required": true
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [
+        "lte"
+      ],
+      "examples": [
+        {
+          "expression": "data:post.comments.size <= 10",
+          "result": "true",
+          "description": "Less than or equal"
+        }
+      ]
+    },
+    ">=": {
+      "family": "comparison",
+      "description": "Greater than or equal relational comparison.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "gte",
+        "variadic": false,
+        "infix": "a >= b",
+        "functional": "gte(a, b)"
+      },
+      "precedence_level": 4,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "number",
+            "string"
+          ],
+          "required": true
+        },
+        {
+          "name": "right",
+          "types": [
+            "number",
+            "string"
+          ],
+          "required": true
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [
+        "gte"
+      ],
+      "examples": [
+        {
+          "expression": "data:posts.size >= 1",
+          "result": "true",
+          "description": "Greater than or equal"
+        }
+      ]
+    },
+    "and": {
+      "family": "logical",
+      "description": "Logical conjunction returning true if both operands are truthy.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "and",
+        "variadic": true,
+        "infix": "a and b",
+        "functional": "and(a, b)"
+      },
+      "precedence_level": 7,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "boolean",
+            "any"
+          ],
+          "required": true,
+          "description": "First condition"
+        },
+        {
+          "name": "right",
+          "types": [
+            "boolean",
+            "any"
+          ],
+          "required": true,
+          "description": "Second condition"
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [
+        "&&"
+      ],
+      "anti_patterns": [
+        "Avoid JavaScript '&&' in XML attributes to prevent XML entity escaping collisions; prefer keyword 'and'."
+      ],
+      "examples": [
+        {
+          "expression": "data:view.isPost and not data:view.isPreview",
+          "result": "true",
+          "description": "Logical conjunction"
+        }
+      ]
+    },
+    "or": {
+      "family": "logical",
+      "description": "Logical disjunction returning true if either operand is truthy.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "or",
+        "variadic": true,
+        "infix": "a or b",
+        "functional": "or(a, b)"
+      },
+      "precedence_level": 8,
+      "operands": [
+        {
+          "name": "left",
+          "types": [
+            "boolean",
+            "any"
+          ],
+          "required": true,
+          "description": "First condition"
+        },
+        {
+          "name": "right",
+          "types": [
+            "boolean",
+            "any"
+          ],
+          "required": true,
+          "description": "Second condition"
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [
+        "||"
+      ],
+      "anti_patterns": [
+        "Avoid JavaScript '||' in expressions; prefer keyword 'or' or elvis '?:'."
+      ],
+      "examples": [
+        {
+          "expression": "data:view.isHomepage or data:view.isMultipleItems",
+          "result": "true",
+          "description": "Logical disjunction"
+        }
+      ]
+    },
+    "not": {
+      "family": "logical",
+      "description": "Logical inversion negating truthiness.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "not a",
+        "functional": null
+      },
+      "precedence_level": 6,
+      "operands": [
+        {
+          "name": "operand",
+          "types": [
+            "boolean",
+            "any"
+          ],
+          "required": true,
+          "description": "Condition to invert"
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [
+        "!"
+      ],
+      "anti_patterns": [
+        "not(a)",
+        "!(a)"
+      ],
+      "examples": [
+        {
+          "expression": "not data:blog.isMobileRequest",
+          "result": "true",
+          "description": "Logical negation"
+        }
+      ]
+    },
+    "in": {
+      "family": "membership",
+      "description": "Tests whether an element exists within an array or character sequence within a string.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "in",
+        "variadic": false,
+        "infix": "item in array",
+        "functional": "in(item, array)"
+      },
+      "precedence_level": 5,
+      "operands": [
+        {
+          "name": "item",
+          "types": [
+            "any",
+            "scalar"
+          ],
+          "required": true,
+          "description": "Target element or substring"
+        },
+        {
+          "name": "collection",
+          "types": [
+            "array",
+            "string"
+          ],
+          "required": true,
+          "description": "Array collection or parent string"
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [],
+      "examples": [
+        {
+          "expression": "\"featured\" in data:post.labels",
+          "result": "true",
+          "description": "Membership in array"
+        }
+      ]
+    },
+    "contains": {
+      "family": "content",
+      "description": "Tests whether a string contains a substring or an array contains an item (haystack contains needle).",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "contains",
+        "variadic": false,
+        "infix": "haystack contains needle",
+        "functional": "contains(haystack, needle)"
+      },
+      "precedence_level": 5,
+      "operands": [
+        {
+          "name": "haystack",
+          "types": [
+            "string",
+            "array"
+          ],
+          "required": true,
+          "description": "Container string or array"
+        },
+        {
+          "name": "needle",
+          "types": [
+            "string",
+            "any"
+          ],
+          "required": true,
+          "description": "Sub-element or search term"
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [],
+      "anti_patterns": [
+        "Do not use JavaScript .includes() or .indexOf(); use keyword operator 'contains'."
+      ],
+      "examples": [
+        {
+          "expression": "data:view.url contains \"/search/label\"",
+          "result": "true",
+          "description": "Substring containment"
+        }
+      ]
+    },
+    "take": {
+      "family": "collection",
+      "description": "Extracts up to N items from the beginning of an array.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "take",
+        "variadic": false,
+        "infix": "array take number",
+        "functional": "take(array, number)"
+      },
+      "precedence_level": 4,
+      "operands": [
+        {
+          "name": "array",
+          "types": [
+            "array"
+          ],
+          "required": true,
+          "description": "Target collection"
+        },
+        {
+          "name": "count",
+          "types": [
+            "number"
+          ],
+          "required": true,
+          "description": "Maximum number of items to take"
+        }
+      ],
+      "return_type": "array",
+      "aliases": [
+        "limit"
+      ],
+      "allowed_contexts": [
+        "expr",
+        "value",
+        "values"
+      ],
+      "anti_patterns": [
+        "Do not use JavaScript .slice() to limit collections; use 'take' or 'limit'."
+      ],
+      "examples": [
+        {
+          "expression": "data:posts take 5",
+          "result": "array",
+          "description": "Slicing top 5 items"
+        }
+      ]
+    },
+    "skip": {
+      "family": "collection",
+      "description": "Bypasses the first N items of an array and returns the remaining elements.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "skip",
+        "variadic": false,
+        "infix": "array skip number",
+        "functional": "skip(array, number)"
+      },
+      "precedence_level": 4,
+      "operands": [
+        {
+          "name": "array",
+          "types": [
+            "array"
+          ],
+          "required": true,
+          "description": "Target collection"
+        },
+        {
+          "name": "count",
+          "types": [
+            "number"
+          ],
+          "required": true,
+          "description": "Number of leading items to skip"
+        }
+      ],
+      "return_type": "array",
+      "aliases": [
+        "offset"
+      ],
+      "allowed_contexts": [
+        "expr",
+        "value",
+        "values"
+      ],
+      "examples": [
+        {
+          "expression": "data:posts skip 10 take 5",
+          "result": "array",
+          "description": "Pagination slice"
+        }
+      ]
+    },
+    "to": {
+      "family": "collection",
+      "description": "Generates an array sequence of integers between two integer bounds (inclusive). Exclusive to <b:loop values='...'>.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "start to end",
+        "functional": null
+      },
+      "precedence_level": 4,
+      "operands": [
+        {
+          "name": "start",
+          "types": [
+            "number"
+          ],
+          "required": true,
+          "description": "Starting integer boundary"
+        },
+        {
+          "name": "end",
+          "types": [
+            "number"
+          ],
+          "required": true,
+          "description": "Ending integer boundary"
+        }
+      ],
+      "return_type": "array[number]",
+      "aliases": [],
+      "allowed_contexts": [
+        "values"
+      ],
+      "anti_patterns": [
+        "'to' is valid exclusively within <b:loop values='...'>; using 'to' in cond or b:eval is invalid."
+      ],
+      "examples": [
+        {
+          "expression": "1 to 10",
+          "result": "[1, 2, ..., 10]",
+          "description": "Loop integer range"
+        }
+      ]
+    },
+    "any": {
+      "family": "lambda",
+      "description": "Quantifier returning true if at least one item satisfies the arrow predicate.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "array any (var => expr)",
+        "functional": null
+      },
+      "precedence_level": 10,
+      "token_cost": 1,
+      "operands": [
+        {
+          "name": "collection",
+          "types": [
+            "array"
+          ],
+          "required": true,
+          "description": "Target collection"
+        },
+        {
+          "name": "predicate",
+          "types": [
+            "predicate"
+          ],
+          "required": true,
+          "description": "Arrow lambda expression (var => expr)"
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [],
+      "anti_patterns": [
+        "Do not prefix iterator properties with 'data:' inside the lambda body (e.g. p.title, never data:p.title)."
+      ],
+      "examples": [
+        {
+          "expression": "data:posts any (p => p.labels.size > 0)",
+          "result": "true",
+          "description": "Existential quantifier"
+        }
+      ]
+    },
+    "all": {
+      "family": "lambda",
+      "description": "Quantifier returning true if every element in the collection satisfies the arrow predicate.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "array all (var => expr)",
+        "functional": null
+      },
+      "precedence_level": 10,
+      "token_cost": 1,
+      "operands": [
+        {
+          "name": "collection",
+          "types": [
+            "array"
+          ],
+          "required": true,
+          "description": "Target collection"
+        },
+        {
+          "name": "predicate",
+          "types": [
+            "predicate"
+          ],
+          "required": true,
+          "description": "Arrow lambda expression (var => expr)"
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [],
+      "examples": [
+        {
+          "expression": "data:posts all (p => p.allowComments)",
+          "result": "true",
+          "description": "Universal quantifier"
+        }
+      ]
+    },
+    "none": {
+      "family": "lambda",
+      "description": "Quantifier returning true if zero items in the collection satisfy the arrow predicate.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "array none (var => expr)",
+        "functional": null
+      },
+      "precedence_level": 10,
+      "token_cost": 1,
+      "operands": [
+        {
+          "name": "collection",
+          "types": [
+            "array"
+          ],
+          "required": true,
+          "description": "Target collection"
+        },
+        {
+          "name": "predicate",
+          "types": [
+            "predicate"
+          ],
+          "required": true,
+          "description": "Arrow lambda expression (var => expr)"
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [],
+      "examples": [
+        {
+          "expression": "data:posts none (p => p.isDraft)",
+          "result": "true",
+          "description": "Negative quantifier"
+        }
+      ]
+    },
+    "count": {
+      "family": "lambda",
+      "description": "Counts the number of elements in a collection that satisfy the arrow predicate.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "array count (var => expr)",
+        "functional": null
+      },
+      "precedence_level": 10,
+      "token_cost": 1,
+      "operands": [
+        {
+          "name": "collection",
+          "types": [
+            "array"
+          ],
+          "required": true,
+          "description": "Target collection"
+        },
+        {
+          "name": "predicate",
+          "types": [
+            "predicate"
+          ],
+          "required": true,
+          "description": "Arrow lambda expression (var => expr)"
+        }
+      ],
+      "return_type": "number",
+      "aliases": [],
+      "examples": [
+        {
+          "expression": "data:posts count (p => p.allowComments)",
+          "result": "5",
+          "description": "Filtered count"
+        }
+      ]
+    },
+    "map": {
+      "family": "lambda",
+      "description": "Projects each element into a new transformed array using the lambda expression.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "array map (var => expr)",
+        "functional": null
+      },
+      "precedence_level": 10,
+      "token_cost": 1,
+      "operands": [
+        {
+          "name": "collection",
+          "types": [
+            "array"
+          ],
+          "required": true,
+          "description": "Target collection"
+        },
+        {
+          "name": "transform",
+          "types": [
+            "predicate",
+            "any"
+          ],
+          "required": true,
+          "description": "Projection expression"
+        }
+      ],
+      "return_type": "array",
+      "aliases": [
+        "select"
+      ],
+      "allowed_contexts": [
+        "expr",
+        "value",
+        "values"
+      ],
+      "anti_patterns": [
+        "Do not use JavaScript .map() method; use keyword operator: array map (p => ...)"
+      ],
+      "examples": [
+        {
+          "expression": "data:posts map (p => p.title)",
+          "result": "array[string]",
+          "description": "Projection to title array"
+        }
+      ]
+    },
+    "filter": {
+      "family": "lambda",
+      "description": "Filters an array keeping only elements satisfying the boolean predicate.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "array filter (var => expr)",
+        "functional": null
+      },
+      "precedence_level": 10,
+      "token_cost": 1,
+      "operands": [
+        {
+          "name": "collection",
+          "types": [
+            "array"
+          ],
+          "required": true,
+          "description": "Target collection"
+        },
+        {
+          "name": "predicate",
+          "types": [
+            "predicate"
+          ],
+          "required": true,
+          "description": "Boolean filter predicate"
+        }
+      ],
+      "return_type": "array",
+      "aliases": [
+        "where"
+      ],
+      "anti_patterns": [
+        "Do not use JavaScript .filter() method; use keyword operator: array filter (p => ...)"
+      ],
+      "examples": [
+        {
+          "expression": "data:posts filter (p => p.hasThumbnail)",
+          "result": "array",
+          "description": "Filtered collection"
+        }
+      ]
+    },
+    "first": {
+      "family": "lambda",
+      "description": "Extracts the first element satisfying the predicate, or null if none match.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "array first (var => expr)",
+        "functional": null
+      },
+      "precedence_level": 10,
+      "token_cost": 1,
+      "operands": [
+        {
+          "name": "collection",
+          "types": [
+            "array"
+          ],
+          "required": true,
+          "description": "Target collection"
+        },
+        {
+          "name": "predicate",
+          "types": [
+            "predicate"
+          ],
+          "required": true,
+          "description": "Filter predicate"
+        }
+      ],
+      "return_type": "any",
+      "aliases": [],
+      "examples": [
+        {
+          "expression": "data:posts first (p => p.isFeatured)",
+          "result": "object",
+          "description": "Extract first match"
+        }
+      ]
+    },
+    "?:": {
+      "family": "elvis",
+      "description": "Elvis operator returning fallback value if left operand evaluates to null or empty.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "?:",
+        "variadic": true,
+        "infix": "a ?: b",
+        "functional": "?:(a, b)"
+      },
+      "precedence_level": 9,
+      "operands": [
+        {
+          "name": "target",
+          "types": [
+            "any"
+          ],
+          "required": true,
+          "description": "Value to inspect for nullish/empty state"
+        },
+        {
+          "name": "fallback",
+          "types": [
+            "any"
+          ],
+          "required": true,
+          "description": "Default fallback value"
+        }
+      ],
+      "return_type": "any",
+      "aliases": [
+        "default",
+        "elvis"
+      ],
+      "examples": [
+        {
+          "expression": "data:post.title ?: data:messages.noTitle",
+          "result": "any",
+          "description": "Nullish fallback"
+        }
+      ]
+    },
+    "? :": {
+      "family": "ternary",
+      "description": "Inline conditional branching expression (condition ? truthyValue : falsyValue).",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "cond ? val1 : val2",
+        "functional": null
+      },
+      "precedence_level": 9,
+      "token_cost": 2,
+      "operands": [
+        {
+          "name": "condition",
+          "types": [
+            "boolean",
+            "any"
+          ],
+          "required": true,
+          "description": "Condition to evaluate"
+        },
+        {
+          "name": "truthy_branch",
+          "types": [
+            "any"
+          ],
+          "required": true,
+          "description": "Value if true"
+        },
+        {
+          "name": "falsy_branch",
+          "types": [
+            "any"
+          ],
+          "required": true,
+          "description": "Value if false"
+        }
+      ],
+      "return_type": "any",
+      "aliases": [
+        "ternary"
+      ],
+      "anti_patterns": [
+        "Concatenation '+' binds tighter than ternary; always wrap ternary in parentheses when concatenating."
+      ],
+      "examples": [
+        {
+          "expression": "data:view.isPost ? \"post-class\" : \"feed-class\"",
+          "result": "string",
+          "description": "Conditional ternary"
+        }
+      ]
+    },
+    "path": {
+      "family": "url",
+      "description": "Replaces the path portion of a URL while preserving existing query parameters and hash fragments.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "path",
+        "variadic": false,
+        "infix": "url path string",
+        "functional": "path(url, string)"
+      },
+      "precedence_level": 3,
+      "operands": [
+        {
+          "name": "url",
+          "types": [
+            "url",
+            "string"
+          ],
+          "required": true,
+          "description": "Base URL string"
+        },
+        {
+          "name": "new_path",
+          "types": [
+            "string"
+          ],
+          "required": true,
+          "description": "New path beginning with '/'"
+        }
+      ],
+      "return_type": "url",
+      "aliases": [],
+      "allowed_contexts": [
+        "expr",
+        "value",
+        "values",
+        "expr:*"
+      ],
+      "examples": [
+        {
+          "expression": "data:blog.homepageUrl.canonical path \"/search/label/News\"",
+          "result": "url",
+          "description": "URL path replacement"
+        }
+      ]
+    },
+    "params": {
+      "family": "url",
+      "description": "Sets or replaces query parameters on a URL using key-values from a dictionary object.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "params",
+        "variadic": false,
+        "infix": "url params object",
+        "functional": "params(url, object)"
+      },
+      "precedence_level": 3,
+      "operands": [
+        {
+          "name": "url",
+          "types": [
+            "url",
+            "string"
+          ],
+          "required": true,
+          "description": "Base URL"
+        },
+        {
+          "name": "parameters",
+          "types": [
+            "object"
+          ],
+          "required": true,
+          "description": "Dictionary of query parameters"
+        }
+      ],
+      "return_type": "url",
+      "aliases": [],
+      "allowed_contexts": [
+        "expr",
+        "value",
+        "values",
+        "expr:*"
+      ],
+      "anti_patterns": [
+        "Mandatory whitespace after colons in object literals { key: value } to avoid namespace collisions."
+      ],
+      "examples": [
+        {
+          "expression": "data:blog.canonicalUrl params { m: \"1\", hl: \"es\" }",
+          "result": "url",
+          "description": "Query params set"
+        }
+      ]
+    },
+    "appendParams": {
+      "family": "url",
+      "description": "Merges and appends additional query parameters to a URL without removing existing parameters.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "appendParams",
+        "variadic": false,
+        "infix": "url appendParams object",
+        "functional": "appendParams(url, object)"
+      },
+      "precedence_level": 3,
+      "operands": [
+        {
+          "name": "url",
+          "types": [
+            "url",
+            "string"
+          ],
+          "required": true,
+          "description": "Base URL"
+        },
+        {
+          "name": "parameters",
+          "types": [
+            "object"
+          ],
+          "required": true,
+          "description": "Parameters to merge"
+        }
+      ],
+      "return_type": "url",
+      "aliases": [],
+      "allowed_contexts": [
+        "expr",
+        "value",
+        "values",
+        "expr:*"
+      ],
+      "examples": [
+        {
+          "expression": "data:post.url appendParams { updated: \"true\" }",
+          "result": "url",
+          "description": "Query params merge"
+        }
+      ]
+    },
+    "fragment": {
+      "family": "url",
+      "description": "Appends or replaces the anchor/hash fragment identifier of a URL.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "fragment",
+        "variadic": false,
+        "infix": "url fragment string",
+        "functional": "fragment(url, string)"
+      },
+      "precedence_level": 3,
+      "operands": [
+        {
+          "name": "url",
+          "types": [
+            "url",
+            "string"
+          ],
+          "required": true,
+          "description": "Base URL"
+        },
+        {
+          "name": "anchor",
+          "types": [
+            "string"
+          ],
+          "required": true,
+          "description": "Target anchor without '#'"
+        }
+      ],
+      "return_type": "url",
+      "aliases": [],
+      "allowed_contexts": [
+        "expr",
+        "value",
+        "values",
+        "expr:*"
+      ],
+      "examples": [
+        {
+          "expression": "data:post.url fragment \"comments\"",
+          "result": "url",
+          "description": "URL fragment anchor"
+        }
+      ]
+    },
+    "format": {
+      "family": "date",
+      "description": "Formats a timestamp date value using an ICU date-time format pattern string.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "format",
+        "variadic": false,
+        "infix": "date format string",
+        "functional": "format(date, string)"
+      },
+      "precedence_level": 3,
+      "operands": [
+        {
+          "name": "date",
+          "types": [
+            "date",
+            "string"
+          ],
+          "required": true,
+          "description": "Date timestamp to format"
+        },
+        {
+          "name": "pattern",
+          "types": [
+            "string"
+          ],
+          "required": true,
+          "description": "ICU date pattern string (e.g. 'yyyy-MM-dd')"
+        }
+      ],
+      "return_type": "string",
+      "aliases": [],
+      "examples": [
+        {
+          "expression": "data:post.date format \"MMMM d, yyyy\"",
+          "result": "string",
+          "description": "ICU date formatting"
+        }
+      ]
+    },
+    "resizeImage": {
+      "family": "image",
+      "description": "Rewrites Google CDN image URLs for resizing, aspect ratio cropping, or responsive datasets.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "resizeImage",
+        "variadic": false,
+        "infix": "image resizeImage number",
+        "functional": "resizeImage(image, number)"
+      },
+      "precedence_level": 3,
+      "operands": [
+        {
+          "name": "image",
+          "types": [
+            "image",
+            "url",
+            "string"
+          ],
+          "required": true,
+          "description": "Source Google CDN image URL"
+        },
+        {
+          "name": "size",
+          "types": [
+            "number",
+            "array[number]"
+          ],
+          "required": true,
+          "description": "Target dimension or array of dimensions"
+        },
+        {
+          "name": "ratio",
+          "types": [
+            "string"
+          ],
+          "required": false,
+          "description": "Optional aspect ratio string (e.g. '1:1', '16:9')"
+        }
+      ],
+      "return_type": "image",
+      "aliases": [],
+      "allowed_contexts": [
+        "expr",
+        "value",
+        "values",
+        "expr:*"
+      ],
+      "overloads": [
+        {
+          "signature": "resizeImage(image, number[, ratio])",
+          "description": "Scalar image resize",
+          "operands": [
+            {
+              "name": "image",
+              "types": [
+                "image",
+                "url",
+                "string"
+              ],
+              "required": true,
+              "description": "Source image"
+            },
+            {
+              "name": "size",
+              "types": [
+                "number"
+              ],
+              "required": true,
+              "description": "Target size"
+            }
+          ],
+          "return_type": "image"
+        },
+        {
+          "signature": "resizeImage(image, array[number][, ratio])",
+          "description": "Array of responsive image objects with .url and .size",
+          "operands": [
+            {
+              "name": "image",
+              "types": [
+                "image",
+                "url",
+                "string"
+              ],
+              "required": true,
+              "description": "Source image"
+            },
+            {
+              "name": "sizes",
+              "types": [
+                "array[number]"
+              ],
+              "required": true,
+              "description": "Dimensions array"
+            }
+          ],
+          "return_type": "array[object]"
+        }
+      ],
+      "anti_patterns": [
+        "Only works on Google-hosted image infrastructure; guard with .isResizable modifier."
+      ],
+      "examples": [
+        {
+          "expression": "data:post.featuredImage resizeImage 400 resizeImage \"1:1\"",
+          "result": "image",
+          "description": "Resize with square crop"
+        }
+      ]
+    },
+    "sourceSet": {
+      "family": "image",
+      "description": "Generates an HTML srcset string formatted as 'URL w<size>, ...' from an image URL and dimensions array.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "sourceSet",
+        "variadic": false,
+        "infix": "image sourceSet array[number]",
+        "functional": "sourceSet(image, array[number])"
+      },
+      "precedence_level": 3,
+      "operands": [
+        {
+          "name": "image",
+          "types": [
+            "image",
+            "url",
+            "string"
+          ],
+          "required": true,
+          "description": "Source Google CDN image URL"
+        },
+        {
+          "name": "sizes",
+          "types": [
+            "array[number]"
+          ],
+          "required": true,
+          "description": "Array of integer dimensions"
+        },
+        {
+          "name": "ratio",
+          "types": [
+            "string"
+          ],
+          "required": false,
+          "description": "Optional aspect ratio string"
+        }
+      ],
+      "return_type": "string",
+      "aliases": [],
+      "allowed_contexts": [
+        "expr",
+        "value",
+        "values",
+        "expr:*"
+      ],
+      "examples": [
+        {
+          "expression": "data:post.featuredImage sourceSet [320, 640, 1024]",
+          "result": "string",
+          "description": "HTML srcset generation"
+        }
+      ]
+    },
+    "snippet": {
+      "family": "snippet",
+      "description": "Extracts a truncated plain-text snippet from markup or text, stripping HTML tags.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": true,
+        "functional_identifier": "snippet",
+        "variadic": false,
+        "infix": "string snippet object",
+        "functional": "snippet(string, object)"
+      },
+      "precedence_level": 3,
+      "operands": [
+        {
+          "name": "text",
+          "types": [
+            "string"
+          ],
+          "required": true,
+          "description": "Source text or markup string"
+        },
+        {
+          "name": "options",
+          "types": [
+            "object"
+          ],
+          "required": false,
+          "description": "Snippet options: length, links, linebreaks, ellipsis"
+        }
+      ],
+      "return_type": "string",
+      "aliases": [],
+      "allowed_contexts": [
+        "expr",
+        "value",
+        "values",
+        "expr:*"
+      ],
+      "anti_patterns": [
+        "Whitespace required after colon in options dictionary: { length: 150, links: false }."
+      ],
+      "examples": [
+        {
+          "expression": "snippet(data:post.body, { length: 150, links: false })",
+          "result": "string",
+          "description": "Text snippet extraction"
+        }
+      ]
+    }
+  }
+}

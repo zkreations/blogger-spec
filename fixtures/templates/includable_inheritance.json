@@ -1,0 +1,54 @@
+{
+  "subsystem": "includable_inheritance",
+  "fixtures": [
+    {
+      "id": "scopes/includable_inheritance/include-caller-loop-context-inheritance",
+      "title": "Include Caller Loop Context Inheritance",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "tag:b:default",
+        "tag:b:loop",
+        "tag:b:includable",
+        "tag:b:include"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='itemRenderer'><p><data:item/></p></b:includable></b:defaultmarkup></b:defaultmarkups><b:loop values='[\"Mickey\", \"Donald\"]' var='item'><b:include name='itemRenderer'/></b:loop>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<p>Mickey</p><p>Donald</p>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "scopes/includable_inheritance/include-default-widget-payload-binding",
+      "title": "Include Default Widget Payload Binding",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "tag:b:default",
+        "tag:b:includable",
+        "tag:b:include"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='showTitle' var='this'><h2><data:this.title/></h2></b:includable></b:defaultmarkup></b:defaultmarkups><b:include name='showTitle'/>",
+        "mode": "fragment",
+        "context": {
+          "title": "Widget de prueba"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<h2>Widget de prueba</h2>",
+        "canonicalDom": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "subsystem": "helpers_and_transforms",
+  "fixtures": [
+    {
+      "id": "expressions/helpers_and_transforms/url-params-append",
+      "title": "Url Params Append",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:helpers_and_transforms"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.homepageUrl params { m: \"1\" }",
+        "context": {
+          "blog": {
+            "homepageUrl": "https://example.blogspot.com"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://example.blogspot.com?m=1"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/url-fragment-append",
+      "title": "Url Fragment Append",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:helpers_and_transforms"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.url fragment \"comments\"",
+        "context": {
+          "post": {
+            "url": "https://example.blogspot.com/post.html"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://example.blogspot.com/post.html#comments"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-resize-helper",
+      "title": "Image Resize Helper",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:resizeImage"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "resizeImage(data:img, 600, \"16:9\")",
+        "context": {
+          "img": "https://blogger.googleusercontent.com/img/a/sample=s72-c"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://blogger.googleusercontent.com/img/a/sample=w600-h337-p-k-no-nu"
+      }
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "subsystem": "arithmetic",
+  "fixtures": [
+    {
+      "id": "expressions/arithmetic/addition-integers",
+      "title": "Addition Integers",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 15
+      }
+    },
+    {
+      "id": "expressions/arithmetic/multiplication-precedence",
+      "title": "Multiplication Precedence",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+",
+        "operator:*"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "2 + 3 * 4",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 14
+      }
+    },
+    {
+      "id": "expressions/arithmetic/grouping-parentheses",
+      "title": "Grouping Parentheses",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+",
+        "operator:*"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "(2 + 3) * 4",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      }
+    },
+    {
+      "id": "expressions/arithmetic/modulo-remainder",
+      "title": "Modulo Remainder",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:%"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 % 3",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 1
+      }
+    },
+    {
+      "id": "expressions/arithmetic/division-float",
+      "title": "Division Float",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:/"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "7 / 2",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 3.5
+      }
+    },
+    {
+      "id": "expressions/arithmetic/string-number-concatenation",
+      "title": "String Number Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"Count: \" + 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Count: 5"
+      }
+    },
+    {
+      "id": "expressions/arithmetic/literal-string-number-concatenation",
+      "title": "Literal String Number Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + \"10\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "1010"
+      }
+    },
+    {
+      "id": "expressions/arithmetic/literal-number-string-concatenation",
+      "title": "Literal Number String Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"10\" + 10",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "1010"
+      }
+    },
+    {
+      "id": "expressions/arithmetic/runtime-variable-numeric-addition",
+      "title": "Runtime Variable Numeric Addition",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + data:numString",
+        "context": {
+          "numString": "10"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      }
+    },
+    {
+      "id": "expressions/arithmetic/runtime-variable-text-concatenation",
+      "title": "Runtime Variable Text Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + data:textString",
+        "context": {
+          "textString": "posts"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "10posts"
+      }
+    }
+  ]
+}

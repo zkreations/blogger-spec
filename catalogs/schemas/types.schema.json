@@ -1,0 +1,295 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "types.schema.json",
+  "title": "Blogger Data Types & Modifiers Master Catalog Schema",
+  "description": "JSON Schema specification for the Blogger data types and modifiers master catalog.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "title",
+    "description",
+    "types"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "types": {
+      "type": "object",
+      "description": "Dictionary of all recognized Blogger data types, platform subtypes, skin variable types, collections, and meta types.",
+      "additionalProperties": {
+        "$ref": "#/$defs/typeDefinition"
+      }
+    },
+    "coercion_rules": {
+      "type": "object",
+      "description": "Implicit type coercion behavior across operators and mixed contexts.",
+      "additionalProperties": {
+        "$ref": "#/$defs/coercionRule"
+      }
+    },
+    "truthiness_matrix": {
+      "type": "object",
+      "description": "Evaluation criteria for truthy and falsy states in conditionals.",
+      "required": [
+        "truthy",
+        "falsy"
+      ],
+      "properties": {
+        "truthy": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "falsy": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "typeDefinition": {
+      "type": "object",
+      "required": [
+        "category",
+        "description",
+        "user_constructible",
+        "ts_type"
+      ],
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": [
+            "base",
+            "subtype",
+            "skin",
+            "collection",
+            "meta"
+          ],
+          "description": "Architectural classification of the data type."
+        },
+        "description": {
+          "type": "string"
+        },
+        "parent_type": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Underlying base type or supertype in the hierarchy (e.g. 'url' extends 'string', 'image' extends 'url')."
+        },
+        "user_constructible": {
+          "type": "boolean",
+          "description": "Whether template authors can construct instances via literals or type conversion."
+        },
+        "ts_type": {
+          "type": "string",
+          "description": "Target TypeScript type or alias emitted in dist/index.d.ts."
+        },
+        "item_type": {
+          "type": "string",
+          "description": "Underlying child element type for homogeneous collections (e.g. for array types)."
+        },
+        "parameterized_forms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Recognized parameterized collection variants (e.g. array[string], array[object])."
+        },
+        "modifiers": {
+          "type": "object",
+          "description": "Native data modifiers / accessors directly defined on this type.",
+          "additionalProperties": {
+            "$ref": "#/$defs/modifierDefinition"
+          }
+        },
+        "skin_metadata": {
+          "$ref": "#/$defs/skinMetadata"
+        }
+      },
+      "additionalProperties": false
+    },
+    "modifierDefinition": {
+      "type": "object",
+      "required": [
+        "description",
+        "output_type",
+        "syntax",
+        "example"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "output_type": {
+          "type": "string",
+          "description": "Return type of the modifier, referencing a canonical Blogger type or 'child_item'."
+        },
+        "syntax": {
+          "type": "string",
+          "description": "Canonical syntax pattern (e.g. '.escaped', '.width', '.first')."
+        },
+        "direct_syntax": {
+          "type": "string",
+          "description": "Example invocation using <data:...> tag syntax."
+        },
+        "expr_syntax": {
+          "type": "string",
+          "description": "Example invocation inside expression attributes."
+        },
+        "example": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "skinMetadata": {
+      "type": "object",
+      "required": [
+        "theme_designer_form"
+      ],
+      "properties": {
+        "theme_designer_form": {
+          "type": "boolean",
+          "description": "True if Blogger Theme Designer GUI renders an interactive visual picker."
+        },
+        "tag_attribute_value": {
+          "type": "string",
+          "description": "Literal value expected in <Variable type='...'> tag."
+        },
+        "inside_skin_syntax": {
+          "type": "string",
+          "description": "Syntax used within <b:skin> CDATA (e.g. $(variable.name))."
+        },
+        "outside_skin_syntax": {
+          "type": "string",
+          "description": "Syntax used in b:XML expressions (e.g. data:skin.vars.variable_name)."
+        },
+        "version_constraints": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "coercionRule": {
+      "type": "object",
+      "required": [
+        "target_context",
+        "behavior",
+        "example"
+      ],
+      "properties": {
+        "target_context": {
+          "type": "string"
+        },
+        "behavior": {
+          "type": "string"
+        },
+        "example": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "canonicalPropertyType": {
+      "type": "string",
+      "enum": [
+        "string",
+        "number",
+        "boolean",
+        "url",
+        "image",
+        "date",
+        "object",
+        "array",
+        "array[object]",
+        "array[string]",
+        "array[image]",
+        "array[url]",
+        "array[date]",
+        "array[number]",
+        "array[boolean]",
+        "array[array]",
+        "locale",
+        "message",
+        "skin_variable"
+      ],
+      "description": "Canonical Blogger runtime data property type defined in types.json."
+    },
+    "directiveAttributeType": {
+      "type": "string",
+      "enum": [
+        "string",
+        "number",
+        "boolean",
+        "scalar",
+        "expression",
+        "any",
+        "array"
+      ],
+      "description": "Blogger XML directive attribute data type defined in types.json."
+    },
+    "widgetSettingType": {
+      "type": "string",
+      "enum": [
+        "string",
+        "number",
+        "boolean",
+        "url"
+      ],
+      "description": "Blogger widget setting data type supported in <b:widget-setting>."
+    },
+    "operatorDataType": {
+      "type": "string",
+      "enum": [
+        "string",
+        "number",
+        "boolean",
+        "url",
+        "image",
+        "date",
+        "object",
+        "array",
+        "array[object]",
+        "array[string]",
+        "array[image]",
+        "array[url]",
+        "array[date]",
+        "array[number]",
+        "array[boolean]",
+        "array[array]",
+        "locale",
+        "message",
+        "skin_variable",
+        "skin:length",
+        "scalar",
+        "expression",
+        "predicate",
+        "any"
+      ],
+      "description": "Blogger Expression Engine operator and operand data type defined in types.json."
+    }
+  }
+}

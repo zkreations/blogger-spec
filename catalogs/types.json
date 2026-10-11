@@ -1,0 +1,781 @@
+{
+  "$schema": "./schemas/types.schema.json",
+  "title": "Blogger Data Types & Modifiers Master Catalog",
+  "description": "Canonical machine-readable ontology of primitive types, platform subtypes, skin variable types, collections, modifiers, and coercion rules in the Blogger Template Engine.",
+  "coercion_rules": {
+    "string_concatenation": {
+      "target_context": "text_addition",
+      "behavior": "String concatenation takes precedence with the + operator when an operand is an explicit string literal in the template expression.",
+      "example": "\"10\" + 10 -> \"1010\""
+    },
+    "arithmetic_coercion": {
+      "target_context": "numeric_arithmetic",
+      "behavior": "The + operator performs arithmetic addition when numbers are combined with runtime data variables (data:...) holding numeric strings.",
+      "example": "10 + data:numString -> 20"
+    },
+    "subscript_unwrapping": {
+      "target_context": "collection_indexing",
+      "behavior": "Accessing array elements via subscript [i] or .first/.last unwraps the collection into its child element type.",
+      "example": "data:posts.first -> object (post)"
+    }
+  },
+  "truthiness_matrix": {
+    "truthy": [
+      "true",
+      "\"yes\"",
+      "non-empty strings",
+      "numbers != 0",
+      "non-empty arrays",
+      "non-empty objects"
+    ],
+    "falsy": [
+      "false",
+      "\"no\"",
+      "empty string \"\"",
+      "0",
+      "empty collections []",
+      "undefined/missing properties"
+    ]
+  },
+  "types": {
+    "string": {
+      "category": "base",
+      "description": "Text sequences, string interpolation, and universal string accessors.",
+      "parent_type": null,
+      "user_constructible": true,
+      "ts_type": "string",
+      "modifiers": {
+        "length": {
+          "description": "Returns total character count of the string.",
+          "output_type": "number",
+          "syntax": ".length",
+          "direct_syntax": "<data:string.length/>",
+          "expr_syntax": "([expr]).length",
+          "example": "data:view.description.length"
+        },
+        "size": {
+          "description": "Returns total character count (identical to .length).",
+          "output_type": "number",
+          "syntax": ".size",
+          "direct_syntax": "<data:string.size/>",
+          "expr_syntax": "([expr]).size",
+          "example": "data:view.title.size"
+        },
+        "escaped": {
+          "description": "HTML-escapes reserved entities (&, <, >, \", ').",
+          "output_type": "string",
+          "syntax": ".escaped",
+          "direct_syntax": "<data:string.escaped/>",
+          "expr_syntax": "([expr]).escaped",
+          "example": "data:view.title.escaped"
+        },
+        "jsEscaped": {
+          "description": "Escapes characters for safe inclusion within JavaScript string literals.",
+          "output_type": "string",
+          "syntax": ".jsEscaped",
+          "direct_syntax": "<data:string.jsEscaped/>",
+          "expr_syntax": "([expr]).jsEscaped",
+          "example": "data:view.title.jsEscaped"
+        },
+        "jsonEscaped": {
+          "description": "Escapes characters conforming to JSON serialization rules.",
+          "output_type": "string",
+          "syntax": ".jsonEscaped",
+          "direct_syntax": "<data:string.jsonEscaped/>",
+          "expr_syntax": "([expr]).jsonEscaped",
+          "example": "data:view.title.jsonEscaped"
+        },
+        "cssEscaped": {
+          "description": "Escapes characters for CSS identifier or string contexts.",
+          "output_type": "string",
+          "syntax": ".cssEscaped",
+          "direct_syntax": "<data:string.cssEscaped/>",
+          "expr_syntax": "([expr]).cssEscaped",
+          "example": "data:view.featuredImage.cssEscaped"
+        }
+      }
+    },
+    "number": {
+      "category": "base",
+      "description": "Integer and floating-point numeric operations and arithmetic.",
+      "parent_type": null,
+      "user_constructible": true,
+      "ts_type": "number",
+      "modifiers": {}
+    },
+    "boolean": {
+      "category": "base",
+      "description": "Truthy/falsy evaluation, boolean literals (true, false, yes, no), and conditional flags.",
+      "parent_type": null,
+      "user_constructible": true,
+      "ts_type": "boolean",
+      "modifiers": {}
+    },
+    "object": {
+      "category": "base",
+      "description": "Key-value associative maps, member projection, and heterogeneous nested datasets.",
+      "parent_type": null,
+      "user_constructible": true,
+      "ts_type": "Record<string, any>",
+      "modifiers": {}
+    },
+    "array": {
+      "category": "base",
+      "description": "Ordered homogeneous collection of 0 or more elements of the same type.",
+      "parent_type": null,
+      "user_constructible": true,
+      "ts_type": "any[]",
+      "parameterized_forms": [
+        "array[string]",
+        "array[number]",
+        "array[boolean]",
+        "array[object]",
+        "array[array]",
+        "array[image]",
+        "array[url]",
+        "array[date]"
+      ],
+      "modifiers": {
+        "size": {
+          "description": "Returns total item count within the collection.",
+          "output_type": "number",
+          "syntax": ".size",
+          "direct_syntax": "<data:array.size/>",
+          "expr_syntax": "([expr]).size",
+          "example": "data:posts.size"
+        },
+        "length": {
+          "description": "Returns total item count (identical to .size).",
+          "output_type": "number",
+          "syntax": ".length",
+          "direct_syntax": "<data:array.length/>",
+          "expr_syntax": "([expr]).length",
+          "example": "data:posts.length"
+        },
+        "first": {
+          "description": "Extracts the first element of the collection.",
+          "output_type": "child_item",
+          "syntax": ".first",
+          "direct_syntax": "<data:array.first/>",
+          "expr_syntax": "([expr]).first",
+          "example": "data:posts.first"
+        },
+        "last": {
+          "description": "Extracts the last element of the collection.",
+          "output_type": "child_item",
+          "syntax": ".last",
+          "direct_syntax": "<data:array.last/>",
+          "expr_syntax": "([expr]).last",
+          "example": "data:posts.last"
+        },
+        "empty": {
+          "description": "True if the collection contains zero elements.",
+          "output_type": "boolean",
+          "syntax": ".empty",
+          "direct_syntax": "<data:array.empty/>",
+          "expr_syntax": "([expr]).empty",
+          "example": "data:posts.empty"
+        },
+        "notEmpty": {
+          "description": "True if the collection contains 1 or more elements.",
+          "output_type": "boolean",
+          "syntax": ".notEmpty",
+          "direct_syntax": "<data:array.notEmpty/>",
+          "expr_syntax": "([expr]).notEmpty",
+          "example": "data:posts.notEmpty"
+        },
+        "any": {
+          "description": "Alias for .notEmpty; true if collection has at least one element.",
+          "output_type": "boolean",
+          "syntax": ".any",
+          "direct_syntax": "<data:array.any/>",
+          "expr_syntax": "([expr]).any",
+          "example": "data:posts.any"
+        },
+        "widgetType": {
+          "description": "Contextual filter on universal widgets collection (data:widgets) returning an array of gadget descriptor objects matching the specified widget type (e.g. data:widgets.Blog, data:widgets.AdSense, data:widgets.FeaturedPost). Note that this returns layout descriptors, not full private widget data dictionaries.",
+          "output_type": "array[object]",
+          "syntax": ".[widgetType]",
+          "direct_syntax": "<data:widgets.Blog/>",
+          "expr_syntax": "data:widgets.[widgetType]",
+          "example": "data:widgets.Blog.first.title"
+        },
+        "itemName": {
+          "description": "Contextual selector on Layouts v3 byline items collection returning the item object with matching name identifier (e.g. author, timestamp).",
+          "output_type": "object",
+          "syntax": ".[itemName]",
+          "direct_syntax": "<data:bylineItems.author/>",
+          "expr_syntax": "data:widgets.Blog.first.allBylineItems.[itemName]",
+          "example": "data:widgets.Blog.first.allBylineItems.author.label"
+        }
+      }
+    },
+    "array[string]": {
+      "category": "collection",
+      "description": "Ordered collection composed exclusively of string values.",
+      "item_type": "string",
+      "parent_type": "array",
+      "user_constructible": true,
+      "ts_type": "string[]",
+      "modifiers": {}
+    },
+    "array[number]": {
+      "category": "collection",
+      "description": "Ordered collection composed exclusively of number values.",
+      "item_type": "number",
+      "parent_type": "array",
+      "user_constructible": true,
+      "ts_type": "number[]",
+      "modifiers": {}
+    },
+    "array[boolean]": {
+      "category": "collection",
+      "description": "Ordered collection composed exclusively of boolean values.",
+      "item_type": "boolean",
+      "parent_type": "array",
+      "user_constructible": true,
+      "ts_type": "boolean[]",
+      "modifiers": {}
+    },
+    "array[object]": {
+      "category": "collection",
+      "description": "Ordered collection of structured objects with heterogeneous member properties.",
+      "item_type": "object",
+      "parent_type": "array",
+      "user_constructible": true,
+      "ts_type": "Record<string, any>[]",
+      "modifiers": {}
+    },
+    "array[array]": {
+      "category": "collection",
+      "description": "Nested array containing sub-arrays of homogeneous types.",
+      "item_type": "array",
+      "parent_type": "array",
+      "user_constructible": true,
+      "ts_type": "any[][]",
+      "modifiers": {}
+    },
+    "array[image]": {
+      "category": "collection",
+      "description": "Ordered collection composed exclusively of image instances.",
+      "item_type": "image",
+      "parent_type": "array",
+      "user_constructible": false,
+      "ts_type": "BloggerImage[]",
+      "modifiers": {
+        "size": {
+          "description": "Dimension descriptor (width in pixels) of the resized image variant in dynamic pipeline collections.",
+          "output_type": "number",
+          "syntax": ".size",
+          "direct_syntax": "<data:variant.size/>",
+          "expr_syntax": "([imageResizeArray]).first.size",
+          "example": "(data:post.featuredImage resizeImage [320, 640]).first.size"
+        },
+        "url": {
+          "description": "Asset URL of the specific resized image variant in dynamic pipeline collections.",
+          "output_type": "image",
+          "syntax": ".url",
+          "direct_syntax": "<data:variant.url/>",
+          "expr_syntax": "([imageResizeArray]).first.url",
+          "example": "(data:post.featuredImage resizeImage [320, 640]).first.url"
+        }
+      }
+    },
+    "array[url]": {
+      "category": "collection",
+      "description": "Ordered collection composed exclusively of URL strings.",
+      "item_type": "url",
+      "parent_type": "array",
+      "user_constructible": true,
+      "ts_type": "BloggerUrl[]",
+      "modifiers": {}
+    },
+    "array[date]": {
+      "category": "collection",
+      "description": "Ordered collection composed exclusively of date timestamp instances.",
+      "item_type": "date",
+      "parent_type": "array",
+      "user_constructible": false,
+      "ts_type": "BloggerDate[]",
+      "modifiers": {}
+    },
+    "url": {
+      "category": "subtype",
+      "description": "Canonical web resource addresses, protocol handling, and query manipulation.",
+      "parent_type": "string",
+      "user_constructible": true,
+      "ts_type": "BloggerUrl",
+      "modifiers": {
+        "canonical": {
+          "description": "Resolves and returns the canonical absolute URL.",
+          "output_type": "url",
+          "syntax": ".canonical",
+          "direct_syntax": "<data:blog.canonicalUrl.canonical/>",
+          "expr_syntax": "([expr]).canonical",
+          "example": "data:blog.canonicalUrl.canonical"
+        },
+        "http": {
+          "description": "Forces the URL scheme to http.",
+          "output_type": "url",
+          "syntax": ".http",
+          "direct_syntax": "<data:blog.url.http/>",
+          "expr_syntax": "([expr]).http",
+          "example": "data:blog.url.http"
+        },
+        "https": {
+          "description": "Forces the URL scheme to https.",
+          "output_type": "url",
+          "syntax": ".https",
+          "direct_syntax": "<data:blog.url.https/>",
+          "expr_syntax": "([expr]).https",
+          "example": "data:blog.url.https"
+        }
+      }
+    },
+    "image": {
+      "category": "subtype",
+      "description": "Platform-generated image URL carrying Google CDN resizing flags and intrinsic pixel dimensions.",
+      "parent_type": "url",
+      "user_constructible": false,
+      "ts_type": "BloggerImage",
+      "modifiers": {
+        "isResizable": {
+          "description": "True if hosted on Google infrastructure supporting dynamic resizing operators.",
+          "output_type": "boolean",
+          "syntax": ".isResizable",
+          "direct_syntax": "<data:image.isResizable/>",
+          "expr_syntax": "([expr]).isResizable",
+          "example": "data:post.featuredImage.isResizable"
+        },
+        "isYouTube": {
+          "description": "True if the image thumbnail originates from a YouTube video.",
+          "output_type": "boolean",
+          "syntax": ".isYouTube",
+          "direct_syntax": "<data:image.isYouTube/>",
+          "expr_syntax": "([expr]).isYouTube",
+          "example": "data:post.featuredImage.isYouTube"
+        },
+        "youtubeMaxResDefaultUrl": {
+          "description": "Provides the URL for the YouTube maxresdefault.jpg thumbnail.",
+          "output_type": "image",
+          "syntax": ".youtubeMaxResDefaultUrl",
+          "direct_syntax": "<data:image.youtubeMaxResDefaultUrl/>",
+          "expr_syntax": "([expr]).youtubeMaxResDefaultUrl",
+          "example": "data:post.featuredImage.youtubeMaxResDefaultUrl"
+        },
+        "width": {
+          "description": "Returns explicit display width in pixels.",
+          "output_type": "number",
+          "syntax": ".width",
+          "direct_syntax": "<data:image.width/>",
+          "expr_syntax": "([expr]).width",
+          "example": "data:post.featuredImage.width"
+        },
+        "height": {
+          "description": "Returns explicit display height in pixels.",
+          "output_type": "number",
+          "syntax": ".height",
+          "direct_syntax": "<data:image.height/>",
+          "expr_syntax": "([expr]).height",
+          "example": "data:post.featuredImage.height"
+        },
+        "originalWidth": {
+          "description": "Returns native, unscaled original pixel width of the source image.",
+          "output_type": "number",
+          "syntax": ".originalWidth",
+          "direct_syntax": "<data:image.originalWidth/>",
+          "expr_syntax": "([expr]).originalWidth",
+          "example": "data:post.featuredImage.originalWidth"
+        },
+        "originalHeight": {
+          "description": "Returns native, unscaled original pixel height of the source image.",
+          "output_type": "number",
+          "syntax": ".originalHeight",
+          "direct_syntax": "<data:image.originalHeight/>",
+          "expr_syntax": "([expr]).originalHeight",
+          "example": "data:post.featuredImage.originalHeight"
+        }
+      }
+    },
+    "date": {
+      "category": "subtype",
+      "description": "Platform-generated Gregorian calendar timestamp with localization and date decomposition accessors.",
+      "parent_type": "string",
+      "user_constructible": false,
+      "ts_type": "BloggerDate",
+      "modifiers": {
+        "iso8601": {
+          "description": "Formats date into standard ISO 8601 string (YYYY-MM-DDTHH:mm:ssZ).",
+          "output_type": "string",
+          "syntax": ".iso8601",
+          "direct_syntax": "<data:date.iso8601/>",
+          "expr_syntax": "([expr]).iso8601",
+          "example": "data:post.date.iso8601"
+        },
+        "year": {
+          "description": "Returns numeric calendar year.",
+          "output_type": "number",
+          "syntax": ".year",
+          "direct_syntax": "<data:date.year/>",
+          "expr_syntax": "([expr]).year",
+          "example": "data:post.date.year"
+        },
+        "month": {
+          "description": "Returns numeric calendar month (1-12).",
+          "output_type": "number",
+          "syntax": ".month",
+          "direct_syntax": "<data:date.month/>",
+          "expr_syntax": "([expr]).month",
+          "example": "data:post.date.month"
+        },
+        "day": {
+          "description": "Returns numeric calendar day of the month (1-31).",
+          "output_type": "number",
+          "syntax": ".day",
+          "direct_syntax": "<data:date.day/>",
+          "expr_syntax": "([expr]).day",
+          "example": "data:post.date.day"
+        },
+        "dayOfWeek": {
+          "description": "Returns numeric day of the week (1-7).",
+          "output_type": "number",
+          "syntax": ".dayOfWeek",
+          "direct_syntax": "<data:date.dayOfWeek/>",
+          "expr_syntax": "([expr]).dayOfWeek",
+          "example": "data:post.date.dayOfWeek"
+        },
+        "dayOfMonth": {
+          "description": "Returns numeric day of the month (1-31, identical to .day).",
+          "output_type": "number",
+          "syntax": ".dayOfMonth",
+          "direct_syntax": "<data:date.dayOfMonth/>",
+          "expr_syntax": "([expr]).dayOfMonth",
+          "example": "data:post.date.dayOfMonth"
+        },
+        "dayOfYear": {
+          "description": "Returns numeric relative day within the calendar year (1-366).",
+          "output_type": "number",
+          "syntax": ".dayOfYear",
+          "direct_syntax": "<data:date.dayOfYear/>",
+          "expr_syntax": "([expr]).dayOfYear",
+          "example": "data:post.date.dayOfYear"
+        }
+      }
+    },
+    "locale": {
+      "category": "subtype",
+      "description": "Platform-generated language, country, and text directionality (ltr/rtl) metadata.",
+      "parent_type": "string",
+      "user_constructible": false,
+      "ts_type": "BloggerLocale",
+      "modifiers": {
+        "name": {
+          "description": "Returns the localized language name.",
+          "output_type": "string",
+          "syntax": ".name",
+          "direct_syntax": "<data:blog.locale.name/>",
+          "expr_syntax": "data:blog.locale.name",
+          "example": "data:blog.locale.name"
+        },
+        "language": {
+          "description": "Returns the ISO 639-1 language code.",
+          "output_type": "string",
+          "syntax": ".language",
+          "direct_syntax": "<data:blog.locale.language/>",
+          "expr_syntax": "data:blog.locale.language",
+          "example": "data:blog.locale.language"
+        },
+        "country": {
+          "description": "Returns the ISO country code.",
+          "output_type": "string",
+          "syntax": ".country",
+          "direct_syntax": "<data:blog.locale.country/>",
+          "expr_syntax": "data:blog.locale.country",
+          "example": "data:blog.locale.country"
+        },
+        "variant": {
+          "description": "Returns regional dialect or territorial variant code.",
+          "output_type": "string",
+          "syntax": ".variant",
+          "direct_syntax": "<data:blog.locale.variant/>",
+          "expr_syntax": "data:blog.locale.variant",
+          "example": "data:blog.locale.variant"
+        },
+        "script": {
+          "description": "Returns writing system script designation.",
+          "output_type": "string",
+          "syntax": ".script",
+          "direct_syntax": "<data:blog.locale.script/>",
+          "expr_syntax": "data:blog.locale.script",
+          "example": "data:blog.locale.script"
+        },
+        "languageDirection": {
+          "description": "Reading directionality: returns 'ltr' or 'rtl'.",
+          "output_type": "string",
+          "syntax": ".languageDirection",
+          "direct_syntax": "<data:blog.locale.languageDirection/>",
+          "expr_syntax": "data:blog.locale.languageDirection",
+          "example": "data:blog.locale.languageDirection"
+        },
+        "languageAlignment": {
+          "description": "Text alignment corresponding to direction: 'left' or 'right'.",
+          "output_type": "string",
+          "syntax": ".languageAlignment",
+          "direct_syntax": "<data:blog.locale.languageAlignment/>",
+          "expr_syntax": "data:blog.locale.languageAlignment",
+          "example": "data:blog.locale.languageAlignment"
+        }
+      }
+    },
+    "message": {
+      "category": "subtype",
+      "description": "Platform-localized UI string automatically translated into 60+ languages via data:messages.*.",
+      "parent_type": "string",
+      "user_constructible": false,
+      "ts_type": "BloggerMessage",
+      "modifiers": {}
+    },
+    "skin:color": {
+      "category": "skin",
+      "description": "Theme Designer skin color variable (hex, rgb, rgba) rendering color picker UI.",
+      "parent_type": "string",
+      "user_constructible": true,
+      "ts_type": "string",
+      "skin_metadata": {
+        "theme_designer_form": true,
+        "tag_attribute_value": "color",
+        "inside_skin_syntax": "$(variable.name)",
+        "outside_skin_syntax": "data:skin.vars.variable_name"
+      },
+      "modifiers": {
+        "red": {
+          "description": "Red channel value in decimal format (0-255).",
+          "output_type": "string",
+          "syntax": ".red",
+          "direct_syntax": "<data:skin.vars.name.red/>",
+          "expr_syntax": "data:skin.vars.name.red",
+          "example": "data:skin.vars.keycolor.red"
+        },
+        "green": {
+          "description": "Green channel value in decimal format (0-255).",
+          "output_type": "string",
+          "syntax": ".green",
+          "direct_syntax": "<data:skin.vars.name.green/>",
+          "expr_syntax": "data:skin.vars.name.green",
+          "example": "data:skin.vars.keycolor.green"
+        },
+        "blue": {
+          "description": "Blue channel value in decimal format (0-255).",
+          "output_type": "string",
+          "syntax": ".blue",
+          "direct_syntax": "<data:skin.vars.name.blue/>",
+          "expr_syntax": "data:skin.vars.name.blue",
+          "example": "data:skin.vars.keycolor.blue"
+        },
+        "alpha": {
+          "description": "Alpha channel transparency value in decimal format (0.0-1.0).",
+          "output_type": "string",
+          "syntax": ".alpha",
+          "direct_syntax": "<data:skin.vars.name.alpha/>",
+          "expr_syntax": "data:skin.vars.name.alpha",
+          "example": "data:skin.vars.keycolor.alpha"
+        },
+        "transparent": {
+          "description": "Renders fully transparent rgba(0,0,0,0) representation.",
+          "output_type": "string",
+          "syntax": ".transparent",
+          "direct_syntax": "<data:skin.vars.name.transparent/>",
+          "expr_syntax": "data:skin.vars.name.transparent",
+          "example": "data:skin.vars.keycolor.transparent"
+        },
+        "inverse": {
+          "description": "Renders inverted complementary hexadecimal or rgba color value.",
+          "output_type": "string",
+          "syntax": ".inverse",
+          "direct_syntax": "<data:skin.vars.name.inverse/>",
+          "expr_syntax": "data:skin.vars.name.inverse",
+          "example": "data:skin.vars.keycolor.inverse"
+        }
+      }
+    },
+    "skin:font": {
+      "category": "skin",
+      "description": "Theme Designer typography definition composite (family, size, style, weight).",
+      "parent_type": "string",
+      "user_constructible": true,
+      "ts_type": "string",
+      "skin_metadata": {
+        "theme_designer_form": true,
+        "tag_attribute_value": "font",
+        "inside_skin_syntax": "$(variable.name)",
+        "outside_skin_syntax": "data:skin.vars.variable_name"
+      },
+      "modifiers": {
+        "family": {
+          "description": "Font family name or font stack.",
+          "output_type": "string",
+          "syntax": ".family",
+          "direct_syntax": "<data:skin.vars.name.family/>",
+          "expr_syntax": "data:skin.vars.name.family",
+          "example": "data:skin.vars.body_font.family"
+        },
+        "size": {
+          "description": "Font size declaration including CSS unit.",
+          "output_type": "string",
+          "syntax": ".size",
+          "direct_syntax": "<data:skin.vars.name.size/>",
+          "expr_syntax": "data:skin.vars.name.size",
+          "example": "data:skin.vars.body_font.size"
+        },
+        "style": {
+          "description": "Font style: 'normal' or 'italic'.",
+          "output_type": "string",
+          "syntax": ".style",
+          "direct_syntax": "<data:skin.vars.name.style/>",
+          "expr_syntax": "data:skin.vars.name.style",
+          "example": "data:skin.vars.body_font.style"
+        },
+        "weight": {
+          "description": "Font weight: 'normal', 'bold', or numeric weight.",
+          "output_type": "string",
+          "syntax": ".weight",
+          "direct_syntax": "<data:skin.vars.name.weight/>",
+          "expr_syntax": "data:skin.vars.name.weight",
+          "example": "data:skin.vars.body_font.weight"
+        }
+      }
+    },
+    "skin:background": {
+      "category": "skin",
+      "description": "Theme Designer composite background styling definition (image, repeat, position, color).",
+      "parent_type": "string",
+      "user_constructible": true,
+      "ts_type": "string",
+      "skin_metadata": {
+        "theme_designer_form": false,
+        "tag_attribute_value": "background",
+        "inside_skin_syntax": "$(variable.name)",
+        "outside_skin_syntax": "data:skin.vars.variable_name"
+      },
+      "modifiers": {
+        "image": {
+          "description": "Extracted background image URL or CSS url(...) expression.",
+          "output_type": "string",
+          "syntax": ".image",
+          "direct_syntax": "<data:skin.vars.name.image/>",
+          "expr_syntax": "data:skin.vars.name.image",
+          "example": "data:skin.vars.header_bg.image"
+        },
+        "color": {
+          "description": "Extracted background color hex or rgb string.",
+          "output_type": "string",
+          "syntax": ".color",
+          "direct_syntax": "<data:skin.vars.name.color/>",
+          "expr_syntax": "data:skin.vars.name.color",
+          "example": "data:skin.vars.header_bg.color"
+        }
+      }
+    },
+    "skin:length": {
+      "category": "skin",
+      "description": "Dimensional CSS length unit (px, em, rem, %) supporting arithmetic in compiler.",
+      "parent_type": "string",
+      "user_constructible": true,
+      "ts_type": "string",
+      "skin_metadata": {
+        "theme_designer_form": true,
+        "tag_attribute_value": "length",
+        "inside_skin_syntax": "$(variable.name)",
+        "outside_skin_syntax": "data:skin.vars.variable_name",
+        "version_constraints": {
+          "v3": {
+            "status": "supported"
+          }
+        }
+      },
+      "modifiers": {}
+    },
+    "skin:automatic": {
+      "category": "skin",
+      "description": "Derived skin variable computed dynamically based on surrounding palette or locale choices.",
+      "parent_type": "string",
+      "user_constructible": false,
+      "ts_type": "string",
+      "skin_metadata": {
+        "theme_designer_form": false,
+        "tag_attribute_value": "automatic",
+        "inside_skin_syntax": "$(variable.name)",
+        "outside_skin_syntax": "data:skin.vars.variable_name"
+      },
+      "modifiers": {}
+    },
+    "skin:string": {
+      "category": "skin",
+      "description": "Literal string value configured in skin variables for custom CSS tokens and asset paths.",
+      "parent_type": "string",
+      "user_constructible": true,
+      "ts_type": "string",
+      "skin_metadata": {
+        "theme_designer_form": false,
+        "tag_attribute_value": "string",
+        "inside_skin_syntax": "$(variable.name)",
+        "outside_skin_syntax": "data:skin.vars.variable_name"
+      },
+      "modifiers": {}
+    },
+    "skin:url": {
+      "category": "skin",
+      "description": "External asset URL and web font reference loaded in skin stylesheet.",
+      "parent_type": "url",
+      "user_constructible": true,
+      "ts_type": "string",
+      "skin_metadata": {
+        "theme_designer_form": false,
+        "tag_attribute_value": "url",
+        "inside_skin_syntax": "$(variable.name)",
+        "outside_skin_syntax": "data:skin.vars.variable_name"
+      },
+      "modifiers": {}
+    },
+    "skin_variable": {
+      "category": "skin",
+      "description": "Generic Theme Designer skin variable representation exposed under data:skin.vars.",
+      "parent_type": "string",
+      "user_constructible": true,
+      "ts_type": "string",
+      "modifiers": {}
+    },
+    "scalar": {
+      "category": "meta",
+      "description": "Scalar primitive union: string, number, or boolean.",
+      "parent_type": null,
+      "user_constructible": true,
+      "ts_type": "string | number | boolean",
+      "modifiers": {}
+    },
+    "expression": {
+      "category": "meta",
+      "description": "Dynamic uncompiled expression attribute payload evaluated at runtime.",
+      "parent_type": null,
+      "user_constructible": true,
+      "ts_type": "any",
+      "modifiers": {}
+    },
+    "any": {
+      "category": "meta",
+      "description": "Wildcard type compatible with any Blogger template value.",
+      "parent_type": null,
+      "user_constructible": true,
+      "ts_type": "any",
+      "modifiers": {}
+    },
+    "predicate": {
+      "category": "meta",
+      "description": "Lambda closure or predicate expression (param => body) evaluated over collection items.",
+      "parent_type": "expression",
+      "user_constructible": true,
+      "ts_type": "(item: any) => any",
+      "modifiers": {}
+    }
+  }
+}

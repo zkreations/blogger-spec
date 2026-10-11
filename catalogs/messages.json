@@ -1,0 +1,480 @@
+{
+  "$schema": "./schemas/messages.schema.json",
+  "title": "Blogger System Messages Master Catalog",
+  "description": "Canonical registry of localized UI message tokens available globally via data:messages.<token> in the Blogger Template Engine.",
+  "patterns": [
+    {
+      "template": "data:messages.{key}",
+      "type": "message",
+      "description": "Any platform system message key translated dynamically into data:blog.locale."
+    }
+  ],
+  "messages": {
+    "adsGoHere": {
+      "type": "message",
+      "description": "Ad placeholder banner notice."
+    },
+    "archive": {
+      "type": "message",
+      "description": "Blog archive label ('Archive')."
+    },
+    "at": {
+      "type": "message",
+      "description": "Time preposition ('at')."
+    },
+    "authorSaid": {
+      "type": "message",
+      "description": "Comment author attribution quote ('Author said...'). Direct tag invocation prohibited; requires <b:message>.",
+      "direct_invocation": false,
+      "parameters": [
+        {
+          "name": "authorName",
+          "description": "Name of the comment author."
+        }
+      ]
+    },
+    "authorSaidWithLink": {
+      "type": "message",
+      "description": "Comment author quote with HTML anchor markup. Direct tag invocation prohibited; requires <b:message>.",
+      "direct_invocation": false,
+      "parameters": [
+        {
+          "name": "authorName",
+          "description": "Name of the comment author."
+        },
+        {
+          "name": "authorUrl",
+          "description": "Profile URL of the comment author."
+        }
+      ]
+    },
+    "blogArchive": {
+      "type": "message",
+      "description": "BlogArchive widget title ('Blog Archive')."
+    },
+    "blogAuthors": {
+      "type": "message",
+      "description": "Blog authors header label."
+    },
+    "by": {
+      "type": "message",
+      "description": "Author preposition ('by')."
+    },
+    "byAuthor": {
+      "type": "message",
+      "description": "Attribution phrase ('by author'). Direct tag invocation prohibited; requires <b:message>.",
+      "direct_invocation": false,
+      "parameters": [
+        {
+          "name": "authorName",
+          "description": "Author name."
+        }
+      ]
+    },
+    "byAuthorLink": {
+      "type": "message",
+      "description": "Attribution phrase with author profile anchor. Direct tag invocation prohibited; requires <b:message>.",
+      "direct_invocation": false,
+      "parameters": [
+        {
+          "name": "authorName",
+          "description": "Author name."
+        },
+        {
+          "name": "authorUrl",
+          "description": "Author profile URL."
+        }
+      ]
+    },
+    "comments": {
+      "type": "message",
+      "description": "Comments count or section title ('Comments')."
+    },
+    "configurationRequired": {
+      "type": "message",
+      "description": "Widget setup requirement prompt."
+    },
+    "copy": {
+      "type": "message",
+      "description": "Copy action button label."
+    },
+    "copyToClipboard": {
+      "type": "message",
+      "description": "Copy to clipboard action label."
+    },
+    "deleteComment": {
+      "type": "message",
+      "description": "Delete comment moderation button label."
+    },
+    "dynamicViewsNotAvailable": {
+      "type": "message",
+      "description": "Dynamic Views unavailable warning text."
+    },
+    "edit": {
+      "type": "message",
+      "description": "Quick-edit item action link."
+    },
+    "emailAddress": {
+      "type": "message",
+      "description": "Email input field label / placeholder."
+    },
+    "emailPost": {
+      "type": "message",
+      "description": "Share via email button label."
+    },
+    "euCookieNotice": {
+      "type": "message",
+      "description": "European Union cookie consent banner text."
+    },
+    "euCookieNotice2018": {
+      "type": "message",
+      "description": "Updated EU cookie notice text."
+    },
+    "euCookieNoticeCloseButton": {
+      "type": "message",
+      "description": "Cookie consent banner close button label."
+    },
+    "euCookieResponsibility": {
+      "type": "message",
+      "description": "Cookie compliance disclaimer statement."
+    },
+    "euCookieResponsibility2018": {
+      "type": "message",
+      "description": "Updated cookie compliance disclaimer statement."
+    },
+    "featured": {
+      "type": "message",
+      "description": "Featured post badge / header label."
+    },
+    "getEmailNotifications": {
+      "type": "message",
+      "description": "Email subscription call to action."
+    },
+    "gotIt": {
+      "type": "message",
+      "description": "Confirmation dismissal button ('Got it')."
+    },
+    "hidden": {
+      "type": "message",
+      "description": "Hidden state label."
+    },
+    "home": {
+      "type": "message",
+      "description": "Root homepage navigation label ('Home')."
+    },
+    "image": {
+      "type": "message",
+      "description": "Generic image label / alt placeholder."
+    },
+    "joinTheConversation": {
+      "type": "message",
+      "description": "Comment section header invitation."
+    },
+    "keepReading": {
+      "type": "message",
+      "description": "Post continuation teaser link ('Keep reading')."
+    },
+    "labels": {
+      "type": "message",
+      "description": "Post labels / tags header label."
+    },
+    "latestPosts": {
+      "type": "message",
+      "description": "Latest posts widget heading."
+    },
+    "learnMore": {
+      "type": "message",
+      "description": "Informational link label ('Learn more')."
+    },
+    "linkCopiedToClipboard": {
+      "type": "message",
+      "description": "Copy confirmation toast notice."
+    },
+    "loadMorePosts": {
+      "type": "message",
+      "description": "Infinite scroll / load more button label."
+    },
+    "loading": {
+      "type": "message",
+      "description": "Asynchronous loading status text."
+    },
+    "moreEllipsis": {
+      "type": "message",
+      "description": "Truncation ellipsis continuation ('...')."
+    },
+    "morePosts": {
+      "type": "message",
+      "description": "Pagination action label ('More posts')."
+    },
+    "myBlogList": {
+      "type": "message",
+      "description": "BlogList widget default title."
+    },
+    "myFavoriteSites": {
+      "type": "message",
+      "description": "Favorite sites widget heading."
+    },
+    "myPhoto": {
+      "type": "message",
+      "description": "Author profile avatar label."
+    },
+    "newer": {
+      "type": "message",
+      "description": "Newer pagination link label ('Newer')."
+    },
+    "newerPosts": {
+      "type": "message",
+      "description": "Newer posts pagination link ('Newer posts')."
+    },
+    "newest": {
+      "type": "message",
+      "description": "Newest pagination link label ('Newest')."
+    },
+    "noResultsFound": {
+      "type": "message",
+      "description": "Empty search results notice."
+    },
+    "noTitle": {
+      "type": "message",
+      "description": "Fallback title for untitled posts ('No title')."
+    },
+    "numberOfComments": {
+      "type": "message",
+      "description": "Comment counter display template. Direct tag invocation prohibited; requires <b:message>.",
+      "direct_invocation": false,
+      "parameters": [
+        {
+          "name": "numComments",
+          "description": "Comment counter value."
+        }
+      ]
+    },
+    "ok": {
+      "type": "message",
+      "description": "Confirmation button label ('OK')."
+    },
+    "older": {
+      "type": "message",
+      "description": "Older pagination link label ('Older')."
+    },
+    "olderPosts": {
+      "type": "message",
+      "description": "Older posts pagination link ('Older posts')."
+    },
+    "oldest": {
+      "type": "message",
+      "description": "Oldest pagination link label ('Oldest')."
+    },
+    "on": {
+      "type": "message",
+      "description": "Date preposition ('on')."
+    },
+    "onlyTeamMembersCanComment": {
+      "type": "message",
+      "description": "Restricted commenting notice."
+    },
+    "photo": {
+      "type": "message",
+      "description": "Generic photo label."
+    },
+    "popularPosts": {
+      "type": "message",
+      "description": "PopularPosts widget header label."
+    },
+    "popularPostsFromThisBlog": {
+      "type": "message",
+      "description": "Popular posts descriptive header."
+    },
+    "postAComment": {
+      "type": "message",
+      "description": "Comment form submission header."
+    },
+    "postLink": {
+      "type": "message",
+      "description": "Post permalink action link label."
+    },
+    "postedBy": {
+      "type": "message",
+      "description": "Post author attribution prefix ('Posted by')."
+    },
+    "postedByAuthor": {
+      "type": "message",
+      "description": "Author attribution display string. Direct tag invocation prohibited; requires <b:message>.",
+      "direct_invocation": false,
+      "parameters": [
+        {
+          "name": "authorName",
+          "description": "Name of the post author."
+        }
+      ]
+    },
+    "postedByAuthorLink": {
+      "type": "message",
+      "description": "Author attribution with HTML anchor. Direct tag invocation prohibited; requires <b:message>.",
+      "direct_invocation": false,
+      "parameters": [
+        {
+          "name": "authorName",
+          "description": "Name of the post author."
+        },
+        {
+          "name": "authorUrl",
+          "description": "Profile URL of the post author."
+        }
+      ]
+    },
+    "posts": {
+      "type": "message",
+      "description": "Generic posts label ('Posts')."
+    },
+    "poweredByBlogger": {
+      "type": "message",
+      "description": "Platform attribution text ('Powered by Blogger')."
+    },
+    "poweredByBloggerLink": {
+      "type": "message",
+      "description": "Platform attribution with Blogger anchor. Direct tag invocation prohibited; requires <b:message>.",
+      "direct_invocation": false,
+      "parameters": [
+        {
+          "name": "bloggerUrl",
+          "description": "Blogger homepage URL."
+        }
+      ]
+    },
+    "readMore": {
+      "type": "message",
+      "description": "Post jump link action ('Read more')."
+    },
+    "recentPosts": {
+      "type": "message",
+      "description": "Recent posts widget heading."
+    },
+    "reportAbuse": {
+      "type": "message",
+      "description": "Abuse reporting action link."
+    },
+    "search": {
+      "type": "message",
+      "description": "Search button / action label ('Search')."
+    },
+    "searchBlog": {
+      "type": "message",
+      "description": "Search input placeholder ('Search blog')."
+    },
+    "searchThisBlog": {
+      "type": "message",
+      "description": "SearchThisBlog widget header."
+    },
+    "share": {
+      "type": "message",
+      "description": "Social sharing action button label."
+    },
+    "shareOtherApps": {
+      "type": "message",
+      "description": "Share to external applications label."
+    },
+    "shareToOtherApps": {
+      "type": "message",
+      "description": "Share to external apps button label."
+    },
+    "showAll": {
+      "type": "message",
+      "description": "Expand all items button label."
+    },
+    "showLess": {
+      "type": "message",
+      "description": "Collapse items button label."
+    },
+    "showMore": {
+      "type": "message",
+      "description": "Show more items button label."
+    },
+    "skipToMainContent": {
+      "type": "message",
+      "description": "Accessibility skip link navigation label."
+    },
+    "someOfMyFavoriteSites": {
+      "type": "message",
+      "description": "Alternate favorite sites widget title."
+    },
+    "subscribe": {
+      "type": "message",
+      "description": "Feed subscription action label."
+    },
+    "subscribeTo": {
+      "type": "message",
+      "description": "Feed subscription prefix label."
+    },
+    "subscribeToThisBlog": {
+      "type": "message",
+      "description": "Blog feed subscription title."
+    },
+    "templateImagesBy": {
+      "type": "message",
+      "description": "Theme image designer attribution. Direct tag invocation prohibited; requires <b:message>.",
+      "direct_invocation": false,
+      "parameters": [
+        {
+          "name": "authorName",
+          "description": "Name of the template image designer."
+        }
+      ]
+    },
+    "templateImagesByLink": {
+      "type": "message",
+      "description": "Theme image designer attribution with link. Direct tag invocation prohibited; requires <b:message>.",
+      "direct_invocation": false,
+      "parameters": [
+        {
+          "name": "authorUrl",
+          "description": "Profile or website URL of the template image designer."
+        },
+        {
+          "name": "authorName",
+          "description": "Name of the template image designer."
+        }
+      ]
+    },
+    "theresNothingHere": {
+      "type": "message",
+      "description": "Empty state message ('There's nothing here')."
+    },
+    "title": {
+      "type": "message",
+      "description": "Generic title label."
+    },
+    "viewAll": {
+      "type": "message",
+      "description": "View all items action link."
+    },
+    "viewMyCompleteProfile": {
+      "type": "message",
+      "description": "Profile widget link to author details."
+    },
+    "visible": {
+      "type": "message",
+      "description": "Visible state label."
+    },
+    "visitProfile": {
+      "type": "message",
+      "description": "Author profile link label."
+    },
+    "visitSite": {
+      "type": "message",
+      "description": "External website link label."
+    },
+    "widget": {
+      "type": "message",
+      "description": "Generic widget indicator."
+    },
+    "widgetNotAvailableInPreview": {
+      "type": "message",
+      "description": "Theme designer preview warning text."
+    },
+    "youMayLikeThesePosts": {
+      "type": "message",
+      "description": "Related posts recommendation heading."
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "name": "blogger-spec",
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Canonical single source of truth for the Blogger XML template and expression language specification, types, and conformance fixtures.",
+  "author": "Blogger Spec Authors & Contributors",
+  "license": "MIT",
+  "keywords": [
+    "blogger",
+    "blogspot",
+    "template",
+    "specification",
+    "ast",
+    "schema",
+    "linter"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./ast": {
+      "types": "./dist/ast.d.ts",
+      "default": "./dist/ast.js"
+    },
+    "./helpers": {
+      "types": "./dist/helpers.d.ts",
+      "default": "./dist/helpers.js"
+    },
+    "./schemas/*": "./catalogs/schemas/*",
+    "./directives": "./catalogs/directives.json",
+    "./operators": "./catalogs/operators.json",
+    "./types": "./catalogs/types.json",
+    "./widgets": "./catalogs/widgets.json",
+    "./settings": "./catalogs/settings.json",
+    "./globals": "./catalogs/globals.json",
+    "./messages": "./catalogs/messages.json",
+    "./scopes": "./catalogs/scopes.json",
+    "./diagnostics": "./catalogs/diagnostics.json",
+    "./fixtures": "./fixtures/index.json",
+    "./runner": {
+      "types": "./dist/runner.d.ts",
+      "default": "./dist/runner.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "DISCLAIMER.md",
+    "LICENSE",
+    "README.md",
+    "catalogs",
+    "dist",
+    "fixtures"
+  ],
+  "scripts": {
+    "build": "tsx src/tooling/build.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:spec": "tsx src/tooling/validate-spec.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^9.5.1",
+    "@types/node": "^24.19.2",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "eslint": "^10.12.0",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.3"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "subsystem": "conditional_rendering",
+  "fixtures": [
+    {
+      "id": "rendering/conditional_rendering/if-elseif-else-flow",
+      "title": "If Elseif Else Flow",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:conditional_rendering",
+        "tag:b:if",
+        "tag:b:elseif",
+        "tag:b:else"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.isPost'><article>Post Content</article><b:elseif cond='data:view.isPage'/><main>Static Page</main><b:else/><div class='index'>Index Feed</div></b:if>",
+        "mode": "fragment",
+        "context": {
+          "view": {
+            "isPost": false,
+            "isPage": true
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<main>Static Page</main>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/conditional_rendering/switch-case-matching",
+      "title": "Switch Case Matching",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:conditional_rendering",
+        "tag:b:switch",
+        "tag:b:case",
+        "tag:b:default"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:switch var='data:view.pageType'><b:case value='item'/>Item View<b:case value='static_page'/>Page View<b:default/>General View</b:switch>",
+        "mode": "fragment",
+        "context": {
+          "view": {
+            "pageType": "item"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Item View",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/conditional_rendering/dynamic-boolean-attribute-stringification",
+      "title": "Dynamic Boolean Attribute Stringification",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:conditional_rendering"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<input expr:checked='false' type='checkbox'/>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<input checked='false' type='checkbox'/>",
+        "canonicalDom": true
+      }
+    }
+  ]
+}

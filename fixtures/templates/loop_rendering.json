@@ -1,0 +1,58 @@
+{
+  "subsystem": "loop_rendering",
+  "fixtures": [
+    {
+      "id": "rendering/loop_rendering/loop-list-items",
+      "title": "Loop List Items",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:loop_rendering",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<ul><b:loop values='data:links' var='link'><li><a expr:href='data:link.href'><data:link.title/></a></li></b:loop></ul>",
+        "mode": "fragment",
+        "context": {
+          "links": [
+            {
+              "href": "/about",
+              "title": "About Us"
+            },
+            {
+              "href": "/contact",
+              "title": "Contact"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<ul><li><a href=\"/about\">About Us</a></li><li><a href=\"/contact\">Contact</a></li></ul>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/loop_rendering/loop-numeric-range",
+      "title": "Loop Numeric Range",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:loop_rendering",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<nav><b:loop values='1 to 3' var='n'><span><data:n/></span></b:loop></nav>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<nav><span>1</span><span>2</span><span>3</span></nav>",
+        "canonicalDom": true
+      }
+    }
+  ]
+}

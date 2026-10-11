@@ -1,0 +1,1471 @@
+{
+  "version": "1.0.0",
+  "generatedAt": "2026-10-11",
+  "metrics": {
+    "totalFixtures": 65,
+    "positiveFixtures": 55,
+    "negativeFixtures": 10,
+    "coveredSpecEntities": 53
+  },
+  "fixtures": [
+    {
+      "id": "expressions/arithmetic/addition-integers",
+      "title": "Addition Integers",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 15
+      }
+    },
+    {
+      "id": "expressions/arithmetic/multiplication-precedence",
+      "title": "Multiplication Precedence",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+",
+        "operator:*"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "2 + 3 * 4",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 14
+      }
+    },
+    {
+      "id": "expressions/arithmetic/grouping-parentheses",
+      "title": "Grouping Parentheses",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+",
+        "operator:*"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "(2 + 3) * 4",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      }
+    },
+    {
+      "id": "expressions/arithmetic/modulo-remainder",
+      "title": "Modulo Remainder",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:%"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 % 3",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 1
+      }
+    },
+    {
+      "id": "expressions/arithmetic/division-float",
+      "title": "Division Float",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:/"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "7 / 2",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 3.5
+      }
+    },
+    {
+      "id": "expressions/arithmetic/string-number-concatenation",
+      "title": "String Number Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"Count: \" + 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Count: 5"
+      }
+    },
+    {
+      "id": "expressions/arithmetic/literal-string-number-concatenation",
+      "title": "Literal String Number Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + \"10\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "1010"
+      }
+    },
+    {
+      "id": "expressions/arithmetic/literal-number-string-concatenation",
+      "title": "Literal Number String Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"10\" + 10",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "1010"
+      }
+    },
+    {
+      "id": "expressions/arithmetic/runtime-variable-numeric-addition",
+      "title": "Runtime Variable Numeric Addition",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + data:numString",
+        "context": {
+          "numString": "10"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      }
+    },
+    {
+      "id": "expressions/arithmetic/runtime-variable-text-concatenation",
+      "title": "Runtime Variable Text Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:+"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + data:textString",
+        "context": {
+          "textString": "posts"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "10posts"
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-literal-string-concatenation",
+      "title": "Literal Numeric String Concatenation With Literal Number",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-literal"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + \"10\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "1010"
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-literal-reversed-concatenation",
+      "title": "Reversed Literal Numeric String Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-literal"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"10\" + 10",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "1010"
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-runtime-variable-arithmetic",
+      "title": "Runtime Variable String Numeric Addition",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-runtime-numeric"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + data:numString",
+        "context": {
+          "numString": "10"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-runtime-variable-reversed-arithmetic",
+      "title": "Reversed Runtime Variable String Numeric Addition",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-runtime-numeric"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numString + 10",
+        "context": {
+          "numString": "10"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-runtime-two-variables-arithmetic",
+      "title": "Two Runtime Variable Strings Numeric Addition",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-runtime-numeric"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numStringA + data:numStringB",
+        "context": {
+          "numStringA": "15",
+          "numStringB": "5"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-runtime-non-numeric-text-fallback",
+      "title": "Runtime Non-Numeric String Fallback To Concatenation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-runtime-fallback"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 + data:textString",
+        "context": {
+          "textString": "posts"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "10posts"
+      }
+    },
+    {
+      "id": "expressions/coercion/addition-runtime-with-literal-string-override",
+      "title": "Literal String Operand Forcing Concatenation On Runtime Number",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-literal-dominance"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numString + \" items\"",
+        "context": {
+          "numString": "10"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "10 items"
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-runtime-numeric-string",
+      "title": "Weak Equality Between Number And Runtime Numeric String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-equality"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numString == 10",
+        "context": {
+          "numString": "10"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-take",
+      "title": "Collection Take",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:take"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts take 2",
+        "context": {
+          "posts": [
+            {
+              "title": "First"
+            },
+            {
+              "title": "Second"
+            },
+            {
+              "title": "Third"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          {
+            "title": "First"
+          },
+          {
+            "title": "Second"
+          }
+        ]
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-skip",
+      "title": "Collection Skip",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:skip"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numbers skip 2",
+        "context": {
+          "numbers": [
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          3,
+          4
+        ]
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-count",
+      "title": "Lambda Count",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts count (p => p.comments > 0)",
+        "context": {
+          "posts": [
+            {
+              "comments": 5
+            },
+            {
+              "comments": 0
+            },
+            {
+              "comments": 12
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 2
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-any",
+      "title": "Lambda Any",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts any (p => p.comments > 10)",
+        "context": {
+          "posts": [
+            {
+              "comments": 5
+            },
+            {
+              "comments": 0
+            },
+            {
+              "comments": 12
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-all-falsy",
+      "title": "Lambda All Falsy",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts all (p => p.comments > 10)",
+        "context": {
+          "posts": [
+            {
+              "comments": 5
+            },
+            {
+              "comments": 0
+            },
+            {
+              "comments": 12
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-in-array",
+      "title": "Membership In Array",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"Tech\" in data:labels",
+        "context": {
+          "labels": [
+            "News",
+            "Tech",
+            "Tutorials"
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-take-precedence-contains",
+      "title": "Collection Take Precedence Contains",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains",
+        "operator:take"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "[1, 2, 3, 4] take 2 contains 2",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-chaining-skip-take",
+      "title": "Collection Chaining Skip Take",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains",
+        "operator:take",
+        "operator:skip"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "([1, 2, 3, 4, 5] skip 1 take 2) contains 3",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-take-arithmetic-parens",
+      "title": "Collection Take Arithmetic Parens",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:+",
+        "operator:contains",
+        "operator:take"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "([1, 2, 3, 4, 5] take (1 + 1)) contains 2",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-iterator-data-prefix-tolerance",
+      "title": "Lambda Iterator Data Prefix Tolerance",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-11",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "rule:BX1019"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts count (p => data:p.numberOfComments > 0)",
+        "context": {
+          "posts": [
+            {
+              "numberOfComments": 5
+            },
+            {
+              "numberOfComments": 0
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 1
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/url-params-append",
+      "title": "Url Params Append",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:helpers_and_transforms"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.homepageUrl params { m: \"1\" }",
+        "context": {
+          "blog": {
+            "homepageUrl": "https://example.blogspot.com"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://example.blogspot.com?m=1"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/url-fragment-append",
+      "title": "Url Fragment Append",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:helpers_and_transforms"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.url fragment \"comments\"",
+        "context": {
+          "post": {
+            "url": "https://example.blogspot.com/post.html"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://example.blogspot.com/post.html#comments"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-resize-helper",
+      "title": "Image Resize Helper",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:resizeImage"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "resizeImage(data:img, 600, \"16:9\")",
+        "context": {
+          "img": "https://blogger.googleusercontent.com/img/a/sample=s72-c"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://blogger.googleusercontent.com/img/a/sample=w600-h337-p-k-no-nu"
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/equality-numbers",
+      "title": "Equality Numbers",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:=="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "5 == 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/relational-greater-than",
+      "title": "Relational Greater Than",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 > 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/logical-and-short-circuit",
+      "title": "Logical And Short Circuit",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:and"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "true and false",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/logical-or-truthy",
+      "title": "Logical Or Truthy",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:or"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "false or true",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/logical-not",
+      "title": "Logical Not",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:not"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "not false",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/elvis-fallback-triggered",
+      "title": "Elvis Fallback Triggered",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:missing ?: \"Default\"",
+        "context": {
+          "missing": null
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Default"
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/elvis-fallback-empty-string",
+      "title": "Elvis Fallback Empty String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:emptyTitle ?: \"Untitled\"",
+        "context": {
+          "emptyTitle": ""
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": ""
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/ternary-conditional",
+      "title": "Ternary Conditional",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:isPost ? \"article\" : \"section\"",
+        "context": {
+          "isPost": true
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "article"
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/missing-property-equality-empty-string",
+      "title": "Missing Property Equality Empty String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:=="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:item.author == \"\"",
+        "context": {
+          "item": {
+            "id": 1
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/nested-missing-property-elvis-fallback",
+      "title": "Nested Missing Property Elvis Fallback",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:item.author.name ?: \"FALLBACK\"",
+        "context": {
+          "item": {
+            "id": 1
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "FALLBACK"
+      }
+    },
+    {
+      "id": "rendering/conditional_rendering/if-elseif-else-flow",
+      "title": "If Elseif Else Flow",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:conditional_rendering",
+        "tag:b:if",
+        "tag:b:elseif",
+        "tag:b:else"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.isPost'><article>Post Content</article><b:elseif cond='data:view.isPage'/><main>Static Page</main><b:else/><div class='index'>Index Feed</div></b:if>",
+        "mode": "fragment",
+        "context": {
+          "view": {
+            "isPost": false,
+            "isPage": true
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<main>Static Page</main>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/conditional_rendering/switch-case-matching",
+      "title": "Switch Case Matching",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:conditional_rendering",
+        "tag:b:switch",
+        "tag:b:case",
+        "tag:b:default"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:switch var='data:view.pageType'><b:case value='item'/>Item View<b:case value='static_page'/>Page View<b:default/>General View</b:switch>",
+        "mode": "fragment",
+        "context": {
+          "view": {
+            "pageType": "item"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Item View",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/conditional_rendering/dynamic-boolean-attribute-stringification",
+      "title": "Dynamic Boolean Attribute Stringification",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:conditional_rendering"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<input expr:checked='false' type='checkbox'/>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<input checked='false' type='checkbox'/>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "scopes/includable_inheritance/include-caller-loop-context-inheritance",
+      "title": "Include Caller Loop Context Inheritance",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "tag:b:default",
+        "tag:b:loop",
+        "tag:b:includable",
+        "tag:b:include"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='itemRenderer'><p><data:item/></p></b:includable></b:defaultmarkup></b:defaultmarkups><b:loop values='[\"Mickey\", \"Donald\"]' var='item'><b:include name='itemRenderer'/></b:loop>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<p>Mickey</p><p>Donald</p>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "scopes/includable_inheritance/include-default-widget-payload-binding",
+      "title": "Include Default Widget Payload Binding",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "tag:b:default",
+        "tag:b:includable",
+        "tag:b:include"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='showTitle' var='this'><h2><data:this.title/></h2></b:includable></b:defaultmarkup></b:defaultmarkups><b:include name='showTitle'/>",
+        "mode": "fragment",
+        "context": {
+          "title": "Widget de prueba"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<h2>Widget de prueba</h2>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/loop_rendering/loop-list-items",
+      "title": "Loop List Items",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:loop_rendering",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<ul><b:loop values='data:links' var='link'><li><a expr:href='data:link.href'><data:link.title/></a></li></b:loop></ul>",
+        "mode": "fragment",
+        "context": {
+          "links": [
+            {
+              "href": "/about",
+              "title": "About Us"
+            },
+            {
+              "href": "/contact",
+              "title": "Contact"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<ul><li><a href=\"/about\">About Us</a></li><li><a href=\"/contact\">Contact</a></li></ul>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/loop_rendering/loop-numeric-range",
+      "title": "Loop Numeric Range",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:loop_rendering",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<nav><b:loop values='1 to 3' var='n'><span><data:n/></span></b:loop></nav>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<nav><span>1</span><span>2</span><span>3</span></nav>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "scopes/loop_shadowing/nested-loop-shadowing",
+      "title": "Nested Loop Shadowing",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:loop_shadowing",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:loop values='data:posts' var='item'>[POST:<data:item.id/>]<b:loop values='data:item.labels' var='item'>[LABEL:<data:item.name/>]</b:loop>[POST_AFTER:<data:item.id/>]</b:loop>",
+        "mode": "fragment",
+        "context": {
+          "posts": [
+            {
+              "id": "101",
+              "labels": [
+                {
+                  "name": "News"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "[POST:101][LABEL:News][POST_AFTER:101]",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "scopes/loop_shadowing/loop-index-counter",
+      "title": "Loop Index Counter",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:loop_shadowing",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:loop index='i' values='[\"a\", \"b\"]' var='letter'><data:i/>:<data:letter/>;</b:loop>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "0:a;1:b;",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/widget_rendering/blog-widget-wrapper-and-includables",
+      "title": "Blog Widget Wrapper And Includables",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:includable"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Header1' title='Blog Posts' type='Header' version='2'><b:includable id='main'><h1><data:title/></h1></b:includable></b:widget>",
+        "mode": "fragment",
+        "context": {
+          "title": "My Tech Blog"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"widget Header\" data-version=\"2\" id=\"Header1\"><h1>My Tech Blog</h1></div>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/widget_rendering/dynamic-tag-and-attributes",
+      "title": "Dynamic Tag And Attributes",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:tag",
+        "tag:b:class",
+        "tag:b:attr"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:tag expr:name='data:isMain ? \"h1\" : \"h2\"'><b:class cond='data:featured' name='is-featured'/><b:attr name='data-id' expr:value='data:postId'/>Hello World</b:tag>",
+        "mode": "fragment",
+        "context": {
+          "isMain": true,
+          "featured": true,
+          "postId": "999"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<h1 class=\"is-featured\" data-id=\"999\">Hello World</h1>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/widget_rendering/eval-closing-tag-tolerance",
+      "title": "Eval Closing Tag Body Ignored Tolerance",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-11",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:eval",
+        "rule:BX1013"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:eval expr='data:title'>ignored body</b:eval>",
+        "mode": "fragment",
+        "context": {
+          "title": "Desarrollo"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Desarrollo",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "scopes/with_nesting/with-alias-resolution",
+      "title": "With Alias Resolution",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:with_nesting",
+        "tag:b:with"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:with value='data:post.title ?: \"Default\"' var='safeTitle'><h1><data:safeTitle/></h1></b:with>",
+        "mode": "fragment",
+        "context": {
+          "post": {
+            "title": "Blogger Guide"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<h1>Blogger Guide</h1>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "scopes/with_nesting/with-nested-shadowing",
+      "title": "With Nested Shadowing",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "subsystem:with_nesting",
+        "tag:b:with"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:with value='\"Outer\"' var='val'><b:with value='\"Inner\"' var='val'><span><data:val/></span></b:with><span><data:val/></span></b:with>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<span>Inner</span><span>Outer</span>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-for-tag",
+      "title": "Prohibited <b:for> Loop Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1001"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:for each='p in posts'><data:p.title/></b:for>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1001"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-set-tag",
+      "title": "Prohibited <b:set> Assignment Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1003"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:set var='foo' value='123'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1003"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-hyphen-elseif",
+      "title": "Prohibited Hyphenated <b:else-if>",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1006"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.isPost'><p>A</p><b:else-if cond='data:view.isPage'/><p>B</p></b:if>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1006"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/inverted-includable-attributes",
+      "title": "Inverted Includable Name and Include Id",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1015",
+        "rule:BX1016"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:includable name='mainWidget'><b:include id='mainWidget'/></b:includable>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1015",
+          "BX1016"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-javascript-array-methods",
+      "title": "Prohibited JavaScript Array Filter And Slice Methods",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1017"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.filter(p => p.id).slice(0, 5)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1017"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-javascript-strict-equality",
+      "title": "Prohibited JavaScript Strict Equality Operator",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1018"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:view.pageType === \"item\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1018"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-lambda-data-prefix",
+      "title": "Prohibited Lambda Iterator Data Prefix",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-11",
+      "covers": [
+        "rule:BX1019"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts count (p => data:p.numberOfComments > 0)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1019"
+        ],
+        "stage": "linter"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-null-literal",
+      "title": "Prohibited Literal Null Comparison In Expression",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1020"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.author == null",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1020"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-closing-eval-delimiter",
+      "title": "Prohibited Closing Tag For Self-Closing b:eval Directive",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-11",
+      "covers": [
+        "rule:BX1013"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:eval expr='data:blog.title'></b:eval>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1013"
+        ],
+        "stage": "linter"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/switch-uses-expr-instead-of-var",
+      "title": "b:switch Directive Using expr Instead of var",
+      "evidence": "official",
+      "verifiedAt": "2026-10-10",
+      "covers": [
+        "rule:BX1014"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:switch expr='data:view.pageType'><b:case value='item'/>A<b:default/>B</b:switch>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1014"
+        ],
+        "stage": "parser"
+      }
+    }
+  ]
+}
