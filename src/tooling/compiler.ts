@@ -193,6 +193,62 @@ export function buildFixturesManifest(): BloggerFixturesManifest {
   return manifest
 }
 
+export function generateEmbeddedCatalogs(): string {
+  const paths = getWorkspacePaths()
+  const catalogsDir = paths.catalogs
+  const schemasDir = paths.schemas
+
+  const catalogNames = [
+    'directives',
+    'operators',
+    'types',
+    'widgets',
+    'settings',
+    'globals',
+    'messages',
+    'scopes',
+    'diagnostics',
+  ]
+
+  const catalogs: Record<string, any> = {}
+  for (const name of catalogNames) {
+    const filePath = join(catalogsDir, `${name}.json`)
+    if (existsSync(filePath)) {
+      catalogs[name] = JSON.parse(readFileSync(filePath, 'utf-8'))
+    }
+  }
+
+  const schemas: Record<string, any> = {}
+  if (existsSync(schemasDir)) {
+    const schemaFiles = readdirSync(schemasDir).filter(f => f.endsWith('.schema.json'))
+    for (const f of schemaFiles) {
+      schemas[f] = JSON.parse(readFileSync(join(schemasDir, f), 'utf-8'))
+    }
+  }
+
+  return [
+    '/**',
+    ' * blogger-spec — Canonical In-Memory Embedded Catalogs & Schemas.',
+    ' * Automatically generated from master JSON catalogs.',
+    ' * DO NOT EDIT MANUALLY.',
+    ' */',
+    '',
+    'import type { BloggerCatalogMap } from \'../types.js\'',
+    '',
+    `export const embeddedCatalogs: BloggerCatalogMap = ${JSON.stringify(catalogs, null, 2)} as unknown as BloggerCatalogMap;`,
+    '',
+    `export const embeddedSchemas: Record<string, any> = ${JSON.stringify(schemas, null, 2)};`,
+    '',
+  ].join('\n')
+}
+
+export function buildEmbeddedCatalogs(): void {
+  const paths = getWorkspacePaths()
+  const targetPath = join(paths.root, 'src/catalogs/embedded.generated.ts')
+  const content = generateEmbeddedCatalogs()
+  writeFileSync(targetPath, content, 'utf-8')
+}
+
 export function compileTypescript(): void {
   const paths = getWorkspacePaths()
   mkdirSync(paths.dist, { recursive: true })
@@ -205,6 +261,7 @@ export function compileTypescript(): void {
     join(paths.root, 'src/runner.ts'),
     join(paths.root, 'src/helpers.ts'),
     join(paths.root, 'src/ast.ts'),
+    join(paths.root, 'src/catalogs/fs-store.ts'),
   ]
 
   const program = ts.createProgram(entryFiles, {
@@ -233,6 +290,7 @@ export function compileTypescript(): void {
 
 export function buildAll(): void {
   const paths = getWorkspacePaths()
+  buildEmbeddedCatalogs()
   buildFixturesManifest()
   compileTypescript()
   buildDts()
@@ -246,6 +304,8 @@ export function buildAll(): void {
     join(paths.dist, 'helpers.d.ts'),
     join(paths.dist, 'ast.js'),
     join(paths.dist, 'ast.d.ts'),
+    join(paths.dist, 'catalogs/fs-store.js'),
+    join(paths.dist, 'catalogs/fs-store.d.ts'),
     paths.fixturesManifest,
   ]
 
@@ -261,6 +321,11 @@ export function compile(target?: string): void {
   const t = (target || 'all').toLowerCase().replace(/^--target=/, '')
 
   switch (t) {
+    case 'catalogs':
+    case 'embedded':
+      console.log('-> Generating embedded catalogs...')
+      buildEmbeddedCatalogs()
+      break
     case 'fixtures':
     case 'manifest':
       console.log('-> Building fixtures manifest...')
@@ -325,6 +390,21 @@ export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): Veri
     catch (err: any) {
       items.push({ name: 'fixtures/index.json', valid: false, error: err.message })
     }
+  }
+
+  const embeddedPath = join(paths.root, 'src/catalogs/embedded.generated.ts')
+  if (!existsSync(embeddedPath)) {
+    items.push({ name: 'src/catalogs/embedded.generated.ts', valid: false, error: 'File does not exist.' })
+  }
+  else {
+    const currentEmbedded = readFileSync(embeddedPath, 'utf-8')
+    const freshEmbedded = generateEmbeddedCatalogs()
+    const valid = currentEmbedded === freshEmbedded
+    items.push({
+      name: 'src/catalogs/embedded.generated.ts',
+      valid,
+      error: valid ? undefined : 'src/catalogs/embedded.generated.ts is out of date.',
+    })
   }
 
   return {

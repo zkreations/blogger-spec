@@ -11,9 +11,7 @@ import type {
   BloggerTypesCatalog,
   BloggerWidgetsCatalog,
 } from '../types.js'
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
-import { join } from 'node:path'
-import { getWorkspacePaths } from '../paths.js'
+import { embeddedCatalogs, embeddedSchemas } from './embedded.generated.js'
 
 export interface CatalogStore {
   getCatalog: <K extends BloggerCatalogName>(name: K) => BloggerCatalogMap[K]
@@ -22,70 +20,27 @@ export interface CatalogStore {
   clearCache?: () => void
 }
 
-export class FsCatalogStore implements CatalogStore {
+export class MemoryCatalogStore implements CatalogStore {
+  private readonly rawCatalogs: Partial<BloggerCatalogMap>
   private readonly catalogCache = new Map<string, any>()
-  private readonly schemaCache = new Map<string, any>()
-  private readonly rootGetter: () => string
+  private readonly schemas: Record<string, any>
 
-  constructor(rootGetter: () => string = () => getCatalogsDirectory()) {
-    this.rootGetter = rootGetter
+  constructor(catalogs: Partial<BloggerCatalogMap> = {}, schemas: Record<string, any> = {}) {
+    this.rawCatalogs = catalogs
+    this.schemas = schemas
   }
 
   getCatalog<K extends BloggerCatalogName>(name: K): BloggerCatalogMap[K] {
     if (this.catalogCache.has(name)) {
       return this.catalogCache.get(name)
     }
-    const filePath = join(this.rootGetter(), `${name}.json`)
-    const content = JSON.parse(readFileSync(filePath, 'utf-8'))
-    this.catalogCache.set(name, content)
-    return content
-  }
-
-  getSchema(name: string): any {
-    const schemaFile = name.endsWith('.schema.json') ? name : `${name}.schema.json`
-    if (this.schemaCache.has(schemaFile)) {
-      return this.schemaCache.get(schemaFile)
-    }
-    const schemasDir = join(this.rootGetter(), 'schemas')
-    const filePath = join(schemasDir, schemaFile)
-    const content = JSON.parse(readFileSync(filePath, 'utf-8'))
-    this.schemaCache.set(schemaFile, content)
-    return content
-  }
-
-  getAllSchemas(): Array<{ name: string, schema: any }> {
-    const schemasDir = join(this.rootGetter(), 'schemas')
-    if (!existsSync(schemasDir)) {
-      return []
-    }
-    const files = readdirSync(schemasDir).filter(f => f.endsWith('.schema.json'))
-    return files.map(file => ({
-      name: file.replace(/\.schema\.json$/, ''),
-      schema: this.getSchema(file),
-    }))
-  }
-
-  clearCache(): void {
-    this.catalogCache.clear()
-    this.schemaCache.clear()
-  }
-}
-
-export class MemoryCatalogStore implements CatalogStore {
-  private readonly catalogs: Partial<BloggerCatalogMap>
-  private readonly schemas: Record<string, any>
-
-  constructor(catalogs: Partial<BloggerCatalogMap> = {}, schemas: Record<string, any> = {}) {
-    this.catalogs = catalogs
-    this.schemas = schemas
-  }
-
-  getCatalog<K extends BloggerCatalogName>(name: K): BloggerCatalogMap[K] {
-    const cat = this.catalogs[name]
+    const cat = this.rawCatalogs[name]
     if (!cat) {
       throw new Error(`Catalog not found in memory store: ${name}`)
     }
-    return cat as BloggerCatalogMap[K]
+    const clone = JSON.parse(JSON.stringify(cat))
+    this.catalogCache.set(name, clone)
+    return clone as BloggerCatalogMap[K]
   }
 
   getSchema(name: string): any {
@@ -104,18 +59,12 @@ export class MemoryCatalogStore implements CatalogStore {
     }))
   }
 
-  clearCache(): void {}
+  clearCache(): void {
+    this.catalogCache.clear()
+  }
 }
 
-export function getCatalogsDirectory(): string {
-  return getWorkspacePaths().catalogs
-}
-
-export function getSchemasDirectory(): string {
-  return getWorkspacePaths().schemas
-}
-
-let defaultStore: CatalogStore = new FsCatalogStore()
+let defaultStore: CatalogStore = new MemoryCatalogStore(embeddedCatalogs, embeddedSchemas)
 const cacheResetListeners: Array<() => void> = []
 
 export function registerCacheResetListener(listener: () => void): () => void {

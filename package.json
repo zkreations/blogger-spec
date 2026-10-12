@@ -53,6 +53,10 @@
     "./runner": {
       "types": "./dist/runner.d.ts",
       "default": "./dist/runner.js"
+    },
+    "./node": {
+      "types": "./dist/catalogs/fs-store.d.ts",
+      "default": "./dist/catalogs/fs-store.js"
     }
   },
   "main": "./dist/index.js",

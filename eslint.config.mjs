@@ -1,5 +1,5 @@
 import antfu from '@antfu/eslint-config'
 
 export default antfu({
-  ignores: ['catalogs/**', 'fixtures/**'],
+  ignores: ['catalogs/**', 'fixtures/**', '**/*.generated.ts'],
 })
