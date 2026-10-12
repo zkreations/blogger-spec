@@ -177,18 +177,6 @@
         "outside_skin_syntax": {
           "type": "string",
           "description": "Syntax used in b:XML expressions (e.g. data:skin.vars.variable_name)."
-        },
-        "version_constraints": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "object",
-            "properties": {
-              "status": {
-                "type": "string"
-              }
-            },
-            "additionalProperties": false
-          }
         }
       },
       "additionalProperties": false

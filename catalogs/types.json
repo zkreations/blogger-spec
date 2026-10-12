@@ -686,12 +686,7 @@
         "theme_designer_form": true,
         "tag_attribute_value": "length",
         "inside_skin_syntax": "$(variable.name)",
-        "outside_skin_syntax": "data:skin.vars.variable_name",
-        "version_constraints": {
-          "v3": {
-            "status": "supported"
-          }
-        }
+        "outside_skin_syntax": "data:skin.vars.variable_name"
       },
       "modifiers": {}
     },
