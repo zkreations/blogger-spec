@@ -43,7 +43,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       const report = validateSpec()
       expect(report.valid).toBe(true)
       expect(report.errors).toEqual([])
-      expect(report.metrics.schemasChecked).toBe(9)
+      expect(report.metrics.schemasChecked).toBe(10)
       expect(report.metrics.fixturesChecked).toBeGreaterThanOrEqual(63)
     })
 
@@ -85,10 +85,11 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
         'messages',
         'scopes',
         'diagnostics',
+        'inclusions',
       ])
 
       const schemas = getAllSchemas()
-      expect(schemas.length).toBe(9)
+      expect(schemas.length).toBe(10)
       expect(schemas.every(s => s.name && s.schema)).toBe(true)
     })
 
@@ -116,6 +117,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
           messages: { messages: {} },
           scopes: { scopes: {} },
           types: { types: {} },
+          inclusions: { inclusions: {} } as any,
         },
         {
           custom: { $id: 'custom.schema.json' },

@@ -7,6 +7,8 @@ import type {
   BloggerDirectiveName,
   BloggerDirectivesCatalog,
   BloggerGlobalsCatalog,
+  BloggerInclusionDefinition,
+  BloggerInclusionsCatalog,
   BloggerMessagesCatalog,
   BloggerOperatorDefinition,
   BloggerOperatorName,
@@ -44,6 +46,7 @@ export class SpecCatalog {
   private readonly scopeOrder: string[] = []
   private readonly typeMap = new Map<string, any>()
   private readonly coercionRules: Record<string, any> = {}
+  private readonly inclusionMap = new Map<string, BloggerInclusionDefinition>()
 
   constructor(store: CatalogStore = getDefaultCatalogStore()) {
     this.store = store
@@ -56,6 +59,7 @@ export class SpecCatalog {
     this.indexMessages()
     this.indexScopes()
     this.indexTypes()
+    this.indexInclusions()
   }
 
   private indexDirectives(): void {
@@ -143,6 +147,17 @@ export class SpecCatalog {
     for (const [name, def] of Object.entries(types)) {
       this.typeMap.set(name, def)
     }
+  }
+
+  private indexInclusions(): void {
+    try {
+      const inclusionsData = this.store.getCatalog('inclusions') as BloggerInclusionsCatalog
+      const inclusions = inclusionsData?.inclusions || {}
+      for (const [name, def] of Object.entries(inclusions)) {
+        this.inclusionMap.set(name, def)
+      }
+    }
+    catch {}
   }
 
   isDirective(tagName: string): tagName is BloggerDirectiveName {
@@ -369,5 +384,32 @@ export class SpecCatalog {
 
   getCoercionRules(): Record<string, any> {
     return { ...this.coercionRules }
+  }
+
+  isServerInclusion(name: string): boolean {
+    if (!name) {
+      return false
+    }
+    if (name.startsWith('super.')) {
+      return true
+    }
+    return this.inclusionMap.has(name)
+  }
+
+  getInclusion(name: string): BloggerInclusionDefinition | undefined {
+    return this.inclusionMap.get(name)
+  }
+
+  getAllInclusions(): Record<string, BloggerInclusionDefinition> {
+    const result: Record<string, BloggerInclusionDefinition> = {}
+    for (const [k, v] of this.inclusionMap.entries()) {
+      result[k] = v
+    }
+    return result
+  }
+
+  isUniversalInclusion(name: string): boolean {
+    const inc = this.inclusionMap.get(name)
+    return inc?.category === 'universal'
   }
 }

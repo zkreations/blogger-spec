@@ -5,6 +5,7 @@ import type {
   BloggerDirectiveAttribute,
   BloggerDirectiveDefinition,
   BloggerDirectiveName,
+  BloggerInclusionDefinition,
   BloggerOperatorDefinition,
   BloggerOperatorName,
 } from './types.js'
@@ -173,4 +174,20 @@ export function getAllTypes(): Record<string, any> {
 
 export function getCoercionRules(): Record<string, any> {
   return getSpecCatalog().getCoercionRules()
+}
+
+export function isServerInclusion(name: string): boolean {
+  return getSpecCatalog().isServerInclusion(name)
+}
+
+export function getServerInclusion(name: string): BloggerInclusionDefinition | undefined {
+  return getSpecCatalog().getInclusion(name)
+}
+
+export function getAllServerInclusions(): Record<string, BloggerInclusionDefinition> {
+  return getSpecCatalog().getAllInclusions()
+}
+
+export function isUniversalInclusion(name: string): boolean {
+  return getSpecCatalog().isUniversalInclusion(name)
 }

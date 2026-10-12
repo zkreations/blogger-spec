@@ -49,6 +49,7 @@
     "./messages": "./catalogs/messages.json",
     "./scopes": "./catalogs/scopes.json",
     "./diagnostics": "./catalogs/diagnostics.json",
+    "./inclusions": "./catalogs/inclusions.json",
     "./fixtures": "./fixtures/index.json",
     "./runner": {
       "types": "./dist/runner.d.ts",

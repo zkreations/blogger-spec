@@ -4,6 +4,7 @@ import {
   getDiagnostics,
   getDirectives,
   getGlobals,
+  getInclusions,
   getMessages,
   getOperators,
   getScopes,
@@ -21,6 +22,7 @@ export const globals = getGlobals()
 export const messages = getMessages()
 export const scopes = getScopes()
 export const diagnostics = getDiagnostics()
+export const inclusions = getInclusions()
 
 export {
   getAllCatalogs,
@@ -28,6 +30,7 @@ export {
   getDiagnostics,
   getDirectives,
   getGlobals,
+  getInclusions,
   getMessages,
   getOperators,
   getScopes,

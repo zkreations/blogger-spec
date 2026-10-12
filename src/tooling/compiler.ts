@@ -208,6 +208,7 @@ export function generateEmbeddedCatalogs(): string {
     'messages',
     'scopes',
     'diagnostics',
+    'inclusions',
   ]
 
   const catalogs: Record<string, any> = {}

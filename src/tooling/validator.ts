@@ -51,6 +51,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     'messages',
     'scopes',
     'diagnostics',
+    'inclusions',
   ]
 
   for (const name of catalogNames) {

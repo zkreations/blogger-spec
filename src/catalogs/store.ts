@@ -4,6 +4,7 @@ import type {
   BloggerDiagnosticsCatalog,
   BloggerDirectivesCatalog,
   BloggerGlobalsCatalog,
+  BloggerInclusionsCatalog,
   BloggerMessagesCatalog,
   BloggerOperatorsCatalog,
   BloggerScopesCatalog,
@@ -126,6 +127,10 @@ export function getScopes(): BloggerScopesCatalog {
   return getCatalog('scopes')
 }
 
+export function getInclusions(): BloggerInclusionsCatalog {
+  return getCatalog('inclusions')
+}
+
 export function getAllCatalogs(): BloggerCatalogMap {
   return {
     directives: getDirectives(),
@@ -137,6 +142,7 @@ export function getAllCatalogs(): BloggerCatalogMap {
     messages: getMessages(),
     scopes: getScopes(),
     diagnostics: getDiagnostics(),
+    inclusions: getInclusions(),
   }
 }
 

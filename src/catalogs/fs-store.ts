@@ -63,4 +63,3 @@ export class FsCatalogStore implements CatalogStore {
     this.schemaCache.clear()
   }
 }
-

@@ -205,6 +205,34 @@ export interface BloggerScopesCatalog {
   [key: string]: any
 }
 
+export type BloggerInclusionCategory = 'universal' | 'common' | 'icon' | 'theme' | 'deprecated'
+
+export interface BloggerInclusionDefinition {
+  name: string
+  category: BloggerInclusionCategory
+  description: string
+  evidence: BloggerEvidenceLevel
+  verifiedAt: string
+  deprecated?: boolean
+  deprecation_note?: string
+  layouts_versions?: number[]
+  widget_version?: number
+  target_widgets?: string[]
+}
+
+export interface BloggerInclusionsCatalog {
+  $schema?: string
+  title?: string
+  description?: string
+  super_prefix_rule: {
+    prefix: string
+    description: string
+    behavior: string
+  }
+  inclusions: Record<string, BloggerInclusionDefinition>
+  [key: string]: any
+}
+
 export type BloggerCatalogName
   = | 'directives'
     | 'operators'
@@ -215,6 +243,7 @@ export type BloggerCatalogName
     | 'messages'
     | 'scopes'
     | 'diagnostics'
+    | 'inclusions'
 
 export interface BloggerCatalogMap {
   directives: BloggerDirectivesCatalog
@@ -226,6 +255,7 @@ export interface BloggerCatalogMap {
   messages: BloggerMessagesCatalog
   scopes: BloggerScopesCatalog
   diagnostics: BloggerDiagnosticsCatalog
+  inclusions: BloggerInclusionsCatalog
 }
 
 export interface BloggerEngineAdapter {

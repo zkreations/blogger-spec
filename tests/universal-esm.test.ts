@@ -49,6 +49,7 @@ describe('universal ESM & in-memory store suite', () => {
       'messages',
       'scopes',
       'diagnostics',
+      'inclusions',
     ])
 
     const directives = getDirectives()
@@ -58,7 +59,7 @@ describe('universal ESM & in-memory store suite', () => {
     expect(operators.operators['+']).toBeDefined()
 
     const schemas = getAllSchemas()
-    expect(schemas.length).toBe(9)
+    expect(schemas.length).toBe(10)
     expect(schemas.some(s => s.name === 'directives')).toBe(true)
   })
 

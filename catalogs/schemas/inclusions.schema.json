@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "inclusions.schema.json",
+  "title": "Blogger System & Platform Inclusions Master Catalog Schema",
+  "description": "JSON Schema specification for platform-level inclusions and backend-resolved subroutines in the Blogger Template Engine.",
+  "type": "object",
+  "required": [
+    "$schema",
+    "title",
+    "description",
+    "super_prefix_rule",
+    "inclusions"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "super_prefix_rule": {
+      "type": "object",
+      "required": [
+        "prefix",
+        "description",
+        "behavior"
+      ],
+      "properties": {
+        "prefix": {
+          "type": "string",
+          "const": "super."
+        },
+        "description": {
+          "type": "string"
+        },
+        "behavior": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "inclusions": {
+      "type": "object",
+      "additionalProperties": {
+        "$ref": "#/$defs/inclusionDefinition"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "inclusionDefinition": {
+      "type": "object",
+      "required": [
+        "name",
+        "category",
+        "description",
+        "evidence",
+        "verifiedAt"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "universal",
+            "common",
+            "icon",
+            "theme",
+            "deprecated"
+          ]
+        },
+        "description": {
+          "type": "string"
+        },
+        "evidence": {
+          "type": "string",
+          "enum": [
+            "official",
+            "observed",
+            "approximate",
+            "unknown"
+          ]
+        },
+        "verifiedAt": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+        },
+        "deprecated": {
+          "type": "boolean"
+        },
+        "deprecation_note": {
+          "type": "string"
+        },
+        "layouts_versions": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "enum": [1, 2, 3]
+          },
+          "description": "Blogger template engine architecture version(s) (b:layoutsVersion='1' | '2' | '3') where this inclusion is available."
+        },
+        "widget_version": {
+          "type": "integer",
+          "enum": [1, 2],
+          "description": "Gadget engine version (<b:widget version='1' | '2'>) required when invoked inside a widget."
+        },
+        "target_widgets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
+
