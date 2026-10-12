@@ -4229,7 +4229,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       "skin:color": {
         "category": "skin",
         "description": "Theme Designer skin color variable (hex, rgb, rgba) rendering color picker UI.",
-        "parent_type": "string",
+        "parent_type": null,
         "user_constructible": true,
         "ts_type": "string",
         "skin_metadata": {
@@ -4292,7 +4292,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       "skin:font": {
         "category": "skin",
         "description": "Theme Designer typography definition composite (family, size, style, weight).",
-        "parent_type": "string",
+        "parent_type": null,
         "user_constructible": true,
         "ts_type": "string",
         "skin_metadata": {
@@ -4339,7 +4339,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       "skin:background": {
         "category": "skin",
         "description": "Theme Designer composite background styling definition (image, repeat, position, color).",
-        "parent_type": "string",
+        "parent_type": null,
         "user_constructible": true,
         "ts_type": "string",
         "skin_metadata": {
@@ -4370,7 +4370,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       "skin:length": {
         "category": "skin",
         "description": "Dimensional CSS length unit (px, em, rem, %) supporting arithmetic in compiler.",
-        "parent_type": "string",
+        "parent_type": null,
         "user_constructible": true,
         "ts_type": "string",
         "skin_metadata": {
@@ -4384,7 +4384,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       "skin:automatic": {
         "category": "skin",
         "description": "Derived skin variable computed dynamically based on surrounding palette or locale choices.",
-        "parent_type": "string",
+        "parent_type": null,
         "user_constructible": false,
         "ts_type": "string",
         "skin_metadata": {
@@ -4398,7 +4398,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       "skin:string": {
         "category": "skin",
         "description": "Literal string value configured in skin variables for custom CSS tokens and asset paths.",
-        "parent_type": "string",
+        "parent_type": null,
         "user_constructible": true,
         "ts_type": "string",
         "skin_metadata": {
@@ -4412,7 +4412,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       "skin:url": {
         "category": "skin",
         "description": "External asset URL and web font reference loaded in skin stylesheet.",
-        "parent_type": "url",
+        "parent_type": null,
         "user_constructible": true,
         "ts_type": "string",
         "skin_metadata": {
@@ -4426,7 +4426,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       "skin_variable": {
         "category": "skin",
         "description": "Generic Theme Designer skin variable representation exposed under data:skin.vars.",
-        "parent_type": "string",
+        "parent_type": null,
         "user_constructible": true,
         "ts_type": "string",
         "modifiers": {}
