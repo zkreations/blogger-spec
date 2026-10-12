@@ -191,3 +191,16 @@ export function getAllServerInclusions(): Record<string, BloggerInclusionDefinit
 export function isUniversalInclusion(name: string): boolean {
   return getSpecCatalog().isUniversalInclusion(name)
 }
+
+export {
+  analyzeExpressionBudget,
+  COMPILER_NESTING_LIMIT,
+  COMPILER_QUOTA_LIMIT,
+  COMPILER_QUOTA_WARNING,
+  countExpressionTokens,
+  evaluateExpressionBudget,
+  flattenMultilineExpression,
+  tokenizeExpression,
+  tokenizeExpressionTokens,
+  unescapeXmlEntities,
+} from './quota.js'

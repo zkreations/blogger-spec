@@ -294,3 +294,27 @@ export interface ConformanceReport {
   skipped: number
   results: ConformanceCaseResult[]
 }
+
+export interface BloggerExpressionToken {
+  value: string
+  tokenType: string
+  tokensConsumed: number
+  pos: number
+}
+
+export interface BloggerExpressionTokenInfo {
+  value: string
+  tokenType: string
+  tokensConsumed: number
+}
+
+export type BloggerExpressionBudgetStatus = 'SAFE' | 'WARNING' | 'EXCEEDED'
+
+export interface BloggerExpressionBudgetResult {
+  expression: string
+  totalTokens: number
+  isValid: boolean
+  status: BloggerExpressionBudgetStatus
+  tokenStream: BloggerExpressionTokenInfo[]
+  recommendation: string
+}

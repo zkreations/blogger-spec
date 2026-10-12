@@ -39,6 +39,10 @@
       "types": "./dist/helpers.d.ts",
       "default": "./dist/helpers.js"
     },
+    "./quota": {
+      "types": "./dist/quota.d.ts",
+      "default": "./dist/quota.js"
+    },
     "./schemas/*": "./catalogs/schemas/*",
     "./directives": "./catalogs/directives.json",
     "./operators": "./catalogs/operators.json",

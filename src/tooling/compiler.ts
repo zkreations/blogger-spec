@@ -56,6 +56,7 @@ export function generateDts(): string {
     'export * from \'./ast.js\';',
     'export * from \'./catalogs/index.js\';',
     'export * from \'./helpers.js\';',
+    'export * from \'./quota.js\';',
     '',
     '// --- Subtypes & Aliases ---',
     'export type BloggerUrl = string;',
@@ -262,6 +263,7 @@ export function compileTypescript(): void {
     join(paths.root, 'src/runner.ts'),
     join(paths.root, 'src/helpers.ts'),
     join(paths.root, 'src/ast.ts'),
+    join(paths.root, 'src/quota.ts'),
     join(paths.root, 'src/catalogs/fs-store.ts'),
   ]
 
