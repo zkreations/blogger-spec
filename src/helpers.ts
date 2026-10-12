@@ -204,3 +204,13 @@ export {
   tokenizeExpressionTokens,
   unescapeXmlEntities,
 } from './quota.js'
+
+export {
+  getCompatibleOperatorNames,
+  getCompatibleOperators,
+  getTypeDefinition,
+  getTypeModifiers,
+  isTruthy,
+  isTypeAssignable,
+  resolveOperatorReturnType,
+} from './type-system.js'

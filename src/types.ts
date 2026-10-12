@@ -162,10 +162,40 @@ export interface BloggerDiagnosticsCatalog {
   rules: Record<string, BloggerDiagnosticRule>
 }
 
+export interface BloggerTypeModifierDefinition {
+  description: string
+  output_type: string
+  syntax: string
+  direct_syntax?: string
+  expr_syntax?: string
+  example?: string
+  [key: string]: any
+}
+
+export interface BloggerTypeDefinition {
+  category: 'base' | 'subtype' | 'skin' | 'collection' | 'meta'
+  description: string
+  parent_type: string | null
+  user_constructible: boolean
+  ts_type: string
+  item_type?: string
+  parameterized_forms?: string[]
+  skin_metadata?: Record<string, any>
+  modifiers: Record<string, BloggerTypeModifierDefinition>
+  [key: string]: any
+}
+
 export interface BloggerTypesCatalog {
   $schema?: string
   version?: string
-  types?: Record<string, any>
+  title?: string
+  description?: string
+  coercion_rules?: Record<string, any>
+  truthiness_matrix?: {
+    truthy: string[]
+    falsy: string[]
+  }
+  types: Record<string, BloggerTypeDefinition>
   modifiers?: Record<string, any>
   [key: string]: any
 }

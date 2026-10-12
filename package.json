@@ -43,6 +43,10 @@
       "types": "./dist/quota.d.ts",
       "default": "./dist/quota.js"
     },
+    "./type-system": {
+      "types": "./dist/type-system.d.ts",
+      "default": "./dist/type-system.js"
+    },
     "./schemas/*": "./catalogs/schemas/*",
     "./directives": "./catalogs/directives.json",
     "./operators": "./catalogs/operators.json",
