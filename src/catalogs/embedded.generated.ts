@@ -2954,7 +2954,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "aliases": [],
         "examples": [
           {
-            "expression": "data:posts none (p => p.isDraft)",
+            "expression": "data:posts none (p => p.labels.empty)",
             "result": "true",
             "description": "Negative quantifier"
           }
@@ -3093,7 +3093,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ],
         "examples": [
           {
-            "expression": "data:posts filter (p => p.hasThumbnail)",
+            "expression": "data:posts filter (p => p.featuredImage)",
             "result": "array",
             "description": "Filtered collection"
           }
@@ -3134,7 +3134,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "aliases": [],
         "examples": [
           {
-            "expression": "data:posts first (p => p.isFeatured)",
+            "expression": "data:posts first (p => p.hasJumpLink)",
             "result": "object",
             "description": "Extract first match"
           }
@@ -6187,10 +6187,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
               "BEFORE_DESCRIPTION"
             ]
           },
-          "sectionWidth": {
-            "type": "number",
-            "description": "Available width of the parent `<b:section>` in pixels."
-          },
           "shrinkToFit": {
             "type": "boolean",
             "description": "UI toggle indicating whether banner scales down to fit container width."
@@ -6220,6 +6216,13 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "replacement": "data:blog.isMobileRequest",
             "reason": "Legacy mobile rendering flag. Replaced by `data:blog.isMobileRequest` or CSS media queries."
           },
+          "sectionWidth": {
+            "status": "deprecated_in_layout_v3",
+            "action": "remove",
+            "type": "number",
+            "replacement": null,
+            "reason": "Fluid CSS layout replaces fixed sectionWidth dimension constraints."
+          },
           "widthStyleStr": {
             "status": "deprecated_in_widget_v2",
             "type": "string",
@@ -6244,10 +6247,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "type": "url",
             "description": "Target destination URL activated when clicking the image."
           },
-          "sectionWidth": {
-            "type": "number",
-            "description": "Target width of the parent `<b:section>` in pixels."
-          },
           "shrinkToFit": {
             "type": "boolean",
             "description": "UI toggle indicating whether the image scales down to container width."
@@ -6267,6 +6266,15 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "width": {
             "type": "number",
             "description": "Native width of the image in pixels."
+          }
+        },
+        "deprecated": {
+          "sectionWidth": {
+            "status": "deprecated_in_layout_v3",
+            "action": "remove",
+            "type": "number",
+            "replacement": null,
+            "reason": "Fluid CSS layout replaces fixed sectionWidth dimension constraints."
           }
         }
       },
