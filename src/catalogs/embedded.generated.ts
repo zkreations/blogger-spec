@@ -3329,7 +3329,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ],
         "examples": [
           {
-            "expression": "data:blog.canonicalUrl params { m: \"1\", hl: \"es\" }",
+            "expression": "data:blog.url params { m: \"1\", hl: \"es\" }",
             "result": "url",
             "description": "Query params set"
           }
@@ -4001,9 +4001,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "Resolves and returns the canonical absolute URL.",
             "output_type": "url",
             "syntax": ".canonical",
-            "direct_syntax": "<data:blog.canonicalUrl.canonical/>",
+            "direct_syntax": "<data:blog.url.canonical/>",
             "expr_syntax": "([expr]).canonical",
-            "example": "data:blog.canonicalUrl.canonical"
+            "example": "data:blog.url.canonical"
           },
           "http": {
             "description": "Forces the URL scheme to http.",
@@ -4026,7 +4026,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       "image": {
         "category": "subtype",
         "description": "Platform-generated image URL carrying Google CDN resizing flags and intrinsic pixel dimensions.",
-        "parent_type": "url",
+        "parent_type": "string",
         "user_constructible": false,
         "ts_type": "BloggerImage",
         "modifiers": {

@@ -1747,7 +1747,7 @@
       ],
       "examples": [
         {
-          "expression": "data:blog.canonicalUrl params { m: \"1\", hl: \"es\" }",
+          "expression": "data:blog.url params { m: \"1\", hl: \"es\" }",
           "result": "url",
           "description": "Query params set"
         }
