@@ -24,7 +24,7 @@ export interface BloggerNodeBase {
 
 export interface BloggerLiteralNode extends BloggerNodeBase {
   type: 'Literal'
-  value: string | number | boolean
+  value: string | number | boolean | null
   raw?: string
 }
 
@@ -182,3 +182,6 @@ export type BloggerASTNode
     | BloggerAttributeNode
     | BloggerExpressionNode
     | BloggerPropertyNode
+
+export { ExpressionParser, parseExpression } from './parser/expr-parser.js'
+export { Lexer, type Token, tokenize, type TokenPosition, type TokenType } from './parser/lexer.js'

@@ -204,7 +204,8 @@ describe('canonical type system & coercion engine', () => {
       expect(boolOps).toContain('and')
       expect(boolOps).toContain('or')
       expect(boolOps).toContain('==')
-      expect(boolOps).not.toContain('+')
+      expect(boolOps).toContain('+')
+      expect(boolOps).not.toContain('*')
       expect(boolOps).not.toContain('filter')
     })
 

@@ -83,7 +83,7 @@ export function getCompatibleOperators(
   for (const [opName, opDef] of Object.entries(operatorsCatalog)) {
     if (opName === 'to') {
       if (isLoopContext && isTypeAssignable(typeName, 'number')) {
-        compatible.push(opDef)
+        compatible.push({ name: opName, ...opDef })
       }
       continue
     }
@@ -101,7 +101,7 @@ export function getCompatibleOperators(
     })
 
     if (isMatch) {
-      compatible.push(opDef)
+      compatible.push({ name: opName, ...opDef })
     }
   }
 
@@ -112,7 +112,7 @@ export function getCompatibleOperatorNames(
   typeName: string,
   isLoopContext: boolean = false,
 ): string[] {
-  return getCompatibleOperators(typeName, isLoopContext).map(op => op.syntax?.functional_identifier || op.syntax?.infix || '').filter(Boolean)
+  return getCompatibleOperators(typeName, isLoopContext).map(op => op.name ?? '').filter(Boolean)
 }
 
 export function resolveOperatorReturnType(

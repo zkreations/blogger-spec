@@ -193,6 +193,12 @@ export function isUniversalInclusion(name: string): boolean {
 }
 
 export {
+  ExpressionParser,
+  parseExpression,
+  tokenize,
+} from './ast.js'
+
+export {
   analyzeExpressionBudget,
   COMPILER_NESTING_LIMIT,
   COMPILER_QUOTA_LIMIT,

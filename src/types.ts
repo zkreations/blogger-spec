@@ -54,6 +54,7 @@ export interface BloggerOperatorSyntax {
 }
 
 export interface BloggerOperatorDefinition {
+  name?: string
   family: string
   description: string
   syntax: BloggerOperatorSyntax
