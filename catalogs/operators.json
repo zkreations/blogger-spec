@@ -1372,7 +1372,7 @@
       "aliases": [],
       "examples": [
         {
-          "expression": "data:posts none (p => p.isDraft)",
+          "expression": "data:posts none (p => p.labels.empty)",
           "result": "true",
           "description": "Negative quantifier"
         }
@@ -1511,7 +1511,7 @@
       ],
       "examples": [
         {
-          "expression": "data:posts filter (p => p.hasThumbnail)",
+          "expression": "data:posts filter (p => p.featuredImage)",
           "result": "array",
           "description": "Filtered collection"
         }
@@ -1552,7 +1552,7 @@
       "aliases": [],
       "examples": [
         {
-          "expression": "data:posts first (p => p.isFeatured)",
+          "expression": "data:posts first (p => p.hasJumpLink)",
           "result": "object",
           "description": "Extract first match"
         }
