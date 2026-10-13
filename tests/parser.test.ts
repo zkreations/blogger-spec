@@ -282,6 +282,31 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect(inner.type).toBe('ConditionalExpression')
       expect(inner.isElvis).toBe(true)
     })
+
+    it('honors empirical primary coalescence precedence of elvis over arithmetic (* and +)', () => {
+      const multNode = parseExpression('5 ?: 2 * 10') as BloggerBinaryExpressionNode
+      expect(multNode.type).toBe('BinaryExpression')
+      expect(multNode.operator).toBe('*')
+      expect((multNode.left as BloggerConditionalExpressionNode).type).toBe('ConditionalExpression')
+      expect((multNode.left as BloggerConditionalExpressionNode).isElvis).toBe(true)
+      expect(((multNode.left as BloggerConditionalExpressionNode).test as BloggerLiteralNode).value).toBe(5)
+      expect(((multNode.left as BloggerConditionalExpressionNode).consequent as BloggerLiteralNode).value).toBe(2)
+      expect((multNode.right as BloggerLiteralNode).value).toBe(10)
+
+      const concatNode = parseExpression('"A" ?: "B" + "C"') as BloggerBinaryExpressionNode
+      expect(concatNode.type).toBe('BinaryExpression')
+      expect(concatNode.operator).toBe('+')
+      expect((concatNode.left as BloggerConditionalExpressionNode).type).toBe('ConditionalExpression')
+      expect((concatNode.left as BloggerConditionalExpressionNode).isElvis).toBe(true)
+
+      const ternaryNode = parseExpression('true ? 2 : 3 + 10') as BloggerConditionalExpressionNode
+      expect(ternaryNode.type).toBe('ConditionalExpression')
+      expect(ternaryNode.isElvis).toBe(false)
+      expect((ternaryNode.test as BloggerLiteralNode).value).toBe(true)
+      expect((ternaryNode.consequent as BloggerLiteralNode).value).toBe(2)
+      expect((ternaryNode.alternate as BloggerBinaryExpressionNode).type).toBe('BinaryExpression')
+      expect((ternaryNode.alternate as BloggerBinaryExpressionNode).operator).toBe('+')
+    })
   })
 
   describe('collections & lambdas', () => {

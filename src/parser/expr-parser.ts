@@ -96,7 +96,7 @@ const HIERARCHY_OPERATOR_LEVELS: Record<string, number> = {
   'and': 7,
   '||': 8,
   'or': 8,
-  '?:': 9,
+  '?:': 2,
   '?': 9,
   'where': 10,
   'map': 10,
@@ -615,7 +615,7 @@ export class ExpressionParser {
     }
 
     if (token.type === 'ELVIS') {
-      return { name: '?:', bindingPower: LEVEL_TO_BINDING_POWER[9]!, catalogLevel: 9, isElvis: true, isRightAssociative: true }
+      return { name: '?:', bindingPower: 95, catalogLevel: 2, isElvis: true, isRightAssociative: true }
     }
 
     if (token.type === 'QUESTION') {

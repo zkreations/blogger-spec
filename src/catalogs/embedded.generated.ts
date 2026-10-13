@@ -1595,9 +1595,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       {
         "level": 2,
-        "category": "Arithmetic (Multiplicative)",
+        "category": "Null Coalescence & Arithmetic (Multiplicative)",
         "associativity": "left-to-right",
         "operators": [
+          "?:",
           "*",
           "/",
           "%"
@@ -1682,11 +1683,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       {
         "level": 9,
-        "category": "Ternary & Coalescence",
+        "category": "Ternary / Conditional",
         "associativity": "right-to-left",
         "operators": [
-          "? :",
-          "?:"
+          "? :"
         ]
       },
       {
@@ -1845,9 +1845,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "elvis": {
         "name": "Coalescence / Fallback",
-        "description": "Fallback value selector for nullish or empty operands (?:).",
+        "description": "Primary nullish fallback value selector for null or undeclared operands (?:).",
         "precedence_tiers": [
-          9
+          2
         ],
         "operators": [
           "?:"
@@ -3142,7 +3142,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "?:": {
         "family": "elvis",
-        "description": "Elvis operator returning fallback value if left operand evaluates to null or empty.",
+        "description": "Primary nullish coalescence operator. Returns fallback value if left operand evaluates to null or missing/undefined data (note: non-null values such as empty strings '' do not trigger the fallback).",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -3151,7 +3151,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a ?: b",
           "functional": "?:(a, b)"
         },
-        "precedence_level": 9,
+        "precedence_level": 2,
         "operands": [
           {
             "name": "target",
@@ -3159,7 +3159,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
               "any"
             ],
             "required": true,
-            "description": "Value to inspect for nullish/empty state"
+            "description": "Value to inspect for null or undeclared state"
           },
           {
             "name": "fallback",
