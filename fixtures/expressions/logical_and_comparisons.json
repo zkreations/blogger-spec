@@ -199,6 +199,115 @@
         "outcome": "value",
         "value": "FALLBACK"
       }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/elvis-fallback-number-zero",
+      "title": "Elvis Fallback Does Not Trigger On Numeric Zero",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:?:"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "0 ?: \"FALLBACK\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 0
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/elvis-fallback-boolean-false",
+      "title": "Elvis Fallback Does Not Trigger On Boolean False",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:?:"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "false ?: \"FALLBACK\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/date-identity-equality",
+      "title": "Date Object Self Identity Equality",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:=="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.date == data:post.date",
+        "context": {
+          "post": {
+            "date": "2026-08-29T14:48:00-05:00"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/formatted-date-relational-comparison",
+      "title": "Relational Comparison Over Formatted Date String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:<",
+        "operator:format"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "(data:post.date format \"yyyyMMdd\") < \"20990101\"",
+        "context": {
+          "post": {
+            "date": "2026-08-29T14:48:00-05:00"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/date-iso8601-property-access",
+      "title": "Date Object ISO8601 String Property Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.date.iso8601",
+        "context": {
+          "post": {
+            "date": {
+              "iso8601": "2026-08-29T14:48:00-05:00"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "2026-08-29T14:48:00-05:00"
+      }
     }
   ]
 }

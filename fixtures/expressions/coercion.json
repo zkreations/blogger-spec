@@ -165,6 +165,122 @@
         "outcome": "value",
         "value": true
       }
+    },
+    {
+      "id": "expressions/coercion/equality-number-to-canonical-string",
+      "title": "Equality Between Numeric Literal And Canonical String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-canonical-string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "0 == \"0\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-number-to-non-canonical-string-rejection",
+      "title": "Inequality Between Number And Non-Canonical String With Leading Zero",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-canonical-string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "0 == \"00\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-boolean-to-canonical-string",
+      "title": "Equality Between Boolean Literal And Canonical Boolean String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-canonical-string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "true == \"true\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-boolean-to-number-rejection",
+      "title": "Inequality Between Boolean Literal And Integer",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-strict-types"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "true == 1",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-null-property-to-empty-string",
+      "title": "Equality Between Missing Property And Empty String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-nullish"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:nulo == \"\"",
+        "context": {
+          "nulo": null
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-empty-array-to-falsy-rejection",
+      "title": "Inequality Between Empty Array And Boolean False",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-strict-types"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "[] == false",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
     }
   ]
 }

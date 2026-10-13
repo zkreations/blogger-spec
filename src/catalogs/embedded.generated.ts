@@ -2231,7 +2231,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "==": {
         "family": "comparison",
-        "description": "Value equality test.",
+        "description": "Value equality test. Employs canonical scalar string coercion: numbers coerce to canonical string format (e.g. 0 == \"0\" is true, but 0 == \"00\" is false), booleans coerce to \"true\"/\"false\" strings (e.g. true == \"true\" is true, but true == 1 is false). Missing/undefined properties equal empty string \"\", while empty arrays do not coerce to false, 0, or empty string. Objects and Date instances are compared by identity.",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -2262,7 +2262,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "eq"
         ],
         "anti_patterns": [
-          "Do not use JavaScript '===' triple equals in Blogger expressions."
+          "Do not use JavaScript '===' triple equals in Blogger expressions.",
+          "Do not expect boolean-to-number coercion (e.g. true == 1 evaluates to false)."
         ],
         "examples": [
           {
@@ -2274,7 +2275,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "!=": {
         "family": "comparison",
-        "description": "Value inequality test.",
+        "description": "Value inequality test. Evaluates to the logical inversion of == using identical canonical coercion rules.",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -2317,7 +2318,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "<": {
         "family": "comparison",
-        "description": "Less than relational comparison.",
+        "description": "Less than relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -2349,6 +2350,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "aliases": [
           "lt"
         ],
+        "anti_patterns": [
+          "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date < data:post.date); format to string or use date.iso8601."
+        ],
         "examples": [
           {
             "expression": "data:posts.size < 5",
@@ -2359,7 +2363,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       ">": {
         "family": "comparison",
-        "description": "Greater than relational comparison.",
+        "description": "Greater than relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -2391,6 +2395,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "aliases": [
           "gt"
         ],
+        "anti_patterns": [
+          "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date > data:post.date); format to string or use date.iso8601."
+        ],
         "examples": [
           {
             "expression": "data:posts.size > 0",
@@ -2401,7 +2408,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "<=": {
         "family": "comparison",
-        "description": "Less than or equal relational comparison.",
+        "description": "Less than or equal relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -2433,6 +2440,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "aliases": [
           "lte"
         ],
+        "anti_patterns": [
+          "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date <= data:post.date); format to string or use date.iso8601."
+        ],
         "examples": [
           {
             "expression": "data:post.comments.size <= 10",
@@ -2443,7 +2453,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       ">=": {
         "family": "comparison",
-        "description": "Greater than or equal relational comparison.",
+        "description": "Greater than or equal relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -2474,6 +2484,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "return_type": "boolean",
         "aliases": [
           "gte"
+        ],
+        "anti_patterns": [
+          "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date >= data:post.date); format to string or use date.iso8601."
         ],
         "examples": [
           {
@@ -2618,7 +2631,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "in": {
         "family": "membership",
-        "description": "Tests whether an element exists within an array or character sequence within a string.",
+        "description": "Tests whether an element exists within an array or character sequence within a string. Evaluates using canonical equality coercion across collection elements (e.g. \"2\" in [1, 2, 3] and false in [\"false\", \"true\"] evaluate to true; empty string \"\" is always in string).",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -2660,7 +2673,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "contains": {
         "family": "content",
-        "description": "Tests whether a string contains a substring or an array contains an item (haystack contains needle).",
+        "description": "Tests whether a string contains a substring or an array contains an item (haystack contains needle). Evaluates using canonical equality coercion across collection elements (e.g. [1, 2, 3] contains \"2\" evaluates to true; string substring search is case-sensitive, and \"\" is always contained).",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -3154,7 +3167,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "?:": {
         "family": "elvis",
-        "description": "Primary nullish coalescence operator. Returns fallback value if left operand evaluates to null or missing/undefined data (note: non-null values such as empty strings '' do not trigger the fallback).",
+        "description": "Primary nullish coalescence operator. Returns fallback value if left operand evaluates to null or missing/undefined data (note: non-null values such as empty strings '', numeric zero 0, boolean false, and empty arrays [] do not trigger the fallback).",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -10003,6 +10016,16 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "message": "Unknown directive in Blogger 'b:' XML namespace.",
         "evidence": "official",
         "verifiedAt": "2026-10-10"
+      },
+      "BX1026": {
+        "code": "BX1026",
+        "name": "PROHIBITED_DATE_RELATIONAL_COMPARISON",
+        "category": "expressions",
+        "severity": "error",
+        "message": "Direct relational comparison (<, >, <=, >=) on Date objects is not supported in Blogger expressions. Format the date to string or use date.iso8601.",
+        "replacement": "(data:date format 'yyyyMMdd') < '...'",
+        "evidence": "observed",
+        "verifiedAt": "2026-10-12"
       }
     }
   },

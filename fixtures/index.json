@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-13",
   "metrics": {
-    "totalFixtures": 83,
-    "positiveFixtures": 73,
-    "negativeFixtures": 10,
-    "coveredSpecEntities": 59
+    "totalFixtures": 104,
+    "positiveFixtures": 92,
+    "negativeFixtures": 12,
+    "coveredSpecEntities": 65
   },
   "fixtures": [
     {
@@ -370,6 +370,122 @@
       }
     },
     {
+      "id": "expressions/coercion/equality-number-to-canonical-string",
+      "title": "Equality Between Numeric Literal And Canonical String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-canonical-string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "0 == \"0\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-number-to-non-canonical-string-rejection",
+      "title": "Inequality Between Number And Non-Canonical String With Leading Zero",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-canonical-string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "0 == \"00\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-boolean-to-canonical-string",
+      "title": "Equality Between Boolean Literal And Canonical Boolean String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-canonical-string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "true == \"true\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-boolean-to-number-rejection",
+      "title": "Inequality Between Boolean Literal And Integer",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-strict-types"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "true == 1",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-null-property-to-empty-string",
+      "title": "Equality Between Missing Property And Empty String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-nullish"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:nulo == \"\"",
+        "context": {
+          "nulo": null
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/coercion/equality-empty-array-to-falsy-rejection",
+      "title": "Inequality Between Empty Array And Boolean False",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "operator:==",
+        "semantics:coercion-strict-types"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "[] == false",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
       "id": "expressions/collections_and_lambdas/collection-take",
       "title": "Collection Take",
       "evidence": "official",
@@ -639,6 +755,158 @@
       "expected": {
         "outcome": "value",
         "value": 1
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-string-substring-match",
+      "title": "Substring Membership In String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"mundo\" in \"hola mundo\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-string-empty-always-present",
+      "title": "Empty String Membership In String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"\" in \"hola mundo\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-array-number-coercion",
+      "title": "Array Element Membership With Numeric String Coercion",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"2\" in [1, 2, 3]",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-array-boolean-string-coercion",
+      "title": "Array Element Membership With Boolean Canonical String Coercion",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "false in [\"false\", \"true\"]",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-functional-in",
+      "title": "Functional Syntax For In Membership Operator",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "in(\"b\", [\"a\", \"b\", \"c\"])",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/content-contains-string-substring",
+      "title": "String Substring Containment Check",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"hola mundo\" contains \"mundo\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/content-contains-array-coercion",
+      "title": "Array Containment Check With Numeric String Coercion",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "[1, 2, 3] contains \"2\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/content-contains-functional",
+      "title": "Functional Syntax For Contains Content Operator",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "contains(\"hola mundo\", \"mundo\")",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
       }
     },
     {
@@ -1091,6 +1359,115 @@
       "expected": {
         "outcome": "value",
         "value": "FALLBACK"
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/elvis-fallback-number-zero",
+      "title": "Elvis Fallback Does Not Trigger On Numeric Zero",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:?:"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "0 ?: \"FALLBACK\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 0
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/elvis-fallback-boolean-false",
+      "title": "Elvis Fallback Does Not Trigger On Boolean False",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:?:"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "false ?: \"FALLBACK\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/date-identity-equality",
+      "title": "Date Object Self Identity Equality",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:=="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.date == data:post.date",
+        "context": {
+          "post": {
+            "date": "2026-08-29T14:48:00-05:00"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/formatted-date-relational-comparison",
+      "title": "Relational Comparison Over Formatted Date String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:<",
+        "operator:format"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "(data:post.date format \"yyyyMMdd\") < \"20990101\"",
+        "context": {
+          "post": {
+            "date": "2026-08-29T14:48:00-05:00"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/logical_and_comparisons/date-iso8601-property-access",
+      "title": "Date Object ISO8601 String Property Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:logical_and_comparisons"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.date.iso8601",
+        "context": {
+          "post": {
+            "date": {
+              "iso8601": "2026-08-29T14:48:00-05:00"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "2026-08-29T14:48:00-05:00"
       }
     },
     {
@@ -1855,6 +2232,52 @@
           "BX1014"
         ],
         "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-date-relational-comparison",
+      "title": "Prohibited Direct Date Relational Comparison",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "rule:BX1026"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.date < data:post.date",
+        "context": {
+          "post": {
+            "date": "2026-08-29T14:48:00-05:00"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1026"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-literal-null-empty-comparison",
+      "title": "Prohibited Literal Null Equality With Empty String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "rule:BX1020"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "null == \"\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1020"
+        ],
+        "stage": "compiler"
       }
     }
   ]

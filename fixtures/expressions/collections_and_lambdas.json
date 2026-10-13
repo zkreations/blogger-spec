@@ -272,6 +272,158 @@
         "outcome": "value",
         "value": 1
       }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-string-substring-match",
+      "title": "Substring Membership In String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"mundo\" in \"hola mundo\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-string-empty-always-present",
+      "title": "Empty String Membership In String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"\" in \"hola mundo\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-array-number-coercion",
+      "title": "Array Element Membership With Numeric String Coercion",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"2\" in [1, 2, 3]",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-array-boolean-string-coercion",
+      "title": "Array Element Membership With Boolean Canonical String Coercion",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "false in [\"false\", \"true\"]",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-functional-in",
+      "title": "Functional Syntax For In Membership Operator",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "in(\"b\", [\"a\", \"b\", \"c\"])",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/content-contains-string-substring",
+      "title": "String Substring Containment Check",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"hola mundo\" contains \"mundo\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/content-contains-array-coercion",
+      "title": "Array Containment Check With Numeric String Coercion",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "[1, 2, 3] contains \"2\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/content-contains-functional",
+      "title": "Functional Syntax For Contains Content Operator",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "contains(\"hola mundo\", \"mundo\")",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
     }
   ]
 }

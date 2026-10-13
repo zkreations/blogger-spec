@@ -244,6 +244,16 @@
       "message": "Unknown directive in Blogger 'b:' XML namespace.",
       "evidence": "official",
       "verifiedAt": "2026-10-10"
+    },
+    "BX1026": {
+      "code": "BX1026",
+      "name": "PROHIBITED_DATE_RELATIONAL_COMPARISON",
+      "category": "expressions",
+      "severity": "error",
+      "message": "Direct relational comparison (<, >, <=, >=) on Date objects is not supported in Blogger expressions. Format the date to string or use date.iso8601.",
+      "replacement": "(data:date format 'yyyyMMdd') < '...'",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12"
     }
   }
 }
