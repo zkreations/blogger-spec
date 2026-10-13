@@ -301,6 +301,7 @@ export function compileTypescript(): void {
 
   const program = ts.createProgram(entryFiles, {
     ...parsedConfig.options,
+    rootDir: paths.src,
     outDir: paths.dist,
     declaration: true,
     noEmit: false,

@@ -7,6 +7,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export interface WorkspacePaths {
   root: string
+  src: string
   catalogs: string
   schemas: string
   fixtures: string
@@ -47,6 +48,7 @@ export function getWorkspacePaths(overrideRoot?: string): WorkspacePaths {
 
   return {
     root,
+    src: join(root, 'src'),
     catalogs,
     schemas: join(catalogs, 'schemas'),
     fixtures,
