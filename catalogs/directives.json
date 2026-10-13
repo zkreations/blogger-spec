@@ -1445,7 +1445,7 @@
       "attributes": {
         "render": {
           "type": "boolean",
-          "description": "Controls HTML emission. If true, renders as an HTML comment (<!-- ... -->). If false or omitted, stripped.",
+          "description": "Controls HTML emission. If true, renders as an HTML comment (<!--...-->) without interior padding. If false or omitted, stripped. Note: Standard XML comments inside <b:includable> are stripped at compile-time.",
           "expr": true,
           "attribute_kind": "prefixed_expression"
         }
