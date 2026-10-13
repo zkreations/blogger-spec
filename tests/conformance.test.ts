@@ -68,6 +68,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
 
       expect(getDiagnostics().rules).toBeDefined()
       expect(getTypes().types).toBeDefined()
+      expect(Object.keys(getTypes().types['skin:font']?.modifiers || {})).toEqual(['family', 'size'])
       expect(getGlobals().objects).toBeDefined()
       expect(getWidgets().widgets).toBeDefined()
       expect((getSettings() as any).widgets).toBeDefined()
@@ -441,6 +442,8 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       expect(spec.getGlobal('data:blog')).toBeDefined()
       expect(spec.isMessage('archive')).toBe(true)
       expect(spec.getMessage('archive')?.type).toBe('message')
+      expect(spec.isType('skin:font')).toBe(true)
+      expect(Object.keys(spec.getType('skin:font')?.modifiers || {})).toEqual(['family', 'size'])
       expect(spec.isScope('loop')).toBe(true)
       expect(spec.getScopePrecedence()).toContain('lambda')
       expect(spec.getCoercionRules().string_concatenation).toBeDefined()

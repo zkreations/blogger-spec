@@ -143,10 +143,11 @@ describe('canonical type system & coercion engine', () => {
       expect(colorMods.escaped).toBeUndefined()
 
       const fontMods = getTypeModifiers('skin:font')
+      expect(Object.keys(fontMods)).toEqual(['family', 'size'])
       expect(fontMods.family).toBeDefined()
       expect(fontMods.size).toBeDefined()
-      expect(fontMods.style).toBeDefined()
-      expect(fontMods.weight).toBeDefined()
+      expect(fontMods.style).toBeUndefined()
+      expect(fontMods.weight).toBeUndefined()
       expect(fontMods.length).toBeUndefined()
 
       const bgMods = getTypeModifiers('skin:background')

@@ -600,7 +600,7 @@
     },
     "skin:font": {
       "category": "skin",
-      "description": "Theme Designer typography definition composite (family, size, style, weight).",
+      "description": "Theme Designer typography definition composite decomposing only font family and size (family, size).",
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "string",
@@ -626,22 +626,6 @@
           "direct_syntax": "<data:skin.vars.name.size/>",
           "expr_syntax": "data:skin.vars.name.size",
           "example": "data:skin.vars.body_font.size"
-        },
-        "style": {
-          "description": "Font style: 'normal' or 'italic'.",
-          "output_type": "string",
-          "syntax": ".style",
-          "direct_syntax": "<data:skin.vars.name.style/>",
-          "expr_syntax": "data:skin.vars.name.style",
-          "example": "data:skin.vars.body_font.style"
-        },
-        "weight": {
-          "description": "Font weight: 'normal', 'bold', or numeric weight.",
-          "output_type": "string",
-          "syntax": ".weight",
-          "direct_syntax": "<data:skin.vars.name.weight/>",
-          "expr_syntax": "data:skin.vars.name.weight",
-          "example": "data:skin.vars.body_font.weight"
         }
       }
     },
