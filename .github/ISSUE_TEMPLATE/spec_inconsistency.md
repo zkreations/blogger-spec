@@ -12,6 +12,11 @@ labels: ["bug", "catalog"]
 - [ ] `official` (documented in official Google Blogger resources)
 - [ ] `observed` (empirically observed on a live Blogger blog)
 
+### Blogger Environment Details
+- **Layouts Version**: [ ] v1 | [ ] v2 | [ ] v3
+- **Widget Version**: [ ] 1 | [ ] 2
+- **Theme**: <!-- e.g., Soho, Contempo, Notable, Essential, or custom -->
+
 ### Minimal Reproducible XML / Expression
 ```xml
 <!-- Minimal snippet that reproduces the issue -->
@@ -21,9 +26,12 @@ labels: ["bug", "catalog"]
 <!-- Error message, rendered output, or silent fallback -->
 
 ### Expected Spec Behavior
-<!-- What should blogger-spec permit, reject, or declare instead -->
+<!-- What should blogger-spec permit, reject, parse, or declare instead -->
 
-### Affected Catalogs / Fixtures
-- Catalog: `catalogs/<catalog>.json`
-- Rule / Entity:
-
+### Affected Component / Catalog
+- [ ] Catalog: `catalogs/<catalog>.json`
+- [ ] Expression Parser (`src/parser/`)
+- [ ] Type System & Coercion (`src/type-system.ts`)
+- [ ] Token Quota Engine (`src/quota.ts`)
+- [ ] Test Fixtures (`fixtures/`)
+- **Entity / Rule**: <!-- e.g. operator:?:, directive:b:loop, type:image, BX1021 -->
