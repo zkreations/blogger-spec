@@ -1454,7 +1454,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "attributes": {
           "render": {
             "type": "boolean",
-            "description": "Controls HTML emission. If true, renders as an HTML comment (<!-- ... -->). If false or omitted, stripped.",
+            "description": "Controls HTML emission. If true, renders as an HTML comment (<!--...-->) without interior padding. If false or omitted, stripped. Note: Standard XML comments inside <b:includable> are stripped at compile-time.",
             "expr": true,
             "attribute_kind": "prefixed_expression"
           }
@@ -3287,7 +3287,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "params": {
         "family": "url",
-        "description": "Sets or replaces query parameters on a URL using key-values from a dictionary object.",
+        "description": "Sets or replaces query parameters on a URL using key-values from a dictionary object, deterministically serializing parameters in alphabetical key order.",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -3431,7 +3431,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "format": {
         "family": "date",
-        "description": "Formats a timestamp date value using an ICU date-time format pattern string.",
+        "description": "Formats a timestamp date value using an ICU date-time format pattern string, automatically applying the blog's configured locale.",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -3472,7 +3472,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "resizeImage": {
         "family": "image",
-        "description": "Rewrites Google CDN image URLs for resizing, aspect ratio cropping, or responsive datasets.",
+        "description": "Rewrites Google CDN image URLs for resizing, aspect ratio cropping, or responsive datasets. When evaluated against non-Google CDN URLs, safely returns the original URL unmodified without compiler diagnostics.",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,

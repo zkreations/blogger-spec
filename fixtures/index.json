@@ -1,11 +1,11 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-10-12",
+  "generatedAt": "2026-10-13",
   "metrics": {
-    "totalFixtures": 65,
-    "positiveFixtures": 55,
+    "totalFixtures": 78,
+    "positiveFixtures": 68,
     "negativeFixtures": 10,
-    "coveredSpecEntities": 53
+    "coveredSpecEntities": 58
   },
   "fixtures": [
     {
@@ -664,6 +664,46 @@
       }
     },
     {
+      "id": "expressions/helpers_and_transforms/url-params-alphabetical-sort",
+      "title": "Url Params Alphabetical Sort",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:params"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:baseUri params { m: \"1\", hl: \"es\" }",
+        "context": {
+          "baseUri": "https://mi-blog.blogspot.com/p/articulo.html"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://mi-blog.blogspot.com/p/articulo.html?hl=es&m=1"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/url-append-params-preservation",
+      "title": "Url Append Params Preservation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:appendParams"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"https://mi-blog.blogspot.com/?a=1\" appendParams { b: \"2\" }",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://mi-blog.blogspot.com/?a=1&b=2"
+      }
+    },
+    {
       "id": "expressions/helpers_and_transforms/url-fragment-append",
       "title": "Url Fragment Append",
       "evidence": "official",
@@ -704,6 +744,154 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample=w600-h337-p-k-no-nu"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-resize-integer",
+      "title": "Image Resize Integer Dimension",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:resizeImage"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "resizeImage(data:cdnImg, 320)",
+        "context": {
+          "cdnImg": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://blogger.googleusercontent.com/img/a/sample_id=w320"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-resize-infix",
+      "title": "Image Resize Infix Syntax",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:resizeImage"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:cdnImg resizeImage 240",
+        "context": {
+          "cdnImg": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://blogger.googleusercontent.com/img/a/sample_id=w240"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-resize-external-passthrough",
+      "title": "Image Resize External URL Passthrough",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:resizeImage"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "resizeImage(data:extImg, 300)",
+        "context": {
+          "extImg": "https://example.com/external-photo.jpg"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://example.com/external-photo.jpg"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-sourceset-infix",
+      "title": "Image SourceSet Infix Generator",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:sourceSet"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:cdnImg sourceSet [320, 640, 1024]",
+        "context": {
+          "cdnImg": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://blogger.googleusercontent.com/img/a/sample_id=w320 320w, https://blogger.googleusercontent.com/img/a/sample_id=w640 640w, https://blogger.googleusercontent.com/img/a/sample_id=w1024 1024w"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-sourceset-functional-ratio",
+      "title": "Image SourceSet Functional With Aspect Ratio",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:sourceSet"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "sourceSet(data:cdnImg, [480, 800], \"1:1\")",
+        "context": {
+          "cdnImg": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://blogger.googleusercontent.com/img/a/sample_id=w480-h480-p-k-no-nu 480w, https://blogger.googleusercontent.com/img/a/sample_id=w800-h800-p-k-no-nu 800w"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/date-format-pattern",
+      "title": "Date Format ICU Pattern",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:format"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:realDate format \"yyyy-MM-dd\"",
+        "context": {
+          "realDate": "2026-08-29T14:48:00-05:00"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "2026-08-29"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/date-format-precedence-relational",
+      "title": "Date Format Precedence Over Relational Equality",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:format",
+        "operator:=="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:realDate format \"yyyy\" == \"2026\"",
+        "context": {
+          "realDate": "2026-08-29T14:48:00-05:00"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
       }
     },
     {
@@ -1210,6 +1398,69 @@
       }
     },
     {
+      "id": "rendering/widget_rendering/comment-render-emission",
+      "title": "Comment Render True Emission",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:comment"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:comment render='true'>TEST COMMENT</b:comment>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<!--TEST COMMENT-->",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/widget_rendering/class-conditional-append-and-omission",
+      "title": "Class Conditional Append And False Omission",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:class"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div class='base-box'><b:class name='is-active' cond='true'/><b:class name='is-hidden' cond='false'/><span>Box</span></div>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"base-box is-active\"><span>Box</span></div>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/widget_rendering/attr-conditional-omission-on-false",
+      "title": "Attr Conditional Emission And Omission On False",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:attr"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div><b:attr name='data-presente' expr:value='\"activo\"' cond='true'/><b:attr name='data-descartado' expr:value='\"omitir\"' cond='false'/><span>Box</span></div>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div data-presente=\"activo\"><span>Box</span></div>",
+        "canonicalDom": true
+      }
+    },
+    {
       "id": "scopes/with_nesting/with-alias-resolution",
       "title": "With Alias Resolution",
       "evidence": "official",
@@ -1252,6 +1503,27 @@
       "expected": {
         "outcome": "html",
         "html": "<span>Inner</span><span>Outer</span>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "scopes/with_nesting/with-nested-shadowing-referencing-outer",
+      "title": "With Nested Shadowing Referencing Outer Scope",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:with_nesting",
+        "tag:b:with"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:with var='x' value='10'><b:with var='x' value='data:x + 5'><span><data:x/></span></b:with></b:with>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<span>15</span>",
         "canonicalDom": true
       }
     },

@@ -46,6 +46,27 @@
         "html": "<span>Inner</span><span>Outer</span>",
         "canonicalDom": true
       }
+    },
+    {
+      "id": "scopes/with_nesting/with-nested-shadowing-referencing-outer",
+      "title": "With Nested Shadowing Referencing Outer Scope",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:with_nesting",
+        "tag:b:with"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:with var='x' value='10'><b:with var='x' value='data:x + 5'><span><data:x/></span></b:with></b:with>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<span>15</span>",
+        "canonicalDom": true
+      }
     }
   ]
 }

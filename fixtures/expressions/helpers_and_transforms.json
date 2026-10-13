@@ -24,6 +24,46 @@
       }
     },
     {
+      "id": "expressions/helpers_and_transforms/url-params-alphabetical-sort",
+      "title": "Url Params Alphabetical Sort",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:params"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:baseUri params { m: \"1\", hl: \"es\" }",
+        "context": {
+          "baseUri": "https://mi-blog.blogspot.com/p/articulo.html"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://mi-blog.blogspot.com/p/articulo.html?hl=es&m=1"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/url-append-params-preservation",
+      "title": "Url Append Params Preservation",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:appendParams"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"https://mi-blog.blogspot.com/?a=1\" appendParams { b: \"2\" }",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://mi-blog.blogspot.com/?a=1&b=2"
+      }
+    },
+    {
       "id": "expressions/helpers_and_transforms/url-fragment-append",
       "title": "Url Fragment Append",
       "evidence": "official",
@@ -64,6 +104,154 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample=w600-h337-p-k-no-nu"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-resize-integer",
+      "title": "Image Resize Integer Dimension",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:resizeImage"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "resizeImage(data:cdnImg, 320)",
+        "context": {
+          "cdnImg": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://blogger.googleusercontent.com/img/a/sample_id=w320"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-resize-infix",
+      "title": "Image Resize Infix Syntax",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:resizeImage"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:cdnImg resizeImage 240",
+        "context": {
+          "cdnImg": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://blogger.googleusercontent.com/img/a/sample_id=w240"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-resize-external-passthrough",
+      "title": "Image Resize External URL Passthrough",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:resizeImage"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "resizeImage(data:extImg, 300)",
+        "context": {
+          "extImg": "https://example.com/external-photo.jpg"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://example.com/external-photo.jpg"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-sourceset-infix",
+      "title": "Image SourceSet Infix Generator",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:sourceSet"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:cdnImg sourceSet [320, 640, 1024]",
+        "context": {
+          "cdnImg": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://blogger.googleusercontent.com/img/a/sample_id=w320 320w, https://blogger.googleusercontent.com/img/a/sample_id=w640 640w, https://blogger.googleusercontent.com/img/a/sample_id=w1024 1024w"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-sourceset-functional-ratio",
+      "title": "Image SourceSet Functional With Aspect Ratio",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:sourceSet"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "sourceSet(data:cdnImg, [480, 800], \"1:1\")",
+        "context": {
+          "cdnImg": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://blogger.googleusercontent.com/img/a/sample_id=w480-h480-p-k-no-nu 480w, https://blogger.googleusercontent.com/img/a/sample_id=w800-h800-p-k-no-nu 800w"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/date-format-pattern",
+      "title": "Date Format ICU Pattern",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:format"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:realDate format \"yyyy-MM-dd\"",
+        "context": {
+          "realDate": "2026-08-29T14:48:00-05:00"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "2026-08-29"
+      }
+    },
+    {
+      "id": "expressions/helpers_and_transforms/date-format-precedence-relational",
+      "title": "Date Format Precedence Over Relational Equality",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:format",
+        "operator:=="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:realDate format \"yyyy\" == \"2026\"",
+        "context": {
+          "realDate": "2026-08-29T14:48:00-05:00"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
       }
     }
   ]

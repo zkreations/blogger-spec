@@ -74,6 +74,69 @@
         "html": "Desarrollo",
         "canonicalDom": true
       }
+    },
+    {
+      "id": "rendering/widget_rendering/comment-render-emission",
+      "title": "Comment Render True Emission",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:comment"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:comment render='true'>TEST COMMENT</b:comment>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<!--TEST COMMENT-->",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/widget_rendering/class-conditional-append-and-omission",
+      "title": "Class Conditional Append And False Omission",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:class"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div class='base-box'><b:class name='is-active' cond='true'/><b:class name='is-hidden' cond='false'/><span>Box</span></div>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"base-box is-active\"><span>Box</span></div>",
+        "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/widget_rendering/attr-conditional-omission-on-false",
+      "title": "Attr Conditional Emission And Omission On False",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-12",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:attr"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div><b:attr name='data-presente' expr:value='\"activo\"' cond='true'/><b:attr name='data-descartado' expr:value='\"omitir\"' cond='false'/><span>Box</span></div>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div data-presente=\"activo\"><span>Box</span></div>",
+        "canonicalDom": true
+      }
     }
   ]
 }

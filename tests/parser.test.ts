@@ -381,6 +381,38 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect((member.property as any).name).toBe('length')
       expect(member.computed).toBe(false)
     })
+
+    it('parses infix transform operators (resizeImage, sourceSet, params, appendParams)', () => {
+      const resizeInfix = parseExpression('data:cdnImg resizeImage 240') as BloggerBinaryExpressionNode
+      expect(resizeInfix.type).toBe('BinaryExpression')
+      expect(resizeInfix.operator).toBe('resizeImage')
+      expect(resizeInfix.precedence).toBe(3)
+
+      const sourceSetInfix = parseExpression('data:cdnImg sourceSet [320, 640]') as BloggerBinaryExpressionNode
+      expect(sourceSetInfix.type).toBe('BinaryExpression')
+      expect(sourceSetInfix.operator).toBe('sourceSet')
+      expect(sourceSetInfix.precedence).toBe(3)
+
+      const paramsInfix = parseExpression('data:baseUri params { m: "1", hl: "es" }') as BloggerBinaryExpressionNode
+      expect(paramsInfix.type).toBe('BinaryExpression')
+      expect(paramsInfix.operator).toBe('params')
+      expect(paramsInfix.precedence).toBe(3)
+
+      const appendParamsInfix = parseExpression('"https://mi-blog.blogspot.com/?a=1" appendParams { b: "2" }') as BloggerBinaryExpressionNode
+      expect(appendParamsInfix.type).toBe('BinaryExpression')
+      expect(appendParamsInfix.operator).toBe('appendParams')
+      expect(appendParamsInfix.precedence).toBe(3)
+    })
+
+    it('correctly associates format precedence higher than relational equality', () => {
+      const relNode = parseExpression('data:realDate format "yyyy" == "2026"') as BloggerBinaryExpressionNode
+      expect(relNode.type).toBe('BinaryExpression')
+      expect(relNode.operator).toBe('==')
+      expect(relNode.left.type).toBe('BinaryExpression')
+      expect((relNode.left as BloggerBinaryExpressionNode).operator).toBe('format')
+      expect((relNode.left as BloggerBinaryExpressionNode).precedence).toBe(3)
+      expect(relNode.precedence).toBe(4)
+    })
   })
 
   describe('error handling', () => {
