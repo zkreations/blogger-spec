@@ -282,6 +282,9 @@
         "nesting": {
           "status": "forbidden",
           "reason": "b:includable elements cannot be nested within one another."
+        },
+        "widget_wrapper_mutation": {
+          "description": "Direct child b:class and b:attr elements within id='main' directly mutate the widget's synthetic HTML root container element (<div class='widget [Type]' ...>)."
         }
       },
       "closure_mode": "container",
@@ -336,6 +339,9 @@
         "server_resolution": {
           "status": "allowed",
           "description": "Server-hosted universal subroutines (all-head-content, urlParamsAsFormInput, etc.), common library subroutines (responsiveImageStyle, openGraphMetaData, widget-title), and super.NAME resolve against platform backend defaults and do not require local includable declarations."
+        },
+        "dom_mutation_hoisting": {
+          "description": "b:class and b:attr elements executed within the invoked b:includable hoist across the include boundary to mutate the enclosing HTML ancestor at the call site."
         }
       },
       "closure_mode": "self_closing"
@@ -943,6 +949,9 @@
         "b:whitespace": {
           "status": "beta",
           "description": "A b:attr with name='b:whitespace' and value='remove' can be used inside b:tag to close a self-closing element."
+        },
+        "dom_mutation_pipeline": {
+          "description": "Hoists across arbitrary nesting of logic container directives (b:if, b:elseif, b:else, b:switch, b:with, b:tag) to add attributes to the nearest enclosing HTML ancestor. When placed inside a b:loop, accumulates attributes across iterations on the enclosing HTML container. When placed as a direct child of <b:includable id='main'>, directly mutates the synthetic outer widget wrapper element. Crosses subroutine boundaries (<b:include>) to mutate the caller's enclosing HTML element. Discards attributes completely when cond evaluates to false."
         }
       },
       "closure_mode": "self_closing"
@@ -1000,6 +1009,9 @@
         "overwrite": {
           "status": "unsupported",
           "description": "b:class adds a class to the existing class attribute rather than replacing it. Use b:attr to overwrite the class attribute."
+        },
+        "dom_mutation_pipeline": {
+          "description": "Hoists across arbitrary nesting of logic container directives (b:if, b:elseif, b:else, b:switch, b:with, b:tag) to mutate the nearest enclosing HTML ancestor. When placed inside a b:loop, accumulates classes across all iterations on the enclosing HTML container. When placed as a direct child of <b:includable id='main'>, directly mutates the synthetic outer widget wrapper element (<div class='widget [Type]'>). Crosses subroutine boundaries (<b:include>) to mutate the caller's enclosing HTML element. Between sibling HTML elements, strictly binds to the ancestor container, never to adjacent siblings."
         }
       },
       "closure_mode": "self_closing"
