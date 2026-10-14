@@ -24,7 +24,8 @@
     },
     "authorSaid": {
       "type": "message",
-      "description": "Comment author attribution quote ('Author said...'). Direct tag invocation prohibited; requires <b:message>.",
+      "description": "Comment author attribution quote ('%1 said&hellip;'). Direct tag invocation prohibited; requires <b:message>.",
+      "pattern": "%1 said&hellip;",
       "direct_invocation": false,
       "parameters": [
         {
@@ -35,7 +36,8 @@
     },
     "authorSaidWithLink": {
       "type": "message",
-      "description": "Comment author quote with HTML anchor markup. Direct tag invocation prohibited; requires <b:message>.",
+      "description": "Comment author quote with HTML anchor markup ('<a href=\"%2\" rel=\"nofollow\">%1</a> said&hellip;'). Direct tag invocation prohibited; requires <b:message>.",
+      "pattern": "<a href=\"%2\" rel=\"nofollow\">%1</a> said&hellip;",
       "direct_invocation": false,
       "parameters": [
         {
@@ -62,7 +64,8 @@
     },
     "byAuthor": {
       "type": "message",
-      "description": "Attribution phrase ('by author'). Direct tag invocation prohibited; requires <b:message>.",
+      "description": "Attribution phrase ('By %1'). Direct tag invocation prohibited; requires <b:message>.",
+      "pattern": "By %1",
       "direct_invocation": false,
       "parameters": [
         {
@@ -73,7 +76,8 @@
     },
     "byAuthorLink": {
       "type": "message",
-      "description": "Attribution phrase with author profile anchor. Direct tag invocation prohibited; requires <b:message>.",
+      "description": "Attribution phrase with author profile anchor ('By <a href=\"%2\">%1</a>'). Direct tag invocation prohibited; requires <b:message>.",
+      "pattern": "By <a href=\"%2\">%1</a>",
       "direct_invocation": false,
       "parameters": [
         {
@@ -240,7 +244,8 @@
     },
     "numberOfComments": {
       "type": "message",
-      "description": "Comment counter display template. Direct tag invocation prohibited; requires <b:message>.",
+      "description": "Comment counter display template ('{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}'). Direct tag invocation prohibited; requires <b:message>.",
+      "pattern": "{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}",
       "direct_invocation": false,
       "parameters": [
         {
@@ -299,7 +304,8 @@
     },
     "postedByAuthor": {
       "type": "message",
-      "description": "Author attribution display string. Direct tag invocation prohibited; requires <b:message>.",
+      "description": "Author attribution display string ('Posted by %1'). Direct tag invocation prohibited; requires <b:message>.",
+      "pattern": "Posted by %1",
       "direct_invocation": false,
       "parameters": [
         {
@@ -310,7 +316,8 @@
     },
     "postedByAuthorLink": {
       "type": "message",
-      "description": "Author attribution with HTML anchor. Direct tag invocation prohibited; requires <b:message>.",
+      "description": "Author attribution with HTML anchor ('Posted by <a href=\"%2\">%1</a>'). Direct tag invocation prohibited; requires <b:message>.",
+      "pattern": "Posted by <a href=\"%2\">%1</a>",
       "direct_invocation": false,
       "parameters": [
         {
@@ -333,7 +340,8 @@
     },
     "poweredByBloggerLink": {
       "type": "message",
-      "description": "Platform attribution with Blogger anchor. Direct tag invocation prohibited; requires <b:message>.",
+      "description": "Platform attribution with Blogger anchor ('Powered by <a href='%1' target='_blank'>Blogger</a>'). Direct tag invocation prohibited; requires <b:message>.",
+      "pattern": "Powered by <a href='%1' target='_blank'>Blogger</a>",
       "direct_invocation": false,
       "parameters": [
         {
@@ -412,7 +420,8 @@
     },
     "templateImagesBy": {
       "type": "message",
-      "description": "Theme image designer attribution. Direct tag invocation prohibited; requires <b:message>.",
+      "description": "Theme image designer attribution ('Theme images by %1'). Direct tag invocation prohibited; requires <b:message>.",
+      "pattern": "Theme images by %1",
       "direct_invocation": false,
       "parameters": [
         {
@@ -423,7 +432,8 @@
     },
     "templateImagesByLink": {
       "type": "message",
-      "description": "Theme image designer attribution with link. Direct tag invocation prohibited; requires <b:message>.",
+      "description": "Theme image designer attribution with link ('Theme images by <a href=\"%1\">%2</a>'). Direct tag invocation prohibited; requires <b:message>.",
+      "pattern": "Theme images by <a href=\"%1\">%2</a>",
       "direct_invocation": false,
       "parameters": [
         {

@@ -51,6 +51,10 @@
         "description": {
           "type": "string"
         },
+        "pattern": {
+          "type": "string",
+          "description": "Canonical un-interpolated template token or ICU plural format string (e.g. 'By %1', '{numComments, plural, ...}')."
+        },
         "direct_invocation": {
           "type": "boolean",
           "description": "Specifies whether direct tag invocation (<data:messages.key/>) is allowed. Forbidden (false) for parameterized messages requiring <b:message>."
