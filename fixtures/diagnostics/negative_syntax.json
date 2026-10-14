@@ -594,7 +594,29 @@
         ],
         "stage": "parser"
       }
+    },
+    {
+      "id": "diagnostics/negative_syntax/inline-concatenated-message-params",
+      "title": "Inline Concatenated Message Params Without Whitespace",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1029"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.templateImagesByLink'><b:param value='https://example.com/designer'/><b:param value='Jane Designer'/></b:message>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1029"
+        ],
+        "stage": "compiler"
+      }
     }
   ]
 }
+
 
