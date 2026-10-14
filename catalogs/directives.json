@@ -1133,7 +1133,7 @@
         },
         "parameters": {
           "status": "conditional",
-          "description": "One or more b:param elements must be nested inside b:message when referencing parameterized messages. Parameter assignment is positional based on child tag sequence."
+          "description": "One or more b:param elements must be nested inside b:message when referencing parameterized messages. Parameter assignment is positional for simple tokens (%1), but pluralized ICU messages (e.g. numberOfComments with {numComments, plural, ...}) strictly require the 'name' attribute matching the ICU variable identifier (e.g. name='numComments')."
         },
         "direct_invocation": {
           "status": "forbidden",
@@ -1183,7 +1183,7 @@
           "reason": "b:param is self-closing and cannot contain child nodes."
         },
         "positional_assignment": {
-          "description": "Parameter replacement in b:message is resolved positionally based on child b:param order, not by parameter name."
+          "description": "Parameter replacement in b:message is resolved positionally based on child b:param order for simple messages (%1, %2), but strictly requires the 'name' attribute matching the ICU variable identifier for pluralized messages (e.g. name='numComments')."
         },
         "multiplicity": {
           "min": 0,
