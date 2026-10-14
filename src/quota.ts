@@ -15,7 +15,16 @@ const LOGICAL_KEYWORDS = new Set(['and', 'or', 'not'])
 const MEMBERSHIP_KEYWORDS = new Set(['in', 'contains'])
 const LAMBDA_KEYWORDS = new Set(['filter', 'where', 'map', 'select', 'first', 'count', 'any', 'all', 'none'])
 const COLLECTION_KEYWORDS = new Set(['take', 'limit', 'skip', 'offset', 'to'])
-const NATIVE_FUNCTIONS = new Set(['resizeimage', 'snippet', 'sourceset', 'format'])
+const NATIVE_FUNCTIONS = new Set([
+  'resizeimage',
+  'snippet',
+  'sourceset',
+  'format',
+  'params',
+  'path',
+  'appendparams',
+  'fragment',
+])
 const BOOLEAN_KEYWORDS = new Set(['true', 'false', 'null'])
 
 export function flattenMultilineExpression(expr: string): string {
