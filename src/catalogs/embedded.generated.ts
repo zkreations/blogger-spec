@@ -2010,6 +2010,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "Year 2025",
             "description": "String concatenation"
           }
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": [
+          "plus"
         ]
       },
       "-": {
@@ -2096,6 +2100,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "6",
             "description": "Binary subtraction"
           }
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": [
+          "minus"
         ]
       },
       "*": {
@@ -2138,6 +2146,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "50",
             "description": "Multiplication"
           }
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": [
+          "multiply"
         ]
       },
       "/": {
@@ -2183,6 +2195,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "2.3333",
             "description": "Division rounded to 4 decimals"
           }
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": [
+          "divide"
         ]
       },
       "%": {
@@ -2227,6 +2243,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "1",
             "description": "Modulo remainder"
           }
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": [
+          "modulo",
+          "mod"
         ]
       },
       "==": {
@@ -2271,7 +2292,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Equality check"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "eq"
+        ],
+        "doc_aliases": []
       },
       "!=": {
         "family": "comparison",
@@ -2314,7 +2339,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "false",
             "description": "Inequality check"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "neq"
+        ],
+        "doc_aliases": []
       },
       "<": {
         "family": "comparison",
@@ -2359,7 +2388,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Less than check"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "lt"
+        ],
+        "doc_aliases": []
       },
       ">": {
         "family": "comparison",
@@ -2404,7 +2437,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Greater than check"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "gt"
+        ],
+        "doc_aliases": []
       },
       "<=": {
         "family": "comparison",
@@ -2449,7 +2486,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Less than or equal"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "lte"
+        ],
+        "doc_aliases": []
       },
       ">=": {
         "family": "comparison",
@@ -2494,7 +2535,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Greater than or equal"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "gte"
+        ],
+        "doc_aliases": []
       },
       "and": {
         "family": "logical",
@@ -2541,7 +2586,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Logical conjunction"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "&&"
+        ],
+        "doc_aliases": []
       },
       "or": {
         "family": "logical",
@@ -2588,7 +2637,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Logical disjunction"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "||"
+        ],
+        "doc_aliases": []
       },
       "not": {
         "family": "logical",
@@ -2627,7 +2680,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Logical negation"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "!"
+        ],
+        "doc_aliases": []
       },
       "in": {
         "family": "membership",
@@ -2669,7 +2726,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Membership in array"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "contains": {
         "family": "content",
@@ -2714,7 +2773,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Substring containment"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "take": {
         "family": "collection",
@@ -2764,7 +2825,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "array",
             "description": "Slicing top 5 items"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "limit"
+        ],
+        "doc_aliases": []
       },
       "skip": {
         "family": "collection",
@@ -2811,7 +2876,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "array",
             "description": "Pagination slice"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "offset"
+        ],
+        "doc_aliases": []
       },
       "to": {
         "family": "collection",
@@ -2857,7 +2926,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "[1, 2, ..., 10]",
             "description": "Loop integer range"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "any": {
         "family": "lambda",
@@ -2901,7 +2972,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Existential quantifier"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "all": {
         "family": "lambda",
@@ -2942,7 +3015,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Universal quantifier"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "none": {
         "family": "lambda",
@@ -2983,7 +3058,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "true",
             "description": "Negative quantifier"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "count": {
         "family": "lambda",
@@ -3024,7 +3101,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "5",
             "description": "Filtered count"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "map": {
         "family": "lambda",
@@ -3076,7 +3155,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "array[string]",
             "description": "Projection to title array"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "select"
+        ],
+        "doc_aliases": []
       },
       "filter": {
         "family": "lambda",
@@ -3122,7 +3205,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "array",
             "description": "Filtered collection"
           }
-        ]
+        ],
+        "grammar_aliases": [
+          "where"
+        ],
+        "doc_aliases": []
       },
       "first": {
         "family": "lambda",
@@ -3163,7 +3250,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "object",
             "description": "Extract first match"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "?:": {
         "family": "elvis",
@@ -3177,6 +3266,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "functional": "?:(a, b)"
         },
         "precedence_level": 2,
+        "associativity": "right-to-left",
         "operands": [
           {
             "name": "target",
@@ -3206,6 +3296,11 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "any",
             "description": "Nullish fallback"
           }
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": [
+          "default",
+          "elvis"
         ]
       },
       "? :": {
@@ -3250,6 +3345,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ],
         "return_type": "any",
         "aliases": [
+          "?",
           "ternary"
         ],
         "anti_patterns": [
@@ -3261,6 +3357,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "string",
             "description": "Conditional ternary"
           }
+        ],
+        "grammar_aliases": [
+          "?"
+        ],
+        "doc_aliases": [
+          "ternary"
         ]
       },
       "path": {
@@ -3308,7 +3410,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "url",
             "description": "URL path replacement"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "params": {
         "family": "url",
@@ -3358,7 +3462,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "url",
             "description": "Query params set"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "appendParams": {
         "family": "url",
@@ -3405,7 +3511,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "url",
             "description": "Query params merge"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "fragment": {
         "family": "url",
@@ -3452,7 +3560,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "url",
             "description": "URL fragment anchor"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "format": {
         "family": "date",
@@ -3493,7 +3603,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "string",
             "description": "ICU date formatting"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "resizeImage": {
         "family": "image",
@@ -3605,7 +3717,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "image",
             "description": "Resize with square crop"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "sourceSet": {
         "family": "image",
@@ -3661,7 +3775,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "string",
             "description": "HTML srcset generation"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       },
       "snippet": {
         "family": "snippet",
@@ -3710,7 +3826,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "result": "string",
             "description": "Text snippet extraction"
           }
-        ]
+        ],
+        "grammar_aliases": [],
+        "doc_aliases": []
       }
     }
   },
@@ -11774,8 +11892,23 @@ export const embeddedSchemas: Record<string, any> = {
           "return_type": {
             "$ref": "#/$defs/operatorDataType"
           },
+          "grammar_aliases": {
+            "type": "array",
+            "description": "Alternative tokens or keywords recognized as valid syntax in Blogger expressions (e.g. 'eq' for ==, 'where' for filter, 'limit' for take).",
+            "items": {
+              "type": "string"
+            }
+          },
+          "doc_aliases": {
+            "type": "array",
+            "description": "Conceptual or search aliases for tooling and documentation (e.g. 'plus' for +, 'modulo' for %, 'elvis' for ?:). Not valid syntax tokens in Blogger expressions.",
+            "items": {
+              "type": "string"
+            }
+          },
           "aliases": {
             "type": "array",
+            "description": "Combined list of aliases for backward compatibility.",
             "items": {
               "type": "string"
             }
