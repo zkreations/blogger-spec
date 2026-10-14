@@ -1,0 +1,82 @@
+{
+  "subsystem": "message_rendering",
+  "fixtures": [
+    {
+      "id": "rendering/message_rendering/direct-global-message-tag",
+      "title": "Direct Non-Parameterized Global Message Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:messages.comments/>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "comments": "Comments"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Comments",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/parameterized-message-directive",
+      "title": "Parameterized Message Directive with Positional Param",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.byAuthor'><b:param value='John Doe'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "byAuthor": "By %1"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "By John Doe",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/plural-message-directive-with-named-param",
+      "title": "Plural Message Directive with Named Param",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.numberOfComments'><b:param name='numComments' value='5'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "numberOfComments": "{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "5 comments",
+        "canonicalDom": false
+      }
+    }
+  ]
+}
+

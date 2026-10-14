@@ -7,6 +7,7 @@ import {
   getDirectives,
   getGlobals,
   getInclusions,
+  getMessages,
   getOperators,
   getScopes,
   getSettings,
@@ -226,6 +227,46 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       }
     }
   }
+
+  // 2.4 Messages referential integrity
+  const messagesCatalog = getMessages()
+  const messages = messagesCatalog.messages || {}
+  const knownMessageKeys = new Set(Object.keys(messages))
+
+  const globalMessages = globalsCatalog.objects?.['data:messages']
+  if (globalMessages?.catalog_ref && globalMessages.catalog_ref !== 'messages.json') {
+    errors.push(`Global object 'data:messages' specifies invalid catalog_ref '${globalMessages.catalog_ref}'.`)
+  }
+
+  const bMessage = directivesCatalog.directives?.['b:message']
+  const paramReason = bMessage?.constraints?.direct_invocation?.reason || ''
+  for (const [msgKey, msgDef] of Object.entries(messages)) {
+    if (msgDef.direct_invocation === false) {
+      if (!paramReason.includes(msgKey)) {
+        errors.push(`Parameterized message '${msgKey}' is not listed in b:message constraints direct_invocation reason.`)
+      }
+    }
+  }
+
+  function checkMessageReplacements(obj: any, location: string) {
+    if (!obj || typeof obj !== 'object') {
+      return
+    }
+    for (const [k, v] of Object.entries(obj)) {
+      const loc = `${location}.${k}`
+      if (v && typeof v === 'object') {
+        const repl = (v as any).replacement
+        if (typeof repl === 'string' && repl.startsWith('data:messages.')) {
+          const key = repl.replace(/^data:messages\./, '')
+          if (key !== '*' && !knownMessageKeys.has(key)) {
+            errors.push(`Property '${loc}' specifies replacement to unknown message '${repl}'.`)
+          }
+        }
+        checkMessageReplacements(v, loc)
+      }
+    }
+  }
+  checkMessageReplacements(widgetsCatalog.widgets, 'widgets')
 
   if (errors.length === 0) {
     log('  [PASS] Catalogs referential integrity validated.')

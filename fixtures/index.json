@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-14",
   "metrics": {
-    "totalFixtures": 118,
-    "positiveFixtures": 92,
-    "negativeFixtures": 26,
-    "coveredSpecEntities": 79
+    "totalFixtures": 127,
+    "positiveFixtures": 99,
+    "negativeFixtures": 28,
+    "coveredSpecEntities": 90
   },
   "fixtures": [
     {
@@ -1163,6 +1163,114 @@
       }
     },
     {
+      "id": "expressions/locale_modifiers/locale-name-access",
+      "title": "Locale Name Modifier Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:name"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.name",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "es_ES",
+              "language": "es",
+              "country": "ES",
+              "languageDirection": "ltr"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "es_ES"
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-language-and-country",
+      "title": "Locale Language and Country Modifiers Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:language",
+        "modifier:country"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.language + '-' + data:blog.locale.country",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "en_US",
+              "language": "en",
+              "country": "US",
+              "languageDirection": "ltr"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "en-US"
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-language-direction",
+      "title": "Locale Language Direction Modifier Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:languageDirection"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.languageDirection",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "ar",
+              "language": "ar",
+              "country": "EG",
+              "languageDirection": "rtl"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "rtl"
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-inherits-string-length",
+      "title": "Locale Inherits String Length Modifier",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:length"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.length",
+        "context": {
+          "blog": {
+            "locale": "fr_FR"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 5
+      }
+    },
+    {
       "id": "expressions/logical_and_comparisons/equality-numbers",
       "title": "Equality Numbers",
       "evidence": "official",
@@ -1698,6 +1806,82 @@
         "outcome": "html",
         "html": "0:a;1:b;",
         "canonicalDom": true
+      }
+    },
+    {
+      "id": "rendering/message_rendering/direct-global-message-tag",
+      "title": "Direct Non-Parameterized Global Message Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:messages.comments/>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "comments": "Comments"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Comments",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/parameterized-message-directive",
+      "title": "Parameterized Message Directive with Positional Param",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.byAuthor'><b:param value='John Doe'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "byAuthor": "By %1"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "By John Doe",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/plural-message-directive-with-named-param",
+      "title": "Plural Message Directive with Named Param",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.numberOfComments'><b:param name='numComments' value='5'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "numberOfComments": "{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "5 comments",
+        "canonicalDom": false
       }
     },
     {
@@ -2570,6 +2754,48 @@
         "outcome": "rejected",
         "diagnosticCodes": [
           "BX1025"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/direct-parameterized-message-invocation",
+      "title": "Direct Parameterized Message Invocation Warning",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1027"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:messages.byAuthor/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1027"
+        ],
+        "stage": "linter"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/plural-message-param-missing-name",
+      "title": "Plural Message Param Missing Name Attribute",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1028"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.numberOfComments'><b:param value='5'/></b:message>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1028"
         ],
         "stage": "parser"
       }

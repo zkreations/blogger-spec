@@ -312,8 +312,7 @@ export interface BloggerSettingsCatalog {
 
 export interface BloggerMessageParameterDefinition {
   name: string
-  type: string
-  description: string
+  description?: string
 }
 
 export interface BloggerMessageDefinition {

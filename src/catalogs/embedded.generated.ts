@@ -1142,7 +1142,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           },
           "parameters": {
             "status": "conditional",
-            "description": "One or more b:param elements must be nested inside b:message when referencing parameterized messages. Parameter assignment is positional based on child tag sequence."
+            "description": "One or more b:param elements must be nested inside b:message when referencing parameterized messages. Parameter assignment is positional for simple tokens (%1), but pluralized ICU messages (e.g. numberOfComments with {numComments, plural, ...}) strictly require the 'name' attribute matching the ICU variable identifier (e.g. name='numComments')."
           },
           "direct_invocation": {
             "status": "forbidden",
@@ -1192,7 +1192,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "reason": "b:param is self-closing and cannot contain child nodes."
           },
           "positional_assignment": {
-            "description": "Parameter replacement in b:message is resolved positionally based on child b:param order, not by parameter name."
+            "description": "Parameter replacement in b:message is resolved positionally based on child b:param order for simple messages (%1, %2), but strictly requires the 'name' attribute matching the ICU variable identifier for pluralized messages (e.g. name='numComments')."
           },
           "multiplicity": {
             "min": 0,
@@ -4308,7 +4308,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "output_type": "string",
             "syntax": ".name",
             "direct_syntax": "<data:blog.locale.name/>",
-            "expr_syntax": "data:blog.locale.name",
+            "expr_syntax": "([expr]).name",
             "example": "data:blog.locale.name"
           },
           "language": {
@@ -4316,7 +4316,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "output_type": "string",
             "syntax": ".language",
             "direct_syntax": "<data:blog.locale.language/>",
-            "expr_syntax": "data:blog.locale.language",
+            "expr_syntax": "([expr]).language",
             "example": "data:blog.locale.language"
           },
           "country": {
@@ -4324,7 +4324,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "output_type": "string",
             "syntax": ".country",
             "direct_syntax": "<data:blog.locale.country/>",
-            "expr_syntax": "data:blog.locale.country",
+            "expr_syntax": "([expr]).country",
             "example": "data:blog.locale.country"
           },
           "variant": {
@@ -4332,7 +4332,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "output_type": "string",
             "syntax": ".variant",
             "direct_syntax": "<data:blog.locale.variant/>",
-            "expr_syntax": "data:blog.locale.variant",
+            "expr_syntax": "([expr]).variant",
             "example": "data:blog.locale.variant"
           },
           "script": {
@@ -4340,7 +4340,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "output_type": "string",
             "syntax": ".script",
             "direct_syntax": "<data:blog.locale.script/>",
-            "expr_syntax": "data:blog.locale.script",
+            "expr_syntax": "([expr]).script",
             "example": "data:blog.locale.script"
           },
           "languageDirection": {
@@ -4348,7 +4348,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "output_type": "string",
             "syntax": ".languageDirection",
             "direct_syntax": "<data:blog.locale.languageDirection/>",
-            "expr_syntax": "data:blog.locale.languageDirection",
+            "expr_syntax": "([expr]).languageDirection",
             "example": "data:blog.locale.languageDirection"
           },
           "languageAlignment": {
@@ -4356,7 +4356,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "output_type": "string",
             "syntax": ".languageAlignment",
             "direct_syntax": "<data:blog.locale.languageAlignment/>",
-            "expr_syntax": "data:blog.locale.languageAlignment",
+            "expr_syntax": "([expr]).languageAlignment",
             "example": "data:blog.locale.languageAlignment"
           }
         }
@@ -4929,6 +4929,20 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "type": "string",
             "description": "Raw HTML/JavaScript snippet for inline post advertisements."
           },
+          "allBylineItems": {
+            "type": "array[object]",
+            "description": "Flat list of active byline items configured for the Blog widget.",
+            "item_properties": {
+              "name": {
+                "type": "string",
+                "description": "Byline item identifier (e.g. 'author', 'comments', 'timestamp', 'labels', 'location', 'share')."
+              },
+              "label": {
+                "type": "string",
+                "description": "Localized label text for the byline item."
+              }
+            }
+          },
           "backgroundColor": {
             "type": "string",
             "description": "Background color hexadecimal code from theme settings."
@@ -4978,16 +4992,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "linkColor": {
             "type": "string",
             "description": "Link color hexadecimal code from theme settings."
-          },
-          "messages": {
-            "type": "object",
-            "description": "Child dictionary containing gadget-specific UI messages (`blogComment`).",
-            "properties": {
-              "blogComment": {
-                "type": "string",
-                "description": "Localized post comment submission prompt string."
-              }
-            }
           },
           "navMessage": {
             "type": "string",
@@ -5658,15 +5662,15 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "status": "deprecated_in_widget_v2",
             "type": "string",
             "action": "migrate",
-            "replacement": "data:messages.by",
-            "reason": "Replaced by localized string data:messages.by."
+            "replacement": "data:allBylineItems.author.label",
+            "reason": "Replaced by localized byline item label data:allBylineItems.author.label or data:messages.by."
           },
           "blogCommentMessage": {
             "status": "deprecated_in_widget_v2",
             "type": "string",
             "action": "migrate",
-            "replacement": "data:messages.blogComment",
-            "reason": "Replaced by localized string data:messages.blogComment."
+            "replacement": "data:messages.postAComment",
+            "reason": "Replaced by localized string data:messages.postAComment."
           },
           "blogTeamBlogMessage": {
             "status": "deprecated_in_widget_v2",
@@ -5742,8 +5746,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "status": "deprecated_in_widget_v2",
             "type": "string",
             "action": "migrate",
-            "replacement": "data:messages.emailThis",
-            "reason": "Replaced by localized string data:messages.emailThis."
+            "replacement": "data:messages.emailPost",
+            "reason": "Replaced by localized string data:messages.emailPost."
           },
           "feedLinksMsg": {
             "status": "deprecated_in_widget_v2",
@@ -5805,15 +5809,15 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "status": "deprecated_in_widget_v2",
             "type": "string",
             "action": "migrate",
-            "replacement": "data:messages.labels",
-            "reason": "Replaced by localized string data:messages.labels."
+            "replacement": "data:allBylineItems.labels.label",
+            "reason": "Replaced by localized byline item label data:allBylineItems.labels.label or data:messages.labels."
           },
           "postLocationLabel": {
             "status": "deprecated_in_widget_v2",
             "type": "string",
             "action": "migrate",
-            "replacement": "data:messages.location",
-            "reason": "Replaced by localized string data:messages.location."
+            "replacement": "data:allBylineItems.location.label",
+            "reason": "Replaced by localized byline item label data:allBylineItems.location.label."
           },
           "shareMsg": {
             "status": "deprecated_in_widget_v2",
@@ -5826,22 +5830,22 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "status": "deprecated_in_widget_v2",
             "type": "string",
             "action": "migrate",
-            "replacement": "data:messages.shareToFacebook",
-            "reason": "Replaced by localized string data:messages.shareToFacebook."
+            "replacement": "data:blog.sharing.platforms[...].shareMessage",
+            "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
           },
           "shareToPinterestMsg": {
             "status": "deprecated_in_widget_v2",
             "type": "string",
             "action": "migrate",
-            "replacement": "data:messages.shareToPinterest",
-            "reason": "Replaced by localized string data:messages.shareToPinterest."
+            "replacement": "data:blog.sharing.platforms[...].shareMessage",
+            "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
           },
           "shareToTwitterMsg": {
             "status": "deprecated_in_widget_v2",
             "type": "string",
             "action": "migrate",
-            "replacement": "data:messages.shareToTwitter",
-            "reason": "Replaced by localized string data:messages.shareToTwitter."
+            "replacement": "data:blog.sharing.platforms[...].shareMessage",
+            "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
           },
           "showAuthor": {
             "status": "deprecated_in_widget_v2",
@@ -7162,7 +7166,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           },
           "commentLabel": {
             "type": "string",
-            "description": "Custom label text for post comment link. In Layouts v3, modern themes resolve comment strings via data:messages.postComments.",
+            "description": "Custom label text for post comment link. In Layouts v3, modern themes resolve comment strings via data:allBylineItems.comments.label or data:messages.comments.",
             "default": "Comments",
             "bound_runtime_data": "data:widgets.Blog1.allBylineItems.comments.label"
           },
@@ -7174,7 +7178,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           },
           "postLocationLabel": {
             "type": "string",
-            "description": "Custom label text preceding post geo-location. In Layouts v3, modern themes resolve location strings via data:messages.location.",
+            "description": "Custom label text preceding post geo-location. In Layouts v3, modern themes resolve location strings via data:allBylineItems.location.label.",
             "default": "Location:",
             "bound_runtime_data": "data:widgets.Blog1.allBylineItems.location.label"
           },
@@ -10136,6 +10140,26 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "replacement": "(data:date format 'yyyyMMdd') < '...'",
         "evidence": "observed",
         "verifiedAt": "2026-10-12"
+      },
+      "BX1027": {
+        "code": "BX1027",
+        "name": "DIRECT_PARAMETERIZED_MESSAGE_INVOCATION",
+        "category": "runtime",
+        "severity": "warning",
+        "message": "Parameterized message tokens cannot be evaluated via direct tag invocation (<data:messages.key/>) and output raw un-interpolated template strings. Use <b:message name='...'> with child <b:param> tags.",
+        "replacement": "<b:message name='messages.key'><b:param .../></b:message>",
+        "evidence": "observed",
+        "verifiedAt": "2026-10-14"
+      },
+      "BX1028": {
+        "code": "BX1028",
+        "name": "PLURAL_MESSAGE_PARAM_MISSING_NAME",
+        "category": "syntax",
+        "severity": "error",
+        "message": "Pluralized ICU messages require the 'name' attribute on child <b:param> tags matching the plural identifier (e.g. <b:param name='numComments' value='...'/>); omitting 'name' aborts template compilation.",
+        "replacement": "<b:param name='...' value='...'/>",
+        "evidence": "observed",
+        "verifiedAt": "2026-10-14"
       }
     }
   },

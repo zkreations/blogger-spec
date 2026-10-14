@@ -1,0 +1,114 @@
+{
+  "subsystem": "locale_modifiers",
+  "fixtures": [
+    {
+      "id": "expressions/locale_modifiers/locale-name-access",
+      "title": "Locale Name Modifier Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:name"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.name",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "es_ES",
+              "language": "es",
+              "country": "ES",
+              "languageDirection": "ltr"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "es_ES"
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-language-and-country",
+      "title": "Locale Language and Country Modifiers Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:language",
+        "modifier:country"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.language + '-' + data:blog.locale.country",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "en_US",
+              "language": "en",
+              "country": "US",
+              "languageDirection": "ltr"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "en-US"
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-language-direction",
+      "title": "Locale Language Direction Modifier Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:languageDirection"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.languageDirection",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "ar",
+              "language": "ar",
+              "country": "EG",
+              "languageDirection": "rtl"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "rtl"
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-inherits-string-length",
+      "title": "Locale Inherits String Length Modifier",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:length"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.length",
+        "context": {
+          "blog": {
+            "locale": "fr_FR"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 5
+      }
+    }
+  ]
+}
+

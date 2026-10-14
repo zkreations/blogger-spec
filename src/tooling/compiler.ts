@@ -7,6 +7,7 @@ import {
   getDiagnostics,
   getDirectives,
   getGlobals,
+  getMessages,
   getOperators,
   getSettings,
   getWidgets,
@@ -52,12 +53,17 @@ function mapPropertyTypeToTs(type: string): string {
     case 'url':
     case 'image':
       return 'string'
+    case 'date':
+      return 'BloggerDate'
+    case 'locale':
+      return 'BloggerLocale'
+    case 'message':
+      return 'BloggerMessage'
     case 'number':
       return 'number'
     case 'boolean':
       return 'boolean'
     case 'object':
-    case 'locale':
       return 'Record<string, any>'
     case 'array[string]':
     case 'array[url]':
@@ -85,6 +91,7 @@ export function generateDts(): string {
   const diagnosticsData = getDiagnostics()
   const widgetsData = getWidgets()
   const settingsData = getSettings()
+  const messagesData = getMessages()
 
   const lines: string[] = [
     '/**',
@@ -104,7 +111,24 @@ export function generateDts(): string {
     'export type BloggerUrl = string;',
     'export type BloggerImage = string;',
     'export type BloggerDate = string;',
-    'export type BloggerLocale = string;',
+    'export interface BloggerLocaleModifiers {',
+    '  /** Returns the localized language name. */',
+    '  name?: string;',
+    '  /** Returns the ISO 639-1 language code. */',
+    '  language?: string;',
+    '  /** Returns the ISO country code. */',
+    '  country?: string;',
+    '  /** Returns regional dialect or territorial variant code. */',
+    '  variant?: string;',
+    '  /** Returns writing system script designation. */',
+    '  script?: string;',
+    '  /** Reading directionality: returns \'ltr\' or \'rtl\'. */',
+    '  languageDirection?: \'ltr\' | \'rtl\';',
+    '  /** Text alignment corresponding to direction: \'left\' or \'right\'. */',
+    '  languageAlignment?: \'left\' | \'right\';',
+    '  [key: string]: any;',
+    '}',
+    'export type BloggerLocale = string & BloggerLocaleModifiers;',
     'export type BloggerMessage = string;',
     'export type BloggerExpression = string;',
     '',
@@ -163,6 +187,11 @@ export function generateDts(): string {
   lines.push(`export type BloggerOperatorName = ${opNames.map(o => JSON.stringify(o)).join(' | ')};`)
   lines.push('')
 
+  const messages = messagesData.messages || {}
+  const msgKeys = Object.keys(messages).sort()
+  lines.push(`export type BloggerMessageKey = ${msgKeys.map(m => `'${m}'`).join(' | ')};`)
+  lines.push('')
+
   const globals = globalsData.objects || {}
   for (const gName of Object.keys(globals).sort()) {
     const cleanName = gName.replace(/^data:/, '')
@@ -176,6 +205,14 @@ export function generateDts(): string {
         lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
       }
       lines.push(`  ${sanitizePropName(pName)}?: ${tsType};`)
+    }
+    if (gName === 'data:messages') {
+      for (const [mName, mDef] of Object.entries(messages).sort(([a], [b]) => a.localeCompare(b))) {
+        if ((mDef as any).description) {
+          lines.push(`  /** ${(mDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
+        }
+        lines.push(`  ${sanitizePropName(mName)}?: BloggerMessage;`)
+      }
     }
     lines.push('  [key: string]: any;')
     lines.push('}')
