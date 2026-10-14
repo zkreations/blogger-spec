@@ -474,7 +474,7 @@
           "output_type": "string",
           "syntax": ".name",
           "direct_syntax": "<data:blog.locale.name/>",
-          "expr_syntax": "data:blog.locale.name",
+          "expr_syntax": "([expr]).name",
           "example": "data:blog.locale.name"
         },
         "language": {
@@ -482,7 +482,7 @@
           "output_type": "string",
           "syntax": ".language",
           "direct_syntax": "<data:blog.locale.language/>",
-          "expr_syntax": "data:blog.locale.language",
+          "expr_syntax": "([expr]).language",
           "example": "data:blog.locale.language"
         },
         "country": {
@@ -490,7 +490,7 @@
           "output_type": "string",
           "syntax": ".country",
           "direct_syntax": "<data:blog.locale.country/>",
-          "expr_syntax": "data:blog.locale.country",
+          "expr_syntax": "([expr]).country",
           "example": "data:blog.locale.country"
         },
         "variant": {
@@ -498,7 +498,7 @@
           "output_type": "string",
           "syntax": ".variant",
           "direct_syntax": "<data:blog.locale.variant/>",
-          "expr_syntax": "data:blog.locale.variant",
+          "expr_syntax": "([expr]).variant",
           "example": "data:blog.locale.variant"
         },
         "script": {
@@ -506,7 +506,7 @@
           "output_type": "string",
           "syntax": ".script",
           "direct_syntax": "<data:blog.locale.script/>",
-          "expr_syntax": "data:blog.locale.script",
+          "expr_syntax": "([expr]).script",
           "example": "data:blog.locale.script"
         },
         "languageDirection": {
@@ -514,7 +514,7 @@
           "output_type": "string",
           "syntax": ".languageDirection",
           "direct_syntax": "<data:blog.locale.languageDirection/>",
-          "expr_syntax": "data:blog.locale.languageDirection",
+          "expr_syntax": "([expr]).languageDirection",
           "example": "data:blog.locale.languageDirection"
         },
         "languageAlignment": {
@@ -522,7 +522,7 @@
           "output_type": "string",
           "syntax": ".languageAlignment",
           "direct_syntax": "<data:blog.locale.languageAlignment/>",
-          "expr_syntax": "data:blog.locale.languageAlignment",
+          "expr_syntax": "([expr]).languageAlignment",
           "example": "data:blog.locale.languageAlignment"
         }
       }
