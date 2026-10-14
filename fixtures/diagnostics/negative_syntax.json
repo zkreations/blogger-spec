@@ -552,6 +552,48 @@
         ],
         "stage": "parser"
       }
+    },
+    {
+      "id": "diagnostics/negative_syntax/direct-parameterized-message-invocation",
+      "title": "Direct Parameterized Message Invocation Warning",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1027"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:messages.byAuthor/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1027"
+        ],
+        "stage": "linter"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/plural-message-param-missing-name",
+      "title": "Plural Message Param Missing Name Attribute",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1028"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.numberOfComments'><b:param value='5'/></b:message>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1028"
+        ],
+        "stage": "parser"
+      }
     }
   ]
 }
