@@ -2,8 +2,8 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-14",
   "metrics": {
-    "totalFixtures": 131,
-    "positiveFixtures": 103,
+    "totalFixtures": 133,
+    "positiveFixtures": 105,
     "negativeFixtures": 28,
     "coveredSpecEntities": 94
   },
@@ -1177,17 +1177,20 @@
         "context": {
           "blog": {
             "locale": {
-              "name": "es_ES",
+              "name": "Spanish (Spain)",
               "language": "es",
               "country": "ES",
-              "languageDirection": "ltr"
+              "variant": "",
+              "script": "",
+              "languageDirection": "ltr",
+              "languageAlignment": "left"
             }
           }
         }
       },
       "expected": {
         "outcome": "value",
-        "value": "es_ES"
+        "value": "Spanish (Spain)"
       }
     },
     {
@@ -1206,10 +1209,13 @@
         "context": {
           "blog": {
             "locale": {
-              "name": "en_US",
+              "name": "English (United States)",
               "language": "en",
               "country": "US",
-              "languageDirection": "ltr"
+              "variant": "",
+              "script": "",
+              "languageDirection": "ltr",
+              "languageAlignment": "left"
             }
           }
         }
@@ -1234,10 +1240,13 @@
         "context": {
           "blog": {
             "locale": {
-              "name": "ar",
+              "name": "Arabic",
               "language": "ar",
               "country": "EG",
-              "languageDirection": "rtl"
+              "variant": "",
+              "script": "",
+              "languageDirection": "rtl",
+              "languageAlignment": "right"
             }
           }
         }
@@ -1289,6 +1298,7 @@
               "language": "ca",
               "country": "ES",
               "variant": "VALENCIA",
+              "script": "",
               "languageDirection": "ltr",
               "languageAlignment": "left"
             }
@@ -1315,9 +1325,10 @@
         "context": {
           "blog": {
             "locale": {
-              "name": "sr_Latn_RS",
+              "name": "Serbian (Latin, Serbia)",
               "language": "sr",
               "country": "RS",
+              "variant": "",
               "script": "Latn",
               "languageDirection": "ltr",
               "languageAlignment": "left"
@@ -1345,9 +1356,11 @@
         "context": {
           "blog": {
             "locale": {
-              "name": "ar",
+              "name": "Arabic",
               "language": "ar",
               "country": "EG",
+              "variant": "",
+              "script": "",
               "languageDirection": "rtl",
               "languageAlignment": "right"
             }
@@ -1380,6 +1393,68 @@
       "expected": {
         "outcome": "value",
         "value": "es_ES"
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-variant-empty-fallback",
+      "title": "Locale Variant Empty Fallback Modifier Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:variant"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.variant",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "Spanish (Spain)",
+              "language": "es",
+              "country": "ES",
+              "variant": "",
+              "script": "",
+              "languageDirection": "ltr",
+              "languageAlignment": "left"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": ""
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-script-empty-fallback",
+      "title": "Locale Script Empty Fallback Modifier Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:script"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.script",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "English (United States)",
+              "language": "en",
+              "country": "US",
+              "variant": "",
+              "script": "",
+              "languageDirection": "ltr",
+              "languageAlignment": "left"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": ""
       }
     },
     {

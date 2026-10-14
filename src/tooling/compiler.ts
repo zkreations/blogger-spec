@@ -51,9 +51,11 @@ function mapPropertyTypeToTs(type: string): string {
   }
   switch (type) {
     case 'string':
-    case 'url':
-    case 'image':
       return 'string'
+    case 'url':
+      return 'BloggerUrl'
+    case 'image':
+      return 'BloggerImage'
     case 'date':
       return 'BloggerDate'
     case 'locale':
@@ -67,8 +69,13 @@ function mapPropertyTypeToTs(type: string): string {
     case 'object':
       return 'Record<string, any>'
     case 'array[string]':
-    case 'array[url]':
       return 'string[]'
+    case 'array[url]':
+      return 'BloggerUrl[]'
+    case 'array[image]':
+      return 'BloggerImage[]'
+    case 'array[date]':
+      return 'BloggerDate[]'
     case 'array[number]':
       return 'number[]'
     case 'array[boolean]':
@@ -109,26 +116,38 @@ export function generateDts(): string {
     'export * from \'./quota.js\';',
     'export * from \'./type-system.js\';',
     '',
-    '// --- Subtypes & Aliases ---',
-    'export type BloggerUrl = string;',
-    'export type BloggerImage = string;',
-    'export type BloggerDate = string;',
+    '// --- Subtypes & Modifiers ---',
   ]
 
-  const localeModifiers = typesData.types?.locale?.modifiers || {}
-  lines.push('export interface BloggerLocaleModifiers {')
-  for (const [mName, mDef] of Object.entries(localeModifiers)) {
-    if ((mDef as any).description) {
-      lines.push(`  /** ${(mDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
+  const stringModifiers = typesData.types?.string?.modifiers || {}
+  const platformSubtypes = ['url', 'image', 'date', 'locale'] as const
+
+  for (const st of platformSubtypes) {
+    const pascal = toPascalCase(st)
+    const ownMods = typesData.types?.[st]?.modifiers || {}
+    lines.push(`export interface Blogger${pascal}Modifiers {`)
+    for (const [mName, mDef] of Object.entries(ownMods)) {
+      if ((mDef as any).description) {
+        lines.push(`  /** ${(mDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
+      }
+      const propType = (Array.isArray((mDef as any).allowed_values) && (mDef as any).allowed_values.length > 0)
+        ? (mDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
+        : ((mDef as any).output_type === 'number' ? 'number' : (mDef as any).output_type === 'boolean' ? 'boolean' : 'string')
+      lines.push(`  ${sanitizePropName(mName)}?: ${propType};`)
     }
-    const propType = (Array.isArray((mDef as any).allowed_values) && (mDef as any).allowed_values.length > 0)
-      ? (mDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
-      : ((mDef as any).output_type === 'number' ? 'number' : (mDef as any).output_type === 'boolean' ? 'boolean' : 'string')
-    lines.push(`  ${sanitizePropName(mName)}?: ${propType};`)
+    for (const [sName, sDef] of Object.entries(stringModifiers)) {
+      if (!ownMods[sName]) {
+        if ((sDef as any).description) {
+          lines.push(`  /** ${(sDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
+        }
+        const propType = (sDef as any).output_type === 'number' ? 'number' : 'string'
+        lines.push(`  ${sanitizePropName(sName)}?: ${propType};`)
+      }
+    }
+    lines.push('}')
+    lines.push(`export type Blogger${pascal} = string & Blogger${pascal}Modifiers;`)
   }
-  lines.push('  [key: string]: any;')
-  lines.push('}')
-  lines.push('export type BloggerLocale = string & BloggerLocaleModifiers;')
+
   lines.push('export type BloggerMessage = string;')
   lines.push('export type BloggerExpression = string;')
   lines.push('')
@@ -199,7 +218,9 @@ export function generateDts(): string {
     lines.push(`export interface Blogger${pascal}Global {`)
     const props = globals[gName]?.canonical || {}
     for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
-      const tsType = mapPropertyTypeToTs((pDef as any).type)
+      const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
+        ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
+        : mapPropertyTypeToTs((pDef as any).type)
       if ((pDef as any).description) {
         lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
       }
@@ -229,7 +250,9 @@ export function generateDts(): string {
     lines.push(`export interface Blogger${pascal}WidgetData {`)
     const props = widgets[wName]?.canonical || {}
     for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
-      const tsType = mapPropertyTypeToTs((pDef as any).type)
+      const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
+        ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
+        : mapPropertyTypeToTs((pDef as any).type)
       if ((pDef as any).description) {
         lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
       }
@@ -247,7 +270,9 @@ export function generateDts(): string {
     lines.push(`export interface Blogger${pascal}WidgetSettings {`)
     const props = settings[wName]?.canonical || {}
     for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
-      const tsType = mapPropertyTypeToTs((pDef as any).type)
+      const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
+        ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
+        : mapPropertyTypeToTs((pDef as any).type)
       if ((pDef as any).description) {
         lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
       }

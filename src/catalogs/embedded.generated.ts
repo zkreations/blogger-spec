@@ -12517,7 +12517,7 @@ export const embeddedSchemas: Record<string, any> = {
               "string",
               "null"
             ],
-            "description": "Underlying base type or supertype in the hierarchy (e.g. 'url' extends 'string', 'image' extends 'url')."
+            "description": "Underlying base type or supertype in the hierarchy (e.g. 'url' extends 'string', 'locale' extends 'string')."
           },
           "user_constructible": {
             "type": "boolean",
