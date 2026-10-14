@@ -14,6 +14,7 @@ import type {
   BloggerOperatorName,
   BloggerOperatorsCatalog,
   BloggerScopesCatalog,
+  BloggerSettingsCatalog,
   BloggerTypesCatalog,
   BloggerWidgetsCatalog,
 } from '../types.js'
@@ -35,6 +36,7 @@ export class SpecCatalog {
   private readonly store: CatalogStore
   private readonly directiveMap = new Map<string, BloggerDirectiveDefinition>()
   private readonly operatorMap = new Map<string, BloggerOperatorDefinition>()
+  private readonly operatorAliasMap = new Map<string, BloggerOperatorDefinition>()
   private readonly diagnosticMap = new Map<string, BloggerDiagnosticRule>()
   private readonly validChildrenMap = new Map<string, Set<string> | null>()
   private readonly validParentsMap = new Map<string, Set<string> | null>()
@@ -85,6 +87,13 @@ export class SpecCatalog {
     const operators = (this.store.getCatalog('operators') as BloggerOperatorsCatalog).operators || {}
     for (const [op, def] of Object.entries(operators)) {
       this.operatorMap.set(op, def)
+      this.operatorAliasMap.set(op.toLowerCase(), def)
+      if (Array.isArray(def.aliases)) {
+        for (const alias of def.aliases) {
+          this.operatorAliasMap.set(alias, def)
+          this.operatorAliasMap.set(alias.toLowerCase(), def)
+        }
+      }
     }
   }
 
@@ -103,8 +112,8 @@ export class SpecCatalog {
   }
 
   private indexSettings(): void {
-    const settingsCatalog = this.store.getCatalog('settings') as any
-    const settings = settingsCatalog.widgets || settingsCatalog.settings || {}
+    const settingsCatalog = this.store.getCatalog('settings') as BloggerSettingsCatalog
+    const settings = settingsCatalog.widgets || {}
     for (const [name, def] of Object.entries(settings)) {
       this.settingMap.set(name, def)
     }
@@ -251,11 +260,11 @@ export class SpecCatalog {
   }
 
   isOperator(op: string): op is BloggerOperatorName {
-    return this.operatorMap.has(op)
+    return this.operatorMap.has(op) || this.operatorAliasMap.has(op) || this.operatorAliasMap.has(op.toLowerCase())
   }
 
   getOperator(op: string): BloggerOperatorDefinition | undefined {
-    return this.operatorMap.get(op)
+    return this.operatorMap.get(op) ?? this.operatorAliasMap.get(op) ?? this.operatorAliasMap.get(op.toLowerCase())
   }
 
   getAllOperators(): Record<string, BloggerOperatorDefinition> {
