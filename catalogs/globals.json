@@ -253,7 +253,7 @@
         },
         "locale": {
           "type": "locale",
-          "description": "BCP 47 language/locale code (e.g. 'en', 'es-419', 'fr')."
+          "description": "BCP 47 language/locale code (e.g. 'en', 'es-419', 'fr'). Can be dynamically overridden in requests via the 'hl' query parameter (e.g. '?hl=ca-ES-VALENCIA')."
         },
         "localeUnderscoreDelimited": {
           "type": "string",

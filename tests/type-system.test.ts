@@ -117,8 +117,12 @@ describe('canonical type system & coercion engine', () => {
       expect(localeMods.name).toBeDefined()
       expect(localeMods.language).toBeDefined()
       expect(localeMods.country).toBeDefined()
+      expect(localeMods.variant).toBeDefined()
+      expect(localeMods.script).toBeDefined()
       expect(localeMods.languageDirection).toBeDefined()
+      expect(localeMods.languageAlignment).toBeDefined()
       expect(localeMods.length).toBeDefined()
+      expect(localeMods.escaped).toBeDefined()
     })
 
     it('returns array collection modifiers for both generic and parameterized forms', () => {
@@ -225,6 +229,11 @@ describe('canonical type system & coercion engine', () => {
       expect(imageOps).toContain('path')
       expect(imageOps).toContain('params')
       expect(imageOps).toContain('+')
+
+      const localeOps = getCompatibleOperatorNames('locale')
+      expect(localeOps).toContain('+')
+      expect(localeOps).toContain('==')
+      expect(localeOps).toContain('contains')
     })
   })
 
@@ -268,6 +277,9 @@ describe('canonical type system & coercion engine', () => {
       expect(resolveModifierReturnType('array[string]', 'last')).toBe('string')
       expect(resolveModifierReturnType('array', 'first')).toBe('unknown')
       expect(resolveModifierReturnType('string', 'length')).toBe('number')
+      expect(resolveModifierReturnType('locale', 'name')).toBe('string')
+      expect(resolveModifierReturnType('locale', 'languageDirection')).toBe('string')
+      expect(resolveModifierReturnType('locale', 'length')).toBe('number')
       expect(resolveModifierReturnType('array', 'size')).toBe('number')
       expect(resolveModifierReturnType('array', 'empty')).toBe('boolean')
     })

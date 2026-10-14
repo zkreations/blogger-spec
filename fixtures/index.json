@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-14",
   "metrics": {
-    "totalFixtures": 127,
-    "positiveFixtures": 99,
+    "totalFixtures": 131,
+    "positiveFixtures": 103,
     "negativeFixtures": 28,
-    "coveredSpecEntities": 90
+    "coveredSpecEntities": 94
   },
   "fixtures": [
     {
@@ -1268,6 +1268,118 @@
       "expected": {
         "outcome": "value",
         "value": 5
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-variant-access",
+      "title": "Locale Variant Modifier Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:variant"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.variant",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "Catalan (Spain, Valencian)",
+              "language": "ca",
+              "country": "ES",
+              "variant": "VALENCIA",
+              "languageDirection": "ltr",
+              "languageAlignment": "left"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "VALENCIA"
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-script-access",
+      "title": "Locale Script Modifier Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:script"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.script",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "sr_Latn_RS",
+              "language": "sr",
+              "country": "RS",
+              "script": "Latn",
+              "languageDirection": "ltr",
+              "languageAlignment": "left"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Latn"
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-language-alignment",
+      "title": "Locale Language Alignment Modifier Access",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:languageAlignment"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.languageAlignment",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "ar",
+              "language": "ar",
+              "country": "EG",
+              "languageDirection": "rtl",
+              "languageAlignment": "right"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "right"
+      }
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-inherits-string-escaped",
+      "title": "Locale Inherits String Escaped Modifier",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:escaped"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.escaped",
+        "context": {
+          "blog": {
+            "locale": "es_ES"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "es_ES"
       }
     },
     {

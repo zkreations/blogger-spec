@@ -10,6 +10,7 @@ import {
   getMessages,
   getOperators,
   getSettings,
+  getTypes,
   getWidgets,
   MemoryCatalogStore,
   setDefaultCatalogStore,
@@ -92,6 +93,7 @@ export function generateDts(): string {
   const widgetsData = getWidgets()
   const settingsData = getSettings()
   const messagesData = getMessages()
+  const typesData = getTypes()
 
   const lines: string[] = [
     '/**',
@@ -111,28 +113,25 @@ export function generateDts(): string {
     'export type BloggerUrl = string;',
     'export type BloggerImage = string;',
     'export type BloggerDate = string;',
-    'export interface BloggerLocaleModifiers {',
-    '  /** Returns the localized language name. */',
-    '  name?: string;',
-    '  /** Returns the ISO 639-1 language code. */',
-    '  language?: string;',
-    '  /** Returns the ISO country code. */',
-    '  country?: string;',
-    '  /** Returns regional dialect or territorial variant code. */',
-    '  variant?: string;',
-    '  /** Returns writing system script designation. */',
-    '  script?: string;',
-    '  /** Reading directionality: returns \'ltr\' or \'rtl\'. */',
-    '  languageDirection?: \'ltr\' | \'rtl\';',
-    '  /** Text alignment corresponding to direction: \'left\' or \'right\'. */',
-    '  languageAlignment?: \'left\' | \'right\';',
-    '  [key: string]: any;',
-    '}',
-    'export type BloggerLocale = string & BloggerLocaleModifiers;',
-    'export type BloggerMessage = string;',
-    'export type BloggerExpression = string;',
-    '',
   ]
+
+  const localeModifiers = typesData.types?.locale?.modifiers || {}
+  lines.push('export interface BloggerLocaleModifiers {')
+  for (const [mName, mDef] of Object.entries(localeModifiers)) {
+    if ((mDef as any).description) {
+      lines.push(`  /** ${(mDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
+    }
+    const propType = (Array.isArray((mDef as any).allowed_values) && (mDef as any).allowed_values.length > 0)
+      ? (mDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
+      : ((mDef as any).output_type === 'number' ? 'number' : (mDef as any).output_type === 'boolean' ? 'boolean' : 'string')
+    lines.push(`  ${sanitizePropName(mName)}?: ${propType};`)
+  }
+  lines.push('  [key: string]: any;')
+  lines.push('}')
+  lines.push('export type BloggerLocale = string & BloggerLocaleModifiers;')
+  lines.push('export type BloggerMessage = string;')
+  lines.push('export type BloggerExpression = string;')
+  lines.push('')
 
   const directives = directivesData.directives || {}
   const dirNames = Object.keys(directives).sort()

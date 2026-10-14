@@ -149,6 +149,14 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       if (modDef.output_type && !isKnownType(modDef.output_type)) {
         errors.push(`Modifier '${typeKey}.${modKey}' specifies unknown output_type '${modDef.output_type}'.`)
       }
+      if (!modDef.syntax || !modDef.example || !modDef.direct_syntax || !modDef.expr_syntax) {
+        errors.push(`Modifier '${typeKey}.${modKey}' is missing required syntax or example specification.`)
+      }
+      if ((modDef as any).allowed_values) {
+        if (!Array.isArray((modDef as any).allowed_values) || (modDef as any).allowed_values.length === 0) {
+          errors.push(`Modifier '${typeKey}.${modKey}' defines empty or invalid allowed_values.`)
+        }
+      }
     }
   }
 

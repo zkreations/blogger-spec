@@ -4304,7 +4304,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "ts_type": "BloggerLocale",
         "modifiers": {
           "name": {
-            "description": "Returns the localized language name.",
+            "description": "Returns the localized language name (e.g. 'Catalan (Spain, Valencian)').",
             "output_type": "string",
             "syntax": ".name",
             "direct_syntax": "<data:blog.locale.name/>",
@@ -4328,7 +4328,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "example": "data:blog.locale.country"
           },
           "variant": {
-            "description": "Returns regional dialect or territorial variant code.",
+            "description": "Returns regional dialect or territorial variant code (e.g. 'VALENCIA'), or empty string if none.",
             "output_type": "string",
             "syntax": ".variant",
             "direct_syntax": "<data:blog.locale.variant/>",
@@ -4336,7 +4336,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "example": "data:blog.locale.variant"
           },
           "script": {
-            "description": "Returns writing system script designation.",
+            "description": "Returns writing system script designation (e.g. 'Latn'), or empty string if none.",
             "output_type": "string",
             "syntax": ".script",
             "direct_syntax": "<data:blog.locale.script/>",
@@ -4346,6 +4346,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "languageDirection": {
             "description": "Reading directionality: returns 'ltr' or 'rtl'.",
             "output_type": "string",
+            "allowed_values": [
+              "ltr",
+              "rtl"
+            ],
             "syntax": ".languageDirection",
             "direct_syntax": "<data:blog.locale.languageDirection/>",
             "expr_syntax": "([expr]).languageDirection",
@@ -4354,6 +4358,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "languageAlignment": {
             "description": "Text alignment corresponding to direction: 'left' or 'right'.",
             "output_type": "string",
+            "allowed_values": [
+              "left",
+              "right"
+            ],
             "syntax": ".languageAlignment",
             "direct_syntax": "<data:blog.locale.languageAlignment/>",
             "expr_syntax": "([expr]).languageAlignment",
@@ -8177,7 +8185,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           },
           "locale": {
             "type": "locale",
-            "description": "BCP 47 language/locale code (e.g. 'en', 'es-419', 'fr')."
+            "description": "BCP 47 language/locale code (e.g. 'en', 'es-419', 'fr'). Can be dynamically overridden in requests via the 'hl' query parameter (e.g. '?hl=ca-ES-VALENCIA')."
           },
           "localeUnderscoreDelimited": {
             "type": "string",
@@ -12549,7 +12557,9 @@ export const embeddedSchemas: Record<string, any> = {
           "description",
           "output_type",
           "syntax",
-          "example"
+          "example",
+          "direct_syntax",
+          "expr_syntax"
         ],
         "properties": {
           "description": {
@@ -12573,6 +12583,13 @@ export const embeddedSchemas: Record<string, any> = {
           },
           "example": {
             "type": "string"
+          },
+          "allowed_values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Permitted literal values returned by this modifier."
           }
         },
         "additionalProperties": false
