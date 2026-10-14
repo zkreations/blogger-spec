@@ -327,6 +327,20 @@
           "type": "string",
           "description": "Raw HTML/JavaScript snippet for inline post advertisements."
         },
+        "allBylineItems": {
+          "type": "array[object]",
+          "description": "Flat list of active byline items configured for the Blog widget.",
+          "item_properties": {
+            "name": {
+              "type": "string",
+              "description": "Byline item identifier (e.g. 'author', 'comments', 'timestamp', 'labels', 'location', 'share')."
+            },
+            "label": {
+              "type": "string",
+              "description": "Localized label text for the byline item."
+            }
+          }
+        },
         "backgroundColor": {
           "type": "string",
           "description": "Background color hexadecimal code from theme settings."
@@ -376,16 +390,6 @@
         "linkColor": {
           "type": "string",
           "description": "Link color hexadecimal code from theme settings."
-        },
-        "messages": {
-          "type": "object",
-          "description": "Child dictionary containing gadget-specific UI messages (`blogComment`).",
-          "properties": {
-            "blogComment": {
-              "type": "string",
-              "description": "Localized post comment submission prompt string."
-            }
-          }
         },
         "navMessage": {
           "type": "string",
@@ -1056,15 +1060,15 @@
           "status": "deprecated_in_widget_v2",
           "type": "string",
           "action": "migrate",
-          "replacement": "data:messages.by",
-          "reason": "Replaced by localized string data:messages.by."
+          "replacement": "data:allBylineItems.author.label",
+          "reason": "Replaced by localized byline item label data:allBylineItems.author.label or data:messages.by."
         },
         "blogCommentMessage": {
           "status": "deprecated_in_widget_v2",
           "type": "string",
           "action": "migrate",
-          "replacement": "data:messages.blogComment",
-          "reason": "Replaced by localized string data:messages.blogComment."
+          "replacement": "data:messages.postAComment",
+          "reason": "Replaced by localized string data:messages.postAComment."
         },
         "blogTeamBlogMessage": {
           "status": "deprecated_in_widget_v2",
@@ -1140,8 +1144,8 @@
           "status": "deprecated_in_widget_v2",
           "type": "string",
           "action": "migrate",
-          "replacement": "data:messages.emailThis",
-          "reason": "Replaced by localized string data:messages.emailThis."
+          "replacement": "data:messages.emailPost",
+          "reason": "Replaced by localized string data:messages.emailPost."
         },
         "feedLinksMsg": {
           "status": "deprecated_in_widget_v2",
@@ -1203,15 +1207,15 @@
           "status": "deprecated_in_widget_v2",
           "type": "string",
           "action": "migrate",
-          "replacement": "data:messages.labels",
-          "reason": "Replaced by localized string data:messages.labels."
+          "replacement": "data:allBylineItems.labels.label",
+          "reason": "Replaced by localized byline item label data:allBylineItems.labels.label or data:messages.labels."
         },
         "postLocationLabel": {
           "status": "deprecated_in_widget_v2",
           "type": "string",
           "action": "migrate",
-          "replacement": "data:messages.location",
-          "reason": "Replaced by localized string data:messages.location."
+          "replacement": "data:allBylineItems.location.label",
+          "reason": "Replaced by localized byline item label data:allBylineItems.location.label."
         },
         "shareMsg": {
           "status": "deprecated_in_widget_v2",
@@ -1224,22 +1228,22 @@
           "status": "deprecated_in_widget_v2",
           "type": "string",
           "action": "migrate",
-          "replacement": "data:messages.shareToFacebook",
-          "reason": "Replaced by localized string data:messages.shareToFacebook."
+          "replacement": "data:blog.sharing.platforms[...].shareMessage",
+          "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
         },
         "shareToPinterestMsg": {
           "status": "deprecated_in_widget_v2",
           "type": "string",
           "action": "migrate",
-          "replacement": "data:messages.shareToPinterest",
-          "reason": "Replaced by localized string data:messages.shareToPinterest."
+          "replacement": "data:blog.sharing.platforms[...].shareMessage",
+          "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
         },
         "shareToTwitterMsg": {
           "status": "deprecated_in_widget_v2",
           "type": "string",
           "action": "migrate",
-          "replacement": "data:messages.shareToTwitter",
-          "reason": "Replaced by localized string data:messages.shareToTwitter."
+          "replacement": "data:blog.sharing.platforms[...].shareMessage",
+          "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
         },
         "showAuthor": {
           "status": "deprecated_in_widget_v2",
