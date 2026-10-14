@@ -25,6 +25,8 @@ import {
   getSpecCatalog,
   isDiagnosticCode,
   isDirective,
+  isDocAlias,
+  isGrammarOperator,
   isOperator,
   isSelfClosingDirective,
   isValidChild,
@@ -71,7 +73,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       expect(Object.keys(getTypes().types['skin:font']?.modifiers || {})).toEqual(['family', 'size'])
       expect(getGlobals().objects).toBeDefined()
       expect(getWidgets().widgets).toBeDefined()
-      expect((getSettings() as any).widgets).toBeDefined()
+      expect(getSettings().widgets).toBeDefined()
       expect(getMessages().messages).toBeDefined()
       expect(getScopes().scopes).toBeDefined()
 
@@ -113,7 +115,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
           operators: { operators: {} },
           diagnostics: { rules: {} },
           widgets: { widgets: {} },
-          settings: { widgets: {} } as any,
+          settings: { widgets: {} },
           globals: { objects: {} },
           messages: { messages: {} },
           scopes: { scopes: {} },
@@ -388,11 +390,69 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       expect(isOperator('filter')).toBe(true)
       expect(isOperator('===')).toBe(false)
 
+      // Operator aliases
+      expect(isOperator('eq')).toBe(true)
+      expect(isOperator('neq')).toBe(true)
+      expect(isOperator('limit')).toBe(true)
+      expect(isOperator('offset')).toBe(true)
+      expect(isOperator('where')).toBe(true)
+      expect(isOperator('select')).toBe(true)
+      expect(isOperator('&&')).toBe(true)
+      expect(isOperator('||')).toBe(true)
+      expect(isOperator('!')).toBe(true)
+      expect(isDocAlias('default')).toBe(true)
+      expect(isDocAlias('elvis')).toBe(true)
+      expect(getOperator('default')?.family).toBe('elvis')
+      expect(getOperator('elvis')?.family).toBe('elvis')
+
+      // Case-insensitivity
+      expect(isOperator('resizeimage')).toBe(true)
+      expect(isOperator('resizeImage')).toBe(true)
+      expect(isOperator('appendparams')).toBe(true)
+      expect(isOperator('appendParams')).toBe(true)
+
       const plusDef = getOperator('+')
       expect(plusDef).toBeDefined()
       expect(getOperatorPrecedence('+')).toBe(3)
       expect(getOperatorPrecedence('*')).toBe(2)
       expect(getOperatorPrecedence('filter')).toBe(10)
+
+      // Grammar aliases (executable tokens in templates)
+      expect(isOperator('eq')).toBe(true)
+      expect(isGrammarOperator('eq')).toBe(true)
+      expect(getOperator('eq')?.family).toBe('comparison')
+      expect(getOperatorPrecedence('eq')).toBe(4)
+      expect(isOperator('limit')).toBe(true)
+      expect(getOperator('limit')?.family).toBe('collection')
+      expect(getOperatorPrecedence('limit')).toBe(4)
+      expect(isOperator('where')).toBe(true)
+      expect(getOperator('where')?.family).toBe('lambda')
+      expect(getOperatorPrecedence('where')).toBe(10)
+      expect(getOperatorPrecedence('resizeimage')).toBe(3)
+      expect(isOperator('?:')).toBe(true)
+      expect(getOperatorPrecedence('?:')).toBe(2)
+      expect(getOperator('?:')?.associativity).toBe('right-to-left')
+      expect(isOperator('? :')).toBe(true)
+      expect(isOperator('?')).toBe(true)
+      expect(getOperatorPrecedence('? :')).toBe(9)
+      expect(getOperatorPrecedence('?')).toBe(9)
+
+      // Doc / search aliases (metadata only, not executable syntax)
+      expect(isOperator('plus')).toBe(false)
+      expect(isGrammarOperator('plus')).toBe(false)
+      expect(isDocAlias('plus')).toBe(true)
+      expect(getOperator('plus')?.family).toBe('arithmetic')
+      expect(getOperatorPrecedence('plus')).toBeUndefined()
+      expect(isOperator('elvis')).toBe(false)
+      expect(isDocAlias('elvis')).toBe(true)
+      expect(getOperator('elvis')?.family).toBe('elvis')
+      expect(getOperatorPrecedence('elvis')).toBeUndefined()
+      expect(isOperator('default')).toBe(false)
+      expect(isDocAlias('default')).toBe(true)
+      expect(getOperatorPrecedence('default')).toBeUndefined()
+      expect(isOperator('ternary')).toBe(false)
+      expect(isDocAlias('ternary')).toBe(true)
+      expect(getOperatorPrecedence('ternary')).toBeUndefined()
     })
 
     it('provides query helpers for diagnostics', () => {
