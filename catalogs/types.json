@@ -512,6 +512,10 @@
         "languageDirection": {
           "description": "Reading directionality: returns 'ltr' or 'rtl'.",
           "output_type": "string",
+          "allowed_values": [
+            "ltr",
+            "rtl"
+          ],
           "syntax": ".languageDirection",
           "direct_syntax": "<data:blog.locale.languageDirection/>",
           "expr_syntax": "([expr]).languageDirection",
@@ -520,6 +524,10 @@
         "languageAlignment": {
           "description": "Text alignment corresponding to direction: 'left' or 'right'.",
           "output_type": "string",
+          "allowed_values": [
+            "left",
+            "right"
+          ],
           "syntax": ".languageAlignment",
           "direct_syntax": "<data:blog.locale.languageAlignment/>",
           "expr_syntax": "([expr]).languageAlignment",
