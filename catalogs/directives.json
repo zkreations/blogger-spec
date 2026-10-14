@@ -1141,6 +1141,10 @@
         },
         "message_data": {
           "description": "The name attribute is an alias for a Blogger data value of type message and must reference a valid message alias."
+        },
+        "whitespace_separation": {
+          "status": "mandatory",
+          "description": "Sequential sibling b:param elements nested inside b:message must be separated by whitespace or newlines. Writing multiple b:param tags directly inline on the same line without whitespace (<b:param .../><b:param .../>) triggers an engine evaluation abort: 'Invalid parameters for message'."
         }
       },
       "closure_mode": "dual",
@@ -1184,6 +1188,10 @@
         },
         "positional_assignment": {
           "description": "Parameter replacement in b:message is resolved positionally based on child b:param order for simple messages (%1, %2), but strictly requires the 'name' attribute matching the ICU variable identifier for pluralized messages (e.g. name='numComments')."
+        },
+        "whitespace_separation": {
+          "status": "mandatory",
+          "description": "Sequential sibling b:param elements must be separated by whitespace or newlines. Concatenating sibling b:param tags directly inline without intervening spaces causes Blogger runtime evaluation to abort with 'Invalid parameters for message'."
         },
         "multiplicity": {
           "min": 0,
