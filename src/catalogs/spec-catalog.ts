@@ -36,7 +36,8 @@ export class SpecCatalog {
   private readonly store: CatalogStore
   private readonly directiveMap = new Map<string, BloggerDirectiveDefinition>()
   private readonly operatorMap = new Map<string, BloggerOperatorDefinition>()
-  private readonly operatorAliasMap = new Map<string, BloggerOperatorDefinition>()
+  private readonly grammarOperatorMap = new Map<string, BloggerOperatorDefinition>()
+  private readonly docAliasMap = new Map<string, BloggerOperatorDefinition>()
   private readonly diagnosticMap = new Map<string, BloggerDiagnosticRule>()
   private readonly validChildrenMap = new Map<string, Set<string> | null>()
   private readonly validParentsMap = new Map<string, Set<string> | null>()
@@ -87,11 +88,20 @@ export class SpecCatalog {
     const operators = (this.store.getCatalog('operators') as BloggerOperatorsCatalog).operators || {}
     for (const [op, def] of Object.entries(operators)) {
       this.operatorMap.set(op, def)
-      this.operatorAliasMap.set(op.toLowerCase(), def)
-      if (Array.isArray(def.aliases)) {
-        for (const alias of def.aliases) {
-          this.operatorAliasMap.set(alias, def)
-          this.operatorAliasMap.set(alias.toLowerCase(), def)
+      this.grammarOperatorMap.set(op, def)
+      this.grammarOperatorMap.set(op.toLowerCase(), def)
+
+      if (Array.isArray(def.grammar_aliases)) {
+        for (const alias of def.grammar_aliases) {
+          this.grammarOperatorMap.set(alias, def)
+          this.grammarOperatorMap.set(alias.toLowerCase(), def)
+        }
+      }
+
+      if (Array.isArray(def.doc_aliases)) {
+        for (const alias of def.doc_aliases) {
+          this.docAliasMap.set(alias, def)
+          this.docAliasMap.set(alias.toLowerCase(), def)
         }
       }
     }
@@ -260,11 +270,22 @@ export class SpecCatalog {
   }
 
   isOperator(op: string): op is BloggerOperatorName {
-    return this.operatorMap.has(op) || this.operatorAliasMap.has(op) || this.operatorAliasMap.has(op.toLowerCase())
+    return this.grammarOperatorMap.has(op) || this.grammarOperatorMap.has(op.toLowerCase())
+  }
+
+  isGrammarOperator(op: string): boolean {
+    return this.isOperator(op)
+  }
+
+  isDocAlias(alias: string): boolean {
+    return this.docAliasMap.has(alias) || this.docAliasMap.has(alias.toLowerCase())
   }
 
   getOperator(op: string): BloggerOperatorDefinition | undefined {
-    return this.operatorMap.get(op) ?? this.operatorAliasMap.get(op) ?? this.operatorAliasMap.get(op.toLowerCase())
+    return this.grammarOperatorMap.get(op)
+      ?? this.grammarOperatorMap.get(op.toLowerCase())
+      ?? this.docAliasMap.get(op)
+      ?? this.docAliasMap.get(op.toLowerCase())
   }
 
   getAllOperators(): Record<string, BloggerOperatorDefinition> {
@@ -275,8 +296,18 @@ export class SpecCatalog {
     return result
   }
 
+  getGrammarOperators(): Record<string, BloggerOperatorDefinition> {
+    const result: Record<string, BloggerOperatorDefinition> = {}
+    for (const [k, v] of this.grammarOperatorMap.entries()) {
+      result[k] = v
+    }
+    return result
+  }
+
   getOperatorPrecedence(op: string): number | undefined {
-    return this.getOperator(op)?.precedence_level
+    // Precedence strictly applies to valid grammar operators in Blogger
+    const grammarDef = this.grammarOperatorMap.get(op) ?? this.grammarOperatorMap.get(op.toLowerCase())
+    return grammarDef?.precedence_level
   }
 
   isDiagnosticCode(code: string): code is BloggerDiagnosticCode {

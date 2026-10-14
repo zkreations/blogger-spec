@@ -229,8 +229,23 @@
         "return_type": {
           "$ref": "#/$defs/operatorDataType"
         },
+        "grammar_aliases": {
+          "type": "array",
+          "description": "Alternative tokens or keywords recognized as valid syntax in Blogger expressions (e.g. 'eq' for ==, 'where' for filter, 'limit' for take).",
+          "items": {
+            "type": "string"
+          }
+        },
+        "doc_aliases": {
+          "type": "array",
+          "description": "Conceptual or search aliases for tooling and documentation (e.g. 'plus' for +, 'modulo' for %, 'elvis' for ?:). Not valid syntax tokens in Blogger expressions.",
+          "items": {
+            "type": "string"
+          }
+        },
         "aliases": {
           "type": "array",
+          "description": "Combined list of aliases for backward compatibility.",
           "items": {
             "type": "string"
           }

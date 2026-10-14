@@ -416,6 +416,10 @@
           "result": "Year 2025",
           "description": "String concatenation"
         }
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": [
+        "plus"
       ]
     },
     "-": {
@@ -502,6 +506,10 @@
           "result": "6",
           "description": "Binary subtraction"
         }
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": [
+        "minus"
       ]
     },
     "*": {
@@ -544,6 +552,10 @@
           "result": "50",
           "description": "Multiplication"
         }
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": [
+        "multiply"
       ]
     },
     "/": {
@@ -589,6 +601,10 @@
           "result": "2.3333",
           "description": "Division rounded to 4 decimals"
         }
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": [
+        "divide"
       ]
     },
     "%": {
@@ -633,6 +649,11 @@
           "result": "1",
           "description": "Modulo remainder"
         }
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": [
+        "modulo",
+        "mod"
       ]
     },
     "==": {
@@ -677,7 +698,11 @@
           "result": "true",
           "description": "Equality check"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "eq"
+      ],
+      "doc_aliases": []
     },
     "!=": {
       "family": "comparison",
@@ -720,7 +745,11 @@
           "result": "false",
           "description": "Inequality check"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "neq"
+      ],
+      "doc_aliases": []
     },
     "<": {
       "family": "comparison",
@@ -765,7 +794,11 @@
           "result": "true",
           "description": "Less than check"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "lt"
+      ],
+      "doc_aliases": []
     },
     ">": {
       "family": "comparison",
@@ -810,7 +843,11 @@
           "result": "true",
           "description": "Greater than check"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "gt"
+      ],
+      "doc_aliases": []
     },
     "<=": {
       "family": "comparison",
@@ -855,7 +892,11 @@
           "result": "true",
           "description": "Less than or equal"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "lte"
+      ],
+      "doc_aliases": []
     },
     ">=": {
       "family": "comparison",
@@ -900,7 +941,11 @@
           "result": "true",
           "description": "Greater than or equal"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "gte"
+      ],
+      "doc_aliases": []
     },
     "and": {
       "family": "logical",
@@ -947,7 +992,11 @@
           "result": "true",
           "description": "Logical conjunction"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "&&"
+      ],
+      "doc_aliases": []
     },
     "or": {
       "family": "logical",
@@ -994,7 +1043,11 @@
           "result": "true",
           "description": "Logical disjunction"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "||"
+      ],
+      "doc_aliases": []
     },
     "not": {
       "family": "logical",
@@ -1033,7 +1086,11 @@
           "result": "true",
           "description": "Logical negation"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "!"
+      ],
+      "doc_aliases": []
     },
     "in": {
       "family": "membership",
@@ -1075,7 +1132,9 @@
           "result": "true",
           "description": "Membership in array"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "contains": {
       "family": "content",
@@ -1120,7 +1179,9 @@
           "result": "true",
           "description": "Substring containment"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "take": {
       "family": "collection",
@@ -1170,7 +1231,11 @@
           "result": "array",
           "description": "Slicing top 5 items"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "limit"
+      ],
+      "doc_aliases": []
     },
     "skip": {
       "family": "collection",
@@ -1217,7 +1282,11 @@
           "result": "array",
           "description": "Pagination slice"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "offset"
+      ],
+      "doc_aliases": []
     },
     "to": {
       "family": "collection",
@@ -1263,7 +1332,9 @@
           "result": "[1, 2, ..., 10]",
           "description": "Loop integer range"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "any": {
       "family": "lambda",
@@ -1307,7 +1378,9 @@
           "result": "true",
           "description": "Existential quantifier"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "all": {
       "family": "lambda",
@@ -1348,7 +1421,9 @@
           "result": "true",
           "description": "Universal quantifier"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "none": {
       "family": "lambda",
@@ -1389,7 +1464,9 @@
           "result": "true",
           "description": "Negative quantifier"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "count": {
       "family": "lambda",
@@ -1430,7 +1507,9 @@
           "result": "5",
           "description": "Filtered count"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "map": {
       "family": "lambda",
@@ -1482,7 +1561,11 @@
           "result": "array[string]",
           "description": "Projection to title array"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "select"
+      ],
+      "doc_aliases": []
     },
     "filter": {
       "family": "lambda",
@@ -1528,7 +1611,11 @@
           "result": "array",
           "description": "Filtered collection"
         }
-      ]
+      ],
+      "grammar_aliases": [
+        "where"
+      ],
+      "doc_aliases": []
     },
     "first": {
       "family": "lambda",
@@ -1569,7 +1656,9 @@
           "result": "object",
           "description": "Extract first match"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "?:": {
       "family": "elvis",
@@ -1583,6 +1672,7 @@
         "functional": "?:(a, b)"
       },
       "precedence_level": 2,
+      "associativity": "right-to-left",
       "operands": [
         {
           "name": "target",
@@ -1612,6 +1702,11 @@
           "result": "any",
           "description": "Nullish fallback"
         }
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": [
+        "default",
+        "elvis"
       ]
     },
     "? :": {
@@ -1656,6 +1751,7 @@
       ],
       "return_type": "any",
       "aliases": [
+        "?",
         "ternary"
       ],
       "anti_patterns": [
@@ -1667,6 +1763,12 @@
           "result": "string",
           "description": "Conditional ternary"
         }
+      ],
+      "grammar_aliases": [
+        "?"
+      ],
+      "doc_aliases": [
+        "ternary"
       ]
     },
     "path": {
@@ -1714,7 +1816,9 @@
           "result": "url",
           "description": "URL path replacement"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "params": {
       "family": "url",
@@ -1764,7 +1868,9 @@
           "result": "url",
           "description": "Query params set"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "appendParams": {
       "family": "url",
@@ -1811,7 +1917,9 @@
           "result": "url",
           "description": "Query params merge"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "fragment": {
       "family": "url",
@@ -1858,7 +1966,9 @@
           "result": "url",
           "description": "URL fragment anchor"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "format": {
       "family": "date",
@@ -1899,7 +2009,9 @@
           "result": "string",
           "description": "ICU date formatting"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "resizeImage": {
       "family": "image",
@@ -2011,7 +2123,9 @@
           "result": "image",
           "description": "Resize with square crop"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "sourceSet": {
       "family": "image",
@@ -2067,7 +2181,9 @@
           "result": "string",
           "description": "HTML srcset generation"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     },
     "snippet": {
       "family": "snippet",
@@ -2116,7 +2232,9 @@
           "result": "string",
           "description": "Text snippet extraction"
         }
-      ]
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": []
     }
   }
 }

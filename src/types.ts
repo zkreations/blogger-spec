@@ -59,8 +59,12 @@ export interface BloggerOperatorDefinition {
   description: string
   syntax: BloggerOperatorSyntax
   precedence_level: number
+  associativity?: 'left-to-right' | 'right-to-left' | 'inner-to-outer' | 'non-associative'
+  token_cost?: number
   operands: BloggerOperatorOperand[]
   return_type: string
+  grammar_aliases?: string[]
+  doc_aliases?: string[]
   aliases?: string[]
   overloads?: BloggerOperatorOverload[]
   examples?: Array<{
@@ -160,7 +164,10 @@ export interface BloggerOperatorsCatalog {
 export interface BloggerDiagnosticsCatalog {
   $schema?: string
   version?: string
+  title?: string
+  description?: string
   rules: Record<string, BloggerDiagnosticRule>
+  [key: string]: any
 }
 
 export interface BloggerTypeModifierDefinition {
@@ -218,21 +225,29 @@ export interface BloggerWidgetsCatalog {
 export interface BloggerSettingsCatalog {
   $schema?: string
   version?: string
-  settings?: Record<string, any>
+  title?: string
+  description?: string
+  widgets: Record<string, any>
   [key: string]: any
 }
 
 export interface BloggerMessagesCatalog {
   $schema?: string
   version?: string
-  messages?: Record<string, any>
+  title?: string
+  description?: string
+  patterns?: Record<string, any>
+  messages: Record<string, any>
   [key: string]: any
 }
 
 export interface BloggerScopesCatalog {
   $schema?: string
   version?: string
-  scopes?: Record<string, any>
+  title?: string
+  description?: string
+  resolution_precedence?: string[]
+  scopes: Record<string, any>
   [key: string]: any
 }
 

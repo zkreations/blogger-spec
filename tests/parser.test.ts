@@ -251,6 +251,13 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect((node.left as BloggerBinaryExpressionNode).operator).toBe('>')
       expect((node.right as BloggerBinaryExpressionNode).operator).toBe('<')
     })
+
+    it('strictly accepts grammar aliases (eq, neq, limit) while rejecting doc aliases (plus, modulo)', () => {
+      expect(() => parseExpression('5 eq 5')).not.toThrow()
+      expect(() => parseExpression('data:posts limit 5')).not.toThrow()
+      expect(() => parseExpression('5 plus 3')).toThrow(/Unexpected token 'plus'/)
+      expect(() => parseExpression('10 modulo 2')).toThrow(/Unexpected token 'modulo'/)
+    })
   })
 
   describe('elvis & ternary expressions', () => {

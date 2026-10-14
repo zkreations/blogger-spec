@@ -76,12 +76,24 @@ export function isOperator(op: string): op is BloggerOperatorName {
   return getSpecCatalog().isOperator(op)
 }
 
+export function isGrammarOperator(op: string): boolean {
+  return getSpecCatalog().isGrammarOperator(op)
+}
+
+export function isDocAlias(alias: string): boolean {
+  return getSpecCatalog().isDocAlias(alias)
+}
+
 export function getOperator(op: string): BloggerOperatorDefinition | undefined {
   return getSpecCatalog().getOperator(op)
 }
 
 export function getAllOperators(): Record<string, BloggerOperatorDefinition> {
   return getSpecCatalog().getAllOperators()
+}
+
+export function getGrammarOperators(): Record<string, BloggerOperatorDefinition> {
+  return getSpecCatalog().getGrammarOperators()
 }
 
 export function getOperatorPrecedence(op: string): number | undefined {
