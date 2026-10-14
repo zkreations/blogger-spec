@@ -34,14 +34,14 @@ interface InfixOpInfo {
 }
 
 const LEVEL_TO_BINDING_POWER: Record<number, number> = {
-  2: 90, // Multiplicative: *, /, %
+  2: 90, // Null Coalescence & Multiplicative: ?:, *, /, % (Elvis ?: binds at 95 within Level 2 for primary fallback over arithmetic)
   3: 80, // Additive & Transforms: +, -, format, params, etc.
   4: 70, // Relational, Comparisons & Slices: ==, !=, <, >, eq, neq, take, skip, to, etc.
   5: 60, // Membership: in, contains
   6: 50, // Logical NOT: !, not
   7: 40, // Logical AND: &&, and
   8: 30, // Logical OR: ||, or
-  9: 20, // Ternary & Elvis: ?:
+  9: 20, // Ternary conditional: cond ? a : b (catalog key: '? :')
   10: 10, // Collection lambdas: filter, map, any, count, etc.
 }
 
@@ -98,6 +98,7 @@ const HIERARCHY_OPERATOR_LEVELS: Record<string, number> = {
   'or': 8,
   '?:': 2,
   '?': 9,
+  '? :': 9,
   'where': 10,
   'map': 10,
   'select': 10,
@@ -679,7 +680,7 @@ export class ExpressionParser {
         return { name: 'or', bindingPower: LEVEL_TO_BINDING_POWER[8]!, catalogLevel: 8, isLogical: true }
       }
 
-      const precLevel = HIERARCHY_OPERATOR_LEVELS[lower] ?? getOperatorPrecedence(token.value) ?? getOperatorPrecedence(lower)
+      const precLevel = getOperatorPrecedence(token.value) ?? getOperatorPrecedence(lower) ?? HIERARCHY_OPERATOR_LEVELS[lower]
       if (precLevel !== undefined && precLevel in LEVEL_TO_BINDING_POWER) {
         return {
           name: token.value,
