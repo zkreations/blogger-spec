@@ -128,7 +128,9 @@
         "description",
         "output_type",
         "syntax",
-        "example"
+        "example",
+        "direct_syntax",
+        "expr_syntax"
       ],
       "properties": {
         "description": {
@@ -152,6 +154,13 @@
         },
         "example": {
           "type": "string"
+        },
+        "allowed_values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Permitted literal values returned by this modifier."
         }
       },
       "additionalProperties": false
