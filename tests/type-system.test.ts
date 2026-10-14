@@ -5,6 +5,7 @@ import {
   getTypeModifiers,
   isTruthy,
   isTypeAssignable,
+  resolveModifierReturnType,
   resolveOperatorReturnType,
 } from '../src/helpers.js'
 import * as RootExports from '../src/index.js'
@@ -16,10 +17,12 @@ describe('canonical type system & coercion engine', () => {
     expect(RootExports.getTypeModifiers).toBeDefined()
     expect(RootExports.getCompatibleOperators).toBeDefined()
     expect(RootExports.resolveOperatorReturnType).toBeDefined()
+    expect(RootExports.resolveModifierReturnType).toBeDefined()
     expect(RootExports.isTruthy).toBeDefined()
 
     expect(TypeSystemExports.isTypeAssignable).toBeDefined()
     expect(TypeSystemExports.getTypeModifiers).toBeDefined()
+    expect(TypeSystemExports.resolveModifierReturnType).toBeDefined()
   })
 
   describe('isTypeAssignable (subtype hierarchy)', () => {
@@ -258,8 +261,15 @@ describe('canonical type system & coercion engine', () => {
       expect(resolveOperatorReturnType('to', 'number')).toBe('array')
 
       expect(resolveOperatorReturnType('first', 'array[image]')).toBe('image')
-      expect(resolveOperatorReturnType('last', 'array[string]')).toBe('string')
       expect(resolveOperatorReturnType('first', 'array')).toBe('unknown')
+
+      // Property modifier unwrapping (.first, .last)
+      expect(resolveModifierReturnType('array[image]', 'first')).toBe('image')
+      expect(resolveModifierReturnType('array[string]', 'last')).toBe('string')
+      expect(resolveModifierReturnType('array', 'first')).toBe('unknown')
+      expect(resolveModifierReturnType('string', 'length')).toBe('number')
+      expect(resolveModifierReturnType('array', 'size')).toBe('number')
+      expect(resolveModifierReturnType('array', 'empty')).toBe('boolean')
     })
 
     it('resolves native specialized functions and transform operators', () => {

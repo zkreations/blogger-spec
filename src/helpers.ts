@@ -8,6 +8,7 @@ import type {
   BloggerInclusionDefinition,
   BloggerOperatorDefinition,
   BloggerOperatorName,
+  BloggerWidgetType,
 } from './types.js'
 import {
 
@@ -112,7 +113,7 @@ export function getAllDiagnostics(): Record<string, BloggerDiagnosticRule> {
   return getSpecCatalog().getAllDiagnostics()
 }
 
-export function isWidget(name: string): boolean {
+export function isWidget(name: string): name is BloggerWidgetType {
   return getSpecCatalog().isWidget(name)
 }
 
@@ -230,5 +231,6 @@ export {
   getTypeModifiers,
   isTruthy,
   isTypeAssignable,
+  resolveModifierReturnType,
   resolveOperatorReturnType,
 } from './type-system.js'

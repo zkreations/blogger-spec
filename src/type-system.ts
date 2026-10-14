@@ -73,6 +73,24 @@ export function getTypeModifiers(typeName: string): Record<string, BloggerTypeMo
   }
 }
 
+export function resolveModifierReturnType(
+  targetType: string,
+  modifierName: string,
+): string {
+  const modifiers = getTypeModifiers(targetType)
+  const modDef = modifiers[modifierName]
+  if (!modDef) {
+    return 'unknown'
+  }
+  if (modDef.output_type === 'child_item') {
+    if (targetType.startsWith('array[') && targetType.endsWith(']')) {
+      return targetType.slice(6, -1)
+    }
+    return 'unknown'
+  }
+  return modDef.output_type
+}
+
 export function getCompatibleOperators(
   typeName: string,
   isLoopContext: boolean = false,
@@ -140,7 +158,6 @@ export function resolveOperatorReturnType(
       return 'number'
 
     case 'first':
-    case 'last':
       if (leftType.startsWith('array[') && leftType.endsWith(']')) {
         return leftType.slice(6, -1)
       }

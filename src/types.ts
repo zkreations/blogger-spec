@@ -19,6 +19,34 @@ export type BloggerDiagnosticCode = string
 export type BloggerDirectiveName = string
 export type BloggerOperatorName = string
 
+export type BloggerWidgetType
+  = | 'AdSense'
+    | 'Attribution'
+    | 'BlogArchive'
+    | 'BlogList'
+    | 'BlogSearch'
+    | 'Blog'
+    | 'BloggerButton'
+    | 'ContactForm'
+    | 'FeaturedPost'
+    | 'Feed'
+    | 'Followers'
+    | 'Header'
+    | 'Image'
+    | 'Label'
+    | 'LinkList'
+    | 'PageList'
+    | 'PopularPosts'
+    | 'Profile'
+    | 'ReportAbuse'
+    | 'Stats'
+    | 'Subscribe'
+    | 'HTML'
+    | 'Text'
+    | 'TextList'
+    | 'Translate'
+    | 'Wikipedia'
+
 export interface BloggerDiagnosticRule {
   code: string
   name: string

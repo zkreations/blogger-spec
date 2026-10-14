@@ -8,6 +8,8 @@ import {
   getDirectives,
   getGlobals,
   getOperators,
+  getSettings,
+  getWidgets,
   MemoryCatalogStore,
   setDefaultCatalogStore,
 } from '../catalogs/index.js'
@@ -41,11 +43,48 @@ function sanitizePropName(name: string): string {
   return JSON.stringify(name)
 }
 
+function mapPropertyTypeToTs(type: string): string {
+  if (!type) {
+    return 'any'
+  }
+  switch (type) {
+    case 'string':
+    case 'url':
+    case 'image':
+      return 'string'
+    case 'number':
+      return 'number'
+    case 'boolean':
+      return 'boolean'
+    case 'object':
+    case 'locale':
+      return 'Record<string, any>'
+    case 'array[string]':
+    case 'array[url]':
+      return 'string[]'
+    case 'array[number]':
+      return 'number[]'
+    case 'array[boolean]':
+      return 'boolean[]'
+    case 'array[object]':
+      return 'Array<Record<string, any>>'
+    case 'array':
+      return 'any[]'
+    default:
+      if (type.startsWith('array[')) {
+        return 'any[]'
+      }
+      return 'any'
+  }
+}
+
 export function generateDts(): string {
   const directivesData = getDirectives()
   const operatorsData = getOperators()
   const globalsData = getGlobals()
   const diagnosticsData = getDiagnostics()
+  const widgetsData = getWidgets()
+  const settingsData = getSettings()
 
   const lines: string[] = [
     '/**',
@@ -131,8 +170,52 @@ export function generateDts(): string {
     lines.push(`/** Schema for global object \`${gName}\` */`)
     lines.push(`export interface Blogger${pascal}Global {`)
     const props = globals[gName]?.canonical || {}
-    for (const pName of Object.keys(props).sort()) {
-      lines.push(`  ${sanitizePropName(pName)}?: any;`)
+    for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
+      const tsType = mapPropertyTypeToTs((pDef as any).type)
+      if ((pDef as any).description) {
+        lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
+      }
+      lines.push(`  ${sanitizePropName(pName)}?: ${tsType};`)
+    }
+    lines.push('  [key: string]: any;')
+    lines.push('}')
+    lines.push('')
+  }
+
+  const widgets = widgetsData.widgets || {}
+  const widgetTypes = Object.keys(widgets).sort()
+  lines.push(`export type BloggerWidgetType = ${widgetTypes.map(w => `'${w}'`).join(' | ')};`)
+  lines.push('')
+
+  for (const wName of widgetTypes) {
+    const pascal = toPascalCase(wName)
+    lines.push(`/** Canonical data dictionary for widget \`${wName}\` */`)
+    lines.push(`export interface Blogger${pascal}WidgetData {`)
+    const props = widgets[wName]?.canonical || {}
+    for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
+      const tsType = mapPropertyTypeToTs((pDef as any).type)
+      if ((pDef as any).description) {
+        lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
+      }
+      lines.push(`  ${sanitizePropName(pName)}?: ${tsType};`)
+    }
+    lines.push('  [key: string]: any;')
+    lines.push('}')
+    lines.push('')
+  }
+
+  const settings = settingsData.widgets || {}
+  for (const wName of Object.keys(settings).sort()) {
+    const pascal = toPascalCase(wName)
+    lines.push(`/** Schema settings dictionary for widget \`${wName}\` */`)
+    lines.push(`export interface Blogger${pascal}WidgetSettings {`)
+    const props = settings[wName]?.canonical || {}
+    for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
+      const tsType = mapPropertyTypeToTs((pDef as any).type)
+      if ((pDef as any).description) {
+        lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
+      }
+      lines.push(`  ${sanitizePropName(pName)}?: ${tsType};`)
     }
     lines.push('  [key: string]: any;')
     lines.push('}')

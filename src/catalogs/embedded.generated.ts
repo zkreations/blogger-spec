@@ -4589,6 +4589,14 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "user_constructible": true,
         "ts_type": "(item: any) => any",
         "modifiers": {}
+      },
+      "child_item": {
+        "category": "meta",
+        "description": "Parametric element type placeholder resolved to the item type of the target collection.",
+        "parent_type": null,
+        "user_constructible": false,
+        "ts_type": "any",
+        "modifiers": {}
       }
     }
   },

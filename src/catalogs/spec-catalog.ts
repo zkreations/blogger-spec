@@ -17,6 +17,7 @@ import type {
   BloggerSettingsCatalog,
   BloggerTypesCatalog,
   BloggerWidgetsCatalog,
+  BloggerWidgetType,
 } from '../types.js'
 import type { CatalogStore } from './store.js'
 import { getDefaultCatalogStore } from './store.js'
@@ -326,7 +327,7 @@ export class SpecCatalog {
     return result
   }
 
-  isWidget(name: string): boolean {
+  isWidget(name: string): name is BloggerWidgetType {
     return this.widgetMap.has(name)
   }
 
