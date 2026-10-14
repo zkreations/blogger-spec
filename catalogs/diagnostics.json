@@ -254,6 +254,26 @@
       "replacement": "(data:date format 'yyyyMMdd') < '...'",
       "evidence": "observed",
       "verifiedAt": "2026-10-12"
+    },
+    "BX1027": {
+      "code": "BX1027",
+      "name": "DIRECT_PARAMETERIZED_MESSAGE_INVOCATION",
+      "category": "runtime",
+      "severity": "warning",
+      "message": "Parameterized message tokens cannot be evaluated via direct tag invocation (<data:messages.key/>) and output raw un-interpolated template strings. Use <b:message name='...'> with child <b:param> tags.",
+      "replacement": "<b:message name='messages.key'><b:param .../></b:message>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14"
+    },
+    "BX1028": {
+      "code": "BX1028",
+      "name": "PLURAL_MESSAGE_PARAM_MISSING_NAME",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Pluralized ICU messages require the 'name' attribute on child <b:param> tags matching the plural identifier (e.g. <b:param name='numComments' value='...'/>); omitting 'name' aborts template compilation.",
+      "replacement": "<b:param name='...' value='...'/>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14"
     }
   }
 }
