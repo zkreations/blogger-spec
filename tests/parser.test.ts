@@ -355,11 +355,52 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect((call.arguments[2] as BloggerLiteralNode).value).toBe('16:9')
     })
 
-    it('parses functional operators: +(1, 2)', () => {
-      const call = parseExpression('+(1, 2)') as BloggerCallExpressionNode
-      expect(call.type).toBe('CallExpression')
-      expect(call.callee).toBe('+')
-      expect(call.arguments.length).toBe(2)
+    it('parses functional operators across arithmetic, relational, logical, and nullish symbols', () => {
+      const plusCall = parseExpression('+(1, 2)') as BloggerCallExpressionNode
+      expect(plusCall.type).toBe('CallExpression')
+      expect(plusCall.callee).toBe('+')
+      expect(plusCall.arguments.length).toBe(2)
+
+      const minusCall = parseExpression('-(20, 10)') as BloggerCallExpressionNode
+      expect(minusCall.type).toBe('CallExpression')
+      expect(minusCall.callee).toBe('-')
+      expect(minusCall.arguments.length).toBe(2)
+
+      const eqCall = parseExpression('==(10, 10)') as BloggerCallExpressionNode
+      expect(eqCall.type).toBe('CallExpression')
+      expect(eqCall.callee).toBe('==')
+
+      const neqCall = parseExpression('!=(10, 20)') as BloggerCallExpressionNode
+      expect(neqCall.type).toBe('CallExpression')
+      expect(neqCall.callee).toBe('!=')
+
+      const ltCall = parseExpression('<(10, 20)') as BloggerCallExpressionNode
+      expect(ltCall.type).toBe('CallExpression')
+      expect(ltCall.callee).toBe('<')
+
+      const gtCall = parseExpression('>(20, 10)') as BloggerCallExpressionNode
+      expect(gtCall.type).toBe('CallExpression')
+      expect(gtCall.callee).toBe('>')
+
+      const lteCall = parseExpression('<=(20, 20)') as BloggerCallExpressionNode
+      expect(lteCall.type).toBe('CallExpression')
+      expect(lteCall.callee).toBe('<=')
+
+      const gteCall = parseExpression('>=(20, 20)') as BloggerCallExpressionNode
+      expect(gteCall.type).toBe('CallExpression')
+      expect(gteCall.callee).toBe('>=')
+
+      const andCall = parseExpression('&&(true, true)') as BloggerCallExpressionNode
+      expect(andCall.type).toBe('CallExpression')
+      expect(andCall.callee).toBe('&&')
+
+      const orCall = parseExpression('||(false, true)') as BloggerCallExpressionNode
+      expect(orCall.type).toBe('CallExpression')
+      expect(orCall.callee).toBe('||')
+
+      const elvisCall = parseExpression('?:(data:any, "Fallback")') as BloggerCallExpressionNode
+      expect(elvisCall.type).toBe('CallExpression')
+      expect(elvisCall.callee).toBe('?:')
     })
 
     it('parses array and object expressions', () => {

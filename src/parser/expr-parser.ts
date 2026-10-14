@@ -231,7 +231,7 @@ export class ExpressionParser {
       }
 
       case 'MINUS': {
-        this.advance()
+        const opTok = this.advance()
         // Optimization: literal negative numbers (e.g. -5)
         if (this.check('NUMBER')) {
           const numTok = this.advance()
@@ -241,9 +241,39 @@ export class ExpressionParser {
             type: 'Literal',
             value: val,
             raw,
-            loc: makeLoc(token.start, numTok.end),
+            loc: makeLoc(opTok.start, numTok.end),
           }
           return node
+        }
+
+        // Functional subtraction: -(20, 10)
+        if (this.check('LPAREN')) {
+          const savedPos = this.current
+          this.advance() // '('
+          const args = this.parseArgumentList()
+          if (this.check('RPAREN')) {
+            const closeParen = this.advance() // ')'
+            if (args.length > 1) {
+              const node: BloggerCallExpressionNode = {
+                type: 'CallExpression',
+                callee: '-',
+                arguments: args,
+                loc: makeLoc(opTok.start, closeParen.end),
+              }
+              return node
+            }
+            if (args.length === 1) {
+              const node: BloggerUnaryExpressionNode = {
+                type: 'UnaryExpression',
+                operator: '-',
+                argument: args[0]!,
+                prefix: true,
+                loc: makeLoc(opTok.start, closeParen.end),
+              }
+              return node
+            }
+          }
+          this.current = savedPos
         }
 
         const argument = this.parseExpression(85)
@@ -252,7 +282,7 @@ export class ExpressionParser {
           operator: '-',
           argument,
           prefix: true,
-          loc: makeLoc(token.start, argument.loc ? { line: argument.loc.end.line, column: argument.loc.end.column, offset: argument.loc.end.offset ?? 0 } : token.end),
+          loc: makeLoc(opTok.start, argument.loc ? { line: argument.loc.end.line, column: argument.loc.end.column, offset: argument.loc.end.offset ?? 0 } : opTok.end),
         }
         return node
       }
@@ -312,13 +342,20 @@ export class ExpressionParser {
         return node
       }
 
-      // Functional operator syntax: +(1, 2)
+      // Functional operator syntax: +(1, 2), ==(1, 1), >(2, 1), &&(a, b), ?:(a, b)
       case 'PLUS':
       case 'STAR':
       case 'SLASH':
       case 'PERCENT':
       case 'EQ':
-      case 'NEQ': {
+      case 'NEQ':
+      case 'LT':
+      case 'GT':
+      case 'LTE':
+      case 'GTE':
+      case 'AND':
+      case 'OR':
+      case 'ELVIS': {
         const opToken = this.advance()
         if (this.check('LPAREN')) {
           this.advance() // '('
