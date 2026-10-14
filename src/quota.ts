@@ -139,16 +139,27 @@ export function tokenizeExpression(expr: string): BloggerExpressionToken[] {
         ternaryStack.push(0)
         const lastToken = tokens[tokens.length - 1]
         const prevToken = tokens.length > 1 ? tokens[tokens.length - 2] : undefined
+
+        const isNonFunctionalPrefix
+          = lastToken !== undefined
+            && (lastToken.value === '!' || lastToken.value.toLowerCase() === 'not')
+
+        const isPrefixContext
+          = tokens.length === 1
+            || (prevToken !== undefined
+              && (prevToken.tokenType === 'DELIMITER_COMMA'
+                || prevToken.tokenType === 'GROUPING_PAREN_OPEN'
+                || prevToken.tokenType === 'CONTAINER_ARRAY'
+                || prevToken.tokenType === 'DELIMITER_COLON'
+                || prevToken.tokenType.startsWith('OPERATOR_')))
+
         const isFunctionalCall
           = tokens.length > 0
+            && !isNonFunctionalPrefix
             && (lastToken!.tokenType === 'NATIVE_FUNCTION'
               || lastToken!.tokenType === 'OPERATOR_LAMBDA'
               || LAMBDA_KEYWORDS.has(lastToken!.value.toLowerCase())
-              || (lastToken!.tokenType.startsWith('OPERATOR_')
-                && (tokens.length === 1
-                  || (prevToken
-                    && (prevToken.tokenType === 'DELIMITER_COMMA'
-                      || prevToken.tokenType === 'GROUPING_PAREN_OPEN')))))
+              || (lastToken!.tokenType.startsWith('OPERATOR_') && isPrefixContext))
         const cost = isFunctionalCall ? 0 : 1
         tokens.push({ value: ch, tokenType: 'GROUPING_PAREN_OPEN', tokensConsumed: cost, pos })
       }

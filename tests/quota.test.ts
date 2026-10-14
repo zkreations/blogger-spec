@@ -39,10 +39,30 @@ describe('compiler token quota suite (BX1021)', () => {
     expect(countExpressionTokens('((1 + 2))')).toBe(5)
   })
 
-  it('counts functional prefix operations with zero-cost parens', () => {
+  it('counts functional prefix operations with zero-cost parens across simple and nested contexts', () => {
     expect(countExpressionTokens('+(1)')).toBe(2)
     expect(countExpressionTokens('+(-1)')).toBe(2)
     expect(countExpressionTokens('-(-1)')).toBe(2)
+    expect(countExpressionTokens('+(20, 25)')).toBe(3)
+    expect(countExpressionTokens('*(20, 25)')).toBe(3)
+    expect(countExpressionTokens('eq(20, 25)')).toBe(3)
+
+    // Nested prefix functional operations have 0-cost parens
+    expect(countExpressionTokens('10 + *(20, 25)')).toBe(5)
+    expect(countExpressionTokens('data:a and eq(data:b, 10)')).toBe(5)
+
+    // Contrast with infix operations followed by grouping parens (which cost 1)
+    expect(countExpressionTokens('10 + (20 * 25)')).toBe(6)
+    expect(countExpressionTokens('x eq (y)')).toBe(4)
+  })
+
+  it('charges grouping parenthesis when negating expressions with ! or not (non-functional)', () => {
+    expect(countExpressionTokens('!true')).toBe(2)
+    expect(countExpressionTokens('not true')).toBe(2)
+    expect(countExpressionTokens('!(true)')).toBe(3)
+    expect(countExpressionTokens('not(true)')).toBe(3)
+    expect(countExpressionTokens('not (true)')).toBe(3)
+    expect(countExpressionTokens('1 and !(false)')).toBe(5)
   })
 
   it('counts array and object composite structures correctly', () => {
@@ -153,6 +173,14 @@ describe('compiler token quota suite (BX1021)', () => {
     }
     // Array [1] (2) + lambda op 'map' (1) + param 'x' (1) + '=>' (1) + body 'x + 1' (3) = 8
     expect(countExpressionTokens(lambdaNode)).toBe(8)
+  })
+
+  it('counts native transformation functional invocations with zero-cost parens (path, params, etc.)', () => {
+    expect(countExpressionTokens('format(data:blog.date, \'YYYY\')')).toBe(3)
+    expect(countExpressionTokens('path(data:blog.url, \'/search\')')).toBe(3)
+    expect(countExpressionTokens('params(data:blog.url, { a: 1 })')).toBe(4)
+    expect(countExpressionTokens('appendParams(data:blog.url, { q: \'blogger\' })')).toBe(4)
+    expect(countExpressionTokens('fragment(data:blog.url, \'top\')')).toBe(3)
   })
 
   it('handles empty or blank expressions safely', () => {
