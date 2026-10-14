@@ -1,4 +1,5 @@
 import type { BloggerFixture, BloggerFixturesManifest } from '../src/types.js'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import {
   clearCatalogCache,
@@ -46,7 +47,24 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       expect(report.valid).toBe(true)
       expect(report.errors).toEqual([])
       expect(report.metrics.schemasChecked).toBe(10)
-      expect(report.metrics.fixturesChecked).toBeGreaterThanOrEqual(63)
+      expect(report.metrics.fixturesChecked).toBeGreaterThanOrEqual(118)
+    })
+
+    it('covers 100% of canonical diagnostic rules across fixtures', () => {
+      const manifest = JSON.parse(readFileSync(getWorkspacePaths().fixturesManifest, 'utf-8')) as BloggerFixturesManifest
+      const coveredRules = new Set<string>()
+      for (const f of manifest.fixtures) {
+        for (const c of f.covers || []) {
+          if (c.startsWith('rule:')) {
+            coveredRules.add(c.replace('rule:', ''))
+          }
+        }
+      }
+      const allDiagRules = Object.keys(getDiagnostics().rules)
+      expect(coveredRules.size).toBe(allDiagRules.length)
+      for (const rule of allDiagRules) {
+        expect(coveredRules.has(rule)).toBe(true)
+      }
     })
 
     it('honors SpecValidator custom reporter and checkDtsFreshness options', () => {

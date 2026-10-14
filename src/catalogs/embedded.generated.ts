@@ -10114,9 +10114,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "DEPRECATED_ATTRIBUTE",
         "category": "deprecation",
         "severity": "warning",
-        "message": "Directive attribute is deprecated in Layouts v3.",
-        "evidence": "official",
-        "verifiedAt": "2026-10-10"
+        "message": "Directive attribute is deprecated in Layouts v3. Blogger ignores and strips this attribute upon saving without aborting template compilation.",
+        "evidence": "observed",
+        "verifiedAt": "2026-10-14"
       },
       "BX1025": {
         "code": "BX1025",

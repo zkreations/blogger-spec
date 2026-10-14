@@ -236,17 +236,68 @@ export interface BloggerTypesCatalog {
   [key: string]: any
 }
 
+export interface BloggerCanonicalProperty {
+  type: string
+  description: string
+  item_type?: string
+  allowed_values?: string[]
+  properties?: Record<string, BloggerCanonicalProperty>
+  item_properties?: Record<string, BloggerCanonicalProperty>
+  deprecated?: Record<string, any>
+  [key: string]: any
+}
+
+export interface BloggerGlobalObjectDefinition {
+  cardinality: 'singleton' | 'collection'
+  description: string
+  item_type?: string
+  item_properties?: Record<string, BloggerCanonicalProperty>
+  catalog_ref?: string
+  canonical?: Record<string, BloggerCanonicalProperty>
+  patterns?: any[]
+  deprecated?: Record<string, any>
+  [key: string]: any
+}
+
 export interface BloggerGlobalsCatalog {
   $schema?: string
   version?: string
-  objects: Record<string, any>
+  title?: string
+  description?: string
+  objects: Record<string, BloggerGlobalObjectDefinition>
+  [key: string]: any
+}
+
+export interface BloggerWidgetDefinition {
+  description: string
+  canonical: Record<string, BloggerCanonicalProperty>
+  deprecated?: Record<string, any>
   [key: string]: any
 }
 
 export interface BloggerWidgetsCatalog {
   $schema?: string
   version?: string
-  widgets: Record<string, any>
+  title?: string
+  description?: string
+  widgets: Record<string, BloggerWidgetDefinition>
+  [key: string]: any
+}
+
+export interface BloggerCanonicalSetting {
+  type: string
+  description: string
+  default_value?: any
+  allowed_values?: any[]
+  properties?: Record<string, any>
+  [key: string]: any
+}
+
+export interface BloggerWidgetSettingsDefinition {
+  description: string
+  canonical: Record<string, BloggerCanonicalSetting>
+  patterns?: any[]
+  deprecated?: Record<string, any>
   [key: string]: any
 }
 
@@ -255,7 +306,21 @@ export interface BloggerSettingsCatalog {
   version?: string
   title?: string
   description?: string
-  widgets: Record<string, any>
+  widgets: Record<string, BloggerWidgetSettingsDefinition>
+  [key: string]: any
+}
+
+export interface BloggerMessageParameterDefinition {
+  name: string
+  type: string
+  description: string
+}
+
+export interface BloggerMessageDefinition {
+  type: 'message'
+  description: string
+  direct_invocation?: boolean
+  parameters?: BloggerMessageParameterDefinition[]
   [key: string]: any
 }
 
@@ -264,8 +329,22 @@ export interface BloggerMessagesCatalog {
   version?: string
   title?: string
   description?: string
-  patterns?: Record<string, any>
-  messages: Record<string, any>
+  patterns?: any[]
+  messages: Record<string, BloggerMessageDefinition>
+  [key: string]: any
+}
+
+export interface BloggerScopeDefinition {
+  name: string
+  description: string
+  boundary_tag: string | string[] | null
+  inherits: boolean
+  introduces: string[]
+  data_prefix_required?: boolean
+  visibility: 'local_only' | 'descendants' | 'global'
+  shadowing: 'local-wins' | 'none'
+  evidence: BloggerEvidenceLevel
+  notes?: string
   [key: string]: any
 }
 
@@ -275,7 +354,7 @@ export interface BloggerScopesCatalog {
   title?: string
   description?: string
   resolution_precedence?: string[]
-  scopes: Record<string, any>
+  scopes: Record<string, BloggerScopeDefinition>
   [key: string]: any
 }
 

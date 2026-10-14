@@ -11,7 +11,7 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:for each='p in posts'><data:p.title/></b:for>",
+        "source": "<b:for each='i in [1, 2, 3]'><data:i/></b:for>",
         "mode": "fragment"
       },
       "expected": {
@@ -257,6 +257,300 @@
           "BX1020"
         ],
         "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-each-tag",
+      "title": "Prohibited <b:each> Loop Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1002"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:each var='i' in='[1, 2, 3]'><data:i/></b:each>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1002"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-var-tag",
+      "title": "Prohibited <b:var> Variable Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1004"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:var name='foo' value='123'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1004"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-let-tag",
+      "title": "Prohibited <b:let> Variable Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1005"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:let name='foo' value='123'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1005"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-choose-tag",
+      "title": "Prohibited <b:choose> Conditional Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1007"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:choose><b:when test='data:view.isPost'>A</b:when></b:choose>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1007"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-when-tag",
+      "title": "Prohibited <b:when> Branch Tag In Switch",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1008"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:switch var='data:view.pageType'><b:when value='item'>A</b:when></b:switch>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1008"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-otherwise-tag",
+      "title": "Prohibited <b:otherwise> Default Tag In Switch",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1009"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:switch var='data:view.pageType'><b:case value='item'/>A<b:otherwise>B</b:otherwise></b:switch>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1009"
+        ],
+        "stage": "linter"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-template-tag",
+      "title": "Prohibited <b:template> Subroutine Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1010"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:template name='main'><div>Content</div></b:template>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1010"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-macro-tag",
+      "title": "Prohibited <b:macro> Helper Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1011"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:macro name='snippet'><div>Content</div></b:macro>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1011"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-function-tag",
+      "title": "Prohibited <b:function> Definition Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1012"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:function name='calc'><div>Content</div></b:function>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1012"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/expression-token-quota-exceeded",
+      "title": "Expression Token Quota Exceeded (40 Token Limit)",
+      "evidence": "official",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1021"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17 + 18 + 19 + 20 + 21",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1021"
+        ],
+        "stage": "quota"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/mandatory-attribute-missing",
+      "title": "Mandatory Directive Attribute Missing In b:loop",
+      "evidence": "official",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1022"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:loop var='i'><data:i/></b:loop>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1022"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-directive-nesting",
+      "title": "Prohibited Directive Nesting (b:includable outside b:widget)",
+      "evidence": "official",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1023"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:includable id='main'><div>Content</div></b:includable></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1023"
+        ],
+        "stage": "parser"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/deprecated-directive-attribute",
+      "title": "Deprecated Directive Attribute In Layouts V3",
+      "evidence": "official",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1024"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Header1' type='Header' mobile='yes'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1024"
+        ],
+        "stage": "linter"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/unknown-directive-in-blogger-namespace",
+      "title": "Unknown Directive In Blogger Namespace",
+      "evidence": "official",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1025"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:unknownDirective var='test'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1025"
+        ],
+        "stage": "parser"
       }
     }
   ]
