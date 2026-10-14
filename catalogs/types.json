@@ -356,7 +356,7 @@
           "example": "data:post.featuredImage.isYouTube"
         },
         "youtubeMaxResDefaultUrl": {
-          "description": "Provides the URL for the YouTube maxresdefault.jpg thumbnail.",
+          "description": "Provides the URL for the YouTube maxresdefault.jpg thumbnail if image is a YouTube video poster; returns boolean false if not a YouTube asset.",
           "output_type": "image",
           "syntax": ".youtubeMaxResDefaultUrl",
           "direct_syntax": "<data:image.youtubeMaxResDefaultUrl/>",

@@ -282,6 +282,19 @@ describe('canonical type system & coercion engine', () => {
       expect(resolveModifierReturnType('locale', 'length')).toBe('number')
       expect(resolveModifierReturnType('array', 'size')).toBe('number')
       expect(resolveModifierReturnType('array', 'empty')).toBe('boolean')
+
+      // Platform subtype and collection modifiers
+      expect(resolveModifierReturnType('url', 'canonical')).toBe('url')
+      expect(resolveModifierReturnType('url', 'https')).toBe('url')
+      expect(resolveModifierReturnType('url', 'http')).toBe('url')
+      expect(resolveModifierReturnType('image', 'width')).toBe('number')
+      expect(resolveModifierReturnType('image', 'isResizable')).toBe('boolean')
+      expect(resolveModifierReturnType('image', 'youtubeMaxResDefaultUrl')).toBe('image')
+      expect(resolveModifierReturnType('date', 'year')).toBe('number')
+      expect(resolveModifierReturnType('date', 'iso8601')).toBe('string')
+      expect(resolveModifierReturnType('date', 'dayOfWeek')).toBe('number')
+      expect(resolveModifierReturnType('array[image]', 'url')).toBe('image')
+      expect(resolveModifierReturnType('array[image]', 'size')).toBe('number')
     })
 
     it('resolves native specialized functions and transform operators', () => {

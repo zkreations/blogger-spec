@@ -130,9 +130,16 @@ export function generateDts(): string {
       if ((mDef as any).description) {
         lines.push(`  /** ${(mDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
       }
-      const propType = (Array.isArray((mDef as any).allowed_values) && (mDef as any).allowed_values.length > 0)
-        ? (mDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
-        : ((mDef as any).output_type === 'number' ? 'number' : (mDef as any).output_type === 'boolean' ? 'boolean' : 'string')
+      let propType: string
+      if (Array.isArray((mDef as any).allowed_values) && (mDef as any).allowed_values.length > 0) {
+        propType = (mDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
+      }
+      else if (mName === 'youtubeMaxResDefaultUrl') {
+        propType = 'BloggerImage | boolean'
+      }
+      else {
+        propType = mapPropertyTypeToTs((mDef as any).output_type)
+      }
       lines.push(`  ${sanitizePropName(mName)}?: ${propType};`)
     }
     for (const [sName, sDef] of Object.entries(stringModifiers)) {
