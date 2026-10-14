@@ -318,6 +318,7 @@ export interface BloggerMessageParameterDefinition {
 export interface BloggerMessageDefinition {
   type: 'message'
   description: string
+  pattern?: string
   direct_invocation?: boolean
   parameters?: BloggerMessageParameterDefinition[]
   [key: string]: any

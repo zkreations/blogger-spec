@@ -1150,6 +1150,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           },
           "message_data": {
             "description": "The name attribute is an alias for a Blogger data value of type message and must reference a valid message alias."
+          },
+          "whitespace_separation": {
+            "status": "mandatory",
+            "description": "Sequential sibling b:param elements nested inside b:message must be separated by whitespace or newlines. Writing multiple b:param tags directly inline on the same line without whitespace (<b:param .../><b:param .../>) triggers an engine evaluation abort: 'Invalid parameters for message'."
           }
         },
         "closure_mode": "dual",
@@ -1193,6 +1197,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           },
           "positional_assignment": {
             "description": "Parameter replacement in b:message is resolved positionally based on child b:param order for simple messages (%1, %2), but strictly requires the 'name' attribute matching the ICU variable identifier for pluralized messages (e.g. name='numComments')."
+          },
+          "whitespace_separation": {
+            "status": "mandatory",
+            "description": "Sequential sibling b:param elements must be separated by whitespace or newlines. Concatenating sibling b:param tags directly inline without intervening spaces causes Blogger runtime evaluation to abort with 'Invalid parameters for message'."
           },
           "multiplicity": {
             "min": 0,
@@ -9320,7 +9328,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "authorSaid": {
         "type": "message",
-        "description": "Comment author attribution quote ('Author said...'). Direct tag invocation prohibited; requires <b:message>.",
+        "description": "Comment author attribution quote ('%1 said&hellip;'). Direct tag invocation prohibited; requires <b:message>.",
+        "pattern": "%1 said&hellip;",
         "direct_invocation": false,
         "parameters": [
           {
@@ -9331,7 +9340,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "authorSaidWithLink": {
         "type": "message",
-        "description": "Comment author quote with HTML anchor markup. Direct tag invocation prohibited; requires <b:message>.",
+        "description": "Comment author quote with HTML anchor markup ('<a href=\"%2\" rel=\"nofollow\">%1</a> said&hellip;'). Direct tag invocation prohibited; requires <b:message>.",
+        "pattern": "<a href=\"%2\" rel=\"nofollow\">%1</a> said&hellip;",
         "direct_invocation": false,
         "parameters": [
           {
@@ -9358,7 +9368,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "byAuthor": {
         "type": "message",
-        "description": "Attribution phrase ('by author'). Direct tag invocation prohibited; requires <b:message>.",
+        "description": "Attribution phrase ('By %1'). Direct tag invocation prohibited; requires <b:message>.",
+        "pattern": "By %1",
         "direct_invocation": false,
         "parameters": [
           {
@@ -9369,7 +9380,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "byAuthorLink": {
         "type": "message",
-        "description": "Attribution phrase with author profile anchor. Direct tag invocation prohibited; requires <b:message>.",
+        "description": "Attribution phrase with author profile anchor ('By <a href=\"%2\">%1</a>'). Direct tag invocation prohibited; requires <b:message>.",
+        "pattern": "By <a href=\"%2\">%1</a>",
         "direct_invocation": false,
         "parameters": [
           {
@@ -9536,7 +9548,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "numberOfComments": {
         "type": "message",
-        "description": "Comment counter display template. Direct tag invocation prohibited; requires <b:message>.",
+        "description": "Comment counter display template ('{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}'). Direct tag invocation prohibited; requires <b:message>.",
+        "pattern": "{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}",
         "direct_invocation": false,
         "parameters": [
           {
@@ -9595,7 +9608,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "postedByAuthor": {
         "type": "message",
-        "description": "Author attribution display string. Direct tag invocation prohibited; requires <b:message>.",
+        "description": "Author attribution display string ('Posted by %1'). Direct tag invocation prohibited; requires <b:message>.",
+        "pattern": "Posted by %1",
         "direct_invocation": false,
         "parameters": [
           {
@@ -9606,7 +9620,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "postedByAuthorLink": {
         "type": "message",
-        "description": "Author attribution with HTML anchor. Direct tag invocation prohibited; requires <b:message>.",
+        "description": "Author attribution with HTML anchor ('Posted by <a href=\"%2\">%1</a>'). Direct tag invocation prohibited; requires <b:message>.",
+        "pattern": "Posted by <a href=\"%2\">%1</a>",
         "direct_invocation": false,
         "parameters": [
           {
@@ -9629,7 +9644,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "poweredByBloggerLink": {
         "type": "message",
-        "description": "Platform attribution with Blogger anchor. Direct tag invocation prohibited; requires <b:message>.",
+        "description": "Platform attribution with Blogger anchor ('Powered by <a href='%1' target='_blank'>Blogger</a>'). Direct tag invocation prohibited; requires <b:message>.",
+        "pattern": "Powered by <a href='%1' target='_blank'>Blogger</a>",
         "direct_invocation": false,
         "parameters": [
           {
@@ -9708,7 +9724,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "templateImagesBy": {
         "type": "message",
-        "description": "Theme image designer attribution. Direct tag invocation prohibited; requires <b:message>.",
+        "description": "Theme image designer attribution ('Theme images by %1'). Direct tag invocation prohibited; requires <b:message>.",
+        "pattern": "Theme images by %1",
         "direct_invocation": false,
         "parameters": [
           {
@@ -9719,7 +9736,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "templateImagesByLink": {
         "type": "message",
-        "description": "Theme image designer attribution with link. Direct tag invocation prohibited; requires <b:message>.",
+        "description": "Theme image designer attribution with link ('Theme images by <a href=\"%1\">%2</a>'). Direct tag invocation prohibited; requires <b:message>.",
+        "pattern": "Theme images by <a href=\"%1\">%2</a>",
         "direct_invocation": false,
         "parameters": [
           {
@@ -10166,6 +10184,16 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "severity": "error",
         "message": "Pluralized ICU messages require the 'name' attribute on child <b:param> tags matching the plural identifier (e.g. <b:param name='numComments' value='...'/>); omitting 'name' aborts template compilation.",
         "replacement": "<b:param name='...' value='...'/>",
+        "evidence": "observed",
+        "verifiedAt": "2026-10-14"
+      },
+      "BX1029": {
+        "code": "BX1029",
+        "name": "INLINE_CONCATENATED_MESSAGE_PARAMS",
+        "category": "runtime",
+        "severity": "error",
+        "message": "Multiple <b:param> tags concatenated inline without intervening whitespace (<b:param .../><b:param .../>) cause Blogger runtime error 'Invalid parameters for message'. Sibling <b:param> tags must be separated by whitespace or placed on separate lines.",
+        "replacement": "<b:param .../>\n  <b:param .../>",
         "evidence": "observed",
         "verifiedAt": "2026-10-14"
       }
@@ -11647,6 +11675,10 @@ export const embeddedSchemas: Record<string, any> = {
           },
           "description": {
             "type": "string"
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Canonical un-interpolated template token or ICU plural format string (e.g. 'By %1', '{numComments, plural, ...}')."
           },
           "direct_invocation": {
             "type": "boolean",

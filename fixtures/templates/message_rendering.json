@@ -26,8 +26,8 @@
       }
     },
     {
-      "id": "rendering/message_rendering/parameterized-message-directive",
-      "title": "Parameterized Message Directive with Positional Param",
+      "id": "rendering/message_rendering/parameterized-message-by-author",
+      "title": "Parameterized Message byAuthor with Positional Param",
       "evidence": "observed",
       "verifiedAt": "2026-10-14",
       "covers": [
@@ -48,6 +48,266 @@
       "expected": {
         "outcome": "html",
         "html": "By John Doe",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/parameterized-message-author-said",
+      "title": "Parameterized Message authorSaid with Positional Param",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.authorSaid'><b:param value='John Doe'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "authorSaid": "%1 said&hellip;"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "John Doe said&hellip;",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/parameterized-message-author-said-with-link",
+      "title": "Parameterized Message authorSaidWithLink with Multiple Params",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.authorSaidWithLink'>\n  <b:param value='John Doe'/>\n  <b:param value='https://example.com/user'/>\n</b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "authorSaidWithLink": "<a href=\"%2\" rel=\"nofollow\">%1</a> said&hellip;"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<a href=\"https://example.com/user\" rel=\"nofollow\">John Doe</a> said&hellip;",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/parameterized-message-by-author-link",
+      "title": "Parameterized Message byAuthorLink with Multiple Params",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.byAuthorLink'>\n  <b:param value='John Doe'/>\n  <b:param value='https://example.com/user'/>\n</b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "byAuthorLink": "By <a href=\"%2\">%1</a>"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "By <a href=\"https://example.com/user\">John Doe</a>",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/parameterized-message-posted-by-author",
+      "title": "Parameterized Message postedByAuthor with Positional Param",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.postedByAuthor'><b:param value='John Doe'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "postedByAuthor": "Posted by %1"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Posted by John Doe",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/parameterized-message-posted-by-author-link",
+      "title": "Parameterized Message postedByAuthorLink with Multiple Params",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.postedByAuthorLink'>\n  <b:param value='John Doe'/>\n  <b:param value='https://example.com/user'/>\n</b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "postedByAuthorLink": "Posted by <a href=\"%2\">%1</a>"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Posted by <a href=\"https://example.com/user\">John Doe</a>",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/parameterized-message-powered-by-blogger-link",
+      "title": "Parameterized Message poweredByBloggerLink with Positional Param",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.poweredByBloggerLink'><b:param value='https://www.blogger.com'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "poweredByBloggerLink": "Powered by <a href='%1' target='_blank'>Blogger</a>"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Powered by <a href='https://www.blogger.com' target='_blank'>Blogger</a>",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/parameterized-message-template-images-by",
+      "title": "Parameterized Message templateImagesBy with Positional Param",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.templateImagesBy'><b:param value='Jane Designer'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "templateImagesBy": "Theme images by %1"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Theme images by Jane Designer",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/parameterized-message-template-images-by-link",
+      "title": "Parameterized Message templateImagesByLink with URL first and Name second",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.templateImagesByLink'>\n  <b:param value='https://example.com/designer'/>\n  <b:param value='Jane Designer'/>\n</b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "templateImagesByLink": "Theme images by <a href=\"%1\">%2</a>"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Theme images by <a href=\"https://example.com/designer\">Jane Designer</a>",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/plural-message-directive-zero-comments",
+      "title": "Plural Message Directive with Zero Comments",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.numberOfComments'><b:param name='numComments' value='0'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "numberOfComments": "{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "No comments",
+        "canonicalDom": false
+      }
+    },
+    {
+      "id": "rendering/message_rendering/plural-message-directive-singular-comment",
+      "title": "Plural Message Directive with Singular Comment",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.numberOfComments'><b:param name='numComments' value='1'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "numberOfComments": "{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "1 comment",
         "canonicalDom": false
       }
     },
@@ -76,7 +336,32 @@
         "html": "5 comments",
         "canonicalDom": false
       }
+    },
+    {
+      "id": "rendering/message_rendering/plural-message-directive-large-count",
+      "title": "Plural Message Directive with Count 21",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.numberOfComments'><b:param name='numComments' value='21'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "numberOfComments": "{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "21 comments",
+        "canonicalDom": false
+      }
     }
   ]
 }
-
