@@ -6,17 +6,31 @@ export function flattenMultilineExpression(expr: string): string {
   return lines.join(' ')
 }
 
+const PREDEFINED_XML_ENTITIES: Record<string, string> = {
+  quot: '"',
+  apos: '\'',
+  lt: '<',
+  gt: '>',
+  amp: '&',
+}
+
+const XML_ENTITY_REGEX = /&(?:(quot|apos|lt|gt|amp)|#(?:(\d+)|x([\da-f]+)));/gi
+
 export function unescapeXmlEntities(text: string): string {
-  return text
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, '\'')
-    .replace(/&#39;/g, '\'')
-    .replace(/&#x27;/gi, '\'')
-    .replace(/&#34;/g, '"')
-    .replace(/&#x22;/gi, '"')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
+  return text.replace(XML_ENTITY_REGEX, (match, named, dec, hex) => {
+    if (named) {
+      return PREDEFINED_XML_ENTITIES[named.toLowerCase()] ?? match
+    }
+    if (dec) {
+      const code = Number.parseInt(dec, 10)
+      return Number.isFinite(code) && code > 0 ? String.fromCodePoint(code) : match
+    }
+    if (hex) {
+      const code = Number.parseInt(hex, 16)
+      return Number.isFinite(code) && code > 0 ? String.fromCodePoint(code) : match
+    }
+    return match
+  })
 }
 
 export type TokenType

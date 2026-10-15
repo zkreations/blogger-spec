@@ -15,6 +15,7 @@ import { describe, expect, it } from 'vitest'
 import { ExpressionParser, parseExpression, tokenize } from '../src/ast.js'
 import * as RootExports from '../src/index.js'
 import * as ParserExports from '../src/parser/index.js'
+import { unescapeXmlEntities } from '../src/parser/lexer.js'
 
 describe('canonical pratt expression parser (blogger-spec/ast)', () => {
   it('exposes parseExpression, tokenize and classes from ast, parser and root', () => {
@@ -504,5 +505,35 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
         }
       })
     }
+  })
+
+  describe('unescapeXmlEntities (single-pass XML 1.0 entity decoding)', () => {
+    it('decodes predefined XML entities', () => {
+      expect(unescapeXmlEntities('&quot;hello&quot;')).toBe('"hello"')
+      expect(unescapeXmlEntities('&apos;world&apos;')).toBe('\'world\'')
+      expect(unescapeXmlEntities('a &lt; b and c &gt; d')).toBe('a < b and c > d')
+      expect(unescapeXmlEntities('a &amp; b')).toBe('a & b')
+      expect(unescapeXmlEntities('&QUOT;test&QUOT;')).toBe('"test"')
+      expect(unescapeXmlEntities('&AMP;')).toBe('&')
+    })
+
+    it('decodes decimal and hexadecimal numeric character references', () => {
+      expect(unescapeXmlEntities('&#39;test&#39;')).toBe('\'test\'')
+      expect(unescapeXmlEntities('&#x27;test&#x27;')).toBe('\'test\'')
+      expect(unescapeXmlEntities('&#34;quote&#34;')).toBe('"quote"')
+      expect(unescapeXmlEntities('&#x22;quote&#x22;')).toBe('"quote"')
+      expect(unescapeXmlEntities('&#38;')).toBe('&')
+      expect(unescapeXmlEntities('&#x26;')).toBe('&')
+      expect(unescapeXmlEntities('&#60;')).toBe('<')
+      expect(unescapeXmlEntities('&#62;')).toBe('>')
+    })
+
+    it('handles nested or composite entities in a strictly single pass without recursive decoding', () => {
+      expect(unescapeXmlEntities('&amp;lt;')).toBe('&lt;')
+      expect(unescapeXmlEntities('&amp;gt;')).toBe('&gt;')
+      expect(unescapeXmlEntities('&amp;amp;')).toBe('&amp;')
+      expect(unescapeXmlEntities('&amp;quot;')).toBe('&quot;')
+      expect(unescapeXmlEntities('&amp;#39;')).toBe('&#39;')
+    })
   })
 })

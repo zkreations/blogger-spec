@@ -138,46 +138,84 @@ export function resolveOperatorReturnType(
   leftType: string = 'unknown',
   rightType?: string,
 ): string {
-  const normOp = operatorName.toLowerCase()
-
-  if (normOp === '+') {
-    if (isTypeAssignable(leftType, 'number') && (rightType === undefined || isTypeAssignable(rightType, 'number'))) {
-      return 'number'
-    }
-    return 'string'
+  const catalog = getSpecCatalog()
+  const opDef = catalog.getOperator(operatorName)
+  if (!opDef) {
+    return 'unknown'
   }
 
-  if (normOp === '?:' || normOp === '? :') {
+  if (opDef.overloads && opDef.overloads.length > 0) {
+    for (const overload of opDef.overloads) {
+      const op1 = overload.operands[0]
+      const op2 = overload.operands[1]
+
+      const leftMatches = op1
+        ? op1.types.some(t => isTypeAssignable(leftType, t))
+        : true
+
+      if (!leftMatches) {
+        continue
+      }
+
+      if (op2 && op2.required) {
+        if (rightType !== undefined) {
+          const rightMatches = op2.types.some(t => isTypeAssignable(rightType, t))
+          if (rightMatches) {
+            return overload.return_type
+          }
+        }
+      }
+      else if (!op2) {
+        if (rightType === undefined) {
+          return overload.return_type
+        }
+      }
+      else {
+        if (rightType === undefined || op2.types.some(t => isTypeAssignable(rightType, t))) {
+          return overload.return_type
+        }
+      }
+    }
+  }
+
+  if (opDef.family === 'elvis' || opDef.family === 'ternary') {
     return leftType !== 'unknown' ? leftType : (rightType ?? 'unknown')
   }
 
-  if (['filter', 'where', 'take', 'limit', 'skip', 'offset'].includes(normOp)) {
-    return leftType === 'unknown' ? 'array' : leftType
-  }
-
-  if (normOp === 'first') {
+  const canonicalName = opDef.syntax?.functional_identifier || operatorName.toLowerCase()
+  if (canonicalName === 'first' || opDef.description.includes('Extracts the first element')) {
     if (leftType.startsWith('array[') && leftType.endsWith(']')) {
       return leftType.slice(6, -1)
     }
     return 'unknown'
   }
 
-  const opDef = getSpecCatalog().getOperator(operatorName)
-  return opDef?.return_type ?? 'unknown'
+  if (opDef.return_type === 'array' && canonicalName !== 'map') {
+    return leftType.startsWith('array[') ? leftType : (leftType === 'unknown' ? 'array' : leftType)
+  }
+
+  return opDef.return_type ?? 'unknown'
 }
 
 export function isTruthy(value: any): boolean {
-  if (value === true || value === 'yes') {
-    return true
-  }
-  if (value === false || value === 'no' || value === null || value === undefined) {
+  if (value === null || value === undefined) {
     return false
   }
+  if (typeof value === 'boolean') {
+    return value
+  }
   if (typeof value === 'number') {
-    return value !== 0
+    return !Number.isNaN(value) && value !== 0
   }
   if (typeof value === 'string') {
-    return value.length > 0
+    const trimmed = value.trim().toLowerCase()
+    if (trimmed === '' || trimmed === 'false' || trimmed === 'no' || trimmed === '0') {
+      return false
+    }
+    if (trimmed === 'true' || trimmed === 'yes') {
+      return true
+    }
+    return true
   }
   if (Array.isArray(value)) {
     return value.length > 0
