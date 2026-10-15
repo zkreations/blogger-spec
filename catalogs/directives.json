@@ -311,7 +311,7 @@
         },
         "data": {
           "type": "expression",
-          "description": "Dataset or object forwarded to the includable's var. Properties become data:VAR.property.",
+          "description": "Dataset or object forwarded to the includable's var. Properties become data:VAR.property. Strictly requires an object or object literal { ... }; scalar primitives are rejected at runtime.",
           "attribute_kind": "native_expression",
           "expr": true
         },
@@ -323,6 +323,14 @@
         }
       },
       "constraints": {
+        "data_payload": {
+          "status": "enforced",
+          "allowed_values": [
+            "object reference",
+            "object literal"
+          ],
+          "reason": "The data attribute strictly requires an object or object literal { ... } (or array wrapped in braces {[ ... ]}). Scalar primitives (string, number, boolean) cause runtime execution abort 'Error during evaluation of <name>'."
+        },
         "data_alias": {
           "allowed_values": [
             "data name",
