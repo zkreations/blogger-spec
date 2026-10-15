@@ -1,4 +1,9 @@
 import { describe, expect, it } from 'vitest'
+import * as RootExports from '../src/index.js'
+import {
+  isStrictlySelfClosingTag as directIsSelfClosing,
+  scanDirectiveTokens as directScan,
+} from '../src/parser/directive-scanner.js'
 import {
   directiveTokenToAstNode,
   getNearestUnclosedDirective,
@@ -12,12 +17,7 @@ import {
   parseAttributes,
   scanDirectiveTokens,
   STRICTLY_SELF_CLOSING_BLOGGER_TAGS,
-} from '../src/helpers.js'
-import * as RootExports from '../src/index.js'
-import {
-  isStrictlySelfClosingTag as directIsSelfClosing,
-  scanDirectiveTokens as directScan,
-} from '../src/parser/directive-scanner.js'
+} from '../src/parser/index.js'
 
 describe('directive scanner suite', () => {
   describe('strictly self-closing tag classification', () => {

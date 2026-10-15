@@ -17,7 +17,7 @@ import type {
   BloggerUnaryExpressionNode,
 } from '../ast.js'
 import type { Token, TokenPosition, TokenType } from './lexer.js'
-import { getOperatorPrecedence } from '../helpers.js'
+import { getOperatorPrecedence } from '../catalogs/index.js'
 import { tokenize } from './lexer.js'
 
 interface InfixOpInfo {

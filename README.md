@@ -19,7 +19,7 @@ It is designed to be consumed by external tools—such as IDE extensions (VS Cod
 4. **Layout Versions Authority (`blogger-spec/version`)**: Formal specification and deterministic engine to detect Blogger template layout architecture (Layouts v1, v2, v3) from raw XML documents.
 5. **Compiler Token Quota Calculator (`blogger-spec/quota`)**: Exact token counting and budget evaluation against the Blogger compiler's strict 40-token ceiling (`BX1021`).
 6. **Canonical Type System & Coercion Engine (`blogger-spec/type-system`)**: Subtype assignability, modifier inheritance (preserving flat hierarchy and isolating `skin:*` theme variables), operator compatibility, and return type inference.
-7. **Structural Validation & Diagnostic Helpers (`blogger-spec/helpers`)**: High-level validation utilities (`validateTemplateStructure`, `validateDirectiveNesting`, `validateVariableAttributes`) mapping template hierarchies against official compiler diagnostics (`BX1001-BX1040`).
+7. **Structural Validation & Spec Catalogs (`blogger-spec/catalogs` & `blogger-spec/parser`)**: High-level validation utilities (`validateTemplateStructure`, `validateDirectiveNesting`) and catalog queries mapping template hierarchies against official compiler diagnostics (`BX1001-BX1040`).
 8. **Universal ESM & Browser Ready**: Pure in-memory catalog store by default with zero Node.js built-in dependencies (`fs`, `path`). Works seamlessly in browsers, Node.js, Cloudflare Workers, and Web Workers.
 9. **Empirical Conformance Suite**: Automated test harness validating against 185+ empirical test fixtures verified on live Blogger production engines.
 
@@ -48,15 +48,15 @@ blogger-spec/
 │   └── index.json            # Consolidated manifest (compiled via build)
 ├── src/                      # Spec modules, runtime helpers, and tooling
 │   ├── ast.ts                # Formal AST specification interfaces & parser exports
-│   ├── parser/               # Parsers and tokenizers
+│   ├── parser/               # Parsers, tokenizers, and structural validator
 │   │   ├── lexer.ts          # Deterministic expression lexer with loc tracking
 │   │   ├── expr-parser.ts    # Pratt parser guided by operators.json precedence
-│   │   └── directive-scanner.ts # Fault-tolerant XML directive & tag tokenizer
+│   │   ├── directive-scanner.ts # Fault-tolerant XML directive & tag tokenizer
+│   │   └── template-validator.ts # Directive nesting & structural template validator
 │   ├── version.ts            # Canonical template layout version detector (v1, v2, v3)
 │   ├── quota.ts              # Canonical token quota calculator (BX1021 rules)
 │   ├── type-system.ts        # Type assignability, modifiers, operators, and truthiness
-│   ├── catalogs/             # Typed CatalogStore and SpecCatalog domain models
-│   ├── helpers.ts            # Zero-runtime-dependency query & validation facade
+│   ├── catalogs/             # Typed CatalogStore, SpecCatalog, and query functions
 │   ├── paths.ts              # Workspace path resolution utilities
 │   ├── runner.ts             # Conformance harness engine
 │   ├── tooling/              # Build pipeline, schema validator, and compiler
@@ -65,12 +65,13 @@ blogger-spec/
 └── dist/                     # Distribution package artifacts (zero runtime dependencies)
     ├── index.js / .d.ts      # Canonical entry point and TypeScript types
     ├── ast.js / .d.ts        # AST interfaces and parseExpression
-    ├── parser/               # Directive scanner and tag stack utilities
-    │   └── directive-scanner.js / .d.ts
+    ├── parser/               # Parser, directive scanner, and validator
+    │   └── index.js / .d.ts
     ├── version.js / .d.ts    # Template layout version detection
     ├── quota.js / .d.ts      # Token quota calculator and budget evaluator
     ├── type-system.js / .d.ts# Type assignability, modifiers, and operator compatibility
-    ├── helpers.js / .d.ts    # Unified spec query and validation helpers
+    ├── catalogs/             # Spec catalog models, store, and query functions
+    │   └── index.js / .d.ts
     ├── runner.js / .d.ts     # Conformance harness
     └── catalogs/fs-store.js  # Node.js filesystem catalog store (optional)
 ```
@@ -93,27 +94,26 @@ Consume only what your tool requires:
 // 1. Pratt Expression Parser & AST Types
 import { parseExpression, tokenize } from 'blogger-spec/ast'
 
-// 6. Query Helpers & Structural Validation Facade
+// Spec Catalogs & Query Helpers
 import {
   getDiagnosticRule,
   getDirective,
   getThemeDesignerDescriptions,
   isDirective,
   isOperator,
-  validateDirectiveNesting,
-  validateTemplateStructure,
-  validateVariableAttributes,
-} from 'blogger-spec/helpers'
+} from 'blogger-spec/catalogs'
 
 // 7. Node.js Filesystem Catalog Store (Optional, Node-only)
 import { FsCatalogStore } from 'blogger-spec/node'
 
-// 2. Fault-Tolerant XML Directive Scanner & Tag Stacks
+// 2. Structural Validation & Directive Scanning
 import {
   getNearestUnclosedDirective,
   getUnclosedDirectiveStack,
   isStrictlySelfClosingTag,
   scanDirectiveTokens,
+  validateDirectiveNesting,
+  validateTemplateStructure,
 } from 'blogger-spec/parser'
 
 // 4. Token Quota Calculator (BX1021)
@@ -240,7 +240,7 @@ const result = detectTemplateVersion('<html b:layoutsVersion="3">...</html>')
 ### 6. Validating Template Structure & Nesting
 
 ```typescript
-import { validateDirectiveNesting, validateTemplateStructure } from 'blogger-spec/helpers'
+import { validateDirectiveNesting, validateTemplateStructure } from 'blogger-spec/parser'
 
 // Immediate hierarchy validation
 const nestingError = validateDirectiveNesting('b:section', 'b:section')

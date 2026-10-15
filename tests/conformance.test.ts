@@ -6,24 +6,20 @@ import {
   getAllCatalogs,
   getAllSchemas,
   getCatalog,
+  getDiagnosticRule,
   getDiagnostics,
+  getDirective,
   getDirectives,
   getGlobals,
   getMessages,
+  getOperator,
+  getOperatorPrecedence,
   getOperators,
   getScopes,
   getSettings,
+  getSpecCatalog,
   getTypes,
   getWidgets,
-  MemoryCatalogStore,
-  SpecCatalog,
-} from '../src/catalogs/index.js'
-import {
-  getDiagnosticRule,
-  getDirective,
-  getOperator,
-  getOperatorPrecedence,
-  getSpecCatalog,
   isDiagnosticCode,
   isDirective,
   isDocAlias,
@@ -32,8 +28,10 @@ import {
   isSelfClosingDirective,
   isValidChild,
   isValidParent,
+  MemoryCatalogStore,
+  SpecCatalog,
   validateDirectiveAttributes,
-} from '../src/helpers.js'
+} from '../src/catalogs/index.js'
 import * as RootExports from '../src/index.js'
 import { getWorkspacePaths, setCustomWorkspaceRoot } from '../src/paths.js'
 import { runConformance, runSpecConformance } from '../src/runner.js'

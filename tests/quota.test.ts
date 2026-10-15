@@ -1,5 +1,6 @@
 import type { BloggerBinaryExpressionNode, BloggerCallExpressionNode, BloggerLambdaExpressionNode } from '../src/ast.js'
 import { describe, expect, it } from 'vitest'
+import * as RootExports from '../src/index.js'
 import {
   analyzeExpressionBudget,
   COMPILER_NESTING_LIMIT,
@@ -10,8 +11,7 @@ import {
   flattenMultilineExpression,
   tokenizeExpression,
   unescapeXmlEntities,
-} from '../src/helpers.js'
-import * as RootExports from '../src/index.js'
+} from '../src/quota.js'
 import * as QuotaExports from '../src/quota.js'
 
 describe('compiler token quota suite (BX1021)', () => {

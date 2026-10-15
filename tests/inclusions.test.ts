@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { getInclusions, SpecCatalog } from '../src/catalogs/index.js'
-import {
-  getAllServerInclusions,
-  getServerInclusion,
-  isServerInclusion,
-  isUniversalInclusion,
-} from '../src/helpers.js'
+import { getInclusions, getSpecCatalog, SpecCatalog } from '../src/catalogs/index.js'
 import * as RootExports from '../src/index.js'
+
+const spec = getSpecCatalog()
+const isServerInclusion = (name: string) => spec.isServerInclusion(name)
+const isUniversalInclusion = (name: string) => spec.isUniversalInclusion(name)
+const getServerInclusion = (name: string) => spec.getInclusion(name)
+const getAllServerInclusions = () => spec.getAllInclusions()
 
 describe('system inclusions catalog suite', () => {
   it('loads inclusions catalog with valid super prefix rule', () => {

@@ -2,12 +2,14 @@ import { describe, expect, it } from 'vitest'
 import {
   getThemeDesignerDescriptions,
   getVariableTypeAttributes,
+  validateVariableAttributes,
+} from '../src/catalogs/index.js'
+import * as RootExports from '../src/index.js'
+import {
   scanDirectiveTokens,
   validateDirectiveNesting,
   validateTemplateStructure,
-  validateVariableAttributes,
-} from '../src/helpers.js'
-import * as RootExports from '../src/index.js'
+} from '../src/parser/index.js'
 
 describe('helpers & canonical structure validation suite', () => {
   describe('theme designer descriptions and variable types', () => {

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import * as RootExports from '../src/index.js'
 import {
   getCompatibleOperatorNames,
   getTypeDefinition,
@@ -7,12 +8,11 @@ import {
   isTypeAssignable,
   resolveModifierReturnType,
   resolveOperatorReturnType,
-} from '../src/helpers.js'
-import * as RootExports from '../src/index.js'
+} from '../src/type-system.js'
 import * as TypeSystemExports from '../src/type-system.js'
 
 describe('canonical type system & coercion engine', () => {
-  it('exposes type system functions on root, helpers and type-system module', () => {
+  it('exposes type system functions on root and type-system module', () => {
     expect(RootExports.isTypeAssignable).toBeDefined()
     expect(RootExports.getTypeModifiers).toBeDefined()
     expect(RootExports.getCompatibleOperators).toBeDefined()
@@ -267,7 +267,7 @@ describe('canonical type system & coercion engine', () => {
       expect(resolveOperatorReturnType('take', 'array[string]')).toBe('array[string]')
       expect(resolveOperatorReturnType('count', 'array')).toBe('number')
       expect(resolveOperatorReturnType('map', 'array')).toBe('array')
-      expect(resolveOperatorReturnType('to', 'number')).toBe('array')
+      expect(resolveOperatorReturnType('to', 'number')).toBe('array[number]')
 
       expect(resolveOperatorReturnType('first', 'array[image]')).toBe('image')
       expect(resolveOperatorReturnType('first', 'array')).toBe('unknown')

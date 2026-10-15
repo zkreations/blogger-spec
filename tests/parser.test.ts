@@ -13,17 +13,17 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { ExpressionParser, parseExpression, tokenize } from '../src/ast.js'
-import * as HelpersExports from '../src/helpers.js'
 import * as RootExports from '../src/index.js'
+import * as ParserExports from '../src/parser/index.js'
 
 describe('canonical pratt expression parser (blogger-spec/ast)', () => {
-  it('exposes parseExpression, tokenize and classes from ast, helpers and root', () => {
+  it('exposes parseExpression, tokenize and classes from ast, parser and root', () => {
     expect(parseExpression).toBeDefined()
     expect(tokenize).toBeDefined()
     expect(ExpressionParser).toBeDefined()
 
-    expect(HelpersExports.parseExpression).toBeDefined()
-    expect(HelpersExports.tokenize).toBeDefined()
+    expect(ParserExports.parseExpression).toBeDefined()
+    expect(ParserExports.tokenize).toBeDefined()
 
     expect(RootExports.parseExpression).toBeDefined()
     expect(RootExports.tokenize).toBeDefined()

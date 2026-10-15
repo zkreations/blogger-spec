@@ -1,13 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import {
-  detectTemplateVersion,
-  getLayoutVersions,
-  getLayoutVersionsSpec,
-} from '../src/helpers.js'
+import { getSpecCatalog } from '../src/catalogs/index.js'
 import * as RootExports from '../src/index.js'
 import {
+  detectTemplateVersion,
   detectTemplateVersion as directDetect,
   getLayoutVersionsSpec as directGetSpec,
+  getLayoutVersionsSpec,
 } from '../src/version.js'
 
 describe('template layout versions (v1, v2, v3) suite', () => {
@@ -25,7 +23,7 @@ describe('template layout versions (v1, v2, v3) suite', () => {
       expect(spec?.versions['3'].name).toContain('Layouts v3')
 
       // Cross-check SpecCatalog helper
-      const catalogSpec = getLayoutVersions()
+      const catalogSpec = getSpecCatalog().getLayoutVersions()
       expect(catalogSpec).toEqual(spec)
 
       // Direct module export

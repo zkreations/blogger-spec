@@ -37,15 +37,15 @@ blogger-spec/
 │   └── index.json            # Compiled fixtures manifest (generated)
 ├── src/                      # Spec modules, runtime helpers, parser, and tooling
 │   ├── ast.ts                # Formal AST interfaces and parseExpression export
-│   ├── parser/               # Pratt expression parser, directive scanner, and lexer
+│   ├── parser/               # Pratt expression parser, directive scanner, lexer, validator
 │   │   ├── lexer.ts          # Deterministic expression lexer with loc tracking
 │   │   ├── expr-parser.ts    # Pratt parser guided by operators.json precedence
-│   │   └── directive-scanner.ts # Fault-tolerant XML directive & tag tokenizer
+│   │   ├── directive-scanner.ts # Fault-tolerant XML directive & tag tokenizer
+│   │   └── template-validator.ts # Directive nesting & structural template validator
 │   ├── version.ts            # Canonical template layout version detector (v1, v2, v3)
 │   ├── quota.ts              # Canonical token quota calculator (BX1021 rules)
 │   ├── type-system.ts        # Type assignability, modifiers, and operator compatibility
 │   ├── catalogs/             # Typed CatalogStore and SpecCatalog domain models
-│   ├── helpers.ts            # High-level query & validation utilities
 │   ├── runner.ts             # Conformance test runner engine
 │   └── tooling/              # Build pipeline, schema validator, and compiler
 └── dist/                     # ESM bundles and generated type definitions
@@ -68,7 +68,7 @@ blogger-spec/
 - **Layout Versions**: If layout version heuristics change, update `domain_metadata.layout_versions` in [`catalogs/directives.json`](catalogs/directives.json) and [`src/version.ts`](src/version.ts).
 - **Token Quota**: If token cost rules or quota thresholds change, update [`src/quota.ts`](src/quota.ts).
 - **Type Checking**: If coercion matrices, truthiness, or assignability change, update [`src/type-system.ts`](src/type-system.ts).
-- **Structural Validation & Helpers**: If directive nesting or template structure validation rules change, update [`src/catalogs/spec-catalog.ts`](src/catalogs/spec-catalog.ts) and [`src/helpers.ts`](src/helpers.ts).
+- **Structural Validation & Helpers**: If directive nesting or template structure validation rules change, update [`src/catalogs/spec-catalog.ts`](src/catalogs/spec-catalog.ts) and [`src/parser/template-validator.ts`](src/parser/template-validator.ts).
 
 ### 3. Add Conformance Fixtures
 Add empirical test cases under [`fixtures/`](fixtures/) adhering to the `BloggerFixture` discriminated union contract (`input.kind`, `expected.outcome`, `covers[]`, `verifiedAt`).

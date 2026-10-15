@@ -35,9 +35,13 @@
       "types": "./dist/ast.d.ts",
       "default": "./dist/ast.js"
     },
-    "./helpers": {
-      "types": "./dist/helpers.d.ts",
-      "default": "./dist/helpers.js"
+    "./catalogs": {
+      "types": "./dist/catalogs/index.d.ts",
+      "default": "./dist/catalogs/index.js"
+    },
+    "./parser": {
+      "types": "./dist/parser/index.d.ts",
+      "default": "./dist/parser/index.js"
     },
     "./quota": {
       "types": "./dist/quota.d.ts",
@@ -50,10 +54,6 @@
     "./version": {
       "types": "./dist/version.d.ts",
       "default": "./dist/version.js"
-    },
-    "./parser": {
-      "types": "./dist/parser/directive-scanner.d.ts",
-      "default": "./dist/parser/directive-scanner.js"
     },
     "./schemas/*": "./catalogs/schemas/*",
     "./directives": "./catalogs/directives.json",
