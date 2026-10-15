@@ -615,6 +615,26 @@
         ],
         "stage": "compiler"
       }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-unary-expression-negation",
+      "title": "Prohibited Unary Negation on Compound Parenthesized Expression",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1030"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "-(10 - 3)"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1030"
+        ],
+        "stage": "compiler"
+      }
     }
   ]
 }
