@@ -3,7 +3,7 @@ import type {
   BloggerTypeDefinition,
   BloggerTypeModifierDefinition,
 } from './types.js'
-import { getOperators, getTypes } from './catalogs/index.js'
+import { getOperators, getSpecCatalog, getTypes } from './catalogs/index.js'
 
 export function isTypeAssignable(source: string, target: string): boolean {
   if (source === target) {
@@ -140,87 +140,30 @@ export function resolveOperatorReturnType(
 ): string {
   const normOp = operatorName.toLowerCase()
 
-  switch (normOp) {
-    case 'filter':
-    case 'where':
-    case 'take':
-    case 'limit':
-    case 'skip':
-    case 'offset':
-      return leftType === 'unknown' ? 'array' : leftType
-
-    case 'map':
-    case 'select':
-    case 'to':
-      return 'array'
-
-    case 'count':
+  if (normOp === '+') {
+    if (isTypeAssignable(leftType, 'number') && (rightType === undefined || isTypeAssignable(rightType, 'number'))) {
       return 'number'
-
-    case 'first':
-      if (leftType.startsWith('array[') && leftType.endsWith(']')) {
-        return leftType.slice(6, -1)
-      }
-      return 'unknown'
-
-    case 'any':
-    case 'all':
-    case 'none':
-    case 'in':
-    case 'contains':
-    case 'and':
-    case 'or':
-    case 'not':
-    case '!':
-    case '&&':
-    case '||':
-    case '==':
-    case '!=':
-    case 'eq':
-    case 'neq':
-    case '<':
-    case '>':
-    case '<=':
-    case '>=':
-    case 'lt':
-    case 'gt':
-    case 'lte':
-    case 'gte':
-      return 'boolean'
-
-    case '-':
-    case '*':
-    case '/':
-    case '%':
-      return 'number'
-
-    case '+':
-      if (isTypeAssignable(leftType, 'number') && (rightType === undefined || isTypeAssignable(rightType, 'number'))) {
-        return 'number'
-      }
-      return 'string'
-
-    case 'resizeimage':
-      return 'image'
-
-    case 'snippet':
-    case 'format':
-    case 'sourceset':
-      return 'string'
-
-    case 'path':
-    case 'params':
-    case 'appendparams':
-    case 'fragment':
-      return 'url'
-
-    case '?:':
-    case '? :':
-      return leftType !== 'unknown' ? leftType : (rightType ?? 'unknown')
-
-    default:
-      return getOperators().operators[operatorName]?.return_type ?? 'unknown'
+    }
+    return 'string'
   }
+
+  if (normOp === '?:' || normOp === '? :') {
+    return leftType !== 'unknown' ? leftType : (rightType ?? 'unknown')
+  }
+
+  if (['filter', 'where', 'take', 'limit', 'skip', 'offset'].includes(normOp)) {
+    return leftType === 'unknown' ? 'array' : leftType
+  }
+
+  if (normOp === 'first') {
+    if (leftType.startsWith('array[') && leftType.endsWith(']')) {
+      return leftType.slice(6, -1)
+    }
+    return 'unknown'
+  }
+
+  const opDef = getSpecCatalog().getOperator(operatorName)
+  return opDef?.return_type ?? 'unknown'
 }
 
 export function isTruthy(value: any): boolean {
