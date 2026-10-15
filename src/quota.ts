@@ -5,6 +5,10 @@ import type {
   BloggerExpressionToken,
   BloggerExpressionTokenInfo,
 } from './types.js'
+import {
+  flattenMultilineExpression,
+  unescapeXmlEntities,
+} from './parser/lexer.js'
 
 export const COMPILER_QUOTA_LIMIT = 40
 export const COMPILER_QUOTA_WARNING = 36
@@ -27,25 +31,9 @@ const NATIVE_FUNCTIONS = new Set([
 ])
 const BOOLEAN_KEYWORDS = new Set(['true', 'false', 'null'])
 
-export function flattenMultilineExpression(expr: string): string {
-  const lines = expr
-    .split(/\r?\n/)
-    .map(line => line.trim())
-    .filter(line => line.length > 0)
-  return lines.join(' ')
-}
-
-export function unescapeXmlEntities(text: string): string {
-  return text
-    .replace(/&quot;/g, '"')
-    .replace(/&apos;/g, '\'')
-    .replace(/&#39;/g, '\'')
-    .replace(/&#x27;/gi, '\'')
-    .replace(/&#34;/g, '"')
-    .replace(/&#x22;/gi, '"')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&amp;/g, '&')
+export {
+  flattenMultilineExpression,
+  unescapeXmlEntities,
 }
 
 export function tokenizeExpression(expr: string): BloggerExpressionToken[] {

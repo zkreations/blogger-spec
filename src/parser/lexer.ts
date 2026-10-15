@@ -1,4 +1,23 @@
-import { unescapeXmlEntities } from '../quota.js'
+export function flattenMultilineExpression(expr: string): string {
+  const lines = expr
+    .split(/\r?\n/)
+    .map(line => line.trim())
+    .filter(line => line.length > 0)
+  return lines.join(' ')
+}
+
+export function unescapeXmlEntities(text: string): string {
+  return text
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, '\'')
+    .replace(/&#39;/g, '\'')
+    .replace(/&#x27;/gi, '\'')
+    .replace(/&#34;/g, '"')
+    .replace(/&#x22;/gi, '"')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+}
 
 export type TokenType
   = | 'NUMBER'
