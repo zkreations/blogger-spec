@@ -284,6 +284,16 @@
       "replacement": "<b:param .../>\n  <b:param .../>",
       "evidence": "observed",
       "verifiedAt": "2026-10-14"
+    },
+    "BX1030": {
+      "code": "BX1030",
+      "name": "PROHIBITED_UNARY_EXPRESSION_NEGATION",
+      "category": "expressions",
+      "severity": "error",
+      "message": "Unary negation '-' cannot be applied to parenthesized compound expressions (e.g. -(a - b)) and triggers 'Invalid expression' compiler error. Blogger expression engine only permits unary minus on immediate numeric literals (-5).",
+      "replacement": "(0 - (a - b))",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14"
     }
   }
 }
