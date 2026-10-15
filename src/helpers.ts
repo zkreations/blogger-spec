@@ -6,6 +6,7 @@ import type {
   BloggerDirectiveDefinition,
   BloggerDirectiveName,
   BloggerInclusionDefinition,
+  BloggerLayoutVersionsCatalog,
   BloggerOperatorDefinition,
   BloggerOperatorName,
   BloggerWidgetType,
@@ -16,6 +17,12 @@ import {
   registerCacheResetListener,
   SpecCatalog,
 } from './catalogs/index.js'
+
+export {
+  ExpressionParser,
+  parseExpression,
+  tokenize,
+} from './ast.js'
 
 export {
   type DirectiveAttributesValidationResult,
@@ -79,6 +86,10 @@ export function getThemeDesignerDescriptions(): readonly string[] {
 
 export function getVariableTypeAttributes(type?: string): any {
   return getSpecCatalog().getVariableTypeAttributes(type)
+}
+
+export function getLayoutVersions(): BloggerLayoutVersionsCatalog | undefined {
+  return getSpecCatalog().getLayoutVersions()
 }
 
 export function isOperator(op: string): op is BloggerOperatorName {
@@ -214,12 +225,6 @@ export function isUniversalInclusion(name: string): boolean {
 }
 
 export {
-  ExpressionParser,
-  parseExpression,
-  tokenize,
-} from './ast.js'
-
-export {
   analyzeExpressionBudget,
   COMPILER_NESTING_LIMIT,
   COMPILER_QUOTA_LIMIT,
@@ -242,3 +247,14 @@ export {
   resolveModifierReturnType,
   resolveOperatorReturnType,
 } from './type-system.js'
+
+export type {
+  BloggerLayoutVersion,
+  BloggerLayoutVersionsCatalog,
+  TemplateVersionResult,
+} from './types.js'
+
+export {
+  detectTemplateVersion,
+  getLayoutVersionsSpec,
+} from './version.js'

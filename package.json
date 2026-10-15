@@ -47,6 +47,10 @@
       "types": "./dist/type-system.d.ts",
       "default": "./dist/type-system.js"
     },
+    "./version": {
+      "types": "./dist/version.d.ts",
+      "default": "./dist/version.js"
+    },
     "./schemas/*": "./catalogs/schemas/*",
     "./directives": "./catalogs/directives.json",
     "./operators": "./catalogs/operators.json",

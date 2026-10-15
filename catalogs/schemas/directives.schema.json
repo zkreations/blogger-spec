@@ -90,6 +90,69 @@
             "type": "string"
           },
           "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
+        },
+        "layout_versions": {
+          "type": "object",
+          "description": "Canonical Blogger layout versions specifications, activation markers, and heuristics.",
+          "required": [
+            "supported_versions",
+            "default_version",
+            "explicit_attributes",
+            "versions"
+          ],
+          "properties": {
+            "supported_versions": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
+            "default_version": {
+              "type": "integer"
+            },
+            "explicit_attributes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "versions": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "object",
+                "required": [
+                  "version",
+                  "name",
+                  "description"
+                ],
+                "properties": {
+                  "version": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "structural_markers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "prohibited_markers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

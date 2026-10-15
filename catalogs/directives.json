@@ -283,7 +283,60 @@
       "Visited Color",
       "Visited Link Color",
       "Widths"
-    ]
+    ],
+    "layout_versions": {
+      "supported_versions": [
+        1,
+        2,
+        3
+      ],
+      "default_version": 3,
+      "explicit_attributes": [
+        "b:layoutsVersion",
+        "b:version"
+      ],
+      "versions": {
+        "1": {
+          "version": 1,
+          "name": "Layouts v1 (Classic / Legacy)",
+          "description": "Legacy XML layout engine supporting monolithic gadgets, table-based or legacy column formatting, and deprecated section constraints.",
+          "structural_markers": [
+            "growth",
+            "maxwidgets"
+          ],
+          "prohibited_markers": [
+            "b:defaultmarkups",
+            "b:with",
+            "b:template-script"
+          ]
+        },
+        "2": {
+          "version": 2,
+          "name": "Layouts v2 (Transition)",
+          "description": "Intermediate layout format introduced with responsive themes, adding mobile attributes and basic widget customization.",
+          "structural_markers": [],
+          "prohibited_markers": [
+            "b:defaultmarkups"
+          ]
+        },
+        "3": {
+          "version": 3,
+          "name": "Layouts v3 (Modern Gadget v2)",
+          "description": "Modern Blogger template standard supporting <b:defaultmarkups>, <b:with>, <b:template-script>, semantic section tags, and granular widget subroutines.",
+          "structural_markers": [
+            "b:defaultmarkups",
+            "b:defaultmarkup",
+            "b:template-script",
+            "b:with",
+            "b:section tag="
+          ],
+          "prohibited_markers": [
+            "growth",
+            "maxwidgets"
+          ]
+        }
+      }
+    }
   },
   "directives": {
     "b:section": {

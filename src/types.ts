@@ -161,13 +161,41 @@ export interface BloggerFixturesManifest {
   fixtures: BloggerFixture[]
 }
 
+export type BloggerLayoutVersion = 1 | 2 | 3
+
+export interface BloggerLayoutVersionDefinition {
+  version: BloggerLayoutVersion
+  name: string
+  description: string
+  structural_markers?: string[]
+  prohibited_markers?: string[]
+}
+
+export interface BloggerLayoutVersionsCatalog {
+  supported_versions: BloggerLayoutVersion[]
+  default_version: BloggerLayoutVersion
+  explicit_attributes: string[]
+  versions: Record<string, BloggerLayoutVersionDefinition>
+}
+
+export interface TemplateVersionResult {
+  version: BloggerLayoutVersion
+  confidence: 'explicit' | 'inferred'
+  detectedFeatures: string[]
+  summary: string
+}
+
 export interface BloggerDirectivesCatalog {
   $schema?: string
   version?: string
   title?: string
   description?: string
   directives: Record<string, BloggerDirectiveDefinition>
-  domain_metadata?: Record<string, any>
+  domain_metadata?: {
+    theme_designer_descriptions?: string[]
+    layout_versions?: BloggerLayoutVersionsCatalog
+    [key: string]: any
+  }
   [key: string]: any
 }
 

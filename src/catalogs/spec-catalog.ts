@@ -9,6 +9,7 @@ import type {
   BloggerGlobalsCatalog,
   BloggerInclusionDefinition,
   BloggerInclusionsCatalog,
+  BloggerLayoutVersionsCatalog,
   BloggerMessagesCatalog,
   BloggerOperatorDefinition,
   BloggerOperatorName,
@@ -273,6 +274,11 @@ export class SpecCatalog {
   getThemeDesignerDescriptions(): readonly string[] {
     const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
     return (directivesCatalog.domain_metadata?.theme_designer_descriptions as string[]) ?? []
+  }
+
+  getLayoutVersions(): BloggerLayoutVersionsCatalog | undefined {
+    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
+    return directivesCatalog.domain_metadata?.layout_versions
   }
 
   getVariableTypeAttributes(type?: string): { allowed: string[], required?: string[] } | Record<string, { allowed: string[], required?: string[] }> | undefined {

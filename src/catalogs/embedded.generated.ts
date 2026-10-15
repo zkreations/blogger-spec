@@ -292,7 +292,60 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "Visited Color",
         "Visited Link Color",
         "Widths"
-      ]
+      ],
+      "layout_versions": {
+        "supported_versions": [
+          1,
+          2,
+          3
+        ],
+        "default_version": 3,
+        "explicit_attributes": [
+          "b:layoutsVersion",
+          "b:version"
+        ],
+        "versions": {
+          "1": {
+            "version": 1,
+            "name": "Layouts v1 (Classic / Legacy)",
+            "description": "Legacy XML layout engine supporting monolithic gadgets, table-based or legacy column formatting, and deprecated section constraints.",
+            "structural_markers": [
+              "growth",
+              "maxwidgets"
+            ],
+            "prohibited_markers": [
+              "b:defaultmarkups",
+              "b:with",
+              "b:template-script"
+            ]
+          },
+          "2": {
+            "version": 2,
+            "name": "Layouts v2 (Transition)",
+            "description": "Intermediate layout format introduced with responsive themes, adding mobile attributes and basic widget customization.",
+            "structural_markers": [],
+            "prohibited_markers": [
+              "b:defaultmarkups"
+            ]
+          },
+          "3": {
+            "version": 3,
+            "name": "Layouts v3 (Modern Gadget v2)",
+            "description": "Modern Blogger template standard supporting <b:defaultmarkups>, <b:with>, <b:template-script>, semantic section tags, and granular widget subroutines.",
+            "structural_markers": [
+              "b:defaultmarkups",
+              "b:defaultmarkup",
+              "b:template-script",
+              "b:with",
+              "b:section tag="
+            ],
+            "prohibited_markers": [
+              "growth",
+              "maxwidgets"
+            ]
+          }
+        }
+      }
     },
     "directives": {
       "b:section": {
@@ -11678,6 +11731,69 @@ export const embeddedSchemas: Record<string, any> = {
               "type": "string"
             },
             "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
+          },
+          "layout_versions": {
+            "type": "object",
+            "description": "Canonical Blogger layout versions specifications, activation markers, and heuristics.",
+            "required": [
+              "supported_versions",
+              "default_version",
+              "explicit_attributes",
+              "versions"
+            ],
+            "properties": {
+              "supported_versions": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "default_version": {
+                "type": "integer"
+              },
+              "explicit_attributes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "versions": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "required": [
+                    "version",
+                    "name",
+                    "description"
+                  ],
+                  "properties": {
+                    "version": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "structural_markers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "prohibited_markers": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
           }
         },
         "additionalProperties": false
