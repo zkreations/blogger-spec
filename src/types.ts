@@ -58,6 +58,22 @@ export interface BloggerDiagnosticRule {
   verifiedAt: string
 }
 
+export interface BloggerStructureDiagnostic {
+  code: string
+  rule: BloggerDiagnosticRule
+  message: string
+  severity: BloggerDiagnosticSeverity
+  tagName: string
+  tagStart?: number
+  tagEnd?: number
+}
+
+export interface VariableAttributesValidationResult {
+  valid: boolean
+  invalidAttributes: string[]
+  missingAttributes: string[]
+}
+
 export interface BloggerOperatorOperand {
   name: string
   types: string[]

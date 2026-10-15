@@ -5,11 +5,14 @@ import type {
   BloggerDirectiveAttribute,
   BloggerDirectiveDefinition,
   BloggerDirectiveName,
+  BloggerDirectiveToken,
   BloggerInclusionDefinition,
   BloggerLayoutVersionsCatalog,
   BloggerOperatorDefinition,
   BloggerOperatorName,
+  BloggerStructureDiagnostic,
   BloggerWidgetType,
+  VariableAttributesValidationResult,
 } from './types.js'
 import {
 
@@ -90,6 +93,23 @@ export function getVariableTypeAttributes(type?: string): any {
   return getSpecCatalog().getVariableTypeAttributes(type)
 }
 
+export function validateVariableAttributes(
+  variableType: string,
+  presentAttributes: string[],
+): VariableAttributesValidationResult {
+  return getSpecCatalog().validateVariableAttributes(variableType, presentAttributes)
+}
+
+export function validateDirectiveNesting(parentTag: string, childTag: string): BloggerDiagnosticRule | null {
+  return getSpecCatalog().validateDirectiveNesting(parentTag, childTag)
+}
+
+export function validateTemplateStructure(
+  tokensOrXml: readonly BloggerDirectiveToken[] | string,
+): BloggerStructureDiagnostic[] {
+  return getSpecCatalog().validateTemplateStructure(tokensOrXml)
+}
+
 export function getLayoutVersions(): BloggerLayoutVersionsCatalog | undefined {
   return getSpecCatalog().getLayoutVersions()
 }
@@ -128,6 +148,10 @@ export function isDiagnosticCode(code: string): code is BloggerDiagnosticCode {
 
 export function getDiagnosticRule(code: string): BloggerDiagnosticRule | undefined {
   return getSpecCatalog().getDiagnosticRule(code)
+}
+
+export function getDiagnostic(code: string): BloggerDiagnosticRule | undefined {
+  return getSpecCatalog().getDiagnostic(code)
 }
 
 export function getAllDiagnostics(): Record<string, BloggerDiagnosticRule> {
@@ -253,7 +277,9 @@ export {
 export type {
   BloggerLayoutVersion,
   BloggerLayoutVersionsCatalog,
+  BloggerStructureDiagnostic,
   TemplateVersionResult,
+  VariableAttributesValidationResult,
 } from './types.js'
 
 export {
