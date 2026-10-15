@@ -13,16 +13,16 @@ import * as TypeSystemExports from '../src/type-system.js'
 
 describe('canonical type system & coercion engine', () => {
   it('exposes type system functions on root and type-system module', () => {
-    expect(RootExports.isTypeAssignable).toBeDefined()
-    expect(RootExports.getTypeModifiers).toBeDefined()
-    expect(RootExports.getCompatibleOperators).toBeDefined()
-    expect(RootExports.resolveOperatorReturnType).toBeDefined()
-    expect(RootExports.resolveModifierReturnType).toBeDefined()
-    expect(RootExports.isTruthy).toBeDefined()
+    expect(RootExports.isTypeAssignable).toBe(isTypeAssignable)
+    expect(RootExports.getTypeModifiers).toBe(getTypeModifiers)
+    expect(RootExports.getCompatibleOperators).toBe(TypeSystemExports.getCompatibleOperators)
+    expect(RootExports.resolveOperatorReturnType).toBe(resolveOperatorReturnType)
+    expect(RootExports.resolveModifierReturnType).toBe(resolveModifierReturnType)
+    expect(RootExports.isTruthy).toBe(isTruthy)
 
-    expect(TypeSystemExports.isTypeAssignable).toBeDefined()
-    expect(TypeSystemExports.getTypeModifiers).toBeDefined()
-    expect(TypeSystemExports.resolveModifierReturnType).toBeDefined()
+    expect(TypeSystemExports.isTypeAssignable).toBe(isTypeAssignable)
+    expect(TypeSystemExports.getTypeModifiers).toBe(getTypeModifiers)
+    expect(TypeSystemExports.resolveModifierReturnType).toBe(resolveModifierReturnType)
   })
 
   describe('isTypeAssignable (subtype hierarchy)', () => {

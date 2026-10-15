@@ -161,6 +161,16 @@ describe('helpers & canonical structure validation suite', () => {
       expect(v5).not.toBeNull()
       expect(v5?.code).toBe('BX1023')
     })
+
+    it('rejects hallucinated directives (b:for, b:set) within structured layout containers (BX1023)', () => {
+      const vFor = validateDirectiveNesting('b:section', 'b:for')
+      expect(vFor).not.toBeNull()
+      expect(vFor?.code).toBe('BX1023')
+
+      const vSet = validateDirectiveNesting('b:section', 'b:set')
+      expect(vSet).not.toBeNull()
+      expect(vSet?.code).toBe('BX1023')
+    })
   })
 
   describe('template structure validator', () => {
@@ -335,10 +345,10 @@ describe('helpers & canonical structure validation suite', () => {
     })
 
     it('is exported identically from root index', () => {
-      expect(RootExports.validateDirectiveNesting).toBeDefined()
-      expect(RootExports.validateTemplateStructure).toBeDefined()
-      expect(RootExports.validateVariableAttributes).toBeDefined()
-      expect(RootExports.validateDirectiveAttributes).toBeDefined()
+      expect(RootExports.validateDirectiveNesting).toBe(validateDirectiveNesting)
+      expect(RootExports.validateTemplateStructure).toBe(validateTemplateStructure)
+      expect(RootExports.validateVariableAttributes).toBe(validateVariableAttributes)
+      expect(RootExports.validateDirectiveAttributes).toBe(validateDirectiveAttributes)
     })
   })
 

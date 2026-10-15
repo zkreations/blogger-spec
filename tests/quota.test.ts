@@ -1,4 +1,11 @@
-import type { BloggerBinaryExpressionNode, BloggerCallExpressionNode, BloggerLambdaExpressionNode } from '../src/ast.js'
+import type {
+  BloggerBinaryExpressionNode,
+  BloggerCallExpressionNode,
+  BloggerConditionalExpressionNode,
+  BloggerLambdaExpressionNode,
+  BloggerMemberExpressionNode,
+  BloggerUnaryExpressionNode,
+} from '../src/ast.js'
 import { describe, expect, it } from 'vitest'
 import * as RootExports from '../src/index.js'
 import {
@@ -20,10 +27,10 @@ describe('compiler token quota suite (BX1021)', () => {
     expect(COMPILER_QUOTA_WARNING).toBe(36)
     expect(COMPILER_NESTING_LIMIT).toBe(50)
 
-    expect(RootExports.countExpressionTokens).toBeDefined()
-    expect(RootExports.evaluateExpressionBudget).toBeDefined()
-    expect(QuotaExports.countExpressionTokens).toBeDefined()
-    expect(QuotaExports.tokenizeExpression).toBeDefined()
+    expect(RootExports.countExpressionTokens).toBe(countExpressionTokens)
+    expect(RootExports.evaluateExpressionBudget).toBe(evaluateExpressionBudget)
+    expect(QuotaExports.countExpressionTokens).toBe(countExpressionTokens)
+    expect(QuotaExports.tokenizeExpression).toBe(tokenizeExpression)
   })
 
   it('counts literals and grouping parentheses correctly', () => {
@@ -173,6 +180,43 @@ describe('compiler token quota suite (BX1021)', () => {
     }
     // Array [1] (2) + lambda op 'map' (1) + param 'x' (1) + '=>' (1) + body 'x + 1' (3) = 8
     expect(countExpressionTokens(lambdaNode)).toBe(8)
+
+    const elvisNode: BloggerConditionalExpressionNode = {
+      type: 'ConditionalExpression',
+      test: { type: 'DataPath', raw: 'data:title', root: 'data', members: [{ property: 'title', computed: false }] },
+      consequent: { type: 'Literal', value: 'Default' },
+      isElvis: true,
+    }
+    // test (1) + consequent (1) + elvis op (1) = 3
+    expect(countExpressionTokens(elvisNode)).toBe(3)
+
+    const ternaryNode: BloggerConditionalExpressionNode = {
+      type: 'ConditionalExpression',
+      test: { type: 'DataPath', raw: 'data:view.isPost', root: 'data', members: [{ property: 'view', computed: false }, { property: 'isPost', computed: false }] },
+      consequent: { type: 'Literal', value: 'Post' },
+      alternate: { type: 'Literal', value: 'Page' },
+      isElvis: false,
+    }
+    // test (1) + consequent (1) + alternate (1) + ternary ops '?' and ':' (2) = 5
+    expect(countExpressionTokens(ternaryNode)).toBe(5)
+
+    const memberNode: BloggerMemberExpressionNode = {
+      type: 'MemberExpression',
+      object: { type: 'DataPath', raw: 'data:title', root: 'data', members: [{ property: 'title', computed: false }] },
+      property: { type: 'Identifier', name: 'length' },
+      computed: false,
+    }
+    // object (1) + member (1) = 2
+    expect(countExpressionTokens(memberNode)).toBe(2)
+
+    const unaryNode: BloggerUnaryExpressionNode = {
+      type: 'UnaryExpression',
+      operator: '!',
+      argument: { type: 'Literal', value: true },
+      prefix: true,
+    }
+    // op (1) + argument (1) = 2
+    expect(countExpressionTokens(unaryNode)).toBe(2)
   })
 
   it('counts native transformation functional invocations with zero-cost parens (path, params, etc.)', () => {

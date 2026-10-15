@@ -67,15 +67,23 @@ describe('universal ESM & in-memory store suite', () => {
     const defaultStoreBefore = getDefaultCatalogStore()
     const fsStore = new FsCatalogStore()
 
-    setDefaultCatalogStore(fsStore)
-    expect(getDefaultCatalogStore()).toBe(fsStore)
+    try {
+      setDefaultCatalogStore(fsStore)
+      expect(getDefaultCatalogStore()).toBe(fsStore)
 
-    const directives = getCatalog('directives')
-    expect(directives.directives['b:if']).toBeDefined()
+      const directives = getCatalog('directives')
+      expect(directives.directives['b:if']).toBeDefined()
 
-    // Restore memory store as default
-    setDefaultCatalogStore(defaultStoreBefore)
-    expect(getDefaultCatalogStore()).toBe(defaultStoreBefore)
-    clearCatalogCache()
+      const schemas = fsStore.getAllSchemas()
+      expect(schemas.length).toBeGreaterThanOrEqual(10)
+      expect(fsStore.getSchema('directives')).toBeDefined()
+
+      fsStore.clearCache()
+    }
+    finally {
+      setDefaultCatalogStore(defaultStoreBefore)
+      expect(getDefaultCatalogStore()).toBe(defaultStoreBefore)
+      clearCatalogCache()
+    }
   })
 })

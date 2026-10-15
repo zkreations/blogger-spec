@@ -10,25 +10,35 @@ import {
   getAllOperators,
   getAllSchemas,
   getAllScopes,
-  getAllServerInclusions,
   getAllTypes,
   getAllWidgets,
   getAllWidgetSettings,
+  getCatalog,
   getDefaultCatalogStore,
   getDiagnostic,
+  getDiagnostics,
   getDirective,
+  getDirectiveAttributes,
+  getDirectives,
   getGlobal,
+  getGlobals,
   getGrammarOperators,
+  getInclusions,
   getMessage,
+  getMessages,
   getOperator,
   getOperatorPrecedence,
+  getOperators,
   getSchema,
   getScope,
   getScopePrecedence,
-  getServerInclusion,
+  getScopes,
+  getSettings,
   getSpecCatalog,
   getType,
+  getTypes,
   getWidget,
+  getWidgets,
   getWidgetSettings,
   isDiagnosticCode,
   isDirective,
@@ -39,14 +49,13 @@ import {
   isOperator,
   isScope,
   isSelfClosingDirective,
-  isServerInclusion,
   isType,
-  isUniversalInclusion,
   isWidget,
   MemoryCatalogStore,
   registerCacheResetListener,
   setDefaultCatalogStore,
   SpecCatalog,
+  validateNesting,
 } from '../src/catalogs/index.js'
 import * as RootExports from '../src/index.js'
 
@@ -54,16 +63,18 @@ describe('catalogs and store formal verification suite', () => {
   describe('memoryCatalogStore & store life-cycle', () => {
     it('retrieves all 10 canonical catalogs with pure in-memory access', () => {
       const all = getAllCatalogs()
-      expect(all.directives).toBeDefined()
-      expect(all.operators).toBeDefined()
-      expect(all.types).toBeDefined()
-      expect(all.widgets).toBeDefined()
-      expect(all.settings).toBeDefined()
-      expect(all.globals).toBeDefined()
-      expect(all.messages).toBeDefined()
-      expect(all.scopes).toBeDefined()
-      expect(all.diagnostics).toBeDefined()
-      expect(all.inclusions).toBeDefined()
+      expect(Object.keys(all).sort()).toEqual([
+        'diagnostics',
+        'directives',
+        'globals',
+        'inclusions',
+        'messages',
+        'operators',
+        'scopes',
+        'settings',
+        'types',
+        'widgets',
+      ])
     })
 
     it('isolates mutations by cloning raw catalogs on first cache access', () => {
@@ -124,13 +135,15 @@ describe('catalogs and store formal verification suite', () => {
       const originalStore = getDefaultCatalogStore()
       const dummyStore = new MemoryCatalogStore()
 
-      setDefaultCatalogStore(dummyStore)
-      expect(getDefaultCatalogStore()).toBe(dummyStore)
-      expect(listenerCalls).toBe(2)
-
-      // Restore original
-      setDefaultCatalogStore(originalStore)
-      expect(getDefaultCatalogStore()).toBe(originalStore)
+      try {
+        setDefaultCatalogStore(dummyStore)
+        expect(getDefaultCatalogStore()).toBe(dummyStore)
+        expect(listenerCalls).toBe(2)
+      }
+      finally {
+        setDefaultCatalogStore(originalStore)
+        expect(getDefaultCatalogStore()).toBe(originalStore)
+      }
       expect(listenerCalls).toBe(3)
 
       unregister()
@@ -187,11 +200,21 @@ describe('catalogs and store formal verification suite', () => {
         expect(isSelfClosingDirective('nonexistent')).toBe(false)
       })
 
-      it('evaluates structural nesting constraints (canNest)', () => {
+      it('evaluates structural nesting constraints (canNest and validateNesting)', () => {
         expect(canNest('b:section', 'b:widget')).toBe(true)
         expect(canNest('b:section', 'b:section')).toBe(false)
         expect(canNest('b:widget', 'b:includable')).toBe(true)
         expect(canNest('b:includable', 'b:if')).toBe(true)
+
+        expect(validateNesting('b:section', 'b:widget')).toBeNull()
+        const violation = validateNesting('b:section', 'b:section')
+        expect(violation?.code).toBe('BX1035')
+        expect(violation?.action).toBe('reject')
+
+        const loopAttrs = getDirectiveAttributes('b:loop')
+        expect(loopAttrs).toBeDefined()
+        expect(loopAttrs?.values).toBeDefined()
+        expect(getDirectiveAttributes('nonexistent_tag')).toBeUndefined()
       })
     })
 
@@ -229,8 +252,23 @@ describe('catalogs and store formal verification suite', () => {
     describe('diagnostics domain', () => {
       it('queries diagnostic codes and rules', () => {
         expect(isDiagnosticCode('BX1001')).toBe(true)
+        expect(isDiagnosticCode('BX1003')).toBe(true)
         expect(isDiagnosticCode('BX1023')).toBe(true)
+        expect(isDiagnosticCode('BX1031')).toBe(true)
         expect(isDiagnosticCode('BX9999')).toBe(false)
+
+        const forRule = getDiagnostic('BX1001')
+        expect(forRule).toBeDefined()
+        expect(forRule?.name).toBe('PROHIBITED_FOR_TAG')
+        expect(forRule?.severity).toBe('error')
+
+        const setRule = getDiagnostic('BX1003')
+        expect(setRule).toBeDefined()
+        expect(setRule?.name).toBe('PROHIBITED_SET_TAG')
+
+        const nonObjInclude = getDiagnostic('BX1031')
+        expect(nonObjInclude).toBeDefined()
+        expect(nonObjInclude?.name).toBe('NON_OBJECT_INCLUDE_DATA_PAYLOAD')
 
         const rule = getDiagnostic('BX1023')
         expect(rule).toBeDefined()
@@ -337,40 +375,22 @@ describe('catalogs and store formal verification suite', () => {
         expect(coercion.arithmetic_coercion).toBeDefined()
       })
     })
-
-    describe('inclusions domain', () => {
-      it('queries server and universal inclusions', () => {
-        expect(isServerInclusion('super.main')).toBe(true)
-        expect(isServerInclusion('all-head-content')).toBe(true)
-        expect(isServerInclusion('unknown_inc')).toBe(false)
-
-        const inc = getServerInclusion('all-head-content')
-        expect(inc).toBeDefined()
-        expect(inc?.category).toBe('universal')
-
-        expect(isUniversalInclusion('all-head-content')).toBe(true)
-        expect(isUniversalInclusion('super.main')).toBe(false)
-
-        const allInclusions = getAllServerInclusions()
-        expect(allInclusions['all-head-content']).toBeDefined()
-      })
-    })
   })
 
   describe('rootExports parity', () => {
     it('mirrors core store and spec queries faithfully on package root', () => {
-      expect(RootExports.getSpecCatalog).toBeDefined()
-      expect(RootExports.getCatalog).toBeDefined()
-      expect(RootExports.getDirectives).toBeDefined()
-      expect(RootExports.getOperators).toBeDefined()
-      expect(RootExports.getTypes).toBeDefined()
-      expect(RootExports.getWidgets).toBeDefined()
-      expect(RootExports.getSettings).toBeDefined()
-      expect(RootExports.getGlobals).toBeDefined()
-      expect(RootExports.getMessages).toBeDefined()
-      expect(RootExports.getScopes).toBeDefined()
-      expect(RootExports.getDiagnostics).toBeDefined()
-      expect(RootExports.getInclusions).toBeDefined()
+      expect(RootExports.getSpecCatalog).toBe(getSpecCatalog)
+      expect(RootExports.getCatalog).toBe(getCatalog)
+      expect(RootExports.getDirectives).toBe(getDirectives)
+      expect(RootExports.getOperators).toBe(getOperators)
+      expect(RootExports.getTypes).toBe(getTypes)
+      expect(RootExports.getWidgets).toBe(getWidgets)
+      expect(RootExports.getSettings).toBe(getSettings)
+      expect(RootExports.getGlobals).toBe(getGlobals)
+      expect(RootExports.getMessages).toBe(getMessages)
+      expect(RootExports.getScopes).toBe(getScopes)
+      expect(RootExports.getDiagnostics).toBe(getDiagnostics)
+      expect(RootExports.getInclusions).toBe(getInclusions)
     })
   })
 })

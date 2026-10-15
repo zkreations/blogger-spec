@@ -19,15 +19,13 @@ import { unescapeXmlEntities } from '../src/parser/lexer.js'
 
 describe('canonical pratt expression parser (blogger-spec/ast)', () => {
   it('exposes parseExpression, tokenize and classes from ast, parser and root', () => {
-    expect(parseExpression).toBeDefined()
-    expect(tokenize).toBeDefined()
-    expect(ExpressionParser).toBeDefined()
+    expect(ParserExports.parseExpression).toBe(parseExpression)
+    expect(ParserExports.tokenize).toBe(tokenize)
+    expect(ParserExports.ExpressionParser).toBe(ExpressionParser)
 
-    expect(ParserExports.parseExpression).toBeDefined()
-    expect(ParserExports.tokenize).toBeDefined()
-
-    expect(RootExports.parseExpression).toBeDefined()
-    expect(RootExports.tokenize).toBeDefined()
+    expect(RootExports.parseExpression).toBe(parseExpression)
+    expect(RootExports.tokenize).toBe(tokenize)
+    expect(RootExports.ExpressionParser).toBe(ExpressionParser)
   })
 
   describe('literals & primitives', () => {
@@ -64,7 +62,7 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect(strEscaped.value).toBe('hello "escaped"')
     })
 
-    it('parses boolean and null literals', () => {
+    it('parses boolean and null literals (syntax grammar accepts null token, though Blogger engine rejects null value expressions)', () => {
       const trueNode = parseExpression('true') as BloggerLiteralNode
       expect(trueNode.type).toBe('Literal')
       expect(trueNode.value).toBe(true)
@@ -122,6 +120,25 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       const node = parseExpression('data:skin.vars.body-font') as BloggerDataPathNode
       expect(node.type).toBe('DataPath')
       expect(node.members[2]?.property).toBe('body-font')
+    })
+
+    it('parses isolated root data path (data:)', () => {
+      const node = parseExpression('data:') as BloggerDataPathNode
+      expect(node.type).toBe('DataPath')
+      expect(node.root).toBe('data')
+      expect(node.raw).toBe('data:')
+      expect(node.members).toEqual([])
+    })
+
+    it('parses direct bracket indexing on root data path (data:[0])', () => {
+      const node = parseExpression('data:[0]') as BloggerDataPathNode
+      expect(node.type).toBe('DataPath')
+      expect(node.root).toBe('data')
+      expect(node.raw).toBe('data:[0]')
+      expect(node.members).toHaveLength(1)
+      expect(node.members[0]?.computed).toBe(true)
+      expect(node.members[0]?.property).toBe('0')
+      expect(node.members[0]?.expression?.type).toBe('Literal')
     })
   })
 
@@ -254,8 +271,14 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
     })
 
     it('strictly accepts grammar aliases (eq, neq, limit) while rejecting doc aliases (plus, modulo)', () => {
-      expect(() => parseExpression('5 eq 5')).not.toThrow()
-      expect(() => parseExpression('data:posts limit 5')).not.toThrow()
+      const eqNode = parseExpression('5 eq 5') as BloggerBinaryExpressionNode
+      expect(eqNode.type).toBe('BinaryExpression')
+      expect(eqNode.operator).toBe('eq')
+
+      const limitNode = parseExpression('data:posts limit 5') as BloggerBinaryExpressionNode
+      expect(limitNode.type).toBe('BinaryExpression')
+      expect(limitNode.operator).toBe('limit')
+
       expect(() => parseExpression('5 plus 3')).toThrow(/Unexpected token 'plus'/)
       expect(() => parseExpression('10 modulo 2')).toThrow(/Unexpected token 'modulo'/)
     })
@@ -411,6 +434,28 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect(elvisCall.callee).toBe('?:')
     })
 
+    it('parses variadic functional operators with 3 or more arguments', () => {
+      const variadicPlus = parseExpression('+("a", "b", "c")') as BloggerCallExpressionNode
+      expect(variadicPlus.type).toBe('CallExpression')
+      expect(variadicPlus.callee).toBe('+')
+      expect(variadicPlus.arguments).toHaveLength(3)
+
+      const variadicAnd = parseExpression('and(data:a, data:b, data:c)') as BloggerCallExpressionNode
+      expect(variadicAnd.type).toBe('CallExpression')
+      expect(variadicAnd.callee).toBe('and')
+      expect(variadicAnd.arguments).toHaveLength(3)
+
+      const variadicOr = parseExpression('or(data:a, data:b, data:c)') as BloggerCallExpressionNode
+      expect(variadicOr.type).toBe('CallExpression')
+      expect(variadicOr.callee).toBe('or')
+      expect(variadicOr.arguments).toHaveLength(3)
+
+      const ternaryElvis = parseExpression('?:(data:a, data:b, "fallback")') as BloggerCallExpressionNode
+      expect(ternaryElvis.type).toBe('CallExpression')
+      expect(ternaryElvis.callee).toBe('?:')
+      expect(ternaryElvis.arguments).toHaveLength(3)
+    })
+
     it('parses array and object expressions', () => {
       const arr = parseExpression('[1, 2, 3]') as any
       expect(arr.type).toBe('ArrayExpression')
@@ -495,16 +540,56 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
         const fullPath = join(process.cwd(), filePath)
         const fileContent = JSON.parse(readFileSync(fullPath, 'utf-8'))
         const fixtures = fileContent.fixtures || []
+        const validNodeTypes = new Set([
+          'Literal',
+          'Identifier',
+          'DataPath',
+          'UnaryExpression',
+          'BinaryExpression',
+          'LogicalExpression',
+          'ConditionalExpression',
+          'CallExpression',
+          'LambdaExpression',
+          'ObjectExpression',
+          'ArrayExpression',
+          'MemberExpression',
+        ])
 
+        let testedCount = 0
         for (const fixture of fixtures) {
           if (fixture.input?.kind === 'expression' && typeof fixture.input.source === 'string') {
             const parsed = parseExpression(fixture.input.source)
             expect(parsed).toBeDefined()
-            expect(parsed.type).toBeDefined()
+            expect(validNodeTypes.has(parsed.type)).toBe(true)
+            testedCount++
           }
         }
+        expect(testedCount).toBeGreaterThan(0)
       })
     }
+  })
+
+  describe('lexer tokenization & diagnostics', () => {
+    it('tokenizes expressions into stream of tokens with exact source coordinates', () => {
+      const tokens = tokenize('data:blog.title + 10')
+      expect(tokens).toHaveLength(7)
+      expect(tokens[0]).toMatchObject({
+        type: 'DATA_PREFIX',
+        value: 'data:',
+        start: { line: 1, column: 1, offset: 0 },
+        end: { line: 1, column: 6, offset: 5 },
+      })
+      expect(tokens[tokens.length - 1]?.type).toBe('EOF')
+    })
+
+    it('throws error for unterminated string literals', () => {
+      expect(() => tokenize('"unterminated string')).toThrow(/Unterminated string literal at line 1, column 1/)
+      expect(() => tokenize('\'unterminated string')).toThrow(/Unterminated string literal at line 1, column 1/)
+    })
+
+    it('throws error for unexpected characters outside Blogger grammar', () => {
+      expect(() => tokenize('data:a @ data:b')).toThrow(/Unexpected character '@' at line 1, column 8/)
+    })
   })
 
   describe('unescapeXmlEntities (single-pass XML 1.0 entity decoding)', () => {

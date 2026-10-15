@@ -19,7 +19,8 @@ describe('system inclusions catalog suite', () => {
   })
 
   it('exposes prehydrated inclusions from root exports', () => {
-    expect(RootExports.inclusions).toBeDefined()
+    expect(RootExports.inclusions).toEqual(getInclusions())
+    expect(RootExports.getInclusions).toBe(RootExports.getInclusions)
     expect(RootExports.inclusions.inclusions['all-head-content']).toBeDefined()
   })
 

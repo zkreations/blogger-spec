@@ -463,12 +463,14 @@ export class ExpressionParser {
     const dataPrefixToken = this.advance() // 'data:'
     const startLoc = dataPrefixToken.start
 
-    const firstPropToken = this.consume('IDENTIFIER', 'Expected identifier following \'data:\'')
-    const members: BloggerDataPathNode['members'] = [
-      { property: firstPropToken.value, computed: false },
-    ]
+    const members: BloggerDataPathNode['members'] = []
+    let lastEnd = dataPrefixToken.end
 
-    let lastEnd = firstPropToken.end
+    if (this.check('IDENTIFIER')) {
+      const firstPropToken = this.advance()
+      members.push({ property: firstPropToken.value, computed: false })
+      lastEnd = firstPropToken.end
+    }
 
     while (!this.isAtEnd()) {
       if (this.check('DOT')) {
