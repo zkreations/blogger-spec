@@ -183,5 +183,6 @@ export type BloggerASTNode
     | BloggerExpressionNode
     | BloggerPropertyNode
 
+export * from './parser/directive-scanner.js'
 export { ExpressionParser, parseExpression } from './parser/expr-parser.js'
 export { Lexer, type Token, tokenize, type TokenPosition, type TokenType } from './parser/lexer.js'

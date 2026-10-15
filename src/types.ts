@@ -127,6 +127,33 @@ export interface BloggerDirectiveDefinition {
   type_attributes?: Record<string, { allowed: string[], required?: string[] }>
 }
 
+export interface BloggerDirectiveAttributeToken {
+  name: string
+  value: string
+  quote?: '"' | '\'' | undefined
+  start: number
+  end: number
+  valueStart: number
+  valueEnd: number
+}
+
+export interface BloggerDirectiveToken {
+  tagName: string
+  isClosing: boolean
+  isSelfClosing: boolean
+  hasSelfClosingSlash: boolean
+  tagStart: number
+  tagEnd: number
+  attributesText: string
+  rawAttributesText: string
+  attributesOffset: number
+  attributes: Record<string, BloggerDirectiveAttributeToken>
+}
+
+export interface ScanDirectiveOptions {
+  stopAtOffset?: number
+}
+
 export interface BloggerFixture {
   id: string
   title: string

@@ -116,6 +116,7 @@ export function generateDts(): string {
     'export * from \'./quota.js\';',
     'export * from \'./type-system.js\';',
     'export * from \'./version.js\';',
+    'export * from \'./parser/directive-scanner.js\';',
     '',
     '// --- Subtypes & Modifiers ---',
   ]
@@ -449,6 +450,7 @@ export function compileTypescript(): void {
     join(paths.root, 'src/quota.ts'),
     join(paths.root, 'src/type-system.ts'),
     join(paths.root, 'src/version.ts'),
+    join(paths.root, 'src/parser/directive-scanner.ts'),
     join(paths.root, 'src/catalogs/fs-store.ts'),
   ]
 
@@ -495,6 +497,8 @@ export function buildAll(): void {
     join(paths.dist, 'ast.d.ts'),
     join(paths.dist, 'version.js'),
     join(paths.dist, 'version.d.ts'),
+    join(paths.dist, 'parser/directive-scanner.js'),
+    join(paths.dist, 'parser/directive-scanner.d.ts'),
     join(paths.dist, 'catalogs/fs-store.js'),
     join(paths.dist, 'catalogs/fs-store.d.ts'),
     paths.fixturesManifest,

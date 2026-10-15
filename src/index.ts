@@ -42,6 +42,7 @@ export {
 export * from './ast.js'
 export * from './catalogs/index.js'
 export * from './helpers.js'
+export * from './parser/directive-scanner.js'
 export * from './quota.js'
 export * from './type-system.js'
 export * from './types.js'

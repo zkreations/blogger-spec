@@ -51,6 +51,10 @@
       "types": "./dist/version.d.ts",
       "default": "./dist/version.js"
     },
+    "./parser": {
+      "types": "./dist/parser/directive-scanner.d.ts",
+      "default": "./dist/parser/directive-scanner.js"
+    },
     "./schemas/*": "./catalogs/schemas/*",
     "./directives": "./catalogs/directives.json",
     "./operators": "./catalogs/operators.json",

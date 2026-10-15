@@ -24,6 +24,8 @@ export {
   tokenize,
 } from './ast.js'
 
+export * from './parser/directive-scanner.js'
+
 export {
   type DirectiveAttributesValidationResult,
   SpecCatalog,
