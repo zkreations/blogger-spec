@@ -320,7 +320,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           },
           "data": {
             "type": "expression",
-            "description": "Dataset or object forwarded to the includable's var. Properties become data:VAR.property.",
+            "description": "Dataset or object forwarded to the includable's var. Properties become data:VAR.property. Strictly requires an object or object literal { ... }; scalar primitives are rejected at runtime.",
             "attribute_kind": "native_expression",
             "expr": true
           },
@@ -332,6 +332,14 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           }
         },
         "constraints": {
+          "data_payload": {
+            "status": "enforced",
+            "allowed_values": [
+              "object reference",
+              "object literal"
+            ],
+            "reason": "The data attribute strictly requires an object or object literal { ... } (or array wrapped in braces {[ ... ]}). Scalar primitives (string, number, boolean) cause runtime execution abort 'Error during evaluation of <name>'."
+          },
           "data_alias": {
             "allowed_values": [
               "data name",
@@ -10061,7 +10069,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "visibility": "descendants",
         "shadowing": "local-wins",
         "evidence": "official",
-        "notes": "Standard entrypoint is id='main'. The 'var' attribute names the incoming data parameter (conventionally 'this' or custom name)."
+        "notes": "Standard entrypoint is id='main'. The 'var' attribute names the incoming data parameter (conventionally 'this' or custom name). Forwarding datasets via <b:include data='...'> strictly requires an object or object literal { ... } (or array wrapped in braces {[ ... ]}); passing raw scalar primitives is rejected. When <b:include> omits the 'data' attribute inside a widget, 'var' automatically binds to the host widget data dictionary. Calling an includable with 'var' from the global scope without 'data' aborts with 'Error during evaluation of <id>'."
       },
       "widget": {
         "name": "Host Widget Scope",
@@ -10405,6 +10413,26 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "severity": "error",
         "message": "Unary negation '-' cannot be applied to parenthesized compound expressions (e.g. -(a - b)) and triggers 'Invalid expression' compiler error. Blogger expression engine only permits unary minus on immediate numeric literals (-5).",
         "replacement": "(0 - (a - b))",
+        "evidence": "observed",
+        "verifiedAt": "2026-10-14"
+      },
+      "BX1031": {
+        "code": "BX1031",
+        "name": "NON_OBJECT_INCLUDE_DATA_PAYLOAD",
+        "category": "runtime",
+        "severity": "error",
+        "message": "The 'data' attribute of <b:include> strictly requires an object reference or object literal { ... }; passing primitive scalars (string, number, boolean) aborts execution with runtime error 'Error during evaluation of <name>'.",
+        "replacement": "{ value: ... }",
+        "evidence": "observed",
+        "verifiedAt": "2026-10-14"
+      },
+      "BX1032": {
+        "code": "BX1032",
+        "name": "PROHIBITED_BRACKET_INDEXING_IN_DATA_TAG",
+        "category": "syntax",
+        "severity": "error",
+        "message": "Direct bracket indexing (e.g. <data:items[0]/>) is forbidden in <data:...> tags and causes template compilation error. Use <b:eval expr='data:items[0]'/> to index collections.",
+        "replacement": "<b:eval expr='data:items[0]'/>",
         "evidence": "observed",
         "verifiedAt": "2026-10-14"
       }

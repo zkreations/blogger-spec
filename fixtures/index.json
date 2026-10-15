@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-15",
   "metrics": {
-    "totalFixtures": 174,
-    "positiveFixtures": 144,
-    "negativeFixtures": 30,
-    "coveredSpecEntities": 117
+    "totalFixtures": 178,
+    "positiveFixtures": 146,
+    "negativeFixtures": 32,
+    "coveredSpecEntities": 119
   },
   "fixtures": [
     {
@@ -2511,6 +2511,30 @@
       }
     },
     {
+      "id": "scopes/includable_inheritance/include-object-literal-with-nested-array",
+      "title": "Include Object Literal With Nested Array Indexing Via Eval",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "tag:b:default",
+        "tag:b:includable",
+        "tag:b:include",
+        "tag:b:eval"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='renderObj' var='obj'><div><data:obj.msg/>:<b:eval expr='data:obj.items[0]'/></div></b:includable></b:defaultmarkup></b:defaultmarkups><b:include data='{ msg: \"Widget Sub OK\", items: [\"x\", \"y\"] }' name='renderObj'/>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div>Widget Sub OK:x</div>",
+        "canonicalDom": true
+      }
+    },
+    {
       "id": "rendering/loop_rendering/loop-list-items",
       "title": "Loop List Items",
       "evidence": "official",
@@ -3327,6 +3351,29 @@
       }
     },
     {
+      "id": "scopes/with_nesting/with-widget-scope-shadowing-and-restoration",
+      "title": "With Widget Scope Variable Shadowing and Restoration",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:with_nesting",
+        "tag:b:with"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div>[<data:title/>]<b:with value='\"Shadowed Widget Title\"' var='title'>[<data:title/>]</b:with>[<data:title/>]</div>",
+        "mode": "fragment",
+        "context": {
+          "title": "Desarrollo"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div>[Desarrollo][Shadowed Widget Title][Desarrollo]</div>",
+        "canonicalDom": true
+      }
+    },
+    {
       "id": "diagnostics/negative_syntax/prohibited-for-tag",
       "title": "Prohibited <b:for> Loop Tag",
       "evidence": "observed",
@@ -3959,6 +4006,48 @@
           "BX1030"
         ],
         "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/non-object-include-data-payload",
+      "title": "Non-Object Scalar Payload Passed to b:include data Attribute",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1031"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='sub' var='p'><data:p/></b:includable></b:defaultmarkup></b:defaultmarkups><b:include data='\"scalar string\"' name='sub'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1031"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-bracket-indexing-in-data-tag",
+      "title": "Prohibited Direct Bracket Indexing in data:* Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1032"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:items[0]/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1032"
+        ],
+        "stage": "parser"
       }
     }
   ]
