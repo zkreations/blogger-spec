@@ -635,6 +635,48 @@
         ],
         "stage": "compiler"
       }
+    },
+    {
+      "id": "diagnostics/negative_syntax/non-object-include-data-payload",
+      "title": "Non-Object Scalar Payload Passed to b:include data Attribute",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1031"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='sub' var='p'><data:p/></b:includable></b:defaultmarkup></b:defaultmarkups><b:include data='\"scalar string\"' name='sub'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1031"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-bracket-indexing-in-data-tag",
+      "title": "Prohibited Direct Bracket Indexing in data:* Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "rule:BX1032"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:items[0]/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1032"
+        ],
+        "stage": "parser"
+      }
     }
   ]
 }
