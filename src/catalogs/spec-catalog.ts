@@ -21,10 +21,12 @@ import type {
   BloggerTypesCatalog,
   BloggerWidgetsCatalog,
   BloggerWidgetType,
+  DirectiveNestingAction,
+  DirectiveNestingViolation,
   VariableAttributesValidationResult,
 } from '../types.js'
 import type { CatalogStore } from './store.js'
-import { validateDirectiveNesting, validateTemplateStructure } from '../parser/template-validator.js'
+import { validateTemplateStructure } from '../parser/template-validator.js'
 import { getDefaultCatalogStore, registerCacheResetListener } from './store.js'
 
 let defaultSpecCatalogInstance: SpecCatalog | null = null
@@ -89,8 +91,9 @@ export class SpecCatalog {
   private readonly grammarOperatorMap = new Map<string, BloggerOperatorDefinition>()
   private readonly docAliasMap = new Map<string, BloggerOperatorDefinition>()
   private readonly diagnosticMap = new Map<string, BloggerDiagnosticRule>()
-  private readonly validChildrenMap = new Map<string, Set<string> | null>()
-  private readonly validParentsMap = new Map<string, Set<string> | null>()
+  private readonly grammarGroupMap = new Map<string, string[]>()
+  private readonly expandedValidChildrenMap = new Map<string, Set<string>>()
+  private readonly expandedValidParentsMap = new Map<string, Set<string>>()
   private readonly widgetMap = new Map<string, any>()
   private readonly settingMap = new Map<string, any>()
   private readonly globalMap = new Map<string, any>()
@@ -116,22 +119,69 @@ export class SpecCatalog {
   }
 
   private indexDirectives(): void {
-    const directives = (this.store.getCatalog('directives') as BloggerDirectivesCatalog).directives || {}
-    for (const [name, def] of Object.entries(directives)) {
-      this.directiveMap.set(name, def)
-      if (def.grammar?.valid_children) {
-        this.validChildrenMap.set(name, new Set(def.grammar.valid_children))
-      }
-      else {
-        this.validChildrenMap.set(name, null)
-      }
-      if (def.grammar?.valid_parents) {
-        this.validParentsMap.set(name, new Set(def.grammar.valid_parents))
-      }
-      else {
-        this.validParentsMap.set(name, null)
+    const dirCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
+    const directives = dirCatalog.directives || {}
+    const groups = (dirCatalog.domain_metadata?.grammar_groups as Record<string, string[]>) || {}
+    for (const [groupName, members] of Object.entries(groups)) {
+      if (Array.isArray(members)) {
+        this.grammarGroupMap.set(groupName, members)
       }
     }
+
+    for (const [name, def] of Object.entries(directives)) {
+      this.directiveMap.set(name, def)
+    }
+
+    for (const [name, def] of Object.entries(directives)) {
+      if (def.grammar?.valid_children) {
+        this.expandedValidChildrenMap.set(name, this.expandGroupTokens(def.grammar.valid_children))
+      }
+      if (def.grammar?.valid_parents) {
+        this.expandedValidParentsMap.set(name, this.expandGroupTokens(def.grammar.valid_parents))
+      }
+    }
+  }
+
+  private expandGroupTokens(tokens: readonly string[]): Set<string> {
+    const result = new Set<string>()
+    const visited = new Set<string>()
+
+    const walk = (token: string) => {
+      if (visited.has(token)) {
+        return
+      }
+      visited.add(token)
+
+      if (token.startsWith('@')) {
+        const members = this.grammarGroupMap.get(token) || []
+        for (const member of members) {
+          walk(member)
+        }
+      }
+      else {
+        result.add(token)
+      }
+    }
+
+    for (const token of tokens) {
+      walk(token)
+    }
+
+    return result
+  }
+
+  private isTagAllowedInSet(tag: string, allowedSet: Set<string>): boolean {
+    if (allowedSet.has(tag)) {
+      return true
+    }
+    if (tag.startsWith('data:') && allowedSet.has('data:*')) {
+      return true
+    }
+    const lower = tag.toLowerCase()
+    if (!this.isDirective(tag) && lower !== 'head' && lower !== 'html' && lower !== 'body' && allowedSet.has('html:*')) {
+      return true
+    }
+    return false
   }
 
   private indexOperators(): void {
@@ -230,11 +280,17 @@ export class SpecCatalog {
   }
 
   isDirective(tagName: string): tagName is BloggerDirectiveName {
-    return this.directiveMap.has(tagName)
+    return this.directiveMap.has(tagName) || tagName.startsWith('data:')
   }
 
   getDirective(tagName: string): BloggerDirectiveDefinition | undefined {
-    return this.directiveMap.get(tagName)
+    if (this.directiveMap.has(tagName)) {
+      return this.directiveMap.get(tagName)
+    }
+    if (tagName.startsWith('data:')) {
+      return this.directiveMap.get('data:*')
+    }
+    return undefined
   }
 
   getAllDirectives(): Record<string, BloggerDirectiveDefinition> {
@@ -247,23 +303,83 @@ export class SpecCatalog {
 
   isSelfClosingDirective(tagName: string): boolean {
     const def = this.getDirective(tagName)
-    return Boolean(def?.self_closing)
+    return Boolean(def?.self_closing || def?.closure_mode === 'self_closing')
   }
 
-  isValidChild(parentTagName: string, childTagName: string): boolean {
-    const validSet = this.validChildrenMap.get(parentTagName)
-    if (!validSet) {
-      return true
+  canNest(parentTag: string, childTag: string): boolean {
+    const parentDef = this.getDirective(parentTag)
+    const childDef = this.getDirective(childTag)
+
+    if (parentDef) {
+      if (this.isSelfClosingDirective(parentTag)) {
+        return false
+      }
+      const canonicalParent = parentTag.startsWith('data:') ? 'data:*' : parentTag
+      const allowedChildren = this.expandedValidChildrenMap.get(canonicalParent)
+      if (allowedChildren) {
+        if (!this.isTagAllowedInSet(childTag, allowedChildren)) {
+          return false
+        }
+      }
     }
-    return validSet.has(childTagName)
+
+    if (childDef) {
+      const canonicalChild = childTag.startsWith('data:') ? 'data:*' : childTag
+      const allowedParents = this.expandedValidParentsMap.get(canonicalChild)
+      if (allowedParents) {
+        if (!this.isTagAllowedInSet(parentTag, allowedParents)) {
+          return false
+        }
+      }
+    }
+
+    return true
   }
 
-  isValidParent(childTagName: string, parentTagName: string): boolean {
-    const validSet = this.validParentsMap.get(childTagName)
-    if (!validSet) {
-      return true
+  validateNesting(parentTag: string, childTag: string): DirectiveNestingViolation | null {
+    if (this.canNest(parentTag, childTag)) {
+      return null
     }
-    return validSet.has(parentTagName)
+
+    const parentDef = this.getDirective(parentTag)
+    const childDef = this.getDirective(childTag)
+
+    let diagCode = 'BX1023'
+    let action: DirectiveNestingAction = 'reject'
+
+    const parentPolicy = parentDef?.grammar?.invalid_nesting_policy?.on_invalid_child
+    if (parentPolicy) {
+      const exception = parentPolicy.exceptions?.[childTag]
+      if (exception) {
+        diagCode = exception.diagnostic
+        action = exception.action
+      }
+      else {
+        diagCode = parentPolicy.diagnostic
+        action = parentPolicy.action
+      }
+    }
+    else {
+      const childPolicy = childDef?.grammar?.invalid_nesting_policy?.on_invalid_parent
+      if (childPolicy) {
+        diagCode = childPolicy.diagnostic
+        action = childPolicy.action
+      }
+    }
+
+    const rule = this.getDiagnostic(diagCode) ?? this.getDiagnostic('BX1023')!
+
+    let message = rule.message
+    if (rule.code === 'BX1023') {
+      message = `Tag <${childTag}> is not permitted inside <${parentTag}>.`
+    }
+
+    return {
+      code: rule.code,
+      rule,
+      action,
+      message,
+    }
   }
 
   getDirectiveAttributes(tagName: string): Record<string, BloggerDirectiveAttribute> | undefined {
@@ -367,8 +483,8 @@ export class SpecCatalog {
     }
   }
 
-  validateDirectiveNesting(parentTag: string, childTag: string): BloggerDiagnosticRule | null {
-    return validateDirectiveNesting(parentTag, childTag, this)
+  validateDirectiveNesting(parentTag: string, childTag: string): DirectiveNestingViolation | null {
+    return this.validateNesting(parentTag, childTag)
   }
 
   validateTemplateStructure(tokensOrXml: readonly BloggerDirectiveToken[] | string): BloggerStructureDiagnostic[] {
@@ -580,12 +696,12 @@ export function isSelfClosingDirective(tagName: string, store?: CatalogStore): b
   return getSpecCatalog(store).isSelfClosingDirective(tagName)
 }
 
-export function isValidChild(parentTagName: string, childTagName: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).isValidChild(parentTagName, childTagName)
+export function canNest(parentTagName: string, childTagName: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).canNest(parentTagName, childTagName)
 }
 
-export function isValidParent(childTagName: string, parentTagName: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).isValidParent(childTagName, parentTagName)
+export function validateNesting(parentTagName: string, childTagName: string, store?: CatalogStore): DirectiveNestingViolation | null {
+  return getSpecCatalog(store).validateNesting(parentTagName, childTagName)
 }
 
 export function getDirectiveAttributes(tagName: string, store?: CatalogStore): Record<string, BloggerDirectiveAttribute> | undefined {

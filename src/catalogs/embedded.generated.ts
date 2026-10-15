@@ -345,6 +345,48 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             ]
           }
         }
+      },
+      "grammar_groups": {
+        "@flow_instructions": [
+          "b:if",
+          "b:loop",
+          "b:with",
+          "b:switch",
+          "b:tag",
+          "b:attr",
+          "b:class",
+          "b:eval",
+          "b:include",
+          "b:message",
+          "b:comment",
+          "data:*"
+        ],
+        "@template_markup": [
+          "html:*",
+          "#text",
+          "CDATA"
+        ],
+        "@flow_content": [
+          "@flow_instructions",
+          "@template_markup"
+        ],
+        "@flow_containers": [
+          "b:includable",
+          "b:loop",
+          "b:with",
+          "b:if",
+          "b:switch",
+          "b:tag",
+          "b:comment",
+          "html:*"
+        ],
+        "@any_container": [
+          "@flow_containers",
+          "b:section",
+          "b:widget",
+          "body",
+          "head"
+        ]
       }
     },
     "directives": {
@@ -354,11 +396,24 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "description": "Container declaration for a theme section that can contain Blogger gadgets.",
         "grammar": {
           "valid_parents": [
-            "body"
+            "body",
+            "html:*"
           ],
           "valid_children": [
             "b:widget"
-          ]
+          ],
+          "invalid_nesting_policy": {
+            "on_invalid_child": {
+              "diagnostic": "BX1023",
+              "action": "strip",
+              "exceptions": {
+                "b:section": {
+                  "diagnostic": "BX1035",
+                  "action": "reject"
+                }
+              }
+            }
+          }
         },
         "attributes": {
           "id": {
@@ -463,7 +518,13 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "valid_children": [
             "b:includable",
             "b:widget-settings"
-          ]
+          ],
+          "invalid_nesting_policy": {
+            "on_invalid_parent": {
+              "diagnostic": "BX1034",
+              "action": "reject"
+            }
+          }
         },
         "attributes": {
           "id": {
@@ -569,8 +630,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "b:defaultmarkup"
           ],
           "valid_children": [
-            "Template markup",
-            "Blogger instruction tags"
+            "@flow_content"
           ]
         },
         "attributes": {
@@ -613,7 +673,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "self_closing": true,
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
           "valid_children": []
         },
@@ -828,11 +888,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "description": "Loop tag that iterates over an array and executes its child markup for each item.",
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
           "valid_children": [
-            "Template markup",
-            "Blogger instruction tags"
+            "@flow_content"
           ]
         },
         "attributes": {
@@ -883,11 +942,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "description": "Instruction tag that creates a variable alias from an explicit value, data value, or Blogger expression for use within child nodes.",
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
           "valid_children": [
-            "Template markup",
-            "Blogger instruction tags"
+            "@flow_content"
           ]
         },
         "attributes": {
@@ -928,11 +986,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "description": "Conditional control tag that executes its child markup when the specified condition evaluates to true.",
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
           "valid_children": [
-            "Template markup",
-            "Blogger instruction tags",
+            "@flow_content",
             "b:elseif",
             "b:else"
           ]
@@ -1056,13 +1113,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "description": "Switch instruction that evaluates a value and executes the corresponding case branch when a matching case value is found.",
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
           "valid_children": [
             "b:case",
             "b:default",
-            "Template markup",
-            "Blogger instruction tags"
+            "@flow_content"
           ]
         },
         "attributes": {
@@ -1175,11 +1231,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "description": "Dynamic XML instruction that generates an HTML tag in the rendered output.",
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
           "valid_children": [
-            "Template markup",
-            "Blogger instruction tags"
+            "@flow_content"
           ],
           "arbitrary_attributes": true
         },
@@ -1227,7 +1282,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "self_closing": true,
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
           "valid_children": []
         },
@@ -1287,7 +1342,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "self_closing": true,
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
           "valid_children": []
         },
@@ -1347,9 +1402,15 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "self_closing": true,
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
-          "valid_children": []
+          "valid_children": [],
+          "invalid_nesting_policy": {
+            "on_invalid_child": {
+              "diagnostic": "BX1013",
+              "action": "ignore"
+            }
+          }
         },
         "attributes": {
           "expr": {
@@ -1386,7 +1447,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "self_closing": true,
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
           "valid_children": []
         },
@@ -1427,7 +1488,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "description": "Tag that explicitly outputs a Blogger message data value. Dual closure mode: self-closing when unparameterized (<b:message name='...'/>) or a container when nesting b:param tags for parameter interpolation.",
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
           "valid_children": [
             "b:param"
@@ -1535,7 +1596,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "head"
           ],
           "valid_children": [
-            "CDATA"
+            "CDATA",
+            "Group",
+            "Variable"
           ],
           "cdata_content": [
             "Group",
@@ -1609,11 +1672,21 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "description": "Optional container used to group multiple skin variables under a single menu in the Blogger Theme Designer.",
         "grammar": {
           "valid_parents": [
-            "CDATA"
+            "b:skin"
           ],
           "valid_children": [
             "Variable"
-          ]
+          ],
+          "invalid_nesting_policy": {
+            "on_invalid_parent": {
+              "diagnostic": "BX1023",
+              "action": "reject"
+            },
+            "on_invalid_child": {
+              "diagnostic": "BX1023",
+              "action": "reject"
+            }
+          }
         },
         "attributes": {
           "description": {
@@ -1654,10 +1727,20 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "self_closing": true,
         "grammar": {
           "valid_parents": [
-            "CDATA",
-            "Group"
+            "Group",
+            "b:skin"
           ],
-          "valid_children": []
+          "valid_children": [],
+          "invalid_nesting_policy": {
+            "on_invalid_parent": {
+              "diagnostic": "BX1023",
+              "action": "reject"
+            },
+            "on_invalid_child": {
+              "diagnostic": "BX1023",
+              "action": "reject"
+            }
+          }
         },
         "attributes": {
           "name": {
@@ -1880,12 +1963,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "description": "Instruction tag that adds a comment to the Blogger template XML and can optionally render the resulting comment in the generated HTML.",
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container"
           ],
           "valid_children": [
-            "Template markup",
-            "Blogger expressions",
-            "Blogger instruction tags"
+            "@flow_content"
           ]
         },
         "attributes": {
@@ -1973,7 +2054,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "description": "XML character data section that prevents its contents from being parsed, preserving special characters and preventing Blogger tags and expressions from being interpreted.",
         "grammar": {
           "valid_parents": [
-            "Any XML/HTML template node"
+            "@any_container",
+            "b:skin",
+            "b:template-skin"
           ],
           "valid_children": [
             "#text"
@@ -11732,6 +11815,16 @@ export const embeddedSchemas: Record<string, any> = {
             },
             "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
           },
+          "grammar_groups": {
+            "type": "object",
+            "description": "Symbolic token groupings for template content models and directive hierarchy validation.",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
           "layout_versions": {
             "type": "object",
             "description": "Canonical Blogger layout versions specifications, activation markers, and heuristics.",
@@ -12010,6 +12103,79 @@ export const embeddedSchemas: Record<string, any> = {
             "items": {
               "type": "string"
             }
+          },
+          "invalid_nesting_policy": {
+            "type": "object",
+            "description": "Declarative runtime action and diagnostic code mapped when nesting constraints are violated.",
+            "properties": {
+              "on_invalid_parent": {
+                "type": "object",
+                "required": [
+                  "diagnostic",
+                  "action"
+                ],
+                "properties": {
+                  "diagnostic": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "reject",
+                      "strip",
+                      "ignore"
+                    ]
+                  }
+                },
+                "additionalProperties": false
+              },
+              "on_invalid_child": {
+                "type": "object",
+                "required": [
+                  "diagnostic",
+                  "action"
+                ],
+                "properties": {
+                  "diagnostic": {
+                    "type": "string"
+                  },
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "reject",
+                      "strip",
+                      "ignore"
+                    ]
+                  },
+                  "exceptions": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "required": [
+                        "diagnostic",
+                        "action"
+                      ],
+                      "properties": {
+                        "diagnostic": {
+                          "type": "string"
+                        },
+                        "action": {
+                          "type": "string",
+                          "enum": [
+                            "reject",
+                            "strip",
+                            "ignore"
+                          ]
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "additionalProperties": false
           }
         },
         "additionalProperties": false

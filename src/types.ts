@@ -68,6 +68,27 @@ export interface BloggerStructureDiagnostic {
   tagEnd?: number
 }
 
+export type DirectiveNestingAction = 'reject' | 'strip' | 'ignore'
+
+export interface DirectiveNestingPolicyAction {
+  diagnostic: string
+  action: DirectiveNestingAction
+}
+
+export interface DirectiveInvalidNestingPolicy {
+  on_invalid_parent?: DirectiveNestingPolicyAction
+  on_invalid_child?: DirectiveNestingPolicyAction & {
+    exceptions?: Record<string, DirectiveNestingPolicyAction>
+  }
+}
+
+export interface DirectiveNestingViolation {
+  code: string
+  rule: BloggerDiagnosticRule
+  action: DirectiveNestingAction
+  message: string
+}
+
 export interface VariableAttributesValidationResult {
   valid: boolean
   invalidAttributes: string[]
@@ -136,6 +157,7 @@ export interface BloggerDirectiveDefinition {
   grammar?: {
     valid_parents?: string[]
     valid_children?: string[]
+    invalid_nesting_policy?: DirectiveInvalidNestingPolicy
   }
   attributes?: Record<string, BloggerDirectiveAttribute>
   deprecated_attributes?: Record<string, any>

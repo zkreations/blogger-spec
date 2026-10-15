@@ -2,6 +2,7 @@ import type { BloggerFixture, BloggerFixturesManifest } from '../src/types.js'
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import {
+  canNest,
   clearCatalogCache,
   getAllCatalogs,
   getAllSchemas,
@@ -26,8 +27,6 @@ import {
   isGrammarOperator,
   isOperator,
   isSelfClosingDirective,
-  isValidChild,
-  isValidParent,
   MemoryCatalogStore,
   SpecCatalog,
   validateDirectiveAttributes,
@@ -382,11 +381,10 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       expect(isSelfClosingDirective('b:eval')).toBe(true)
       expect(isSelfClosingDirective('b:widget')).toBe(false)
 
-      expect(isValidChild('b:section', 'b:widget')).toBe(true)
-      expect(isValidChild('b:section', 'b:section')).toBe(false)
-
-      expect(isValidParent('b:widget', 'b:section')).toBe(true)
-      expect(isValidParent('b:widget', 'b:widget')).toBe(false)
+      expect(canNest('b:section', 'b:widget')).toBe(true)
+      expect(canNest('b:section', 'b:section')).toBe(false)
+      expect(canNest('b:widget', 'b:section')).toBe(false)
+      expect(canNest('body', 'b:widget')).toBe(false)
 
       const validAttrs = validateDirectiveAttributes('b:widget', ['id', 'type'])
       expect(validAttrs.valid).toBe(true)
@@ -526,9 +524,9 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       expect(spec.isOperator('+')).toBe(true)
       expect(spec.isOperator('invalid_op')).toBe(false)
       expect(spec.isDiagnosticCode('BX1001')).toBe(true)
-      expect(spec.isValidChild('b:section', 'b:widget')).toBe(true)
-      expect(spec.isValidChild('b:section', 'b:section')).toBe(false)
-      expect(spec.isValidParent('b:widget', 'b:section')).toBe(true)
+      expect(spec.canNest('b:section', 'b:widget')).toBe(true)
+      expect(spec.canNest('b:section', 'b:section')).toBe(false)
+      expect(spec.canNest('body', 'b:widget')).toBe(false)
 
       const validation = spec.validateDirectiveAttributes('b:widget', ['id', 'type'])
       expect(validation.valid).toBe(true)

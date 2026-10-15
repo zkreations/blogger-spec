@@ -60,31 +60,105 @@ describe('helpers & canonical structure validation suite', () => {
   })
 
   describe('directive nesting validation', () => {
-    it('detects nested section error (BX1035)', () => {
-      const rule = validateDirectiveNesting('b:section', 'b:section')
-      expect(rule).not.toBeNull()
-      expect(rule?.code).toBe('BX1035')
-      expect(rule?.name).toBe('NESTED_SECTION')
+    it('detects nested section error with reject action (BX1035)', () => {
+      const violation = validateDirectiveNesting('b:section', 'b:section')
+      expect(violation).not.toBeNull()
+      expect(violation?.code).toBe('BX1035')
+      expect(violation?.rule.name).toBe('NESTED_SECTION')
+      expect(violation?.action).toBe('reject')
     })
 
-    it('detects widget outside section error (BX1034)', () => {
-      const rule = validateDirectiveNesting('body', 'b:widget')
-      expect(rule).not.toBeNull()
-      expect(rule?.code).toBe('BX1034')
-      expect(rule?.name).toBe('WIDGET_OUTSIDE_SECTION')
+    it('detects widget outside section error with reject action (BX1034)', () => {
+      const violation = validateDirectiveNesting('body', 'b:widget')
+      expect(violation).not.toBeNull()
+      expect(violation?.code).toBe('BX1034')
+      expect(violation?.rule.name).toBe('WIDGET_OUTSIDE_SECTION')
+      expect(violation?.action).toBe('reject')
+    })
+
+    it('detects invalid child in b:section with strip action (BX1023)', () => {
+      const violation = validateDirectiveNesting('b:section', 'div')
+      expect(violation).not.toBeNull()
+      expect(violation?.code).toBe('BX1023')
+      expect(violation?.action).toBe('strip')
+    })
+
+    it('detects content inside b:eval with ignore action (BX1013)', () => {
+      const violation = validateDirectiveNesting('b:eval', 'div')
+      expect(violation).not.toBeNull()
+      expect(violation?.code).toBe('BX1013')
+      expect(violation?.action).toBe('ignore')
     })
 
     it('detects prohibited nesting for directives with restricted parents/children (BX1023)', () => {
-      const rule = validateDirectiveNesting('b:include', 'b:param')
-      expect(rule).not.toBeNull()
-      expect(rule?.code).toBe('BX1023')
-      expect(rule?.name).toBe('PROHIBITED_NESTING')
+      const v1 = validateDirectiveNesting('b:include', 'b:param')
+      expect(v1).not.toBeNull()
+      expect(v1?.code).toBe('BX1023')
+      expect(v1?.rule.name).toBe('PROHIBITED_NESTING')
+      expect(v1?.action).toBe('reject')
+
+      const v2 = validateDirectiveNesting('b:if', 'b:case')
+      expect(v2).not.toBeNull()
+      expect(v2?.code).toBe('BX1023')
+
+      const v3 = validateDirectiveNesting('b:loop', 'b:else')
+      expect(v3).not.toBeNull()
+      expect(v3?.code).toBe('BX1023')
     })
 
-    it('permits valid parent-child relationships', () => {
+    it('permits valid parent-child relationships including flow directives and HTML', () => {
       expect(validateDirectiveNesting('b:section', 'b:widget')).toBeNull()
+      expect(validateDirectiveNesting('body', 'b:section')).toBeNull()
+      expect(validateDirectiveNesting('div', 'b:section')).toBeNull()
+      expect(validateDirectiveNesting('header', 'b:section')).toBeNull()
+      expect(validateDirectiveNesting('head', 'b:section')?.code).toBe('BX1023')
       expect(validateDirectiveNesting('b:widget', 'b:includable')).toBeNull()
       expect(validateDirectiveNesting('b:defaultmarkup', 'b:includable')).toBeNull()
+      expect(validateDirectiveNesting('b:includable', 'b:if')).toBeNull()
+      expect(validateDirectiveNesting('b:includable', 'div')).toBeNull()
+      expect(validateDirectiveNesting('div', 'b:if')).toBeNull()
+      expect(validateDirectiveNesting('b:if', 'b:loop')).toBeNull()
+      expect(validateDirectiveNesting('b:loop', 'b:eval')).toBeNull()
+      expect(validateDirectiveNesting('b:loop', 'data:post.title')).toBeNull()
+      expect(validateDirectiveNesting('b:switch', 'b:case')).toBeNull()
+      expect(validateDirectiveNesting('b:if', 'b:else')).toBeNull()
+      expect(validateDirectiveNesting('b:message', 'b:param')).toBeNull()
+    })
+
+    it('validates strictly scoped styling directives (Group and Variable)', () => {
+      // Valid styling hierarchy in skin
+      expect(validateDirectiveNesting('b:skin', 'CDATA')).toBeNull()
+      expect(validateDirectiveNesting('b:skin', 'Group')).toBeNull()
+      expect(validateDirectiveNesting('b:skin', 'Variable')).toBeNull()
+      expect(validateDirectiveNesting('Group', 'Variable')).toBeNull()
+
+      // Exclusivity: Group and Variable prohibited outside b:skin
+      expect(validateDirectiveNesting('b:template-skin', 'Group')?.code).toBe('BX1023')
+      expect(validateDirectiveNesting('b:template-skin', 'Variable')?.code).toBe('BX1023')
+      expect(validateDirectiveNesting('CDATA', 'Group')?.code).toBe('BX1023')
+      expect(validateDirectiveNesting('CDATA', 'Variable')?.code).toBe('BX1023')
+
+      // Invalid styling nesting
+      const v1 = validateDirectiveNesting('Group', 'div')
+      expect(v1).not.toBeNull()
+      expect(v1?.code).toBe('BX1023')
+      expect(v1?.action).toBe('reject')
+
+      const v2 = validateDirectiveNesting('Group', 'Group')
+      expect(v2).not.toBeNull()
+      expect(v2?.code).toBe('BX1023')
+
+      const v3 = validateDirectiveNesting('b:includable', 'Variable')
+      expect(v3).not.toBeNull()
+      expect(v3?.code).toBe('BX1023')
+
+      const v4 = validateDirectiveNesting('div', 'Variable')
+      expect(v4).not.toBeNull()
+      expect(v4?.code).toBe('BX1023')
+
+      const v5 = validateDirectiveNesting('Variable', 'div')
+      expect(v5).not.toBeNull()
+      expect(v5?.code).toBe('BX1023')
     })
   })
 

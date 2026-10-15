@@ -91,6 +91,16 @@
           },
           "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
         },
+        "grammar_groups": {
+          "type": "object",
+          "description": "Symbolic token groupings for template content models and directive hierarchy validation.",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
         "layout_versions": {
           "type": "object",
           "description": "Canonical Blogger layout versions specifications, activation markers, and heuristics.",
@@ -369,6 +379,79 @@
           "items": {
             "type": "string"
           }
+        },
+        "invalid_nesting_policy": {
+          "type": "object",
+          "description": "Declarative runtime action and diagnostic code mapped when nesting constraints are violated.",
+          "properties": {
+            "on_invalid_parent": {
+              "type": "object",
+              "required": [
+                "diagnostic",
+                "action"
+              ],
+              "properties": {
+                "diagnostic": {
+                  "type": "string"
+                },
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "reject",
+                    "strip",
+                    "ignore"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            },
+            "on_invalid_child": {
+              "type": "object",
+              "required": [
+                "diagnostic",
+                "action"
+              ],
+              "properties": {
+                "diagnostic": {
+                  "type": "string"
+                },
+                "action": {
+                  "type": "string",
+                  "enum": [
+                    "reject",
+                    "strip",
+                    "ignore"
+                  ]
+                },
+                "exceptions": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "required": [
+                      "diagnostic",
+                      "action"
+                    ],
+                    "properties": {
+                      "diagnostic": {
+                        "type": "string"
+                      },
+                      "action": {
+                        "type": "string",
+                        "enum": [
+                          "reject",
+                          "strip",
+                          "ignore"
+                        ]
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

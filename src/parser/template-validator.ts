@@ -1,8 +1,8 @@
 import type { SpecCatalog } from '../catalogs/index.js'
 import type {
-  BloggerDiagnosticRule,
   BloggerDirectiveToken,
   BloggerStructureDiagnostic,
+  DirectiveNestingViolation,
 } from '../types.js'
 import { getSpecCatalog } from '../catalogs/index.js'
 import { scanDirectiveTokens } from './directive-scanner.js'
@@ -11,17 +11,8 @@ export function validateDirectiveNesting(
   parentTag: string,
   childTag: string,
   catalog: SpecCatalog = getSpecCatalog(),
-): BloggerDiagnosticRule | null {
-  if (parentTag === 'b:section' && childTag === 'b:section') {
-    return catalog.getDiagnostic('BX1035') ?? null
-  }
-  if (childTag === 'b:widget' && parentTag !== 'b:section') {
-    return catalog.getDiagnostic('BX1034') ?? null
-  }
-  if (!catalog.isValidChild(parentTag, childTag) || !catalog.isValidParent(childTag, parentTag)) {
-    return catalog.getDiagnostic('BX1023') ?? null
-  }
-  return null
+): DirectiveNestingViolation | null {
+  return catalog.validateNesting(parentTag, childTag)
 }
 
 export function validateTemplateStructure(
@@ -59,68 +50,56 @@ export function validateTemplateStructure(
     const isIncludable = token.tagName === 'b:includable'
 
     // 1. Nesting Checks
-    if (isSection) {
-      const inSection = tagStack.some(t => t.tagName === 'b:section')
-      if (inSection) {
-        const rule = catalog.getDiagnostic('BX1035')
-        if (rule) {
-          diagnostics.push({
-            code: rule.code,
-            rule,
-            message: rule.message,
-            severity: rule.severity,
-            tagName: token.tagName,
-            tagStart: token.tagStart,
-            tagEnd: token.tagEnd,
-          })
-        }
-      }
-    }
-
-    if (isWidget) {
-      const inSection = tagStack.some(t => t.tagName === 'b:section')
-      if (!inSection) {
-        const rule = catalog.getDiagnostic('BX1034')
-        if (rule) {
-          diagnostics.push({
-            code: rule.code,
-            rule,
-            message: rule.message,
-            severity: rule.severity,
-            tagName: token.tagName,
-            tagStart: token.tagStart,
-            tagEnd: token.tagEnd,
-          })
-        }
-      }
-    }
-
-    if (isIncludable) {
-      const validContainer = tagStack.some(t => t.tagName === 'b:widget' || t.tagName === 'b:defaultmarkup')
-      if (!validContainer) {
-        const rule = catalog.getDiagnostic('BX1023')
-        if (rule) {
-          diagnostics.push({
-            code: rule.code,
-            rule,
-            message: `<b:includable> must be placed inside <b:widget> or <b:defaultmarkup>.`,
-            severity: rule.severity,
-            tagName: token.tagName,
-            tagStart: token.tagStart,
-            tagEnd: token.tagEnd,
-          })
-        }
-      }
-    }
-
-    if (parentToken && !isSection && !isWidget && catalog.isDirective(parentToken.tagName) && catalog.isDirective(token.tagName)) {
-      const nestingRule = validateDirectiveNesting(parentToken.tagName, token.tagName, catalog)
-      if (nestingRule && nestingRule.code !== 'BX1034' && nestingRule.code !== 'BX1035') {
+    if (isSection && tagStack.some(t => t.tagName === 'b:section')) {
+      const rule = catalog.getDiagnostic('BX1035')
+      if (rule) {
         diagnostics.push({
-          code: nestingRule.code,
-          rule: nestingRule,
-          message: `Tag <${token.tagName}> is not permitted inside <${parentToken.tagName}>.`,
-          severity: nestingRule.severity,
+          code: rule.code,
+          rule,
+          message: rule.message,
+          severity: rule.severity,
+          tagName: token.tagName,
+          tagStart: token.tagStart,
+          tagEnd: token.tagEnd,
+        })
+      }
+    }
+    else if (isWidget && !tagStack.some(t => t.tagName === 'b:section')) {
+      const rule = catalog.getDiagnostic('BX1034')
+      if (rule) {
+        diagnostics.push({
+          code: rule.code,
+          rule,
+          message: rule.message,
+          severity: rule.severity,
+          tagName: token.tagName,
+          tagStart: token.tagStart,
+          tagEnd: token.tagEnd,
+        })
+      }
+    }
+    else if (isIncludable && !parentToken && !tagStack.some(t => t.tagName === 'b:widget' || t.tagName === 'b:defaultmarkup')) {
+      const rule = catalog.getDiagnostic('BX1023')
+      if (rule) {
+        diagnostics.push({
+          code: rule.code,
+          rule,
+          message: `<b:includable> must be placed inside <b:widget> or <b:defaultmarkup>.`,
+          severity: rule.severity,
+          tagName: token.tagName,
+          tagStart: token.tagStart,
+          tagEnd: token.tagEnd,
+        })
+      }
+    }
+    else if (parentToken) {
+      const violation = validateDirectiveNesting(parentToken.tagName, token.tagName, catalog)
+      if (violation) {
+        diagnostics.push({
+          code: violation.code,
+          rule: violation.rule,
+          message: violation.message,
+          severity: violation.rule.severity,
           tagName: token.tagName,
           tagStart: token.tagStart,
           tagEnd: token.tagEnd,
