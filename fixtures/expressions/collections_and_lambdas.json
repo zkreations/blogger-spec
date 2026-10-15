@@ -424,6 +424,82 @@
         "outcome": "value",
         "value": true
       }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/content-contains-array-functional",
+      "title": "Functional Syntax For Contains Content Operator on Array",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "contains([\"a\", \"b\", \"c\"], \"b\")",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/content-contains-array-missing",
+      "title": "Array Containment Check For Non-Existent Element Evaluates False",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "[\"a\", \"b\", \"c\"] contains \"z\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/membership-string-missing",
+      "title": "String Substring In Membership For Non-Existent Substring Evaluates False",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"missing\" in \"foobar\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
+    },
+    {
+      "id": "expressions/collections_and_lambdas/content-contains-string-missing",
+      "title": "String Contains Substring For Non-Existent Substring Evaluates False",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:contains"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"foobar\" contains \"missing\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      }
     }
   ]
 }
