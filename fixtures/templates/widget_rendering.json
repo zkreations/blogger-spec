@@ -255,6 +255,32 @@
         "html": "<div class=\"parent floating-class\" data-float=\"parent\"><span>One</span><span>Two</span></div>",
         "canonicalDom": true
       }
+    },
+    {
+      "id": "rendering/widget_rendering/widget-settings-and-setting-directive",
+      "title": "Widget Settings Container And Setting Elements",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:widget",
+        "tag:b:widget-settings",
+        "tag:b:widget-setting",
+        "tag:b:includable"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Followers1' title='Followers' type='Followers' version='2'><b:widget-settings><b:widget-setting name='borderColorTransparent'>true</b:widget-setting><b:widget-setting name='useTemplateDefaultStyles'>true</b:widget-setting></b:widget-settings><b:includable id='main'><h2><data:title/></h2></b:includable></b:widget>",
+        "mode": "fragment",
+        "context": {
+          "title": "Followers"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"widget Followers\" data-version=\"2\" id=\"Followers1\"><h2>Followers</h2></div>",
+        "canonicalDom": true
+      }
     }
   ]
 }
