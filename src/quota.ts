@@ -1,12 +1,15 @@
 import type { BloggerExpressionNode } from './ast.js'
+import type { SpecCatalog } from './catalogs/index.js'
 import type {
   BloggerExpressionBudgetResult,
   BloggerExpressionBudgetStatus,
   BloggerExpressionToken,
   BloggerExpressionTokenInfo,
 } from './types.js'
+import { getSpecCatalog } from './catalogs/index.js'
 import {
   flattenMultilineExpression,
+  Lexer,
   unescapeXmlEntities,
 } from './parser/lexer.js'
 
@@ -14,268 +17,327 @@ export const COMPILER_QUOTA_LIMIT = 40
 export const COMPILER_QUOTA_WARNING = 36
 export const COMPILER_NESTING_LIMIT = 50
 
-const RELATIONAL_KEYWORDS = new Set(['eq', 'neq', 'lt', 'gt', 'lte', 'gte'])
-const LOGICAL_KEYWORDS = new Set(['and', 'or', 'not'])
-const MEMBERSHIP_KEYWORDS = new Set(['in', 'contains'])
-const LAMBDA_KEYWORDS = new Set(['filter', 'where', 'map', 'select', 'first', 'count', 'any', 'all', 'none'])
-const COLLECTION_KEYWORDS = new Set(['take', 'limit', 'skip', 'offset', 'to'])
-const NATIVE_FUNCTIONS = new Set([
-  'resizeimage',
-  'snippet',
-  'sourceset',
-  'format',
-  'params',
-  'path',
-  'appendparams',
-  'fragment',
-])
-const BOOLEAN_KEYWORDS = new Set(['true', 'false', 'null'])
-
 export {
   flattenMultilineExpression,
   unescapeXmlEntities,
 }
 
-export function tokenizeExpression(expr: string): BloggerExpressionToken[] {
+export function tokenizeExpression(
+  expr: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): BloggerExpressionToken[] {
   const tokens: BloggerExpressionToken[] = []
   const flattened = flattenMultilineExpression(expr)
   const s = unescapeXmlEntities(flattened)
+  if (!s.trim()) {
+    return []
+  }
 
-  const length = s.length
-  let pos = 0
+  const rawTokens = new Lexer(s).tokenize()
   const ternaryStack = [0]
   const inObjectStack = [false]
 
-  while (pos < length) {
-    const ch = s[pos]!
+  let i = 0
+  while (i < rawTokens.length) {
+    const token = rawTokens[i]!
+    if (token.type === 'EOF') {
+      break
+    }
 
-    if (/\s/.test(ch)) {
-      pos++
+    const lastToken = tokens[tokens.length - 1]
+    const prevToken = tokens.length > 1 ? tokens[tokens.length - 2] : undefined
+
+    if (token.type === 'STRING') {
+      tokens.push({
+        value: token.rawValue ?? token.value,
+        tokenType: 'STRING_LITERAL',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
       continue
     }
 
-    if (ch === '"' || ch === '\'') {
-      const quoteChar = ch
-      const start = pos
-      pos++
-      while (pos < length && s[pos] !== quoteChar) {
-        if (s[pos] === '\\' && pos + 1 < length) {
-          pos += 2
-        }
-        else {
-          pos++
-        }
-      }
-      if (pos < length) {
-        pos++
-      }
-      const literal = s.slice(start, pos)
-      tokens.push({ value: literal, tokenType: 'STRING_LITERAL', tokensConsumed: 1, pos: start })
+    if (token.type === 'NUMBER') {
+      tokens.push({
+        value: token.value,
+        tokenType: 'NUMBER_LITERAL',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
       continue
     }
 
-    const twoChar = s.slice(pos, pos + 2)
-    if (['==', '!=', '<=', '>=', '?:', '=>', '&&', '||'].includes(twoChar)) {
-      let tType: string
-      if (twoChar === '?:') {
-        tType = 'OPERATOR_ELVIS'
+    if (token.type === 'MINUS') {
+      const nextToken = rawTokens[i + 1]
+      const isUnaryMinus = (tokens.length === 0
+        || tokens[tokens.length - 1]!.tokenType.startsWith('OPERATOR_')
+        || [
+          'GROUPING_PAREN_OPEN',
+          'CONTAINER_ARRAY',
+          'CONTAINER_OBJECT',
+          'DELIMITER_COMMA',
+          'DELIMITER_COLON',
+        ].includes(tokens[tokens.length - 1]!.tokenType)
+      ) && nextToken?.type === 'NUMBER' && nextToken.start.offset === token.end.offset
+
+      if (isUnaryMinus) {
+        tokens.push({
+          value: `-${nextToken.value}`,
+          tokenType: 'NUMBER_LITERAL',
+          tokensConsumed: 1,
+          pos: token.start.offset,
+        })
+        i += 2
+        continue
       }
-      else if (twoChar === '=>') {
-        tType = 'OPERATOR_LAMBDA'
-      }
-      else if (twoChar === '&&' || twoChar === '||') {
-        tType = 'OPERATOR_LOGICAL_JS'
-      }
-      else {
-        tType = 'OPERATOR_RELATIONAL'
-      }
-      tokens.push({ value: twoChar, tokenType: tType, tokensConsumed: 1, pos })
-      pos += 2
+      tokens.push({
+        value: '-',
+        tokenType: 'OPERATOR_ARITHMETIC',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
       continue
     }
 
-    if (ch === '{') {
-      tokens.push({ value: ch, tokenType: 'CONTAINER_OBJECT', tokensConsumed: 1, pos })
+    if (token.type === 'PLUS' || token.type === 'STAR' || token.type === 'SLASH' || token.type === 'PERCENT') {
+      tokens.push({
+        value: token.value,
+        tokenType: 'OPERATOR_ARITHMETIC',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
+      continue
+    }
+
+    if (token.type === 'EQ' || token.type === 'NEQ' || token.type === 'LT' || token.type === 'GT' || token.type === 'LTE' || token.type === 'GTE') {
+      tokens.push({
+        value: token.value,
+        tokenType: 'OPERATOR_RELATIONAL',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
+      continue
+    }
+
+    if (token.type === 'ELVIS') {
+      tokens.push({
+        value: '?:',
+        tokenType: 'OPERATOR_ELVIS',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
+      continue
+    }
+
+    if (token.type === 'ARROW') {
+      tokens.push({
+        value: '=>',
+        tokenType: 'OPERATOR_LAMBDA',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
+      continue
+    }
+
+    if (token.type === 'AND' || token.type === 'OR') {
+      tokens.push({
+        value: token.value,
+        tokenType: 'OPERATOR_LOGICAL_JS',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
+      continue
+    }
+
+    if (token.type === 'BANG') {
+      tokens.push({
+        value: '!',
+        tokenType: 'OPERATOR_LOGICAL',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
+      continue
+    }
+
+    if (token.type === 'LBRACE') {
+      tokens.push({
+        value: '{',
+        tokenType: 'CONTAINER_OBJECT',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
       inObjectStack.push(true)
-      pos++
+      i++
       continue
     }
 
-    if (ch === '}') {
-      tokens.push({ value: ch, tokenType: 'CONTAINER_OBJECT_CLOSE', tokensConsumed: 0, pos })
+    if (token.type === 'RBRACE') {
+      tokens.push({
+        value: '}',
+        tokenType: 'CONTAINER_OBJECT_CLOSE',
+        tokensConsumed: 0,
+        pos: token.start.offset,
+      })
       if (inObjectStack.length > 1) {
         inObjectStack.pop()
       }
-      pos++
+      i++
       continue
     }
 
-    if (ch === '[') {
-      tokens.push({ value: ch, tokenType: 'CONTAINER_ARRAY', tokensConsumed: 1, pos })
-      pos++
+    if (token.type === 'LBRACKET') {
+      tokens.push({
+        value: '[',
+        tokenType: 'CONTAINER_ARRAY',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
       continue
     }
 
-    if (ch === ']') {
-      tokens.push({ value: ch, tokenType: 'CONTAINER_ARRAY_CLOSE', tokensConsumed: 0, pos })
-      pos++
+    if (token.type === 'RBRACKET') {
+      tokens.push({
+        value: ']',
+        tokenType: 'CONTAINER_ARRAY_CLOSE',
+        tokensConsumed: 0,
+        pos: token.start.offset,
+      })
+      i++
       continue
     }
 
-    if (ch === '(' || ch === ')') {
-      if (ch === '(') {
-        ternaryStack.push(0)
-        const lastToken = tokens[tokens.length - 1]
-        const prevToken = tokens.length > 1 ? tokens[tokens.length - 2] : undefined
-
-        const isNonFunctionalPrefix
-          = lastToken !== undefined
-            && (lastToken.value === '!' || lastToken.value.toLowerCase() === 'not')
-
-        const isPrefixContext
-          = tokens.length === 1
-            || (prevToken !== undefined
-              && (prevToken.tokenType === 'DELIMITER_COMMA'
-                || prevToken.tokenType === 'GROUPING_PAREN_OPEN'
-                || prevToken.tokenType === 'CONTAINER_ARRAY'
-                || prevToken.tokenType === 'DELIMITER_COLON'
-                || prevToken.tokenType.startsWith('OPERATOR_')))
-
-        const isFunctionalCall
-          = tokens.length > 0
-            && !isNonFunctionalPrefix
-            && (lastToken!.tokenType === 'NATIVE_FUNCTION'
-              || lastToken!.tokenType === 'OPERATOR_LAMBDA'
-              || LAMBDA_KEYWORDS.has(lastToken!.value.toLowerCase())
-              || (lastToken!.tokenType.startsWith('OPERATOR_') && isPrefixContext))
-        const cost = isFunctionalCall ? 0 : 1
-        tokens.push({ value: ch, tokenType: 'GROUPING_PAREN_OPEN', tokensConsumed: cost, pos })
-      }
-      else {
-        if (ternaryStack.length > 1) {
-          ternaryStack.pop()
-        }
-        tokens.push({ value: ch, tokenType: 'GROUPING_PAREN_CLOSE', tokensConsumed: 0, pos })
-      }
-      pos++
+    if (token.type === 'COMMA') {
+      tokens.push({
+        value: ',',
+        tokenType: 'DELIMITER_COMMA',
+        tokensConsumed: 0,
+        pos: token.start.offset,
+      })
+      i++
       continue
     }
 
-    if (ch === ',') {
-      tokens.push({ value: ch, tokenType: 'DELIMITER_COMMA', tokensConsumed: 0, pos })
-      pos++
-      continue
-    }
-
-    if (ch === '?') {
+    if (token.type === 'QUESTION') {
       ternaryStack[ternaryStack.length - 1]! += 1
-      tokens.push({ value: ch, tokenType: 'OPERATOR_TERNARY_SELECT', tokensConsumed: 1, pos })
-      pos++
+      tokens.push({
+        value: '?',
+        tokenType: 'OPERATOR_TERNARY_SELECT',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
       continue
     }
 
-    if (ch === ':') {
+    if (token.type === 'COLON') {
       if (ternaryStack[ternaryStack.length - 1]! > 0) {
         ternaryStack[ternaryStack.length - 1]! -= 1
-        tokens.push({ value: ch, tokenType: 'OPERATOR_TERNARY_BRANCH', tokensConsumed: 1, pos })
+        tokens.push({
+          value: ':',
+          tokenType: 'OPERATOR_TERNARY_BRANCH',
+          tokensConsumed: 1,
+          pos: token.start.offset,
+        })
       }
       else {
-        tokens.push({ value: ch, tokenType: 'DELIMITER_COLON', tokensConsumed: 0, pos })
+        tokens.push({
+          value: ':',
+          tokenType: 'DELIMITER_COLON',
+          tokensConsumed: 0,
+          pos: token.start.offset,
+        })
       }
-      pos++
+      i++
       continue
     }
 
-    const isUnaryMinus
-      = ch === '-'
-        && (tokens.length === 0
-          || tokens[tokens.length - 1]!.tokenType.startsWith('OPERATOR_')
-          || [
-            'GROUPING_PAREN_OPEN',
-            'CONTAINER_ARRAY',
-            'CONTAINER_OBJECT',
-            'DELIMITER_COMMA',
-            'DELIMITER_COLON',
-          ].includes(tokens[tokens.length - 1]!.tokenType))
-          && pos + 1 < length
-          && /\d/.test(s[pos + 1]!)
+    if (token.type === 'LPAREN') {
+      ternaryStack.push(0)
+      const isNonFunctionalPrefix
+        = lastToken !== undefined
+          && (lastToken.value === '!' || lastToken.value.toLowerCase() === 'not')
 
-    if (isUnaryMinus) {
-      const numMatch = s.slice(pos).match(/^-\d+(?:\.\d+)?/)
-      if (numMatch) {
-        const val = numMatch[0]
-        tokens.push({ value: val, tokenType: 'NUMBER_LITERAL', tokensConsumed: 1, pos })
-        pos += val.length
-        continue
-      }
-    }
+      const isPrefixContext
+        = tokens.length === 1
+          || (prevToken !== undefined
+            && (prevToken.tokenType === 'DELIMITER_COMMA'
+              || prevToken.tokenType === 'GROUPING_PAREN_OPEN'
+              || prevToken.tokenType === 'CONTAINER_ARRAY'
+              || prevToken.tokenType === 'DELIMITER_COLON'
+              || prevToken.tokenType.startsWith('OPERATOR_')))
 
-    if (['+', '-', '*', '/', '%', '<', '>', '!'].includes(ch)) {
-      let tType: string
-      if (ch === '<' || ch === '>') {
-        tType = 'OPERATOR_RELATIONAL'
-      }
-      else if (ch === '!') {
-        tType = 'OPERATOR_LOGICAL'
-      }
-      else {
-        tType = 'OPERATOR_ARITHMETIC'
-      }
-      tokens.push({ value: ch, tokenType: tType, tokensConsumed: 1, pos })
-      pos++
+      const lastWord = lastToken?.value.toLowerCase()
+      const lastOp = lastWord ? catalog.getOperator(lastWord) : undefined
+      const isFunctionalCall
+        = tokens.length > 0
+          && !isNonFunctionalPrefix
+          && (lastToken!.tokenType === 'NATIVE_FUNCTION'
+            || lastToken!.tokenType === 'OPERATOR_LAMBDA'
+            || lastOp?.family === 'lambda'
+            || (lastToken!.tokenType.startsWith('OPERATOR_') && isPrefixContext))
+
+      const cost = isFunctionalCall ? 0 : 1
+      tokens.push({
+        value: '(',
+        tokenType: 'GROUPING_PAREN_OPEN',
+        tokensConsumed: cost,
+        pos: token.start.offset,
+      })
+      i++
       continue
     }
 
-    if (s.slice(pos).startsWith('data:')) {
-      const start = pos
-      pos += 5
-      const m = s.slice(pos).match(/^\w*/)
-      if (m) {
-        pos += m[0].length
+    if (token.type === 'RPAREN') {
+      if (ternaryStack.length > 1) {
+        ternaryStack.pop()
+      }
+      tokens.push({
+        value: ')',
+        tokenType: 'GROUPING_PAREN_CLOSE',
+        tokensConsumed: 0,
+        pos: token.start.offset,
+      })
+      i++
+      continue
+    }
+
+    if (token.type === 'DATA_PREFIX') {
+      const startOffset = token.start.offset
+      let lastConsumed = token
+      i++ // skip 'data:'
+
+      if (rawTokens[i]?.type === 'IDENTIFIER') {
+        lastConsumed = rawTokens[i]!
+        i++
       }
 
-      while (pos < length) {
-        if (s[pos] === '.') {
-          const mProp = s.slice(pos).match(/^\.[\w-]+/)
-          if (mProp) {
-            pos += mProp[0].length
-          }
-          else {
-            break
-          }
+      while (i < rawTokens.length) {
+        if (rawTokens[i]?.type === 'DOT' && rawTokens[i + 1]?.type === 'IDENTIFIER') {
+          lastConsumed = rawTokens[i + 1]!
+          i += 2
         }
-        else if (s[pos] === '[') {
-          const bracketStart = pos
-          pos += 1
-          let bracketDepth = 1
-          let inQuote: string | null = null
-          while (pos < length && bracketDepth > 0) {
-            const c = s[pos]!
-            if (inQuote) {
-              if (c === '\\') {
-                pos += 2
-                continue
-              }
-              else if (c === inQuote) {
-                inQuote = null
-              }
+        else if (rawTokens[i]?.type === 'LBRACKET') {
+          let bDepth = 1
+          i++
+          while (i < rawTokens.length && bDepth > 0) {
+            if (rawTokens[i]!.type === 'LBRACKET') {
+              bDepth++
             }
-            else {
-              if (c === '"' || c === '\'') {
-                inQuote = c
-              }
-              else if (c === '[') {
-                bracketDepth++
-              }
-              else if (c === ']') {
-                bracketDepth--
-              }
+            else if (rawTokens[i]!.type === 'RBRACKET') {
+              bDepth--
             }
-            pos++
-          }
-          if (bracketDepth !== 0) {
-            pos = bracketStart
-            break
+            lastConsumed = rawTokens[i]!
+            i++
           }
         }
         else {
@@ -283,80 +345,132 @@ export function tokenizeExpression(expr: string): BloggerExpressionToken[] {
         }
       }
 
-      const val = s.slice(start, pos)
-      tokens.push({ value: val, tokenType: 'DATA_PATH', tokensConsumed: 1, pos: start })
+      const val = s.slice(startOffset, lastConsumed.end.offset)
+      tokens.push({
+        value: val,
+        tokenType: 'DATA_PATH',
+        tokensConsumed: 1,
+        pos: startOffset,
+      })
       continue
     }
 
-    const idMatch = s.slice(pos).match(/^[a-z_][\w-]*/i)
-    if (idMatch) {
-      const word = idMatch[0]
-      const lowerWord = word.toLowerCase()
-      const start = pos
-      pos += word.length
+    if (token.type === 'DOT') {
+      const nextToken = rawTokens[i + 1]
+      if (nextToken?.type === 'IDENTIFIER' && nextToken.start.offset === token.end.offset) {
+        tokens.push({
+          value: `.${nextToken.value}`,
+          tokenType: 'IDENTIFIER',
+          tokensConsumed: 1,
+          pos: token.start.offset,
+        })
+        i += 2
+        continue
+      }
+      tokens.push({
+        value: '.',
+        tokenType: 'IDENTIFIER',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
+      continue
+    }
 
-      const following = s.slice(pos).trimStart()
-      const lastToken = tokens[tokens.length - 1]
+    if (token.type === 'BOOLEAN' || token.type === 'NULL') {
+      tokens.push({
+        value: token.value,
+        tokenType: 'BOOLEAN_LITERAL',
+        tokensConsumed: 1,
+        pos: token.start.offset,
+      })
+      i++
+      continue
+    }
 
+    if (token.type === 'IDENTIFIER') {
+      const nextToken = rawTokens[i + 1]
       const isObjectKey
         = inObjectStack[inObjectStack.length - 1]
-          && following.startsWith(':')
+          && nextToken?.type === 'COLON'
           && ternaryStack[ternaryStack.length - 1] === 0
           && (!lastToken
             || lastToken.tokenType === 'CONTAINER_OBJECT'
             || lastToken.tokenType === 'DELIMITER_COMMA')
 
       if (isObjectKey) {
-        tokens.push({ value: word, tokenType: 'OBJECT_KEY', tokensConsumed: 0, pos: start })
-      }
-      else if (following.startsWith('(') && NATIVE_FUNCTIONS.has(lowerWord)) {
-        tokens.push({ value: word, tokenType: 'NATIVE_FUNCTION', tokensConsumed: 1, pos: start })
-      }
-      else if (RELATIONAL_KEYWORDS.has(lowerWord)) {
-        tokens.push({ value: word, tokenType: 'OPERATOR_RELATIONAL', tokensConsumed: 1, pos: start })
-      }
-      else if (LOGICAL_KEYWORDS.has(lowerWord)) {
-        tokens.push({ value: word, tokenType: 'OPERATOR_LOGICAL', tokensConsumed: 1, pos: start })
-      }
-      else if (MEMBERSHIP_KEYWORDS.has(lowerWord)) {
-        tokens.push({ value: word, tokenType: 'OPERATOR_MEMBERSHIP', tokensConsumed: 1, pos: start })
-      }
-      else if (LAMBDA_KEYWORDS.has(lowerWord)) {
-        tokens.push({ value: word, tokenType: 'OPERATOR_LAMBDA', tokensConsumed: 1, pos: start })
-      }
-      else if (COLLECTION_KEYWORDS.has(lowerWord)) {
-        tokens.push({ value: word, tokenType: 'OPERATOR_COLLECTION', tokensConsumed: 1, pos: start })
-      }
-      else if (BOOLEAN_KEYWORDS.has(lowerWord)) {
-        tokens.push({ value: word, tokenType: 'BOOLEAN_LITERAL', tokensConsumed: 1, pos: start })
-      }
-      else {
-        tokens.push({ value: word, tokenType: 'IDENTIFIER', tokensConsumed: 1, pos: start })
-      }
-      continue
-    }
-
-    const numMatch = s.slice(pos).match(/^-?\d+(?:\.\d+)?/)
-    if (numMatch) {
-      const val = numMatch[0]
-      tokens.push({ value: val, tokenType: 'NUMBER_LITERAL', tokensConsumed: 1, pos })
-      pos += val.length
-      continue
-    }
-
-    if (ch === '.') {
-      const dotMatch = s.slice(pos).match(/^\.[\w-]+/)
-      if (dotMatch) {
-        const val = dotMatch[0]
-        tokens.push({ value: val, tokenType: 'PROPERTY_ACCESS', tokensConsumed: 1, pos })
-        pos += val.length
+        tokens.push({
+          value: token.value,
+          tokenType: 'OBJECT_KEY',
+          tokensConsumed: 0,
+          pos: token.start.offset,
+        })
+        i++
         continue
       }
-      pos++
+
+      const opDef = catalog.getOperator(token.value)
+      if (nextToken?.type === 'LPAREN' && opDef?.syntax?.supports_functional && ['url', 'image', 'snippet', 'date', 'transform', 'content'].includes(opDef.family)) {
+        tokens.push({
+          value: token.value,
+          tokenType: 'NATIVE_FUNCTION',
+          tokensConsumed: 1,
+          pos: token.start.offset,
+        })
+      }
+      else if (opDef?.family === 'comparison') {
+        tokens.push({
+          value: token.value,
+          tokenType: 'OPERATOR_RELATIONAL',
+          tokensConsumed: 1,
+          pos: token.start.offset,
+        })
+      }
+      else if (opDef?.family === 'logical') {
+        tokens.push({
+          value: token.value,
+          tokenType: 'OPERATOR_LOGICAL',
+          tokensConsumed: 1,
+          pos: token.start.offset,
+        })
+      }
+      else if (opDef?.family === 'membership' || opDef?.family === 'content') {
+        tokens.push({
+          value: token.value,
+          tokenType: 'OPERATOR_MEMBERSHIP',
+          tokensConsumed: 1,
+          pos: token.start.offset,
+        })
+      }
+      else if (opDef?.family === 'lambda') {
+        tokens.push({
+          value: token.value,
+          tokenType: 'OPERATOR_LAMBDA',
+          tokensConsumed: 1,
+          pos: token.start.offset,
+        })
+      }
+      else if (opDef?.family === 'collection') {
+        tokens.push({
+          value: token.value,
+          tokenType: 'OPERATOR_COLLECTION',
+          tokensConsumed: 1,
+          pos: token.start.offset,
+        })
+      }
+      else {
+        tokens.push({
+          value: token.value,
+          tokenType: 'IDENTIFIER',
+          tokensConsumed: 1,
+          pos: token.start.offset,
+        })
+      }
+      i++
       continue
     }
 
-    pos++
+    i++
   }
 
   return tokens
@@ -364,13 +478,16 @@ export function tokenizeExpression(expr: string): BloggerExpressionToken[] {
 
 export const tokenizeExpressionTokens = tokenizeExpression
 
-export function countExpressionTokens(expr: string | BloggerExpressionNode): number {
+export function countExpressionTokens(
+  expr: string | BloggerExpressionNode,
+  catalog: SpecCatalog = getSpecCatalog(),
+): number {
   if (typeof expr === 'string') {
     const trimmed = expr.trim()
     if (!trimmed) {
       return 0
     }
-    const tokens = tokenizeExpression(trimmed)
+    const tokens = tokenizeExpression(trimmed, catalog)
     return tokens.reduce((acc, t) => acc + t.tokensConsumed, 0)
   }
 
@@ -382,34 +499,34 @@ export function countExpressionTokens(expr: string | BloggerExpressionNode): num
       case 'DataPath':
         return 1
       case 'UnaryExpression':
-        return 1 + countExpressionTokens(node.argument)
+        return 1 + countExpressionTokens(node.argument, catalog)
       case 'BinaryExpression':
       case 'LogicalExpression':
-        return countExpressionTokens(node.left) + countExpressionTokens(node.right) + 1
+        return countExpressionTokens(node.left, catalog) + countExpressionTokens(node.right, catalog) + 1
       case 'ConditionalExpression':
         if (node.isElvis) {
-          return countExpressionTokens(node.test) + countExpressionTokens(node.consequent) + 1
+          return countExpressionTokens(node.test, catalog) + countExpressionTokens(node.consequent, catalog) + 1
         }
         return (
-          countExpressionTokens(node.test)
-          + countExpressionTokens(node.consequent)
-          + (node.alternate ? countExpressionTokens(node.alternate) : 0)
+          countExpressionTokens(node.test, catalog)
+          + countExpressionTokens(node.consequent, catalog)
+          + (node.alternate ? countExpressionTokens(node.alternate, catalog) : 0)
           + 2
         )
       case 'CallExpression':
-        return 1 + node.arguments.reduce((acc, arg) => acc + countExpressionTokens(arg), 0)
+        return 1 + node.arguments.reduce((acc, arg) => acc + countExpressionTokens(arg, catalog), 0)
       case 'LambdaExpression':
         return (
-          countExpressionTokens(node.callee)
+          countExpressionTokens(node.callee, catalog)
           + 3 // lambda keyword + parameter + '=>'
-          + countExpressionTokens(node.body)
+          + countExpressionTokens(node.body, catalog)
         )
       case 'ObjectExpression':
-        return 1 + node.properties.reduce((acc, prop) => acc + countExpressionTokens(prop.value), 0)
+        return 1 + node.properties.reduce((acc, prop) => acc + countExpressionTokens(prop.value, catalog), 0)
       case 'ArrayExpression':
-        return 1 + node.elements.reduce((acc, elem) => acc + countExpressionTokens(elem), 0)
+        return 1 + node.elements.reduce((acc, elem) => acc + countExpressionTokens(elem, catalog), 0)
       case 'MemberExpression':
-        return countExpressionTokens(node.object) + 1
+        return countExpressionTokens(node.object, catalog) + 1
       default:
         return 1
     }
@@ -418,9 +535,12 @@ export function countExpressionTokens(expr: string | BloggerExpressionNode): num
   return 0
 }
 
-export function evaluateExpressionBudget(expr: string): BloggerExpressionBudgetResult {
+export function evaluateExpressionBudget(
+  expr: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): BloggerExpressionBudgetResult {
   const flatExpr = flattenMultilineExpression(expr)
-  const rawTokens = tokenizeExpression(flatExpr)
+  const rawTokens = tokenizeExpression(flatExpr, catalog)
   const tokenStream: BloggerExpressionTokenInfo[] = rawTokens.map(t => ({
     value: t.value,
     tokenType: t.tokenType,

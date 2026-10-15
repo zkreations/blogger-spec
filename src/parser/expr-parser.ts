@@ -57,59 +57,6 @@ const LAMBDA_KEYWORDS = new Set([
   'first',
 ])
 
-const HIERARCHY_OPERATOR_LEVELS: Record<string, number> = {
-  '*': 2,
-  '/': 2,
-  '%': 2,
-  '+': 3,
-  '-': 3,
-  'path': 3,
-  'params': 3,
-  'appendparams': 3,
-  'fragment': 3,
-  'format': 3,
-  'resizeimage': 3,
-  'sourceset': 3,
-  'snippet': 3,
-  '==': 4,
-  '!=': 4,
-  '<': 4,
-  '>': 4,
-  '<=': 4,
-  '>=': 4,
-  'eq': 4,
-  'neq': 4,
-  'lt': 4,
-  'gt': 4,
-  'lte': 4,
-  'gte': 4,
-  'take': 4,
-  'skip': 4,
-  'limit': 4,
-  'offset': 4,
-  'to': 4,
-  'in': 5,
-  'contains': 5,
-  '!': 6,
-  'not': 6,
-  '&&': 7,
-  'and': 7,
-  '||': 8,
-  'or': 8,
-  '?:': 2,
-  '?': 9,
-  '? :': 9,
-  'where': 10,
-  'map': 10,
-  'select': 10,
-  'filter': 10,
-  'any': 10,
-  'all': 10,
-  'none': 10,
-  'count': 10,
-  'first': 10,
-}
-
 function toSourcePosition(pos: TokenPosition): BloggerSourcePosition {
   return {
     line: pos.line,
@@ -717,7 +664,7 @@ export class ExpressionParser {
         return { name: 'or', bindingPower: LEVEL_TO_BINDING_POWER[8]!, catalogLevel: 8, isLogical: true }
       }
 
-      const precLevel = getOperatorPrecedence(token.value) ?? getOperatorPrecedence(lower) ?? HIERARCHY_OPERATOR_LEVELS[lower]
+      const precLevel = getOperatorPrecedence(token.value) ?? getOperatorPrecedence(lower)
       if (precLevel !== undefined && precLevel in LEVEL_TO_BINDING_POWER) {
         return {
           name: token.value,

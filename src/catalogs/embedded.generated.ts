@@ -323,7 +323,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "version": 2,
             "name": "Layouts v2 (Transition)",
             "description": "Intermediate layout format introduced with responsive themes, adding mobile attributes and basic widget customization.",
-            "structural_markers": [],
+            "structural_markers": [
+              "b:template-skin",
+              "mobile="
+            ],
             "prohibited_markers": [
               "b:defaultmarkups"
             ]

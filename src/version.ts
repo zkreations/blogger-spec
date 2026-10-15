@@ -15,22 +15,59 @@ export function getLayoutVersionsSpec(): BloggerLayoutVersionsCatalog | undefine
   return getDirectives().domain_metadata?.layout_versions
 }
 
+function testStructuralMarker(marker: string, xml: string): boolean {
+  if (marker === 'b:section tag=') {
+    return /<b:section\s[^>]*\btag\s*=/i.test(xml)
+  }
+  if (marker.startsWith('b:')) {
+    const escaped = marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    return new RegExp(`<${escaped}\\b`, 'i').test(xml)
+  }
+  if (marker.endsWith('=')) {
+    const attrName = marker.slice(0, -1).trim()
+    const escaped = attrName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    return new RegExp(`\\b${escaped}\\s*=`, 'i').test(xml)
+  }
+  const escaped = marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return new RegExp(`(?:<b:section\\s[^>]*\\b${escaped}\\s*=|\\b${escaped}\\s*=)`, 'i').test(xml)
+}
+
+function collectMarkersForVersion(
+  markers: readonly string[] | undefined,
+  sanitizedXml: string,
+): string[] {
+  if (!markers || markers.length === 0) {
+    return []
+  }
+  const detected: string[] = []
+  for (const marker of markers) {
+    if (testStructuralMarker(marker, sanitizedXml)) {
+      detected.push(marker)
+    }
+  }
+  return detected
+}
+
 /**
  * Detects the Blogger template layout version (v1, v2, v3) from raw XML.
  *
  * Evaluation order:
- * 1. Explicit declaration attributes: `b:layoutsVersion` or `b:version` on <html> or root elements.
- * 2. Inferred Layouts v3 via modern structural directives: `<b:defaultmarkups>`, `<b:template-script>`, `<b:with>`, `<b:section tag=...>`.
- * 3. Inferred Layouts v1 via deprecated constraints: `<b:section growth=...>`, `<b:section maxwidgets=...>`.
- * 4. Fallback to Layouts v3 as the canonical modern platform standard.
+ * 1. Explicit declaration attributes from catalog: `b:layoutsVersion`, `b:version`, `layoutsVersion`.
+ * 2. Inferred Layouts v3 via modern structural directives (b:defaultmarkups, b:template-script, b:with, etc.).
+ * 3. Inferred Layouts v2 via transitional structural markers (b:template-skin, mobile=).
+ * 4. Inferred Layouts v1 via deprecated constraints (growth, maxwidgets).
+ * 5. Fallback to default platform standard defined in catalog (Layouts v3).
  */
 export function detectTemplateVersion(xmlText: string): TemplateVersionResult {
+  const spec = getLayoutVersionsSpec()
+  const defaultVersion = (spec?.default_version ?? 3) as BloggerLayoutVersion
+
   if (!xmlText || typeof xmlText !== 'string') {
     return {
-      version: 3,
+      version: defaultVersion,
       confidence: 'inferred',
       detectedFeatures: [],
-      summary: 'Default modern standard (Layouts v3)',
+      summary: `Default modern standard (Layouts v${defaultVersion})`,
     }
   }
 
@@ -39,8 +76,11 @@ export function detectTemplateVersion(xmlText: string): TemplateVersionResult {
     .replace(/<!--[\s\S]*?-->/g, '')
     .replace(/<\?xml[\s\S]*?\?>/i, '')
 
-  // 1. Check for explicit version declaration attribute
-  const explicitMatch = sanitized.match(/\b(?:b:layoutsVersion|b:version|layoutsVersion)\s*=\s*(['"])(.*?)\1/i)
+  // 1. Check for explicit version declaration attribute derived from catalog
+  const explicitAttrs = spec?.explicit_attributes ?? ['b:layoutsVersion', 'b:version']
+  const explicitPattern = new RegExp(`\\b(?:${explicitAttrs.join('|')}|layoutsVersion)\\s*=\\s*(['"])(.*?)\\1`, 'i')
+  const explicitMatch = sanitized.match(explicitPattern)
+
   let explicitVersion: BloggerLayoutVersion | null = null
   let explicitFeature: string | null = null
 
@@ -53,41 +93,14 @@ export function detectTemplateVersion(xmlText: string): TemplateVersionResult {
     }
   }
 
-  // Detect structural markers
-  const structuralFeatures: string[] = []
-
-  // Layouts v3 structural markers
-  if (/<b:defaultmarkups\b/i.test(sanitized)) {
-    structuralFeatures.push('b:defaultmarkups')
-  }
-  else if (/<b:defaultmarkup\b/i.test(sanitized)) {
-    structuralFeatures.push('b:defaultmarkup')
-  }
-
-  if (/<b:template-script\b/i.test(sanitized)) {
-    structuralFeatures.push('b:template-script')
-  }
-
-  if (/<b:with\b/i.test(sanitized)) {
-    structuralFeatures.push('b:with')
-  }
-
-  if (/<b:section\s[^>]*\btag\s*=/i.test(sanitized)) {
-    structuralFeatures.push('b:section tag=')
-  }
-
-  // Layouts v1 structural markers
-  const v1Markers: string[] = []
-  if (/<b:section\s[^>]*\bgrowth\s*=/i.test(sanitized)) {
-    v1Markers.push('growth')
-  }
-  if (/<b:section\s[^>]*\bmaxwidgets\s*=/i.test(sanitized)) {
-    v1Markers.push('maxwidgets')
-  }
+  // Detect structural markers dynamically from catalog definitions
+  const v3Markers = collectMarkersForVersion(spec?.versions['3']?.structural_markers, sanitized)
+  const v2Markers = collectMarkersForVersion(spec?.versions['2']?.structural_markers, sanitized)
+  const v1Markers = collectMarkersForVersion(spec?.versions['1']?.structural_markers, sanitized)
 
   // Resolution
   if (explicitVersion !== null && explicitFeature !== null) {
-    const detectedFeatures = [explicitFeature, ...structuralFeatures, ...v1Markers]
+    const detectedFeatures = [explicitFeature, ...v3Markers, ...v2Markers, ...v1Markers]
     return {
       version: explicitVersion,
       confidence: 'explicit',
@@ -96,12 +109,21 @@ export function detectTemplateVersion(xmlText: string): TemplateVersionResult {
     }
   }
 
-  if (structuralFeatures.length > 0) {
+  if (v3Markers.length > 0) {
     return {
       version: 3,
       confidence: 'inferred',
-      detectedFeatures: structuralFeatures,
-      summary: `Inferred Layouts v3 from modern structural markers: ${structuralFeatures.join(', ')}`,
+      detectedFeatures: v3Markers,
+      summary: `Inferred Layouts v3 from modern structural markers: ${v3Markers.join(', ')}`,
+    }
+  }
+
+  if (v2Markers.length > 0) {
+    return {
+      version: 2,
+      confidence: 'inferred',
+      detectedFeatures: v2Markers,
+      summary: `Inferred Layouts v2 from transitional structural markers: ${v2Markers.join(', ')}`,
     }
   }
 
@@ -115,9 +137,9 @@ export function detectTemplateVersion(xmlText: string): TemplateVersionResult {
   }
 
   return {
-    version: 3,
+    version: defaultVersion,
     confidence: 'inferred',
     detectedFeatures: [],
-    summary: 'Default modern standard (Layouts v3)',
+    summary: `Default modern standard (Layouts v${defaultVersion})`,
   }
 }

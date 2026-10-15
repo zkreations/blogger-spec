@@ -164,6 +164,38 @@ describe('template layout versions (v1, v2, v3) suite', () => {
       expect(res.detectedFeatures).toContain('b:section tag=')
     })
 
+    it('infers Layouts v2 from transitional structural markers (b:template-skin, mobile=)', () => {
+      const xmlSkin = `
+        <html>
+          <head>
+            <b:template-skin>
+              body { color: #333; }
+            </b:template-skin>
+          </head>
+        </html>
+      `
+      const resSkin = detectTemplateVersion(xmlSkin)
+      expect(resSkin.version).toBe(2)
+      expect(resSkin.confidence).toBe('inferred')
+      expect(resSkin.detectedFeatures).toContain('b:template-skin')
+      expect(resSkin.summary).toContain('Layouts v2')
+
+      const xmlMobile = `
+        <html>
+          <body>
+            <b:section id="main">
+              <b:widget id="Blog1" type="Blog" mobile="yes"/>
+            </b:section>
+          </body>
+        </html>
+      `
+      const resMobile = detectTemplateVersion(xmlMobile)
+      expect(resMobile.version).toBe(2)
+      expect(resMobile.confidence).toBe('inferred')
+      expect(resMobile.detectedFeatures).toContain('mobile=')
+      expect(resMobile.summary).toContain('Layouts v2')
+    })
+
     it('infers Layouts v1 from deprecated section constraints (growth, maxwidgets)', () => {
       const xml = '<b:section id="header" growth="horizontal" maxwidgets="3"/>'
       const res = detectTemplateVersion(xml)
