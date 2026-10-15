@@ -199,6 +199,11 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       }
     }
   }
+  for (const widgetKey of knownWidgets) {
+    if (!settingsCatalog.widgets || !settingsCatalog.widgets[widgetKey]) {
+      errors.push(`Widget '${widgetKey}' is defined in widgets.json but missing from settings.json.`)
+    }
+  }
 
   const directivesCatalog = getDirectives()
   const knownDirectives = new Set(Object.keys(directivesCatalog.directives || {}))
