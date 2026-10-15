@@ -8,6 +8,7 @@
       "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:widget_rendering",
+        "tag:b:widget",
         "tag:b:includable"
       ],
       "input": {
@@ -169,6 +170,7 @@
       "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
+        "tag:b:widget",
         "tag:b:include",
         "tag:b:includable",
         "tag:b:class",
@@ -195,7 +197,8 @@
         "subsystem:widget_rendering",
         "tag:b:loop",
         "tag:b:class",
-        "tag:b:attr"
+        "tag:b:attr",
+        "tag:b:eval"
       ],
       "input": {
         "kind": "template",

@@ -8,7 +8,8 @@
       "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:includable_inheritance",
-        "tag:b:default",
+        "tag:b:defaultmarkups",
+        "tag:b:defaultmarkup",
         "tag:b:loop",
         "tag:b:includable",
         "tag:b:include"
@@ -32,7 +33,8 @@
       "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:includable_inheritance",
-        "tag:b:default",
+        "tag:b:defaultmarkups",
+        "tag:b:defaultmarkup",
         "tag:b:includable",
         "tag:b:include"
       ],
@@ -57,7 +59,8 @@
       "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:includable_inheritance",
-        "tag:b:default",
+        "tag:b:defaultmarkups",
+        "tag:b:defaultmarkup",
         "tag:b:includable",
         "tag:b:include",
         "tag:b:eval"
