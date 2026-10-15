@@ -1,4 +1,5 @@
 import type { BloggerAttributeNode, BloggerDirectiveNode } from '../ast.js'
+import type { SpecCatalog } from '../catalogs/index.js'
 import type {
   BloggerDirectiveAttributeToken,
   BloggerDirectiveToken,
@@ -45,9 +46,12 @@ export const HTML_VOID_ELEMENTS: ReadonlySet<string> = new Set([
   'wbr',
 ])
 
-export function isStrictlySelfClosingTag(tagName: string): boolean {
+export function isStrictlySelfClosingTag(tagName: string, catalog?: SpecCatalog): boolean {
   const lower = tagName.toLowerCase()
   if (lower === 'data:' || lower.startsWith('data:')) {
+    return true
+  }
+  if (catalog?.isSelfClosingDirective(tagName)) {
     return true
   }
   return BLOGGER_STRICTLY_SELF_CLOSING_TAGS.has(tagName)

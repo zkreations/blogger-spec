@@ -1,9 +1,10 @@
+import type { SpecCatalog } from './catalogs/index.js'
 import type {
   BloggerLayoutVersion,
   BloggerLayoutVersionsCatalog,
   TemplateVersionResult,
 } from './types.js'
-import { getDirectives } from './catalogs/index.js'
+import { getSpecCatalog } from './catalogs/index.js'
 
 export type {
   BloggerLayoutVersion,
@@ -11,8 +12,8 @@ export type {
   TemplateVersionResult,
 }
 
-export function getLayoutVersionsSpec(): BloggerLayoutVersionsCatalog | undefined {
-  return getDirectives().domain_metadata?.layout_versions
+export function getLayoutVersionsSpec(catalog: SpecCatalog = getSpecCatalog()): BloggerLayoutVersionsCatalog | undefined {
+  return catalog.getLayoutVersions()
 }
 
 function testStructuralMarker(marker: string, xml: string): boolean {
@@ -58,8 +59,11 @@ function collectMarkersForVersion(
  * 4. Inferred Layouts v1 via deprecated constraints (growth, maxwidgets).
  * 5. Fallback to default platform standard defined in catalog (Layouts v3).
  */
-export function detectTemplateVersion(xmlText: string): TemplateVersionResult {
-  const spec = getLayoutVersionsSpec()
+export function detectTemplateVersion(
+  xmlText: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): TemplateVersionResult {
+  const spec = getLayoutVersionsSpec(catalog)
   const defaultVersion = (spec?.default_version ?? 3) as BloggerLayoutVersion
 
   if (!xmlText || typeof xmlText !== 'string') {

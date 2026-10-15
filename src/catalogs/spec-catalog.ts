@@ -6,7 +6,6 @@ import type {
   BloggerDirectiveDefinition,
   BloggerDirectiveName,
   BloggerDirectivesCatalog,
-  BloggerDirectiveToken,
   BloggerGlobalsCatalog,
   BloggerInclusionDefinition,
   BloggerInclusionsCatalog,
@@ -17,7 +16,6 @@ import type {
   BloggerOperatorsCatalog,
   BloggerScopesCatalog,
   BloggerSettingsCatalog,
-  BloggerStructureDiagnostic,
   BloggerTypesCatalog,
   BloggerWidgetsCatalog,
   BloggerWidgetType,
@@ -27,7 +25,6 @@ import type {
   VariableAttributesValidationResult,
 } from '../types.js'
 import type { CatalogStore } from './store.js'
-import { validateTemplateStructure } from '../parser/template-validator.js'
 import { getDefaultCatalogStore, registerCacheResetListener } from './store.js'
 
 let defaultSpecCatalogInstance: SpecCatalog | null = null
@@ -518,10 +515,6 @@ export class SpecCatalog {
 
   validateDirectiveNesting(parentTag: string, childTag: string): DirectiveNestingViolation | null {
     return this.validateNesting(parentTag, childTag)
-  }
-
-  validateTemplateStructure(tokensOrXml: readonly BloggerDirectiveToken[] | string): BloggerStructureDiagnostic[] {
-    return validateTemplateStructure(tokensOrXml, this)
   }
 
   isOperator(op: string): op is BloggerOperatorName {

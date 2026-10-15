@@ -1,11 +1,16 @@
+import type { SpecCatalog } from './catalogs/index.js'
 import type {
   BloggerOperatorDefinition,
   BloggerTypeDefinition,
   BloggerTypeModifierDefinition,
 } from './types.js'
-import { getOperators, getSpecCatalog, getTypes } from './catalogs/index.js'
+import { getSpecCatalog } from './catalogs/index.js'
 
-export function isTypeAssignable(source: string, target: string): boolean {
+export function isTypeAssignable(
+  source: string,
+  target: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): boolean {
   if (source === target) {
     return true
   }
@@ -16,9 +21,9 @@ export function isTypeAssignable(source: string, target: string): boolean {
 
   if (target === 'scalar') {
     return (
-      isTypeAssignable(source, 'string')
-      || isTypeAssignable(source, 'number')
-      || isTypeAssignable(source, 'boolean')
+      isTypeAssignable(source, 'string', catalog)
+      || isTypeAssignable(source, 'number', catalog)
+      || isTypeAssignable(source, 'boolean', catalog)
     )
   }
 
@@ -29,42 +34,45 @@ export function isTypeAssignable(source: string, target: string): boolean {
   if (source.startsWith('array[') && target.startsWith('array[') && source.endsWith(']') && target.endsWith(']')) {
     const sourceItem = source.slice(6, -1)
     const targetItem = target.slice(6, -1)
-    return isTypeAssignable(sourceItem, targetItem)
+    return isTypeAssignable(sourceItem, targetItem, catalog)
   }
 
-  const typesCatalog = getTypes().types
-  let current: string | null | undefined = typesCatalog[source]?.parent_type
+  let current: string | null | undefined = catalog.getType(source)?.parent_type
 
   while (current) {
     if (current === target) {
       return true
     }
-    current = typesCatalog[current]?.parent_type
+    current = catalog.getType(current)?.parent_type
   }
 
   return false
 }
 
-export function getTypeDefinition(typeName: string): BloggerTypeDefinition | undefined {
-  return getTypes().types[typeName]
+export function getTypeDefinition(
+  typeName: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): BloggerTypeDefinition | undefined {
+  return catalog.getType(typeName)
 }
 
-export function getTypeModifiers(typeName: string): Record<string, BloggerTypeModifierDefinition> {
-  const typesCatalog = getTypes().types
-
+export function getTypeModifiers(
+  typeName: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): Record<string, BloggerTypeModifierDefinition> {
   let resolvedName = typeName
-  if (typeName.startsWith('array[') && !typesCatalog[typeName]?.modifiers) {
+  if (typeName.startsWith('array[') && !catalog.getType(typeName)?.modifiers) {
     resolvedName = 'array'
   }
 
-  const def = typesCatalog[resolvedName]
+  const def = catalog.getType(resolvedName)
   if (!def) {
     return {}
   }
 
   let inheritedModifiers: Record<string, BloggerTypeModifierDefinition> = {}
   if (def.parent_type) {
-    inheritedModifiers = getTypeModifiers(def.parent_type)
+    inheritedModifiers = getTypeModifiers(def.parent_type, catalog)
   }
 
   return {
@@ -76,8 +84,9 @@ export function getTypeModifiers(typeName: string): Record<string, BloggerTypeMo
 export function resolveModifierReturnType(
   targetType: string,
   modifierName: string,
+  catalog: SpecCatalog = getSpecCatalog(),
 ): string {
-  const modifiers = getTypeModifiers(targetType)
+  const modifiers = getTypeModifiers(targetType, catalog)
   const modDef = modifiers[modifierName]
   if (!modDef) {
     return 'unknown'
@@ -94,13 +103,14 @@ export function resolveModifierReturnType(
 export function getCompatibleOperators(
   typeName: string,
   isLoopContext: boolean = false,
+  catalog: SpecCatalog = getSpecCatalog(),
 ): BloggerOperatorDefinition[] {
-  const operatorsCatalog = getOperators().operators
+  const operatorsCatalog = catalog.getAllOperators()
   const compatible: BloggerOperatorDefinition[] = []
 
   for (const [opName, opDef] of Object.entries(operatorsCatalog)) {
     if (opName === 'to') {
-      if (isLoopContext && isTypeAssignable(typeName, 'number')) {
+      if (isLoopContext && isTypeAssignable(typeName, 'number', catalog)) {
         compatible.push({ name: opName, ...opDef })
       }
       continue
@@ -115,7 +125,7 @@ export function getCompatibleOperators(
       if (acceptedType === 'collection' || acceptedType === 'array') {
         return typeName === 'array' || typeName.startsWith('array[')
       }
-      return isTypeAssignable(typeName, acceptedType)
+      return isTypeAssignable(typeName, acceptedType, catalog)
     })
 
     if (isMatch) {
@@ -129,16 +139,17 @@ export function getCompatibleOperators(
 export function getCompatibleOperatorNames(
   typeName: string,
   isLoopContext: boolean = false,
+  catalog: SpecCatalog = getSpecCatalog(),
 ): string[] {
-  return getCompatibleOperators(typeName, isLoopContext).map(op => op.name ?? '').filter(Boolean)
+  return getCompatibleOperators(typeName, isLoopContext, catalog).map(op => op.name ?? '').filter(Boolean)
 }
 
 export function resolveOperatorReturnType(
   operatorName: string,
   leftType: string = 'unknown',
   rightType?: string,
+  catalog: SpecCatalog = getSpecCatalog(),
 ): string {
-  const catalog = getSpecCatalog()
   const opDef = catalog.getOperator(operatorName)
   if (!opDef) {
     return 'unknown'
@@ -150,7 +161,7 @@ export function resolveOperatorReturnType(
       const op2 = overload.operands[1]
 
       const leftMatches = op1
-        ? op1.types.some(t => isTypeAssignable(leftType, t))
+        ? op1.types.some(t => isTypeAssignable(leftType, t, catalog))
         : true
 
       if (!leftMatches) {
@@ -159,7 +170,7 @@ export function resolveOperatorReturnType(
 
       if (op2 && op2.required) {
         if (rightType !== undefined) {
-          const rightMatches = op2.types.some(t => isTypeAssignable(rightType, t))
+          const rightMatches = op2.types.some(t => isTypeAssignable(rightType, t, catalog))
           if (rightMatches) {
             return overload.return_type
           }
@@ -171,7 +182,7 @@ export function resolveOperatorReturnType(
         }
       }
       else {
-        if (rightType === undefined || op2.types.some(t => isTypeAssignable(rightType, t))) {
+        if (rightType === undefined || op2.types.some(t => isTypeAssignable(rightType, t, catalog))) {
           return overload.return_type
         }
       }

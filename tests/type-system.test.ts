@@ -364,5 +364,13 @@ describe('canonical type system & coercion engine', () => {
       expect(colorDef?.parent_type).toBeNull()
       expect(colorDef?.category).toBe('skin')
     })
+
+    it('respects injected custom SpecCatalog instance', () => {
+      const customCatalog = RootExports.getSpecCatalog()
+      expect(isTypeAssignable('url', 'string', customCatalog)).toBe(true)
+      expect(getTypeDefinition('image', customCatalog)?.parent_type).toBe('string')
+      expect(getTypeModifiers('string', customCatalog).length).toBeDefined()
+      expect(resolveOperatorReturnType('+', 'number', 'number', customCatalog)).toBe('number')
+    })
   })
 })
