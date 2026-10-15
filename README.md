@@ -19,7 +19,7 @@ It is designed to be consumed by external tools—such as IDE extensions (VS Cod
 4. **Layout Versions Authority (`blogger-spec/version`)**: Formal specification and deterministic engine to detect Blogger template layout architecture (Layouts v1, v2, v3) from raw XML documents.
 5. **Compiler Token Quota Calculator (`blogger-spec/quota`)**: Exact token counting and budget evaluation against the Blogger compiler's strict 40-token ceiling (`BX1021`).
 6. **Canonical Type System & Coercion Engine (`blogger-spec/type-system`)**: Subtype assignability, modifier inheritance (preserving flat hierarchy and isolating `skin:*` theme variables), operator compatibility, and return type inference.
-7. **Structural Validation & Spec Catalogs (`blogger-spec/catalogs` & `blogger-spec/parser`)**: High-level validation utilities (`validateTemplateStructure`, `validateDirectiveNesting`) and catalog queries mapping template hierarchies against official compiler diagnostics (`BX1001-BX1040`).
+7. **Declarative Structural Validation & Spec Catalogs (`blogger-spec/catalogs` & `blogger-spec/parser`)**: High-level validation utilities (`validateTemplateStructure`, `canNest`, `validateDirectiveNesting`) evaluating hierarchy rules, symbolic grammar groups (`@flow_instructions`, `@flow_containers`), and declarative recovery policies (`reject`, `strip`, `ignore`) against official compiler diagnostics (`BX1001-BX1040`).
 8. **Universal ESM & Browser Ready**: Pure in-memory catalog store by default with zero Node.js built-in dependencies (`fs`, `path`). Works seamlessly in browsers, Node.js, Cloudflare Workers, and Web Workers.
 9. **Empirical Conformance Suite**: Automated test harness validating against 185+ empirical test fixtures verified on live Blogger production engines.
 
@@ -108,6 +108,7 @@ import { FsCatalogStore } from 'blogger-spec/node'
 
 // 2. Structural Validation & Directive Scanning
 import {
+  canNest,
   getNearestUnclosedDirective,
   getUnclosedDirectiveStack,
   isStrictlySelfClosingTag,
@@ -240,11 +241,23 @@ const result = detectTemplateVersion('<html b:layoutsVersion="3">...</html>')
 ### 6. Validating Template Structure & Nesting
 
 ```typescript
-import { validateDirectiveNesting, validateTemplateStructure } from 'blogger-spec/parser'
+import { canNest, validateDirectiveNesting, validateTemplateStructure } from 'blogger-spec/parser'
 
-// Immediate hierarchy validation
-const nestingError = validateDirectiveNesting('b:section', 'b:section')
-// Returns BloggerDiagnosticRule for BX1035 (NESTED_SECTION)
+// Boolean hierarchy check
+canNest('b:section', 'b:widget') // true
+canNest('div', 'b:section') // true (HTML layout containers in body)
+canNest('head', 'b:section') // false
+canNest('b:template-skin', 'Variable') // false (skin variables exclusive to b:skin)
+
+// Immediate hierarchy violation details
+const violation = validateDirectiveNesting('b:section', 'b:section')
+// Returns DirectiveNestingViolation:
+// {
+//   code: 'BX1035',
+//   action: 'reject', // 'reject' | 'strip' | 'ignore'
+//   message: 'Tag <b:section> is not permitted inside <b:section>.',
+//   rule: { name: 'NESTED_SECTION', severity: 'error', ... }
+// }
 
 // Comprehensive template structural audit
 const diagnostics = validateTemplateStructure(`

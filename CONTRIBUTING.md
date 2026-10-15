@@ -11,6 +11,7 @@
 3. **Zero Runtime Dependencies**: Production exports must strictly maintain `"dependencies": {}` in `package.json`.
 4. **Empirical Verification**: Any spec change or fix requires empirical verification against the Google Blogger production engine and a corresponding test fixture under [`fixtures/`](fixtures/) with evidence attribution (`official` or `observed`).
 5. **Flat Type Hierarchy & Skin Variable Isolation**: Platform subtypes (`url`, `image`, `date`, `locale`, `message`) inherit directly from `string` (1-level depth). Theme variables (`skin:*`) have `parent_type: null` and must remain strictly isolated from template string modifiers (`.length`, `.escaped`).
+6. **Declarative Directive Grammar & Symbolic Groups**: Directive nesting rules (`valid_parents`, `valid_children`) and recovery behaviors (`invalid_nesting_policy` with `reject`, `strip`, `ignore`) reside in [`catalogs/directives.json`](catalogs/directives.json). Do not hardcode tag hierarchy assumptions in validators; query via `canNest` and `validateDirectiveNesting`.
 
 ---
 
@@ -68,7 +69,7 @@ blogger-spec/
 - **Layout Versions**: If layout version heuristics change, update `domain_metadata.layout_versions` in [`catalogs/directives.json`](catalogs/directives.json) and [`src/version.ts`](src/version.ts).
 - **Token Quota**: If token cost rules or quota thresholds change, update [`src/quota.ts`](src/quota.ts).
 - **Type Checking**: If coercion matrices, truthiness, or assignability change, update [`src/type-system.ts`](src/type-system.ts).
-- **Structural Validation & Helpers**: If directive nesting or template structure validation rules change, update [`src/catalogs/spec-catalog.ts`](src/catalogs/spec-catalog.ts) and [`src/parser/template-validator.ts`](src/parser/template-validator.ts).
+- **Structural Validation & Helpers**: If directive nesting, grammar groups, or template structure validation rules change, update [`catalogs/directives.json`](catalogs/directives.json), [`src/catalogs/spec-catalog.ts`](src/catalogs/spec-catalog.ts), and [`src/parser/template-validator.ts`](src/parser/template-validator.ts). Ensure `canNest` and `validateDirectiveNesting` reflect canonical policies.
 
 ### 3. Add Conformance Fixtures
 Add empirical test cases under [`fixtures/`](fixtures/) adhering to the `BloggerFixture` discriminated union contract (`input.kind`, `expected.outcome`, `covers[]`, `verifiedAt`).
