@@ -18,7 +18,7 @@ It is designed to be consumed by external tools—such as IDE extensions (VS Cod
 3. **Compiler Token Quota Calculator (`blogger-spec/quota`)**: Exact token counting and budget evaluation against the Blogger compiler's strict 40-token ceiling (`BX1021`).
 4. **Canonical Type System & Coercion Engine (`blogger-spec/type-system`)**: Subtype assignability, modifier inheritance (preserving flat hierarchy and isolating `skin:*` theme variables), operator compatibility, and return type inference.
 5. **Universal ESM & Browser Ready**: Pure in-memory catalog store by default with zero Node.js built-in dependencies (`fs`, `path`). Works seamlessly in browsers, Node.js, Cloudflare Workers, and Web Workers.
-6. **Empirical Conformance Suite**: Automated test harness validating against 65+ empirical test fixtures verified on live Blogger production engines.
+6. **Empirical Conformance Suite**: Automated test harness validating against 175+ empirical test fixtures verified on live Blogger production engines.
 
 ---
 
@@ -133,7 +133,7 @@ import types from 'blogger-spec/types'
 ```typescript
 import { parseExpression } from 'blogger-spec/ast'
 
-const ast = parseExpression('data:posts filter (p => p.id == 1) take 5 ?: []')
+const ast = parseExpression('data:posts filter (p => p.id == 1) take 5')
 // Parses into a canonical AST tree respecting dual syntax, lambdas, and precedence:
 // BinaryExpression (take)
 // ├── left: LambdaExpression (filter)
