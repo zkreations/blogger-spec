@@ -281,6 +281,82 @@
         "outcome": "value",
         "value": false
       }
+    },
+    {
+      "id": "expressions/coercion/concatenation-boolean-and-string",
+      "title": "String Concatenation Between Boolean Literal And String",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-canonical-string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "true + \" is truthy\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "true is truthy"
+      }
+    },
+    {
+      "id": "expressions/coercion/concatenation-string-and-boolean",
+      "title": "String Concatenation Between String And Boolean Literal",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "operator:+",
+        "semantics:coercion-canonical-string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"Status: \" + false",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Status: false"
+      }
+    },
+    {
+      "id": "expressions/coercion/elvis-preserves-empty-string",
+      "title": "Elvis Operator Preserves Non-Null Empty String Without Triggering Fallback",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "operator:?:",
+        "semantics:coercion-nullish"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"\" ?: \"Fallback\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": ""
+      }
+    },
+    {
+      "id": "expressions/coercion/elvis-preserves-zero",
+      "title": "Elvis Operator Preserves Numeric Zero Without Triggering Fallback",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "operator:?:",
+        "semantics:coercion-nullish"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "0 ?: 99",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 0
+      }
     }
   ]
 }
