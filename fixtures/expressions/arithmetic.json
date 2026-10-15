@@ -196,6 +196,44 @@
         "outcome": "value",
         "value": "10posts"
       }
+    },
+    {
+      "id": "expressions/arithmetic/subtraction-integers",
+      "title": "Binary Subtraction Integers",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:-"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "20 - 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 15
+      }
+    },
+    {
+      "id": "expressions/arithmetic/unary-negation-integer",
+      "title": "Unary Negation On Numeric Literal",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:-"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "-5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": -5
+      }
     }
   ]
 }
