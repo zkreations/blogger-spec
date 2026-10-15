@@ -294,6 +294,26 @@
       "replacement": "(0 - (a - b))",
       "evidence": "observed",
       "verifiedAt": "2026-10-14"
+    },
+    "BX1031": {
+      "code": "BX1031",
+      "name": "NON_OBJECT_INCLUDE_DATA_PAYLOAD",
+      "category": "runtime",
+      "severity": "error",
+      "message": "The 'data' attribute of <b:include> strictly requires an object reference or object literal { ... }; passing primitive scalars (string, number, boolean) aborts execution with runtime error 'Error during evaluation of <name>'.",
+      "replacement": "{ value: ... }",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14"
+    },
+    "BX1032": {
+      "code": "BX1032",
+      "name": "PROHIBITED_BRACKET_INDEXING_IN_DATA_TAG",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Direct bracket indexing (e.g. <data:items[0]/>) is forbidden in <data:...> tags and causes template compilation error. Use <b:eval expr='data:items[0]'/> to index collections.",
+      "replacement": "<b:eval expr='data:items[0]'/>",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14"
     }
   }
 }
