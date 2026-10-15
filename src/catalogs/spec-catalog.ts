@@ -24,8 +24,52 @@ import type {
   VariableAttributesValidationResult,
 } from '../types.js'
 import type { CatalogStore } from './store.js'
-import { scanDirectiveTokens } from '../parser/directive-scanner.js'
-import { getDefaultCatalogStore } from './store.js'
+import { validateDirectiveNesting, validateTemplateStructure } from '../parser/template-validator.js'
+import { getDefaultCatalogStore, registerCacheResetListener } from './store.js'
+
+let defaultSpecCatalogInstance: SpecCatalog | null = null
+
+registerCacheResetListener(() => {
+  defaultSpecCatalogInstance = null
+})
+
+export function getSpecCatalog(store?: CatalogStore): SpecCatalog {
+  if (store) {
+    return new SpecCatalog(store)
+  }
+  if (!defaultSpecCatalogInstance) {
+    defaultSpecCatalogInstance = new SpecCatalog(getDefaultCatalogStore())
+  }
+  return defaultSpecCatalogInstance
+}
+
+export function getOperatorPrecedence(op: string, store?: CatalogStore): number | undefined {
+  return getSpecCatalog(store).getOperatorPrecedence(op)
+}
+
+export function validateVariableAttributes(
+  variableType: string,
+  presentAttributes: string[],
+  store?: CatalogStore,
+): VariableAttributesValidationResult {
+  return getSpecCatalog(store).validateVariableAttributes(variableType, presentAttributes)
+}
+
+export function validateDirectiveAttributes(
+  tagName: string,
+  presentAttributes: string[],
+  store?: CatalogStore,
+): DirectiveAttributesValidationResult {
+  return getSpecCatalog(store).validateDirectiveAttributes(tagName, presentAttributes)
+}
+
+export function getThemeDesignerDescriptions(store?: CatalogStore): readonly string[] {
+  return getSpecCatalog(store).getThemeDesignerDescriptions()
+}
+
+export function getVariableTypeAttributes(type?: string, store?: CatalogStore): any {
+  return getSpecCatalog(store).getVariableTypeAttributes(type)
+}
 
 export interface DirectiveAttributesValidationResult {
   valid: boolean
@@ -324,242 +368,11 @@ export class SpecCatalog {
   }
 
   validateDirectiveNesting(parentTag: string, childTag: string): BloggerDiagnosticRule | null {
-    if (parentTag === 'b:section' && childTag === 'b:section') {
-      return this.getDiagnostic('BX1035') ?? null
-    }
-    if (childTag === 'b:widget' && parentTag !== 'b:section') {
-      return this.getDiagnostic('BX1034') ?? null
-    }
-    if (!this.isValidChild(parentTag, childTag) || !this.isValidParent(childTag, parentTag)) {
-      return this.getDiagnostic('BX1023') ?? null
-    }
-    return null
+    return validateDirectiveNesting(parentTag, childTag, this)
   }
 
   validateTemplateStructure(tokensOrXml: readonly BloggerDirectiveToken[] | string): BloggerStructureDiagnostic[] {
-    const tokens = typeof tokensOrXml === 'string'
-      ? scanDirectiveTokens(tokensOrXml)
-      : tokensOrXml
-
-    const diagnostics: BloggerStructureDiagnostic[] = []
-    const tagStack: BloggerDirectiveToken[] = []
-    const globalSectionWidgetIds = new Map<string, BloggerDirectiveToken>()
-    const containerIncludableIds = new Map<BloggerDirectiveToken, Set<string>>()
-
-    for (const token of tokens) {
-      if (token.isClosing) {
-        const lower = token.tagName.toLowerCase()
-        let matchIdx = -1
-        for (let i = tagStack.length - 1; i >= 0; i--) {
-          if (tagStack[i]!.tagName.toLowerCase() === lower) {
-            matchIdx = i
-            break
-          }
-        }
-        if (matchIdx !== -1) {
-          tagStack.splice(matchIdx)
-        }
-        continue
-      }
-
-      const parentToken = tagStack.length > 0 ? tagStack[tagStack.length - 1] : undefined
-      const isSection = token.tagName === 'b:section'
-      const isWidget = token.tagName === 'b:widget'
-      const isIncludable = token.tagName === 'b:includable'
-
-      // 1. Nesting Checks
-      if (isSection) {
-        const inSection = tagStack.some(t => t.tagName === 'b:section')
-        if (inSection) {
-          const rule = this.getDiagnostic('BX1035')
-          if (rule) {
-            diagnostics.push({
-              code: rule.code,
-              rule,
-              message: rule.message,
-              severity: rule.severity,
-              tagName: token.tagName,
-              tagStart: token.tagStart,
-              tagEnd: token.tagEnd,
-            })
-          }
-        }
-      }
-
-      if (isWidget) {
-        const inSection = tagStack.some(t => t.tagName === 'b:section')
-        if (!inSection) {
-          const rule = this.getDiagnostic('BX1034')
-          if (rule) {
-            diagnostics.push({
-              code: rule.code,
-              rule,
-              message: rule.message,
-              severity: rule.severity,
-              tagName: token.tagName,
-              tagStart: token.tagStart,
-              tagEnd: token.tagEnd,
-            })
-          }
-        }
-      }
-
-      if (isIncludable) {
-        const validContainer = tagStack.some(t => t.tagName === 'b:widget' || t.tagName === 'b:defaultmarkup')
-        if (!validContainer) {
-          const rule = this.getDiagnostic('BX1023')
-          if (rule) {
-            diagnostics.push({
-              code: rule.code,
-              rule,
-              message: `<b:includable> must be placed inside <b:widget> or <b:defaultmarkup>.`,
-              severity: rule.severity,
-              tagName: token.tagName,
-              tagStart: token.tagStart,
-              tagEnd: token.tagEnd,
-            })
-          }
-        }
-      }
-
-      if (parentToken && !isSection && !isWidget && this.isDirective(parentToken.tagName) && this.isDirective(token.tagName)) {
-        const nestingRule = this.validateDirectiveNesting(parentToken.tagName, token.tagName)
-        if (nestingRule && nestingRule.code !== 'BX1034' && nestingRule.code !== 'BX1035') {
-          diagnostics.push({
-            code: nestingRule.code,
-            rule: nestingRule,
-            message: `Tag <${token.tagName}> is not permitted inside <${parentToken.tagName}>.`,
-            severity: nestingRule.severity,
-            tagName: token.tagName,
-            tagStart: token.tagStart,
-            tagEnd: token.tagEnd,
-          })
-        }
-      }
-
-      // 2. Duplicate element ID across template for <b:section> and <b:widget>
-      if (isSection || isWidget) {
-        const idAttr = token.attributes.id
-        if (idAttr) {
-          const idVal = idAttr.value.trim()
-          if (!idVal) {
-            const rule = this.getDiagnostic('BX1039')
-            if (rule) {
-              diagnostics.push({
-                code: rule.code,
-                rule,
-                message: `Element <${token.tagName}> has an empty 'id' attribute.`,
-                severity: rule.severity,
-                tagName: token.tagName,
-                tagStart: idAttr.start,
-                tagEnd: idAttr.end,
-              })
-            }
-          }
-          else if (globalSectionWidgetIds.has(idVal)) {
-            const rule = this.getDiagnostic('BX1033')
-            if (rule) {
-              diagnostics.push({
-                code: rule.code,
-                rule,
-                message: `Duplicate element identifier '${idVal}' detected. Blogger requires all <b:section> and <b:widget> elements to have unique 'id' attributes.`,
-                severity: rule.severity,
-                tagName: token.tagName,
-                tagStart: idAttr.start,
-                tagEnd: idAttr.end,
-              })
-            }
-          }
-          else {
-            globalSectionWidgetIds.set(idVal, token)
-          }
-        }
-      }
-
-      // 3. Duplicate <b:includable id="..."> within container
-      if (isIncludable) {
-        let container: BloggerDirectiveToken | undefined
-        for (let i = tagStack.length - 1; i >= 0; i--) {
-          if (tagStack[i]!.tagName === 'b:widget' || tagStack[i]!.tagName === 'b:defaultmarkup') {
-            container = tagStack[i]
-            break
-          }
-        }
-
-        const idAttr = token.attributes.id
-        if (idAttr) {
-          const idVal = idAttr.value.trim()
-          if (!idVal) {
-            const rule = this.getDiagnostic('BX1039')
-            if (rule) {
-              diagnostics.push({
-                code: rule.code,
-                rule,
-                message: `<b:includable> requires a non-empty 'id' attribute.`,
-                severity: rule.severity,
-                tagName: token.tagName,
-                tagStart: idAttr.start,
-                tagEnd: idAttr.end,
-              })
-            }
-          }
-          else if (container) {
-            let idSet = containerIncludableIds.get(container)
-            if (!idSet) {
-              idSet = new Set()
-              containerIncludableIds.set(container, idSet)
-            }
-            if (idSet.has(idVal)) {
-              const rule = this.getDiagnostic('BX1036')
-              if (rule) {
-                diagnostics.push({
-                  code: rule.code,
-                  rule,
-                  message: `Duplicate includable identifier '${idVal}' in <${container.tagName}>.`,
-                  severity: rule.severity,
-                  tagName: token.tagName,
-                  tagStart: idAttr.start,
-                  tagEnd: idAttr.end,
-                })
-              }
-            }
-            else {
-              idSet.add(idVal)
-            }
-          }
-        }
-      }
-
-      // 4. Validate <Variable type="..."> attributes
-      if (token.tagName === 'Variable') {
-        const typeAttr = token.attributes.type
-        if (typeAttr && typeAttr.value) {
-          const varType = typeAttr.value.toLowerCase()
-          const presentAttrs = Object.keys(token.attributes)
-          const varValidation = this.validateVariableAttributes(varType, presentAttrs)
-          if (!varValidation.valid && varValidation.invalidAttributes.length > 0) {
-            const rule = this.getDiagnostic('BX1040')
-            if (rule) {
-              diagnostics.push({
-                code: rule.code,
-                rule,
-                message: `Attribute(s) '${varValidation.invalidAttributes.join(', ')}' not supported for <Variable type="${varType}">.`,
-                severity: rule.severity,
-                tagName: token.tagName,
-                tagStart: token.tagStart,
-                tagEnd: token.tagEnd,
-              })
-            }
-          }
-        }
-      }
-
-      if (!token.isSelfClosing) {
-        tagStack.push(token)
-      }
-    }
-
-    return diagnostics
+    return validateTemplateStructure(tokensOrXml, this)
   }
 
   isOperator(op: string): op is BloggerOperatorName {
@@ -749,4 +562,168 @@ export class SpecCatalog {
     const inc = this.inclusionMap.get(name)
     return inc?.category === 'universal'
   }
+}
+
+export function isDirective(tagName: string, store?: CatalogStore): tagName is BloggerDirectiveName {
+  return getSpecCatalog(store).isDirective(tagName)
+}
+
+export function getDirective(tagName: string, store?: CatalogStore): BloggerDirectiveDefinition | undefined {
+  return getSpecCatalog(store).getDirective(tagName)
+}
+
+export function getAllDirectives(store?: CatalogStore): Record<string, BloggerDirectiveDefinition> {
+  return getSpecCatalog(store).getAllDirectives()
+}
+
+export function isSelfClosingDirective(tagName: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).isSelfClosingDirective(tagName)
+}
+
+export function isValidChild(parentTagName: string, childTagName: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).isValidChild(parentTagName, childTagName)
+}
+
+export function isValidParent(childTagName: string, parentTagName: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).isValidParent(childTagName, parentTagName)
+}
+
+export function getDirectiveAttributes(tagName: string, store?: CatalogStore): Record<string, BloggerDirectiveAttribute> | undefined {
+  return getSpecCatalog(store).getDirectiveAttributes(tagName)
+}
+
+export function getLayoutVersions(store?: CatalogStore): BloggerLayoutVersionsCatalog | undefined {
+  return getSpecCatalog(store).getLayoutVersions()
+}
+
+export function isOperator(op: string, store?: CatalogStore): op is BloggerOperatorName {
+  return getSpecCatalog(store).isOperator(op)
+}
+
+export function isGrammarOperator(op: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).isGrammarOperator(op)
+}
+
+export function isDocAlias(alias: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).isDocAlias(alias)
+}
+
+export function getOperator(op: string, store?: CatalogStore): BloggerOperatorDefinition | undefined {
+  return getSpecCatalog(store).getOperator(op)
+}
+
+export function getAllOperators(store?: CatalogStore): Record<string, BloggerOperatorDefinition> {
+  return getSpecCatalog(store).getAllOperators()
+}
+
+export function getGrammarOperators(store?: CatalogStore): Record<string, BloggerOperatorDefinition> {
+  return getSpecCatalog(store).getGrammarOperators()
+}
+
+export function isDiagnosticCode(code: string, store?: CatalogStore): code is BloggerDiagnosticCode {
+  return getSpecCatalog(store).isDiagnosticCode(code)
+}
+
+export function getDiagnosticRule(code: string, store?: CatalogStore): BloggerDiagnosticRule | undefined {
+  return getSpecCatalog(store).getDiagnosticRule(code)
+}
+
+export function getDiagnostic(code: string, store?: CatalogStore): BloggerDiagnosticRule | undefined {
+  return getSpecCatalog(store).getDiagnostic(code)
+}
+
+export function getAllDiagnostics(store?: CatalogStore): Record<string, BloggerDiagnosticRule> {
+  return getSpecCatalog(store).getAllDiagnostics()
+}
+
+export function isWidget(name: string, store?: CatalogStore): name is BloggerWidgetType {
+  return getSpecCatalog(store).isWidget(name)
+}
+
+export function getWidget(name: string, store?: CatalogStore): any {
+  return getSpecCatalog(store).getWidget(name)
+}
+
+export function getAllWidgets(store?: CatalogStore): Record<string, any> {
+  return getSpecCatalog(store).getAllWidgets()
+}
+
+export function getWidgetSettings(widgetName: string, store?: CatalogStore): any {
+  return getSpecCatalog(store).getWidgetSettings(widgetName)
+}
+
+export function getAllWidgetSettings(store?: CatalogStore): Record<string, any> {
+  return getSpecCatalog(store).getAllWidgetSettings()
+}
+
+export function isGlobal(name: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).isGlobal(name)
+}
+
+export function getGlobal(name: string, store?: CatalogStore): any {
+  return getSpecCatalog(store).getGlobal(name)
+}
+
+export function getAllGlobals(store?: CatalogStore): Record<string, any> {
+  return getSpecCatalog(store).getAllGlobals()
+}
+
+export function isMessage(key: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).isMessage(key)
+}
+
+export function getMessage(key: string, store?: CatalogStore): any {
+  return getSpecCatalog(store).getMessage(key)
+}
+
+export function getAllMessages(store?: CatalogStore): Record<string, any> {
+  return getSpecCatalog(store).getAllMessages()
+}
+
+export function isScope(name: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).isScope(name)
+}
+
+export function getScope(name: string, store?: CatalogStore): any {
+  return getSpecCatalog(store).getScope(name)
+}
+
+export function getAllScopes(store?: CatalogStore): Record<string, any> {
+  return getSpecCatalog(store).getAllScopes()
+}
+
+export function getScopePrecedence(store?: CatalogStore): string[] {
+  return getSpecCatalog(store).getScopePrecedence()
+}
+
+export function isType(name: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).isType(name)
+}
+
+export function getType(name: string, store?: CatalogStore): any {
+  return getSpecCatalog(store).getType(name)
+}
+
+export function getAllTypes(store?: CatalogStore): Record<string, any> {
+  return getSpecCatalog(store).getAllTypes()
+}
+
+export function getCoercionRules(store?: CatalogStore): Record<string, any> {
+  return getSpecCatalog(store).getCoercionRules()
+}
+
+export function isServerInclusion(name: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).isServerInclusion(name)
+}
+
+export function getServerInclusion(name: string, store?: CatalogStore): BloggerInclusionDefinition | undefined {
+  return getSpecCatalog(store).getInclusion(name)
+}
+
+export function getAllServerInclusions(store?: CatalogStore): Record<string, BloggerInclusionDefinition> {
+  return getSpecCatalog(store).getAllInclusions()
+}
+
+export function isUniversalInclusion(name: string, store?: CatalogStore): boolean {
+  return getSpecCatalog(store).isUniversalInclusion(name)
 }
