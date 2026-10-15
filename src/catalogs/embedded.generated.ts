@@ -1298,6 +1298,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "type": "string",
             "description": "Target attribute value. Literal or dynamic (expr:value). If empty or non-existent, the attribute is omitted.",
             "required": true,
+            "allow_empty": true,
             "expr": true,
             "attribute_kind": "prefixed_expression"
           },
@@ -12210,6 +12211,10 @@ export const embeddedSchemas: Record<string, any> = {
           "required": {
             "type": "boolean",
             "default": false
+          },
+          "allow_empty": {
+            "type": "boolean",
+            "description": "Specifies whether an empty literal string value (e.g. value='') is valid semantics and exempt from empty attribute warnings (e.g. b:attr value='' to remove parent attribute)."
           },
           "expr": {
             "type": "boolean",

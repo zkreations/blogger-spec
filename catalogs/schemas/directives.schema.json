@@ -487,6 +487,10 @@
           "type": "boolean",
           "default": false
         },
+        "allow_empty": {
+          "type": "boolean",
+          "description": "Specifies whether an empty literal string value (e.g. value='') is valid semantics and exempt from empty attribute warnings (e.g. b:attr value='' to remove parent attribute)."
+        },
         "expr": {
           "type": "boolean",
           "description": "Specifies whether the 'expr:' dynamic attribute prefix is allowed for this attribute. Must be false for 'static_literal'. Must be true for 'prefixed_expression'. For 'native_expression', true indicates that expr: prefix is supported to enable dynamic dereferencing / runtime double evaluation, while false indicates expr: prefix is forbidden (e.g. b:eval expr where expr:expr is invalid syntax)."

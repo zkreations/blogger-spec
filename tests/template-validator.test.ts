@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   getThemeDesignerDescriptions,
   getVariableTypeAttributes,
+  validateDirectiveAttributes,
   validateVariableAttributes,
 } from '../src/catalogs/index.js'
 import * as RootExports from '../src/index.js'
@@ -267,6 +268,64 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diag?.message).toContain('red')
     })
 
+    it('detects missing mandatory directive attributes (BX1022)', () => {
+      const xml = '<b:loop var="i"><data:i/></b:loop>'
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1022')).toBe(true)
+      const diag = diags.find(d => d.code === 'BX1022')
+      expect(diag?.message).toContain('values')
+    })
+
+    it('detects inverted <b:includable> and <b:include> attributes (BX1015 / BX1016)', () => {
+      const xml = `
+        <b:section id='main'>
+          <b:widget id='Blog1' type='Blog'>
+            <b:includable name='mainWidget'>
+              <b:include id='mainWidget'/>
+            </b:includable>
+          </b:widget>
+        </b:section>
+      `
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1015')).toBe(true)
+      expect(diags.some(d => d.code === 'BX1016')).toBe(true)
+    })
+
+    it('detects inverted <b:switch expr=...> instead of var (BX1014)', () => {
+      const xml = '<b:switch expr="data:view.pageType"><b:case value="item"/></b:switch>'
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1014')).toBe(true)
+    })
+
+    it('detects deprecated directive attributes (BX1024)', () => {
+      const xml = '<b:widget id="Header1" type="Header" mobile="yes"/>'
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1024')).toBe(true)
+    })
+
+    it('detects invalid expressions on static literal attributes (BX1022)', () => {
+      const xml = '<b:section expr:id="data:blog.id"/>'
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1022')).toBe(true)
+      const diag = diags.find(d => d.message.includes('expr:id'))
+      expect(diag).toBeDefined()
+      expect(diag?.message).toContain('expr:id')
+    })
+
+    it('allows valid dynamic expr: attributes on dynamic directives', () => {
+      const xml = `
+        <b:section id='main'>
+          <b:widget id='Blog1' type='Blog'>
+            <b:includable id='main'>
+              <b:include expr:name='data:view.inc'/>
+            </b:includable>
+          </b:widget>
+        </b:section>
+      `
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1022')).toBe(false)
+    })
+
     it('operates identically when passed pre-scanned tokens', () => {
       const xml = '<b:section id="s1"><b:section id="s2"/></b:section>'
       const tokens = scanDirectiveTokens(xml)
@@ -279,6 +338,52 @@ describe('helpers & canonical structure validation suite', () => {
       expect(RootExports.validateDirectiveNesting).toBeDefined()
       expect(RootExports.validateTemplateStructure).toBeDefined()
       expect(RootExports.validateVariableAttributes).toBeDefined()
+      expect(RootExports.validateDirectiveAttributes).toBeDefined()
+    })
+  })
+
+  describe('directive attributes validation helper', () => {
+    it('accepts expr: prefix for attributes that support expressions', () => {
+      const result = validateDirectiveAttributes('b:include', ['expr:name'])
+      expect(result.valid).toBe(true)
+      expect(result.missingRequired).toEqual([])
+      expect(result.invalidExpressions).toEqual([])
+    })
+
+    it('rejects expr: prefix on static literal attributes', () => {
+      const result = validateDirectiveAttributes('b:widget', ['expr:id', 'type'])
+      expect(result.valid).toBe(false)
+      expect(result.invalidExpressions).toContain('expr:id')
+      expect(result.missingRequired).toContain('id')
+    })
+
+    it('identifies missing required attributes when neither literal nor expr is provided', () => {
+      const result = validateDirectiveAttributes('b:include', ['cond'])
+      expect(result.valid).toBe(false)
+      expect(result.missingRequired).toContain('name')
+    })
+
+    it('allows arbitrary attributes on directives configured with arbitrary_attributes (b:tag)', () => {
+      const result = validateDirectiveAttributes('b:tag', ['name', 'class', 'expr:id', 'data-custom'])
+      expect(result.valid).toBe(true)
+      expect(result.unknown).toEqual([])
+    })
+
+    it('exempts <b:attr value=""/> from BX1039 because empty value deletes the parent attribute', () => {
+      const xml = `
+        <div>
+          <b:attr name="title" value=""/>
+        </div>
+      `
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1039')).toBe(false)
+    })
+
+    it('allows <b:with expr:var="..."> dynamic variable alias declaration', () => {
+      const result = validateDirectiveAttributes('b:with', ['expr:var', 'value'])
+      expect(result.valid).toBe(true)
+      expect(result.missingRequired).toEqual([])
+      expect(result.invalidExpressions).toEqual([])
     })
   })
 })

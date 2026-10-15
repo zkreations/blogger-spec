@@ -21,6 +21,7 @@ import type {
   BloggerTypesCatalog,
   BloggerWidgetsCatalog,
   BloggerWidgetType,
+  DirectiveAttributesValidationResult,
   DirectiveNestingAction,
   DirectiveNestingViolation,
   VariableAttributesValidationResult,
@@ -73,16 +74,7 @@ export function getVariableTypeAttributes(type?: string, store?: CatalogStore): 
   return getSpecCatalog(store).getVariableTypeAttributes(type)
 }
 
-export interface DirectiveAttributesValidationResult {
-  valid: boolean
-  missingRequired: string[]
-  unknown: string[]
-  deprecated: Array<{
-    name: string
-    reason?: string
-    replacement?: string
-  }>
-}
+export type { DirectiveAttributesValidationResult } from '../types.js'
 
 export class SpecCatalog {
   private readonly store: CatalogStore
@@ -397,24 +389,34 @@ export class SpecCatalog {
         missingRequired: [],
         unknown: presentAttributes,
         deprecated: [],
+        invalidExpressions: [],
+        inverted: [],
       }
     }
 
     const allowedAttrs = directive.attributes || {}
     const deprecatedMap = directive.deprecated_attributes || {}
-
-    const missingRequired: string[] = []
-    for (const [attrName, meta] of Object.entries(allowedAttrs)) {
-      if (meta.required && !presentAttributes.includes(attrName)) {
-        missingRequired.push(attrName)
-      }
-    }
+    const allowsArbitrary = Boolean(directive.grammar?.arbitrary_attributes)
 
     const unknown: string[] = []
     const deprecated: DirectiveAttributesValidationResult['deprecated'] = []
+    const invalidExpressions: string[] = []
+    const inverted: DirectiveAttributesValidationResult['inverted'] = []
+
+    if (tagName === 'b:includable' && presentAttributes.includes('name') && !presentAttributes.includes('id')) {
+      inverted.push({ code: 'BX1015', attribute: 'name', expected: 'id' })
+    }
+    else if (tagName === 'b:include' && presentAttributes.includes('id') && !(presentAttributes.includes('name') || presentAttributes.includes('expr:name'))) {
+      inverted.push({ code: 'BX1016', attribute: 'id', expected: 'name' })
+    }
+    else if (tagName === 'b:switch' && presentAttributes.includes('expr') && !presentAttributes.includes('var')) {
+      inverted.push({ code: 'BX1014', attribute: 'expr', expected: 'var' })
+    }
 
     for (const attr of presentAttributes) {
-      const canonicalAttr = attr.startsWith('expr:') ? attr.slice(5) : attr
+      const hasExpr = attr.startsWith('expr:')
+      const canonicalAttr = hasExpr ? attr.slice(5) : attr
+
       if (deprecatedMap[canonicalAttr]) {
         deprecated.push({
           name: attr,
@@ -422,16 +424,47 @@ export class SpecCatalog {
           replacement: deprecatedMap[canonicalAttr].replacement,
         })
       }
-      else if (!allowedAttrs[canonicalAttr]) {
+      else if (allowedAttrs[canonicalAttr]) {
+        const meta = allowedAttrs[canonicalAttr]
+        if (hasExpr && (meta.expr === false || meta.attribute_kind === 'static_literal')) {
+          invalidExpressions.push(attr)
+        }
+      }
+      else if (inverted.some(inv => inv.attribute === canonicalAttr)) {
+        // Handled as specific inverted diagnostic
+      }
+      else if (!allowsArbitrary) {
         unknown.push(attr)
       }
     }
 
+    const missingRequired: string[] = []
+    for (const [attrName, meta] of Object.entries(allowedAttrs)) {
+      if (meta.required) {
+        if (inverted.some(inv => inv.expected === attrName)) {
+          continue
+        }
+
+        const hasLiteral = presentAttributes.includes(attrName)
+        const allowsExpr = meta.expr !== false && meta.attribute_kind !== 'static_literal'
+        const hasExpr = allowsExpr && presentAttributes.includes(`expr:${attrName}`)
+
+        if (!hasLiteral && !hasExpr) {
+          missingRequired.push(attrName)
+        }
+      }
+    }
+
     return {
-      valid: missingRequired.length === 0 && unknown.length === 0,
+      valid: missingRequired.length === 0
+        && unknown.length === 0
+        && invalidExpressions.length === 0
+        && inverted.length === 0,
       missingRequired,
       unknown,
       deprecated,
+      invalidExpressions,
+      inverted,
     }
   }
 

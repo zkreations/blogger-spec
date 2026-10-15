@@ -1289,6 +1289,7 @@
           "type": "string",
           "description": "Target attribute value. Literal or dynamic (expr:value). If empty or non-existent, the attribute is omitted.",
           "required": true,
+          "allow_empty": true,
           "expr": true,
           "attribute_kind": "prefixed_expression"
         },

@@ -89,6 +89,23 @@ export interface DirectiveNestingViolation {
   message: string
 }
 
+export interface DirectiveAttributesValidationResult {
+  valid: boolean
+  missingRequired: string[]
+  unknown: string[]
+  deprecated: Array<{
+    name: string
+    reason?: string
+    replacement?: string
+  }>
+  invalidExpressions: string[]
+  inverted: Array<{
+    code: string
+    attribute: string
+    expected: string
+  }>
+}
+
 export interface VariableAttributesValidationResult {
   valid: boolean
   invalidAttributes: string[]
@@ -144,6 +161,7 @@ export interface BloggerDirectiveAttribute {
   attribute_kind?: 'native_expression' | 'prefixed_expression' | 'static_literal'
   description?: string
   required?: boolean
+  allow_empty?: boolean
   expr?: boolean
   allowed_values?: any[]
 }
@@ -158,6 +176,7 @@ export interface BloggerDirectiveDefinition {
     valid_parents?: string[]
     valid_children?: string[]
     invalid_nesting_policy?: DirectiveInvalidNestingPolicy
+    arbitrary_attributes?: boolean
   }
   attributes?: Record<string, BloggerDirectiveAttribute>
   deprecated_attributes?: Record<string, any>
