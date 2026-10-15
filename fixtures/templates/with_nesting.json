@@ -67,6 +67,29 @@
         "html": "<span>15</span>",
         "canonicalDom": true
       }
+    },
+    {
+      "id": "scopes/with_nesting/with-widget-scope-shadowing-and-restoration",
+      "title": "With Widget Scope Variable Shadowing and Restoration",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:with_nesting",
+        "tag:b:with"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div>[<data:title/>]<b:with value='\"Shadowed Widget Title\"' var='title'>[<data:title/>]</b:with>[<data:title/>]</div>",
+        "mode": "fragment",
+        "context": {
+          "title": "Desarrollo"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div>[Desarrollo][Shadowed Widget Title][Desarrollo]</div>",
+        "canonicalDom": true
+      }
     }
   ]
 }
