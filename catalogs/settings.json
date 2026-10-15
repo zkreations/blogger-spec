@@ -400,6 +400,14 @@
         }
       }
     },
+    "BlogSearch": {
+      "description": "Configuration settings for internal blog search gadget. Operates with standard widget title attribute and runtime form data without persistent <b:widget-setting> entries in Layouts v3.",
+      "canonical": {}
+    },
+    "ContactForm": {
+      "description": "Configuration settings for contact form gadget. Utilizes standard widget attributes and localized runtime messages without persistent <b:widget-setting> entries in Layouts v3.",
+      "canonical": {}
+    },
     "FeaturedPost": {
       "description": "Configuration settings for pinned/featured posts, controlling post selection and preview elements.",
       "canonical": {
@@ -467,6 +475,65 @@
           "description": "Toggle display of publication date for feed items.",
           "default": true,
           "bound_runtime_data": "data:showItemDate"
+        }
+      }
+    },
+    "Followers": {
+      "description": "Configuration settings for sandboxed Google Friend Connect / Followers gadget, governing iframe color schemes and borders.",
+      "canonical": {
+        "borderColorTransparent": {
+          "type": "boolean",
+          "description": "Toggle transparent border styling on the Followers iframe.",
+          "default": true,
+          "bound_runtime_data": null
+        },
+        "contentHeadlineColor": {
+          "type": "string",
+          "description": "Hex color code for headline text within the Followers gadget.",
+          "default": "#000000",
+          "bound_runtime_data": null
+        },
+        "contentLinkColor": {
+          "type": "string",
+          "description": "Hex color code for primary hyperlinks within the Followers gadget.",
+          "default": "#000000",
+          "bound_runtime_data": null
+        },
+        "contentSecondaryLinkColor": {
+          "type": "string",
+          "description": "Hex color code for secondary hyperlinks within the Followers gadget.",
+          "default": "#FFFFFF",
+          "bound_runtime_data": null
+        },
+        "contentSecondaryTextColor": {
+          "type": "string",
+          "description": "Hex color code for secondary/subdued text within the Followers gadget.",
+          "default": "#000000",
+          "bound_runtime_data": null
+        },
+        "contentTextColor": {
+          "type": "string",
+          "description": "Hex color code for body text within the Followers gadget.",
+          "default": "#000000",
+          "bound_runtime_data": null
+        },
+        "endcapLinkColor": {
+          "type": "string",
+          "description": "Hex color code for endcap/footer hyperlinks within the Followers gadget.",
+          "default": "#000000",
+          "bound_runtime_data": null
+        },
+        "endcapTextColor": {
+          "type": "string",
+          "description": "Hex color code for endcap/footer text within the Followers gadget.",
+          "default": "#000000",
+          "bound_runtime_data": null
+        },
+        "useTemplateDefaultStyles": {
+          "type": "boolean",
+          "description": "Flag indicating whether default theme typography and palette styles apply to the gadget.",
+          "default": true,
+          "bound_runtime_data": null
         }
       }
     },
@@ -755,6 +822,10 @@
         }
       }
     },
+    "ReportAbuse": {
+      "description": "Configuration settings for DSA compliance abuse reporting gadget. Operates with zero persistent <b:widget-setting> entries.",
+      "canonical": {}
+    },
     "Stats": {
       "description": "Configuration settings for blog visitor counters, sparklines, and graphical view meters.",
       "canonical": {
@@ -795,6 +866,10 @@
           "bound_runtime_data": "data:statsUrl"
         }
       }
+    },
+    "Subscribe": {
+      "description": "Configuration settings for web feed subscription links. Feeds and reader links are dynamically evaluated at runtime without persistent <b:widget-setting> entries.",
+      "canonical": {}
     },
     "Text": {
       "description": "Settings for plain or formatted text note gadgets.",
@@ -852,6 +927,10 @@
           "bound_runtime_data": "data:layout"
         }
       }
+    },
+    "Wikipedia": {
+      "description": "Configuration settings for Wikipedia reference search box. Uses standard gadget header title and localized messages without persistent <b:widget-setting> entries.",
+      "canonical": {}
     }
   }
 }
