@@ -46,7 +46,9 @@ export class MemoryCatalogStore implements CatalogStore {
 
   getSchema(name: string): any {
     const cleanName = name.replace(/\.schema\.json$/, '')
-    const schema = this.schemas[cleanName] || this.schemas[name]
+    const schema = this.schemas[cleanName]
+      || this.schemas[`${cleanName}.schema.json`]
+      || this.schemas[name]
     if (!schema) {
       throw new Error(`Schema not found in memory store: ${name}`)
     }
