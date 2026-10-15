@@ -270,6 +270,23 @@ export class SpecCatalog {
     }
   }
 
+  getThemeDesignerDescriptions(): readonly string[] {
+    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
+    return (directivesCatalog.domain_metadata?.theme_designer_descriptions as string[]) ?? []
+  }
+
+  getVariableTypeAttributes(type?: string): { allowed: string[], required?: string[] } | Record<string, { allowed: string[], required?: string[] }> | undefined {
+    const varDef = this.getDirective('Variable')
+    const typeAttrs = varDef?.type_attributes
+    if (!typeAttrs) {
+      return undefined
+    }
+    if (type) {
+      return typeAttrs[type.toLowerCase()]
+    }
+    return typeAttrs
+  }
+
   isOperator(op: string): op is BloggerOperatorName {
     return this.grammarOperatorMap.has(op) || this.grammarOperatorMap.has(op.toLowerCase())
   }

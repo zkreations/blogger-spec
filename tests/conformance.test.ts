@@ -475,11 +475,17 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
 
     it('provides query helpers for diagnostics', () => {
       expect(isDiagnosticCode('BX1001')).toBe(true)
+      expect(isDiagnosticCode('BX1033')).toBe(true)
+      expect(isDiagnosticCode('BX1040')).toBe(true)
       expect(isDiagnosticCode('BX9999')).toBe(false)
 
       const bx1001 = getDiagnosticRule('BX1001')
       expect(bx1001?.name).toBe('PROHIBITED_FOR_TAG')
       expect(bx1001?.severity).toBe('error')
+
+      const bx1033 = getDiagnosticRule('BX1033')
+      expect(bx1033?.name).toBe('DUPLICATE_ELEMENT_ID')
+      expect(bx1033?.category).toBe('structure')
     })
 
     it('exports all helpers from root index', () => {
@@ -488,6 +494,25 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       expect(typeof RootExports.isOperator).toBe('function')
       expect(typeof RootExports.getOperatorPrecedence).toBe('function')
       expect(typeof RootExports.getDiagnosticRule).toBe('function')
+      expect(typeof RootExports.getThemeDesignerDescriptions).toBe('function')
+      expect(typeof RootExports.getVariableTypeAttributes).toBe('function')
+
+      const designerDescs = RootExports.getThemeDesignerDescriptions()
+      expect(designerDescs.length).toBe(252)
+      expect(designerDescs).toContain('Body background color')
+
+      const colorAttrs = RootExports.getVariableTypeAttributes('color')
+      expect(colorAttrs?.allowed).toContain('default')
+      expect(colorAttrs?.allowed).not.toContain('red')
+      expect(colorAttrs?.required).toContain('name')
+
+      const fontAttrs = RootExports.getVariableTypeAttributes('font')
+      expect(fontAttrs?.allowed).toContain('family')
+      expect(fontAttrs?.allowed).toContain('size')
+
+      const autoAttrs = RootExports.getVariableTypeAttributes('automatic')
+      expect(autoAttrs?.allowed).toContain('default')
+      expect(autoAttrs?.allowed).not.toContain('value')
     })
 
     it('serves master catalogs matching RootExports directly', () => {

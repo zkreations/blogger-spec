@@ -73,6 +73,14 @@ export function validateDirectiveAttributes(
   return getSpecCatalog().validateDirectiveAttributes(tagName, presentAttributes)
 }
 
+export function getThemeDesignerDescriptions(): readonly string[] {
+  return getSpecCatalog().getThemeDesignerDescriptions()
+}
+
+export function getVariableTypeAttributes(type?: string): any {
+  return getSpecCatalog().getVariableTypeAttributes(type)
+}
+
 export function isOperator(op: string): op is BloggerOperatorName {
   return getSpecCatalog().isOperator(op)
 }

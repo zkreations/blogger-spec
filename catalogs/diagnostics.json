@@ -314,6 +314,79 @@
       "replacement": "<b:eval expr='data:items[0]'/>",
       "evidence": "observed",
       "verifiedAt": "2026-10-14"
+    },
+    "BX1033": {
+      "code": "BX1033",
+      "name": "DUPLICATE_ELEMENT_ID",
+      "category": "structure",
+      "severity": "error",
+      "message": "Duplicate element identifier detected. Blogger requires all <b:section> and <b:widget> elements to have unique 'id' attributes across the template.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15"
+    },
+    "BX1034": {
+      "code": "BX1034",
+      "name": "WIDGET_OUTSIDE_SECTION",
+      "category": "structure",
+      "severity": "error",
+      "message": "<b:widget> must be placed inside a <b:section>. Widgets placed directly under <body> or outside sections are rejected by Blogger.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15"
+    },
+    "BX1035": {
+      "code": "BX1035",
+      "name": "NESTED_SECTION",
+      "category": "structure",
+      "severity": "error",
+      "message": "Nested <b:section> detected. Blogger does not allow a <b:section> inside another <b:section>.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15"
+    },
+    "BX1036": {
+      "code": "BX1036",
+      "name": "DUPLICATE_INCLUDABLE_ID",
+      "category": "structure",
+      "severity": "error",
+      "message": "Duplicate includable identifier inside container. Includable 'id' attributes must be unique within their parent <b:widget> or <b:defaultmarkup> block.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15"
+    },
+    "BX1037": {
+      "code": "BX1037",
+      "name": "UNRESOLVED_INCLUSION",
+      "category": "runtime",
+      "severity": "error",
+      "message": "Unresolved inclusion: referenced includable does not exist in the current widget, defaultmarkups, or global server inclusions.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15"
+    },
+    "BX1038": {
+      "code": "BX1038",
+      "name": "STRING_BOOLEAN_IN_EXPRESSION",
+      "category": "expressions",
+      "severity": "warning",
+      "message": "Comparing against a quoted boolean string literal ('true' / 'false') in expression. Use boolean literals true or false directly.",
+      "replacement": "true",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-15"
+    },
+    "BX1039": {
+      "code": "BX1039",
+      "name": "EMPTY_REQUIRED_ATTRIBUTE",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Required directive attribute value cannot be empty.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15"
+    },
+    "BX1040": {
+      "code": "BX1040",
+      "name": "INVALID_VARIABLE_TYPE_ATTRIBUTE",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Attribute is not supported for the declared <Variable> type.",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15"
     }
   }
 }

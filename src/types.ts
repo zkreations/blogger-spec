@@ -124,6 +124,7 @@ export interface BloggerDirectiveDefinition {
   attributes?: Record<string, BloggerDirectiveAttribute>
   deprecated_attributes?: Record<string, any>
   constraints?: Record<string, any>
+  type_attributes?: Record<string, { allowed: string[], required?: string[] }>
 }
 
 export interface BloggerFixture {

@@ -83,6 +83,13 @@
             }
           },
           "additionalProperties": false
+        },
+        "theme_designer_descriptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
         }
       },
       "additionalProperties": false
@@ -239,6 +246,31 @@
               },
               "description": {
                 "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "type_attributes": {
+          "type": "object",
+          "description": "Allowed and mandatory attributes mapped per subtype (e.g. for <Variable>).",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "allowed"
+            ],
+            "properties": {
+              "allowed": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "required": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               }
             },
             "additionalProperties": false

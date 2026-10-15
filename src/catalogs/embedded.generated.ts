@@ -38,7 +38,261 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "requirements": [
           "The inclusion in the default widget template must be customized, closed, or empty."
         ]
-      }
+      },
+      "theme_designer_descriptions": [
+        "Accents",
+        "Action color",
+        "Action font",
+        "Action font (large)",
+        "Action font (small)",
+        "Alternate Color",
+        "Attribution",
+        "Attribution link color",
+        "Attribution text color",
+        "Attribution text font",
+        "Author color",
+        "Author font",
+        "Author profile",
+        "Background blur",
+        "Background Color",
+        "Background color (Bottom)",
+        "Background color (text-only post)",
+        "Background color (Top)",
+        "Background color (Top) - HD",
+        "Background height",
+        "Background icons color",
+        "Backgrounds",
+        "Bevel Color",
+        "Blockquote color",
+        "Blockquote font",
+        "Blockquote font (large)",
+        "Blockquote font (small)",
+        "Blockquotes",
+        "Blog Description",
+        "Blog Description Background Color",
+        "Blog Description Color",
+        "Blog Description Font",
+        "Blog Title",
+        "Blog Title Background Color",
+        "Blog Title Color",
+        "Blog Title Font",
+        "Body",
+        "Body background color",
+        "Border Color",
+        "Bottom Sidebar Background Color",
+        "Bottom Sidebar Link Color",
+        "Bottom Sidebar Text Color",
+        "Bottom Sidebar Title Color",
+        "Bottom Sidebar Visited Link Color",
+        "Button color",
+        "Button font",
+        "Caption color",
+        "Caption font",
+        "Caption Text Color",
+        "Collapsed title color",
+        "Collapsed title font",
+        "Color",
+        "Comments",
+        "Content color",
+        "Content font",
+        "Content margin",
+        "Content width",
+        "Date and Footer Color",
+        "Date Header",
+        "Date Header Color",
+        "Date Header Font",
+        "Date Ribbon",
+        "Description Background Color",
+        "Description Color",
+        "Description font",
+        "Dialog action color",
+        "Dialog action font",
+        "Dialog input color",
+        "Dialog input font",
+        "Dialog title color",
+        "Dialog title font",
+        "Dialogs",
+        "Featured post",
+        "Featured post background color (secondary)",
+        "Featured post buttons color (secondary)",
+        "Featured post drop cap color (secondary)",
+        "Featured post main background color",
+        "Featured post main buttons color",
+        "Featured post main link color",
+        "Featured post main text color",
+        "Featured post main title color",
+        "Featured post text color (secondary)",
+        "Feed",
+        "Feed Links",
+        "Filter background color",
+        "Filter keyword color",
+        "Filter keyword font (large)",
+        "Filter keyword font (small)",
+        "Filter link color",
+        "Filter link font (large)",
+        "Filter link font (small)",
+        "Filter text color",
+        "Filter text font",
+        "Filter text font (large)",
+        "Filter text font (small)",
+        "Font",
+        "Footer",
+        "Footer Background",
+        "Footer color",
+        "Footer color (text-only post)",
+        "Footer Links",
+        "Footer Text Color",
+        "Gadget Background",
+        "Gadget Links",
+        "Gadget Text",
+        "Gadget text color",
+        "Gadget text font",
+        "Gadget Title",
+        "Gadget Title Color",
+        "Gadget title font",
+        "Gadget title font (large)",
+        "Gadget title font (small)",
+        "Gadgets",
+        "Header",
+        "Header Background",
+        "Header Bar",
+        "Header bar color",
+        "Header color",
+        "Header color (text-only post)",
+        "Header font",
+        "Header icons color",
+        "Header separator color",
+        "Hover Color",
+        "Icon color",
+        "Images",
+        "Individual Post or Page",
+        "Input color",
+        "Input font",
+        "Label background color",
+        "Label font",
+        "Label font size",
+        "Label text color",
+        "Labels",
+        "Link Color",
+        "Link font",
+        "Link Hover Color",
+        "Link Text",
+        "Link Visited Color",
+        "Links",
+        "Main Background",
+        "Main Background Color",
+        "Mobile Button Color",
+        "Outer Background",
+        "Page",
+        "Page Background Color",
+        "Page Header Background Color",
+        "Page Header Color",
+        "Page Header Corners Color",
+        "Page Header Font",
+        "Page Header Text Color",
+        "Page list color",
+        "Page list color (selected page)",
+        "Page list font",
+        "Page list font (selected page)",
+        "Page Text",
+        "Pager",
+        "Pictures",
+        "Placeholder text color",
+        "Placeholder text font",
+        "Popular post background color",
+        "Popular post byline color",
+        "Popular post link color",
+        "Popular post text color",
+        "Popular post title color",
+        "Popular posts",
+        "Popup background color",
+        "Popup selected color",
+        "Popup text color",
+        "Post",
+        "Post Background",
+        "Post background color",
+        "Post Border Color",
+        "Post border radius",
+        "Post byline color",
+        "Post byline font",
+        "Post Footer",
+        "Post Footer Color",
+        "Post Footer Font",
+        "Post Footer Link Color",
+        "Post icons color",
+        "Post link color",
+        "Post navigation",
+        "Post navigation links color",
+        "Post navigation links visited color",
+        "Post navigations links hover color",
+        "Post snippet text font",
+        "Post snippet text line height",
+        "Post subtitle color",
+        "Post subtitle font",
+        "Post text color",
+        "Post text font",
+        "Post text line height",
+        "Post Title",
+        "Post Title Background Color",
+        "Post Title Color",
+        "Post Title Font",
+        "Post title stream font",
+        "Post width (stream)",
+        "Posts",
+        "Profile description color",
+        "Profile description font",
+        "Profile link color",
+        "Profile link font",
+        "Profile name color",
+        "Profile name font",
+        "Profile text color",
+        "Profile title color",
+        "Search",
+        "Search bar",
+        "Selected Color",
+        "Separator Color",
+        "Separator Line Color",
+        "Shadow Color",
+        "Sharing",
+        "Sharing background color",
+        "Sharing icons color",
+        "Sharing text color",
+        "Sharing text font",
+        "Sidebar",
+        "Sidebar Background",
+        "Sidebar Background Color",
+        "Sidebar icons color",
+        "Sidebar Link Color",
+        "Sidebar Text Color",
+        "Sidebar Title Background Color",
+        "Sidebar Title Color",
+        "Sidebar Title Font",
+        "Sidebar Title Text Color",
+        "Sidebar Visited Link Color",
+        "Sidebar width",
+        "Tabs",
+        "Tabs Background",
+        "Tabs background color",
+        "Tabs Border Color",
+        "Tabs Text",
+        "Text Color",
+        "Text Font",
+        "Text font (large)",
+        "Text font (small)",
+        "Title Color",
+        "Title color (text-only post)",
+        "Title Font",
+        "Title font (large)",
+        "Title font (small)",
+        "Top Sidebar Background Color",
+        "Top Sidebar Link Color",
+        "Top Sidebar Text Color",
+        "Top Sidebar Title Color",
+        "Top Sidebar Visited Link Color",
+        "Visited Color",
+        "Visited Link Color",
+        "Widths"
+      ]
     },
     "directives": {
       "b:section": {
@@ -1393,30 +1647,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "attribute_kind": "static_literal",
             "expr": false
           },
-          "red": {
-            "type": "number",
-            "description": "Red color component (0-255) for color variables.",
-            "attribute_kind": "static_literal",
-            "expr": false
-          },
-          "green": {
-            "type": "number",
-            "description": "Green color component (0-255) for color variables.",
-            "attribute_kind": "static_literal",
-            "expr": false
-          },
-          "blue": {
-            "type": "number",
-            "description": "Blue color component (0-255) for color variables.",
-            "attribute_kind": "static_literal",
-            "expr": false
-          },
-          "alpha": {
-            "type": "number",
-            "description": "Alpha transparency component (0.0-1.0) for color variables.",
-            "attribute_kind": "static_literal",
-            "expr": false
-          },
           "family": {
             "type": "string",
             "description": "Font family name for font variables.",
@@ -1461,6 +1691,132 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "string_variable_defaults": {
             "status": "allowed",
             "description": "For type='string', the default attribute is optional and value can be empty (''). For all other types, default is required and value cannot be empty."
+          },
+          "background_six_components": {
+            "status": "mandatory",
+            "description": "Background variable values must contain exactly six space-separated components: color, image, repeat, attachment (scroll/fixed), posY, posX."
+          },
+          "automatic_variable_value": {
+            "status": "forbidden",
+            "description": "Variable of type='automatic' does not accept the value attribute; its value is computed dynamically by Blogger and stripped upon saving if present."
+          }
+        },
+        "type_attributes": {
+          "color": {
+            "allowed": [
+              "name",
+              "description",
+              "type",
+              "default",
+              "value",
+              "hideEditor"
+            ],
+            "required": [
+              "name",
+              "description",
+              "type",
+              "value"
+            ]
+          },
+          "font": {
+            "allowed": [
+              "name",
+              "description",
+              "type",
+              "default",
+              "value",
+              "hideEditor",
+              "family",
+              "size"
+            ],
+            "required": [
+              "name",
+              "description",
+              "type",
+              "value"
+            ]
+          },
+          "length": {
+            "allowed": [
+              "name",
+              "description",
+              "type",
+              "default",
+              "value",
+              "hideEditor",
+              "min",
+              "max"
+            ],
+            "required": [
+              "name",
+              "description",
+              "type",
+              "value"
+            ]
+          },
+          "background": {
+            "allowed": [
+              "name",
+              "description",
+              "type",
+              "default",
+              "value",
+              "hideEditor",
+              "color"
+            ],
+            "required": [
+              "name",
+              "description",
+              "type",
+              "value"
+            ]
+          },
+          "string": {
+            "allowed": [
+              "name",
+              "description",
+              "type",
+              "default",
+              "value",
+              "hideEditor"
+            ],
+            "required": [
+              "name",
+              "description",
+              "type",
+              "value"
+            ]
+          },
+          "url": {
+            "allowed": [
+              "name",
+              "description",
+              "type",
+              "default",
+              "value",
+              "hideEditor"
+            ],
+            "required": [
+              "name",
+              "description",
+              "type",
+              "value"
+            ]
+          },
+          "automatic": {
+            "allowed": [
+              "name",
+              "description",
+              "type",
+              "default",
+              "hideEditor"
+            ],
+            "required": [
+              "name",
+              "description",
+              "type",
+              "default"
+            ]
           }
         },
         "closure_mode": "self_closing"
@@ -10435,6 +10791,79 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "replacement": "<b:eval expr='data:items[0]'/>",
         "evidence": "observed",
         "verifiedAt": "2026-10-14"
+      },
+      "BX1033": {
+        "code": "BX1033",
+        "name": "DUPLICATE_ELEMENT_ID",
+        "category": "structure",
+        "severity": "error",
+        "message": "Duplicate element identifier detected. Blogger requires all <b:section> and <b:widget> elements to have unique 'id' attributes across the template.",
+        "evidence": "official",
+        "verifiedAt": "2026-10-15"
+      },
+      "BX1034": {
+        "code": "BX1034",
+        "name": "WIDGET_OUTSIDE_SECTION",
+        "category": "structure",
+        "severity": "error",
+        "message": "<b:widget> must be placed inside a <b:section>. Widgets placed directly under <body> or outside sections are rejected by Blogger.",
+        "evidence": "official",
+        "verifiedAt": "2026-10-15"
+      },
+      "BX1035": {
+        "code": "BX1035",
+        "name": "NESTED_SECTION",
+        "category": "structure",
+        "severity": "error",
+        "message": "Nested <b:section> detected. Blogger does not allow a <b:section> inside another <b:section>.",
+        "evidence": "official",
+        "verifiedAt": "2026-10-15"
+      },
+      "BX1036": {
+        "code": "BX1036",
+        "name": "DUPLICATE_INCLUDABLE_ID",
+        "category": "structure",
+        "severity": "error",
+        "message": "Duplicate includable identifier inside container. Includable 'id' attributes must be unique within their parent <b:widget> or <b:defaultmarkup> block.",
+        "evidence": "official",
+        "verifiedAt": "2026-10-15"
+      },
+      "BX1037": {
+        "code": "BX1037",
+        "name": "UNRESOLVED_INCLUSION",
+        "category": "runtime",
+        "severity": "error",
+        "message": "Unresolved inclusion: referenced includable does not exist in the current widget, defaultmarkups, or global server inclusions.",
+        "evidence": "official",
+        "verifiedAt": "2026-10-15"
+      },
+      "BX1038": {
+        "code": "BX1038",
+        "name": "STRING_BOOLEAN_IN_EXPRESSION",
+        "category": "expressions",
+        "severity": "warning",
+        "message": "Comparing against a quoted boolean string literal ('true' / 'false') in expression. Use boolean literals true or false directly.",
+        "replacement": "true",
+        "evidence": "observed",
+        "verifiedAt": "2026-10-15"
+      },
+      "BX1039": {
+        "code": "BX1039",
+        "name": "EMPTY_REQUIRED_ATTRIBUTE",
+        "category": "syntax",
+        "severity": "error",
+        "message": "Required directive attribute value cannot be empty.",
+        "evidence": "official",
+        "verifiedAt": "2026-10-15"
+      },
+      "BX1040": {
+        "code": "BX1040",
+        "name": "INVALID_VARIABLE_TYPE_ATTRIBUTE",
+        "category": "syntax",
+        "severity": "error",
+        "message": "Attribute is not supported for the declared <Variable> type.",
+        "evidence": "official",
+        "verifiedAt": "2026-10-15"
       }
     }
   },
@@ -11242,6 +11671,13 @@ export const embeddedSchemas: Record<string, any> = {
               }
             },
             "additionalProperties": false
+          },
+          "theme_designer_descriptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
           }
         },
         "additionalProperties": false
@@ -11398,6 +11834,31 @@ export const embeddedSchemas: Record<string, any> = {
                 },
                 "description": {
                   "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "type_attributes": {
+            "type": "object",
+            "description": "Allowed and mandatory attributes mapped per subtype (e.g. for <Variable>).",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "allowed"
+              ],
+              "properties": {
+                "allowed": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "required": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 }
               },
               "additionalProperties": false

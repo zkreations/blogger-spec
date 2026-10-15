@@ -677,6 +677,174 @@
         ],
         "stage": "parser"
       }
+    },
+    {
+      "id": "diagnostics/negative_syntax/duplicate-element-id",
+      "title": "Duplicate Section or Widget Identifier",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15",
+      "covers": [
+        "rule:BX1033"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'/><b:section id='main'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1033"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/widget-outside-section",
+      "title": "Widget Declared Outside Section",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15",
+      "covers": [
+        "rule:BX1034"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Header1' type='Header'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1034"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/nested-section",
+      "title": "Nested Section Container Prohibited",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15",
+      "covers": [
+        "rule:BX1035"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='outer'><b:section id='inner'/></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1035"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/duplicate-includable-id",
+      "title": "Duplicate Includable Identifier in Widget",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15",
+      "covers": [
+        "rule:BX1036"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Blog1' type='Blog'><b:includable id='main'/><b:includable id='main'/></b:widget>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1036"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/unresolved-inclusion",
+      "title": "Unresolved Includable Reference in b:include",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15",
+      "covers": [
+        "rule:BX1037"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Blog1' type='Blog'><b:includable id='main'><b:include name='nonExistentIncludable'/></b:includable></b:widget>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1037"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/string-boolean-in-expression",
+      "title": "String Quoted Boolean Literal in Expression",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-15",
+      "covers": [
+        "rule:BX1038"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.isPost == \"true\"'><p>Post</p></b:if>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1038"
+        ],
+        "stage": "linter"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/empty-required-attribute",
+      "title": "Empty Required Attribute on Directive",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15",
+      "covers": [
+        "rule:BX1039"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id=''/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1039"
+        ],
+        "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-variable-type-attribute",
+      "title": "Invalid Attribute for Variable Type",
+      "evidence": "official",
+      "verifiedAt": "2026-10-15",
+      "covers": [
+        "rule:BX1040"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<Variable name='bg' description='Color' type='color' min='10px' default='#fff' value='#fff'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1040"
+        ],
+        "stage": "compiler"
+      }
     }
   ]
 }
