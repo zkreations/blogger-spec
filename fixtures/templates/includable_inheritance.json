@@ -49,6 +49,30 @@
         "html": "<h2>Widget de prueba</h2>",
         "canonicalDom": true
       }
+    },
+    {
+      "id": "scopes/includable_inheritance/include-object-literal-with-nested-array",
+      "title": "Include Object Literal With Nested Array Indexing Via Eval",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-14",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "tag:b:default",
+        "tag:b:includable",
+        "tag:b:include",
+        "tag:b:eval"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='renderObj' var='obj'><div><data:obj.msg/>:<b:eval expr='data:obj.items[0]'/></div></b:includable></b:defaultmarkup></b:defaultmarkups><b:include data='{ msg: \"Widget Sub OK\", items: [\"x\", \"y\"] }' name='renderObj'/>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div>Widget Sub OK:x</div>",
+        "canonicalDom": true
+      }
     }
   ]
 }
