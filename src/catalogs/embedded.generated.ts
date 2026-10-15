@@ -2005,6 +2005,29 @@ export const embeddedCatalogs: BloggerCatalogMap = {
               }
             ],
             "return_type": "string"
+          },
+          {
+            "signature": "any + string",
+            "description": "String concatenation when right operand is text",
+            "operands": [
+              {
+                "name": "left",
+                "types": [
+                  "any"
+                ],
+                "required": true,
+                "description": "Left operand to concatenate"
+              },
+              {
+                "name": "right",
+                "types": [
+                  "string"
+                ],
+                "required": true,
+                "description": "Right string operand"
+              }
+            ],
+            "return_type": "string"
           }
         ],
         "examples": [
@@ -2026,7 +2049,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       "-": {
         "family": "arithmetic",
-        "description": "Performs arithmetic subtraction on numbers/lengths or unary negation.",
+        "description": "Performs arithmetic subtraction on numbers/lengths or unary negation on numeric literals (e.g. -5).",
         "syntax": {
           "supports_infix": true,
           "supports_functional": true,
@@ -2101,6 +2124,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             ],
             "return_type": "number"
           }
+        ],
+        "anti_patterns": [
+          "Unary negation cannot be applied to parenthesized compound expressions like '-(a - b)'; unary minus is strictly supported only on immediate numeric literals like -5."
         ],
         "examples": [
           {
@@ -2728,6 +2754,54 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ],
         "return_type": "boolean",
         "aliases": [],
+        "overloads": [
+          {
+            "signature": "item in array",
+            "description": "Array membership check with canonical equality coercion",
+            "operands": [
+              {
+                "name": "item",
+                "types": [
+                  "any"
+                ],
+                "required": true,
+                "description": "Target element to check"
+              },
+              {
+                "name": "array",
+                "types": [
+                  "array"
+                ],
+                "required": true,
+                "description": "Array collection"
+              }
+            ],
+            "return_type": "boolean"
+          },
+          {
+            "signature": "substring in string",
+            "description": "Substring membership check in character sequence",
+            "operands": [
+              {
+                "name": "substring",
+                "types": [
+                  "string"
+                ],
+                "required": true,
+                "description": "Target substring"
+              },
+              {
+                "name": "string",
+                "types": [
+                  "string"
+                ],
+                "required": true,
+                "description": "Parent string"
+              }
+            ],
+            "return_type": "boolean"
+          }
+        ],
         "examples": [
           {
             "expression": "\"featured\" in data:post.labels",
@@ -2772,6 +2846,54 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ],
         "return_type": "boolean",
         "aliases": [],
+        "overloads": [
+          {
+            "signature": "string contains substring",
+            "description": "Substring containment check within parent string",
+            "operands": [
+              {
+                "name": "haystack",
+                "types": [
+                  "string"
+                ],
+                "required": true,
+                "description": "Parent string"
+              },
+              {
+                "name": "needle",
+                "types": [
+                  "string"
+                ],
+                "required": true,
+                "description": "Substring to search for"
+              }
+            ],
+            "return_type": "boolean"
+          },
+          {
+            "signature": "array contains item",
+            "description": "Array item containment check with canonical equality coercion",
+            "operands": [
+              {
+                "name": "haystack",
+                "types": [
+                  "array"
+                ],
+                "required": true,
+                "description": "Array collection"
+              },
+              {
+                "name": "needle",
+                "types": [
+                  "any"
+                ],
+                "required": true,
+                "description": "Item to search for"
+              }
+            ],
+            "return_type": "boolean"
+          }
+        ],
         "anti_patterns": [
           "Do not use JavaScript .includes() or .indexOf(); use keyword operator 'contains'."
         ],
@@ -10273,6 +10395,16 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "severity": "error",
         "message": "Multiple <b:param> tags concatenated inline without intervening whitespace (<b:param .../><b:param .../>) cause Blogger runtime error 'Invalid parameters for message'. Sibling <b:param> tags must be separated by whitespace or placed on separate lines.",
         "replacement": "<b:param .../>\n  <b:param .../>",
+        "evidence": "observed",
+        "verifiedAt": "2026-10-14"
+      },
+      "BX1030": {
+        "code": "BX1030",
+        "name": "PROHIBITED_UNARY_EXPRESSION_NEGATION",
+        "category": "expressions",
+        "severity": "error",
+        "message": "Unary negation '-' cannot be applied to parenthesized compound expressions (e.g. -(a - b)) and triggers 'Invalid expression' compiler error. Blogger expression engine only permits unary minus on immediate numeric literals (-5).",
+        "replacement": "(0 - (a - b))",
         "evidence": "observed",
         "verifiedAt": "2026-10-14"
       }
