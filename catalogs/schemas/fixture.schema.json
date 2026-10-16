@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "fixture.schema.json",
+  "title": "Blogger Conformance Fixture Schema",
+  "description": "JSON Schema specification for individual Blogger conformance test fixtures and test manifests.",
+  "$defs": {
+    "fixture": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "evidence",
+        "verifiedAt",
+        "covers",
+        "input",
+        "expected"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "evidence": {
+          "$ref": "common.schema.json#/$defs/evidenceLevel"
+        },
+        "verifiedAt": {
+          "$ref": "common.schema.json#/$defs/verifiedAt"
+        },
+        "covers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "input": {
+          "type": "object",
+          "required": [
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "expression",
+                "template"
+              ]
+            },
+            "source": {
+              "type": "string"
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "fragment",
+                "full_document"
+              ]
+            },
+            "context": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": false
+        },
+        "expected": {
+          "type": "object",
+          "required": [
+            "outcome"
+          ],
+          "properties": {
+            "outcome": {
+              "type": "string",
+              "enum": [
+                "value",
+                "html",
+                "rejected"
+              ]
+            },
+            "value": {},
+            "html": {
+              "type": "string"
+            },
+            "canonicalDom": {
+              "type": "boolean"
+            },
+            "diagnosticCodes": {
+              "type": "array",
+              "items": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
+              }
+            },
+            "stage": {
+              "type": "string",
+              "enum": [
+                "parser",
+                "compiler",
+                "quota",
+                "linter"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
