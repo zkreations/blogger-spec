@@ -8,6 +8,7 @@
     "$schema",
     "title",
     "description",
+    "version",
     "super_prefix_rule",
     "inclusions"
   ],
@@ -19,6 +20,9 @@
       "type": "string"
     },
     "description": {
+      "type": "string"
+    },
+    "version": {
       "type": "string"
     },
     "super_prefix_rule": {
@@ -78,17 +82,10 @@
           "type": "string"
         },
         "evidence": {
-          "type": "string",
-          "enum": [
-            "official",
-            "observed",
-            "approximate",
-            "unknown"
-          ]
+          "$ref": "common.schema.json#/$defs/evidenceLevel"
         },
         "verifiedAt": {
-          "type": "string",
-          "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          "$ref": "common.schema.json#/$defs/verifiedAt"
         },
         "deprecated": {
           "type": "boolean"
