@@ -2,6 +2,7 @@
   "$schema": "./schemas/widgets.schema.json",
   "title": "Blogger Widget Data Dictionaries Master Catalog",
   "description": "Comprehensive, machine-readable catalog of local data properties exposed within <b:widget> containers for all 26 official widget types in Gadget Version 2 (Layouts v3), including nested structures and deprecated Version 1 properties.",
+  "version": "1.0.0",
   "widgets": {
     "AdSense": {
       "description": "Google AdSense ad slot configuration, publisher client ID, and slot dimension parameters.",
