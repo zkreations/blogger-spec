@@ -46,8 +46,7 @@
       ],
       "properties": {
         "code": {
-          "type": "string",
-          "pattern": "^BX[0-9]{4}$"
+          "$ref": "common.schema.json#/$defs/diagnosticCode"
         },
         "name": {
           "type": "string"
@@ -79,17 +78,10 @@
           "type": "string"
         },
         "evidence": {
-          "type": "string",
-          "enum": [
-            "official",
-            "observed",
-            "approximate",
-            "unknown"
-          ]
+          "$ref": "common.schema.json#/$defs/evidenceLevel"
         },
         "verifiedAt": {
-          "type": "string",
-          "format": "date"
+          "$ref": "common.schema.json#/$defs/verifiedAt"
         }
       },
       "additionalProperties": false
