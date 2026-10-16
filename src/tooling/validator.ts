@@ -1,8 +1,10 @@
 import type { CatalogStore } from '../catalogs/store.js'
 import type { BloggerCatalogName } from '../types.js'
+import { readFileSync } from 'node:fs'
 import addFormats from 'ajv-formats'
 import Ajv2020 from 'ajv/dist/2020.js'
 import { FsCatalogStore } from '../catalogs/fs-store.js'
+import { getWorkspacePaths } from '../paths.js'
 import { verifyArtifactsFreshness } from './compiler.js'
 
 export {
@@ -310,6 +312,21 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   else if (manifestItem?.valid) {
     metrics.fixturesChecked = manifestItem.count || 0
     log(`  [PASS] fixtures/index.json verified (${metrics.fixturesChecked} fixtures).`)
+    const manifest = JSON.parse(readFileSync(getWorkspacePaths().fixturesManifest, 'utf-8')) as {
+      fixtures?: Array<{
+        id: string
+        expected?: {
+          outcome?: string
+          diagnosticCodes?: string[]
+        }
+      }>
+    }
+    for (const fixture of manifest.fixtures || []) {
+      if (fixture.expected?.outcome === 'rejected'
+        && (!fixture.expected.diagnosticCodes || fixture.expected.diagnosticCodes.length === 0)) {
+        errors.push(`Fixture '${fixture.id}' with outcome 'rejected' must define at least one diagnostic code.`)
+      }
+    }
   }
 
   return {
