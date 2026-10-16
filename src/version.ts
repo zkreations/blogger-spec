@@ -16,21 +16,26 @@ export function getLayoutVersionsSpec(catalog: SpecCatalog = getSpecCatalog()): 
   return catalog.getLayoutVersions()
 }
 
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
 function testStructuralMarker(marker: string, xml: string): boolean {
-  if (marker === 'b:section tag=') {
-    return /<b:section\s[^>]*\btag\s*=/i.test(xml)
+  const trimmed = marker.trim()
+  if (trimmed.includes(' ')) {
+    const [tagPart, ...attrParts] = trimmed.split(/\s+/)
+    const attrPart = attrParts.join(' ')
+    const cleanAttr = attrPart.replace(/=$/, '')
+    return new RegExp(`<${escapeRegex(tagPart)}\\s[^>]*\\b${escapeRegex(cleanAttr)}\\s*=`, 'i').test(xml)
   }
-  if (marker.startsWith('b:')) {
-    const escaped = marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    return new RegExp(`<${escaped}\\b`, 'i').test(xml)
+  if (trimmed.startsWith('b:')) {
+    return new RegExp(`<${escapeRegex(trimmed)}\\b`, 'i').test(xml)
   }
-  if (marker.endsWith('=')) {
-    const attrName = marker.slice(0, -1).trim()
-    const escaped = attrName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    return new RegExp(`\\b${escaped}\\s*=`, 'i').test(xml)
+  if (trimmed.endsWith('=')) {
+    const attrName = trimmed.slice(0, -1).trim()
+    return new RegExp(`\\b${escapeRegex(attrName)}\\s*=`, 'i').test(xml)
   }
-  const escaped = marker.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  return new RegExp(`(?:<b:section\\s[^>]*\\b${escaped}\\s*=|\\b${escaped}\\s*=)`, 'i').test(xml)
+  return new RegExp(`(?:<b:section\\s[^>]*\\b${escapeRegex(trimmed)}\\s*=|\\b${escapeRegex(trimmed)}\\s*=)`, 'i').test(xml)
 }
 
 function collectMarkersForVersion(
@@ -81,8 +86,8 @@ export function detectTemplateVersion(
     .replace(/<\?xml[\s\S]*?\?>/i, '')
 
   // 1. Check for explicit version declaration attribute derived from catalog
-  const explicitAttrs = spec?.explicit_attributes ?? ['b:layoutsVersion', 'b:version']
-  const explicitPattern = new RegExp(`\\b(?:${explicitAttrs.join('|')}|layoutsVersion)\\s*=\\s*(['"])(.*?)\\1`, 'i')
+  const explicitAttrs = spec?.explicit_attributes ?? ['b:layoutsVersion', 'b:version', 'layoutsVersion']
+  const explicitPattern = new RegExp(`\\b(?:${explicitAttrs.map(escapeRegex).join('|')})\\s*=\\s*(['"])(.*?)\\1`, 'i')
   const explicitMatch = sanitized.match(explicitPattern)
 
   let explicitVersion: BloggerLayoutVersion | null = null
@@ -91,20 +96,30 @@ export function detectTemplateVersion(
   if (explicitMatch) {
     const rawVal = explicitMatch[2].trim()
     const major = Number.parseInt(rawVal.split('.')[0], 10)
-    if (major === 1 || major === 2 || major === 3) {
+    const supported = spec?.supported_versions ?? [1, 2, 3]
+    if ((supported as readonly number[]).includes(major)) {
       explicitVersion = major as BloggerLayoutVersion
       explicitFeature = explicitMatch[0]
     }
   }
 
   // Detect structural markers dynamically from catalog definitions
-  const v3Markers = collectMarkersForVersion(spec?.versions['3']?.structural_markers, sanitized)
-  const v2Markers = collectMarkersForVersion(spec?.versions['2']?.structural_markers, sanitized)
-  const v1Markers = collectMarkersForVersion(spec?.versions['1']?.structural_markers, sanitized)
+  const versionKeys: number[] = spec?.versions
+    ? Object.keys(spec.versions).map(v => Number.parseInt(v, 10)).sort((a, b) => b - a)
+    : [3, 2, 1]
+
+  const versionMarkers = new Map<number, string[]>()
+  for (const v of versionKeys) {
+    const markers = spec?.versions[String(v) as '1' | '2' | '3']?.structural_markers
+    versionMarkers.set(v, collectMarkersForVersion(markers, sanitized))
+  }
 
   // Resolution
   if (explicitVersion !== null && explicitFeature !== null) {
-    const detectedFeatures = [explicitFeature, ...v3Markers, ...v2Markers, ...v1Markers]
+    const detectedFeatures = [explicitFeature]
+    for (const v of versionKeys) {
+      detectedFeatures.push(...(versionMarkers.get(v) ?? []))
+    }
     return {
       version: explicitVersion,
       confidence: 'explicit',
@@ -113,30 +128,20 @@ export function detectTemplateVersion(
     }
   }
 
-  if (v3Markers.length > 0) {
-    return {
-      version: 3,
-      confidence: 'inferred',
-      detectedFeatures: v3Markers,
-      summary: `Inferred Layouts v3 from modern structural markers: ${v3Markers.join(', ')}`,
-    }
-  }
-
-  if (v2Markers.length > 0) {
-    return {
-      version: 2,
-      confidence: 'inferred',
-      detectedFeatures: v2Markers,
-      summary: `Inferred Layouts v2 from transitional structural markers: ${v2Markers.join(', ')}`,
-    }
-  }
-
-  if (v1Markers.length > 0) {
-    return {
-      version: 1,
-      confidence: 'inferred',
-      detectedFeatures: v1Markers,
-      summary: `Inferred Layouts v1 from legacy structural markers: ${v1Markers.join(', ')}`,
+  for (const v of versionKeys) {
+    const markers = versionMarkers.get(v) ?? []
+    if (markers.length > 0) {
+      const descriptor = v >= 3
+        ? 'modern structural markers'
+        : v === 2
+          ? 'transitional structural markers'
+          : 'legacy structural markers'
+      return {
+        version: v as BloggerLayoutVersion,
+        confidence: 'inferred',
+        detectedFeatures: markers,
+        summary: `Inferred Layouts v${v} from ${descriptor}: ${markers.join(', ')}`,
+      }
     }
   }
 

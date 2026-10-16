@@ -312,7 +312,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "default_version": 3,
         "explicit_attributes": [
           "b:layoutsVersion",
-          "b:version"
+          "b:version",
+          "layoutsVersion"
         ],
         "versions": {
           "1": {

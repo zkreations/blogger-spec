@@ -769,6 +769,34 @@ describe('catalogs and store formal verification suite', () => {
         expect(RootExports.resolveOperatorReturnType('head', 'array[string]', undefined, customSpec)).toBe('string')
         expect(RootExports.resolveOperatorReturnType('sample', 'array[image]', undefined, customSpec)).toBe('array[image]')
       })
+
+      it('propagates dynamic layout version explicit attributes, markers, and default version', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.directives.domain_metadata.layout_versions.default_version = 1
+        catalogs.directives.domain_metadata.layout_versions.explicit_attributes.push('custom-layout-attr')
+        catalogs.directives.domain_metadata.layout_versions.versions['2'].structural_markers.push('b:widget custom-marker=')
+
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        // Custom default version fallback
+        expect(RootExports.detectTemplateVersion('<html/>', customSpec).version).toBe(1)
+        expect(RootExports.detectTemplateVersion('<html/>').version).toBe(3)
+
+        // Custom explicit attribute
+        const explicitXml = '<html custom-layout-attr="2"></html>'
+        const resExplicit = RootExports.detectTemplateVersion(explicitXml, customSpec)
+        expect(resExplicit.version).toBe(2)
+        expect(resExplicit.confidence).toBe('explicit')
+        expect(resExplicit.detectedFeatures).toContain('custom-layout-attr="2"')
+
+        // Custom structural marker
+        const markerXml = '<b:widget custom-marker="val"/>'
+        const resMarker = RootExports.detectTemplateVersion(markerXml, customSpec)
+        expect(resMarker.version).toBe(2)
+        expect(resMarker.confidence).toBe('inferred')
+        expect(resMarker.detectedFeatures).toContain('b:widget custom-marker=')
+      })
     })
 
     describe('store reactivity, module constants, and canonical void elements (Phase 4)', () => {
