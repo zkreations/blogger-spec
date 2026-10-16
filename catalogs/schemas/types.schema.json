@@ -8,6 +8,7 @@
     "$schema",
     "title",
     "description",
+    "version",
     "types"
   ],
   "properties": {
@@ -77,6 +78,9 @@
         "type": "string"
       },
       "description": "Canonical primitive data types composing the scalar category (string, number, boolean)."
+    },
+    "version": {
+      "type": "string"
     }
   },
   "additionalProperties": false,
@@ -301,11 +305,18 @@
         "locale",
         "message",
         "skin_variable",
+        "skin:color",
+        "skin:font",
+        "skin:background",
         "skin:length",
+        "skin:automatic",
+        "skin:string",
+        "skin:url",
         "scalar",
         "expression",
         "predicate",
-        "any"
+        "any",
+        "child_item"
       ],
       "description": "Blogger Expression Engine operator and operand data type defined in types.json."
     }
