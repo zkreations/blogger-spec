@@ -4,11 +4,9 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { join } from 'node:path'
 import ts from 'typescript'
 import {
-  getDiagnostics,
   getDirectives,
   getGlobals,
   getMessages,
-  getOperators,
   getSettings,
   getTypes,
   getWidgets,
@@ -16,6 +14,7 @@ import {
   setDefaultCatalogStore,
 } from '../catalogs/index.js'
 import { getWorkspacePaths } from '../paths.js'
+import { generateCanonicalSchemaTypes } from './schema-types-generator.js'
 
 export interface VerificationFreshnessItem {
   name: string
@@ -97,9 +96,7 @@ function mapPropertyTypeToTs(type: string): string {
 
 export function generateDts(): string {
   const directivesData = getDirectives()
-  const operatorsData = getOperators()
   const globalsData = getGlobals()
-  const diagnosticsData = getDiagnostics()
   const widgetsData = getWidgets()
   const settingsData = getSettings()
   const messagesData = getMessages()
@@ -162,8 +159,6 @@ export function generateDts(): string {
 
   const directives = directivesData.directives || {}
   const dirNames = Object.keys(directives).sort()
-  lines.push(`export type BloggerDirectiveName = ${dirNames.map(d => `'${d}'`).join(' | ')};`)
-  lines.push('')
 
   for (const dName of dirNames) {
     const dInfo = directives[dName]
@@ -203,20 +198,7 @@ export function generateDts(): string {
     lines.push('')
   }
 
-  const rules = diagnosticsData.rules || {}
-  const ruleCodes = Object.keys(rules).sort()
-  lines.push(`export type BloggerDiagnosticCode = ${ruleCodes.map(c => `'${c}'`).join(' | ')};`)
-  lines.push('')
-
-  const operators = operatorsData.operators || {}
-  const opNames = Object.keys(operators).sort()
-  lines.push(`export type BloggerOperatorName = ${opNames.map(o => JSON.stringify(o)).join(' | ')};`)
-  lines.push('')
-
   const messages = messagesData.messages || {}
-  const msgKeys = Object.keys(messages).sort()
-  lines.push(`export type BloggerMessageKey = ${msgKeys.map(m => `'${m}'`).join(' | ')};`)
-  lines.push('')
 
   const globals = globalsData.objects || {}
   for (const gName of Object.keys(globals).sort()) {
@@ -249,8 +231,6 @@ export function generateDts(): string {
 
   const widgets = widgetsData.widgets || {}
   const widgetTypes = Object.keys(widgets).sort()
-  lines.push(`export type BloggerWidgetType = ${widgetTypes.map(w => `'${w}'`).join(' | ')};`)
-  lines.push('')
 
   for (const wName of widgetTypes) {
     const pascal = toPascalCase(wName)
@@ -350,47 +330,7 @@ export function buildFixturesManifest(): BloggerFixturesManifest {
 }
 
 export function generateDomainTypes(): string {
-  const directivesData = getDirectives()
-  const operatorsData = getOperators()
-  const diagnosticsData = getDiagnostics()
-  const widgetsData = getWidgets()
-  const messagesData = getMessages()
-
-  const directives = directivesData.directives || {}
-  const dirNames = Object.keys(directives).sort()
-
-  const widgets = widgetsData.widgets || {}
-  const widgetTypes = Object.keys(widgets).sort()
-
-  const rules = diagnosticsData.rules || {}
-  const ruleCodes = Object.keys(rules).sort()
-
-  const operators = operatorsData.operators || {}
-  const opNames = Object.keys(operators).sort()
-
-  const messages = messagesData.messages || {}
-  const msgKeys = Object.keys(messages).sort()
-
-  const lines: string[] = [
-    '/**',
-    ' * blogger-spec — Canonical Generated Domain Types.',
-    ' * Automatically generated from master JSON catalogs.',
-    ' * DO NOT EDIT MANUALLY.',
-    ' */',
-    '',
-    `export type BloggerDirectiveName = ${dirNames.map(d => `'${d}'`).join(' | ')};`,
-    '',
-    `export type BloggerWidgetType = ${widgetTypes.map(w => `'${w}'`).join(' | ')};`,
-    '',
-    `export type BloggerDiagnosticCode = ${ruleCodes.map(c => `'${c}'`).join(' | ')};`,
-    '',
-    `export type BloggerOperatorName = ${opNames.map(o => JSON.stringify(o)).join(' | ')};`,
-    '',
-    `export type BloggerMessageKey = ${msgKeys.map(m => `'${m}'`).join(' | ')};`,
-    '',
-  ]
-
-  return lines.join('\n')
+  return generateCanonicalSchemaTypes()
 }
 
 export function buildDomainTypes(): void {

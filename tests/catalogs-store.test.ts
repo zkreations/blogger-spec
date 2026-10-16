@@ -78,6 +78,7 @@ import {
   validateNesting,
 } from '../src/catalogs/index.js'
 import * as RootExports from '../src/index.js'
+import { generateDomainTypes, generateDts } from '../src/tooling/compiler.js'
 
 describe('catalogs and store formal verification suite', () => {
   describe('memoryCatalogStore & store life-cycle', () => {
@@ -706,6 +707,38 @@ describe('catalogs and store formal verification suite', () => {
       expect(RootExports.getStandardDiagnostics).toBe(getStandardDiagnostics)
       expect(RootExports.getStandardDiagnostic).toBe(getStandardDiagnostic)
       expect(RootExports.isDirectiveExpressionAttribute).toBe(isDirectiveExpressionAttribute)
+    })
+  })
+
+  describe('schema-driven types and declaration generation (Phase 2)', () => {
+    it('generates canonical domain and schema types from catalogs and JSON schemas', () => {
+      const generatedContent = generateDomainTypes()
+      expect(generatedContent).toContain('export type BloggerDirectiveName =')
+      expect(generatedContent).toContain('export type BloggerWidgetType =')
+      expect(generatedContent).toContain('export type BloggerDiagnosticCode =')
+      expect(generatedContent).toContain('export type BloggerOperatorName =')
+      expect(generatedContent).toContain('export type BloggerMessageKey =')
+      expect(generatedContent).toContain('export type BloggerEvidenceLevel =')
+      expect(generatedContent).toContain('export type BloggerDiagnosticCategory =')
+      expect(generatedContent).toContain('export type BloggerDiagnosticSeverity =')
+      expect(generatedContent).toContain('export type DirectiveNestingAction =')
+      expect(generatedContent).toContain('export type BloggerInclusionCategory =')
+      expect(generatedContent).toContain('export type BloggerStandardDiagnosticKey =')
+      expect(generatedContent).toContain('export interface BloggerOperatorsCatalog')
+      expect(generatedContent).toContain('export interface BloggerDirectivesCatalog')
+    })
+
+    it('generates clean, non-duplicate type definitions in dist/index.d.ts', () => {
+      const dtsContent = generateDts()
+      // Should not contain duplicate inline declarations of domain union types
+      expect(dtsContent).not.toContain('export type BloggerDirectiveName =')
+      expect(dtsContent).not.toContain('export type BloggerDiagnosticCode =')
+      expect(dtsContent).not.toContain('export type BloggerOperatorName =')
+      expect(dtsContent).not.toContain('export type BloggerMessageKey =')
+      expect(dtsContent).not.toContain('export type BloggerWidgetType =')
+      // Should contain directive attributes and globals
+      expect(dtsContent).toContain('export interface BloggerCDATADirectiveAttributes')
+      expect(dtsContent).toContain('export interface BloggerBlogGlobal')
     })
   })
 })
