@@ -149,6 +149,20 @@ import operators from 'blogger-spec/operators'
 import types from 'blogger-spec/types'
 ```
 
+### Exported Utilities by Subpath
+
+| Subpath | Key Exports | Description |
+| :--- | :--- | :--- |
+| `blogger-spec/ast` | `parseExpression`, `tokenize`, `ExpressionParser` | Pratt parser and lexer producing canonical expression ASTs (`BloggerExpressionNode`). |
+| `blogger-spec/parser` | `scanDirectiveTokens`, `validateTemplateStructure`, `validateDirectiveNesting`, `canNest`, `getUnclosedDirectiveStack` | Fault-tolerant directive scanner, structural template validator, and unclosed tag stack tracker. |
+| `blogger-spec/quota` | `evaluateExpressionBudget`, `countExpressionTokens`, `tokenizeExpression`, `COMPILER_QUOTA_LIMIT` | Token quota calculator and budget evaluator against the 40-token compiler ceiling (`BX1021`). |
+| `blogger-spec/type-system` | `isTypeAssignable`, `getTypeModifiers`, `resolveModifierReturnType`, `resolveOperatorReturnType`, `isTruthy` | Type assignability, member modifier inheritance, operator return type inference, and truthiness coercions. |
+| `blogger-spec/version` | `detectTemplateVersion`, `getLayoutVersionsSpec` | Deterministic template layout architecture detector (v1, v2, v3) via explicit attributes and markers. |
+| `blogger-spec/catalogs` | `getSpecCatalog`, `SpecCatalog`, `MemoryCatalogStore`, `isDirective`, `isOperator`, `getDiagnostic` | Specification query facade, attribute validation, and in-memory catalog store. |
+| `blogger-spec/runner` | `runSpecConformance`, `runConformance` | Automated test harness to validate engine conformance against empirical fixtures. |
+| `blogger-spec/node` | `FsCatalogStore`, `getCatalogsDirectory`, `getSchemasDirectory` | Optional filesystem-based catalog store reading directly from disk in Node.js environments. |
+| `blogger-spec/<domain>` | `directives`, `operators`, `types`, `widgets`, `settings`, `globals`, etc. | Direct access to canonical JSON catalogs and Draft 2020-12 schemas (`blogger-spec/schemas/*`). |
+
 ---
 
 ## Quick Usage Examples
