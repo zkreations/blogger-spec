@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "common.schema.json",
+  "title": "Blogger Common Shared Definitions Schema",
+  "description": "Shared canonical JSON Schema definitions and reusable sub-schemas across Blogger catalogs.",
+  "$defs": {
+    "evidenceLevel": {
+      "type": "string",
+      "enum": [
+        "official",
+        "observed",
+        "approximate",
+        "unknown"
+      ],
+      "description": "Standard empirical evidence classification level for Blogger specifications."
+    },
+    "verifiedAt": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "ISO 8601 calendar date (YYYY-MM-DD) indicating the empirical verification milestone."
+    },
+    "diagnosticCode": {
+      "type": "string",
+      "pattern": "^BX[0-9]{4}$",
+      "description": "Canonical Blogger specification diagnostic rule identifier (e.g. BX1001)."
+    },
+    "deprecatedEntry": {
+      "type": "object",
+      "required": [
+        "status",
+        "action",
+        "type",
+        "replacement",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "deprecated_in_widget_v2",
+            "deprecated_in_layout_v3",
+            "ignored_in_layout_v3",
+            "obsolete",
+            "legacy"
+          ]
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "migrate",
+            "remove"
+          ]
+        },
+        "type": {
+          "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+        },
+        "replacement": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "canonicalProperty": {
+      "type": "object",
+      "required": [
+        "type",
+        "description"
+      ],
+      "properties": {
+        "type": {
+          "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+        },
+        "description": {
+          "type": "string"
+        },
+        "item_type": {
+          "type": "string"
+        },
+        "allowed_values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/canonicalProperty"
+          }
+        },
+        "item_properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/canonicalProperty"
+          }
+        },
+        "deprecated": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/deprecatedEntry"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "patternDefinition": {
+      "type": "object",
+      "required": [
+        "template",
+        "type",
+        "description"
+      ],
+      "properties": {
+        "template": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "supported_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "index_start": {
+          "type": "integer"
+        },
+        "index_end": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "paired_with": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
