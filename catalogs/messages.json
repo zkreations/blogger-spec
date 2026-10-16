@@ -2,6 +2,7 @@
   "$schema": "./schemas/messages.schema.json",
   "title": "Blogger System Messages Master Catalog",
   "description": "Canonical registry of localized UI message tokens available globally via data:messages.<token> in the Blogger Template Engine.",
+  "version": "1.0.0",
   "patterns": [
     {
       "template": "data:messages.{key}",

@@ -8,6 +8,7 @@
     "$schema",
     "title",
     "description",
+    "version",
     "messages"
   ],
   "properties": {
@@ -20,6 +21,9 @@
     "description": {
       "type": "string"
     },
+    "version": {
+      "type": "string"
+    },
     "messages": {
       "type": "object",
       "additionalProperties": {
@@ -29,7 +33,7 @@
     "patterns": {
       "type": "array",
       "items": {
-        "$ref": "#/$defs/patternDefinition"
+        "$ref": "common.schema.json#/$defs/patternDefinition"
       }
     }
   },
@@ -82,26 +86,6 @@
         "description": {
           "type": "string",
           "description": "Description of the parameter value to interpolate."
-        }
-      },
-      "additionalProperties": false
-    },
-    "patternDefinition": {
-      "type": "object",
-      "required": [
-        "template",
-        "type",
-        "description"
-      ],
-      "properties": {
-        "template": {
-          "type": "string"
-        },
-        "type": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
         }
       },
       "additionalProperties": false
