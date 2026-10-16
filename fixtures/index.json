@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-16",
   "metrics": {
-    "totalFixtures": 187,
+    "totalFixtures": 188,
     "positiveFixtures": 146,
-    "negativeFixtures": 41,
-    "coveredSpecEntities": 130
+    "negativeFixtures": 42,
+    "coveredSpecEntities": 131
   },
   "fixtures": [
     {
@@ -4241,6 +4241,27 @@
         "outcome": "rejected",
         "diagnosticCodes": [
           "BX1041"
+        ],
+        "stage": "linter"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/disallowed-expression-attribute",
+      "title": "Disallowed Expression on Static Attribute",
+      "evidence": "official",
+      "verifiedAt": "2026-10-16",
+      "covers": [
+        "rule:BX1042"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section expr:id='data:blog.id'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1042"
         ],
         "stage": "linter"
       }

@@ -12,7 +12,7 @@ export type BloggerDirectiveName = 'CDATA' | 'Group' | 'Variable' | 'b:attr' | '
 
 export type BloggerWidgetType = 'AdSense' | 'Attribution' | 'Blog' | 'BlogArchive' | 'BlogList' | 'BlogSearch' | 'BloggerButton' | 'ContactForm' | 'FeaturedPost' | 'Feed' | 'Followers' | 'HTML' | 'Header' | 'Image' | 'Label' | 'LinkList' | 'PageList' | 'PopularPosts' | 'Profile' | 'ReportAbuse' | 'Stats' | 'Subscribe' | 'Text' | 'TextList' | 'Translate' | 'Wikipedia';
 
-export type BloggerDiagnosticCode = 'BX1001' | 'BX1002' | 'BX1003' | 'BX1004' | 'BX1005' | 'BX1006' | 'BX1007' | 'BX1008' | 'BX1009' | 'BX1010' | 'BX1011' | 'BX1012' | 'BX1013' | 'BX1014' | 'BX1015' | 'BX1016' | 'BX1017' | 'BX1018' | 'BX1019' | 'BX1020' | 'BX1021' | 'BX1022' | 'BX1023' | 'BX1024' | 'BX1025' | 'BX1026' | 'BX1027' | 'BX1028' | 'BX1029' | 'BX1030' | 'BX1031' | 'BX1032' | 'BX1033' | 'BX1034' | 'BX1035' | 'BX1036' | 'BX1037' | 'BX1038' | 'BX1039' | 'BX1040' | 'BX1041';
+export type BloggerDiagnosticCode = 'BX1001' | 'BX1002' | 'BX1003' | 'BX1004' | 'BX1005' | 'BX1006' | 'BX1007' | 'BX1008' | 'BX1009' | 'BX1010' | 'BX1011' | 'BX1012' | 'BX1013' | 'BX1014' | 'BX1015' | 'BX1016' | 'BX1017' | 'BX1018' | 'BX1019' | 'BX1020' | 'BX1021' | 'BX1022' | 'BX1023' | 'BX1024' | 'BX1025' | 'BX1026' | 'BX1027' | 'BX1028' | 'BX1029' | 'BX1030' | 'BX1031' | 'BX1032' | 'BX1033' | 'BX1034' | 'BX1035' | 'BX1036' | 'BX1037' | 'BX1038' | 'BX1039' | 'BX1040' | 'BX1041' | 'BX1042';
 
 export type BloggerOperatorName = "!=" | "%" | "*" | "+" | "-" | "/" | "<" | "<=" | "==" | ">" | ">=" | "? :" | "?:" | "all" | "and" | "any" | "appendParams" | "contains" | "count" | "filter" | "first" | "format" | "fragment" | "in" | "map" | "none" | "not" | "or" | "params" | "path" | "resizeImage" | "skip" | "snippet" | "sourceSet" | "take" | "to";
 
@@ -32,7 +32,9 @@ export type DirectiveNestingAction = 'reject' | 'strip' | 'ignore';
 
 export type BloggerInclusionCategory = 'universal' | 'common' | 'icon' | 'theme' | 'deprecated';
 
-export type BloggerStandardDiagnosticKey = 'deprecated_attribute' | 'disallowed_expression_attribute' | 'duplicate_element_id' | 'duplicate_includable_id' | 'empty_required_attribute' | 'invalid_variable_type_attribute' | 'missing_required_attribute' | 'prohibited_nesting';
+export type BloggerCanonicalPropertyType = 'string' | 'number' | 'boolean' | 'url' | 'image' | 'date' | 'object' | 'array' | 'array[object]' | 'array[string]' | 'array[image]' | 'array[url]' | 'array[date]' | 'array[number]' | 'array[boolean]' | 'array[array]' | 'locale' | 'message' | 'skin_variable';
+
+export type BloggerStandardDiagnosticKey = 'deprecated_attribute' | 'disallowed_expression_attribute' | 'duplicate_element_id' | 'duplicate_includable_id' | 'empty_required_attribute' | 'invalid_variable_type_attribute' | 'mismatched_or_unclosed_tag' | 'missing_required_attribute' | 'prohibited_nesting';
 
 export type BloggerStandardDiagnostics = Record<BloggerStandardDiagnosticKey, BloggerDiagnosticCode>;
 
@@ -335,7 +337,7 @@ export interface BloggerTypesCatalog {
 // =========================================================================
 
 export interface BloggerCanonicalProperty {
-  type: string;
+  type: BloggerCanonicalPropertyType;
   description: string;
   item_type?: string;
   allowed_values?: string[];

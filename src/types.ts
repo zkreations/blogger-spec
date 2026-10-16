@@ -8,6 +8,7 @@ import type {
   BloggerDiagnosticSeverity,
   BloggerEvidenceLevel,
   BloggerLayoutVersion,
+  BloggerOperatorDefinition,
   DirectiveNestingAction,
 } from './catalogs/types.generated.js'
 
@@ -181,4 +182,8 @@ export interface BloggerExpressionBudgetResult {
   status: BloggerExpressionBudgetStatus
   tokenStream: BloggerExpressionTokenInfo[]
   recommendation: string
+}
+
+export interface BloggerCompatibleOperator extends BloggerOperatorDefinition {
+  name: string
 }

@@ -12,9 +12,9 @@ describe('system inclusions catalog suite', () => {
   it('loads inclusions catalog with valid super prefix rule', () => {
     const catalog = getInclusions()
     expect(catalog).toBeDefined()
-    expect(catalog.super_prefix_rule).toBeDefined()
-    expect(catalog.super_prefix_rule.prefix).toBe('super.')
-    expect(catalog.super_prefix_rule.behavior).toBe('delegation')
+    expect(catalog.domain_metadata?.super_prefix_rule).toBeDefined()
+    expect(catalog.domain_metadata?.super_prefix_rule?.prefix).toBe('super.')
+    expect(catalog.domain_metadata?.super_prefix_rule?.behavior).toBe('delegation')
     expect(Object.keys(catalog.inclusions).length).toBeGreaterThanOrEqual(45)
   })
 

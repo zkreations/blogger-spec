@@ -342,13 +342,14 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diags.some(d => d.code === 'BX1024')).toBe(true)
     })
 
-    it('detects invalid expressions on static literal attributes (BX1022)', () => {
+    it('detects invalid expressions on static literal attributes (BX1042)', () => {
       const xml = '<b:section expr:id="data:blog.id"/>'
       const diags = validateTemplateStructure(xml)
-      expect(diags.some(d => d.code === 'BX1022')).toBe(true)
+      expect(diags.some(d => d.code === 'BX1042')).toBe(true)
       const diag = diags.find(d => d.message.includes('expr:id'))
       expect(diag).toBeDefined()
       expect(diag?.message).toContain('expr:id')
+      expect(diag?.rule.name).toBe('DISALLOWED_EXPRESSION_ATTRIBUTE')
     })
 
     it('allows valid dynamic expr: attributes on dynamic directives', () => {

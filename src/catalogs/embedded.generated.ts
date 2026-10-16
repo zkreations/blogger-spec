@@ -11,6 +11,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "$schema": "./schemas/directives.schema.json",
     "title": "Blogger XML Directives & Tags Master Catalog",
     "description": "Registry of Blogger XML directives, syntax grammar constraints, styling components, and attribute migration paths.",
+    "version": "1.0.0",
     "domain_metadata": {
       "compiler_limits": {
         "max_directive_nesting_depth": 50
@@ -27,11 +28,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "missing_required_attribute": "BX1022",
         "deprecated_attribute": "BX1024",
         "empty_required_attribute": "BX1039",
-        "disallowed_expression_attribute": "BX1022",
+        "disallowed_expression_attribute": "BX1042",
         "duplicate_element_id": "BX1033",
         "duplicate_includable_id": "BX1036",
         "invalid_variable_type_attribute": "BX1040",
-        "prohibited_nesting": "BX1023"
+        "prohibited_nesting": "BX1023",
+        "mismatched_or_unclosed_tag": "BX1041"
       },
       "theme_designer_descriptions": [
         "Accents",
@@ -377,7 +379,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ],
         "@template_markup": [
           "html:*",
-          "#text",
+          "text",
           "CDATA"
         ],
         "@flow_content": [
@@ -879,7 +881,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "b:widget-settings"
           ],
           "valid_children": [
-            "#text"
+            "text"
           ]
         },
         "attributes": {
@@ -2069,7 +2071,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "b:template-skin"
           ],
           "valid_children": [
-            "#text"
+            "text"
           ]
         },
         "attributes": {},
@@ -2107,331 +2109,333 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         },
         "closure_mode": "container"
       }
-    },
-    "version": "1.0.0"
+    }
   },
   "operators": {
     "$schema": "./schemas/operators.schema.json",
     "title": "Blogger Operators & Expressions Master Catalog",
     "description": "Canonical machine-readable catalog of Blogger expression operators, dual-syntax execution grammar, 11-level precedence hierarchy, operand typing, and compiler quotas.",
-    "precedence_hierarchy": [
-      {
-        "level": 1,
-        "category": "Grouping",
-        "associativity": "inner-to-outer",
-        "operators": [
-          "( ... )"
-        ]
-      },
-      {
-        "level": 2,
-        "category": "Null Coalescence / Primary Fallback",
-        "associativity": "right-to-left",
-        "operators": [
-          "?:"
-        ]
-      },
-      {
-        "level": 3,
-        "category": "Arithmetic (Multiplicative)",
-        "associativity": "left-to-right",
-        "operators": [
-          "*",
-          "/",
-          "%"
-        ]
-      },
-      {
-        "level": 4,
-        "category": "Arithmetic (Additive), URL, Date, Image & Snippet Transforms",
-        "associativity": "left-to-right",
-        "operators": [
-          "+",
-          "-",
-          "path",
-          "params",
-          "appendParams",
-          "fragment",
-          "format",
-          "resizeImage",
-          "sourceSet",
-          "snippet"
-        ]
-      },
-      {
-        "level": 5,
-        "category": "Relational, Comparisons & Collection Slices",
-        "associativity": "left-to-right",
-        "operators": [
-          "==",
-          "!=",
-          "<",
-          ">",
-          "<=",
-          ">=",
-          "eq",
-          "neq",
-          "lt",
-          "gt",
-          "lte",
-          "gte",
-          "take",
-          "skip",
-          "limit",
-          "offset",
-          "to"
-        ]
-      },
-      {
-        "level": 6,
-        "category": "Membership & Content",
-        "associativity": "left-to-right",
-        "operators": [
-          "in",
-          "contains"
-        ]
-      },
-      {
-        "level": 7,
-        "category": "Logical NOT",
-        "associativity": "right-to-left",
-        "operators": [
-          "!",
-          "not"
-        ]
-      },
-      {
-        "level": 8,
-        "category": "Logical AND",
-        "associativity": "left-to-right",
-        "operators": [
-          "&&",
-          "and"
-        ]
-      },
-      {
-        "level": 9,
-        "category": "Logical OR",
-        "associativity": "left-to-right",
-        "operators": [
-          "||",
-          "or"
-        ]
-      },
-      {
-        "level": 10,
-        "category": "Ternary / Conditional",
-        "associativity": "right-to-left",
-        "operators": [
-          "? :"
-        ]
-      },
-      {
-        "level": 11,
-        "category": "Lambda / Collection Pipeline",
-        "associativity": "left-to-right",
-        "operators": [
-          "any",
-          "all",
-          "none",
-          "count",
-          "map",
-          "filter",
-          "first"
-        ]
-      }
-    ],
-    "evaluation_contexts": {
-      "dynamic_attributes": [
-        "cond",
-        "expr",
-        "value",
-        "values",
-        "expr:*"
+    "version": "1.0.0",
+    "domain_metadata": {
+      "precedence_hierarchy": [
+        {
+          "level": 1,
+          "category": "Grouping",
+          "associativity": "inner-to-outer",
+          "operators": [
+            "( ... )"
+          ]
+        },
+        {
+          "level": 2,
+          "category": "Null Coalescence / Primary Fallback",
+          "associativity": "right-to-left",
+          "operators": [
+            "?:"
+          ]
+        },
+        {
+          "level": 3,
+          "category": "Arithmetic (Multiplicative)",
+          "associativity": "left-to-right",
+          "operators": [
+            "*",
+            "/",
+            "%"
+          ]
+        },
+        {
+          "level": 4,
+          "category": "Arithmetic (Additive), URL, Date, Image & Snippet Transforms",
+          "associativity": "left-to-right",
+          "operators": [
+            "+",
+            "-",
+            "path",
+            "params",
+            "appendParams",
+            "fragment",
+            "format",
+            "resizeImage",
+            "sourceSet",
+            "snippet"
+          ]
+        },
+        {
+          "level": 5,
+          "category": "Relational, Comparisons & Collection Slices",
+          "associativity": "left-to-right",
+          "operators": [
+            "==",
+            "!=",
+            "<",
+            ">",
+            "<=",
+            ">=",
+            "eq",
+            "neq",
+            "lt",
+            "gt",
+            "lte",
+            "gte",
+            "take",
+            "skip",
+            "limit",
+            "offset",
+            "to"
+          ]
+        },
+        {
+          "level": 6,
+          "category": "Membership & Content",
+          "associativity": "left-to-right",
+          "operators": [
+            "in",
+            "contains"
+          ]
+        },
+        {
+          "level": 7,
+          "category": "Logical NOT",
+          "associativity": "right-to-left",
+          "operators": [
+            "!",
+            "not"
+          ]
+        },
+        {
+          "level": 8,
+          "category": "Logical AND",
+          "associativity": "left-to-right",
+          "operators": [
+            "&&",
+            "and"
+          ]
+        },
+        {
+          "level": 9,
+          "category": "Logical OR",
+          "associativity": "left-to-right",
+          "operators": [
+            "||",
+            "or"
+          ]
+        },
+        {
+          "level": 10,
+          "category": "Ternary / Conditional",
+          "associativity": "right-to-left",
+          "operators": [
+            "? :"
+          ]
+        },
+        {
+          "level": 11,
+          "category": "Lambda / Collection Pipeline",
+          "associativity": "left-to-right",
+          "operators": [
+            "any",
+            "all",
+            "none",
+            "count",
+            "map",
+            "filter",
+            "first"
+          ]
+        }
       ],
-      "inert_contexts": [
-        "static attributes",
-        "CDATA"
-      ],
-      "compiler_quotas": {
-        "max_expression_tokens": 40,
-        "warning_expression_tokens": 36,
-        "token_cost_rules": "1 token per operator (2 for ternary ? :), 1 per literal/operand (including unary negative numbers), 1 per data path (including static and dynamic bracket indexing), 1 per array/object container, 1 per grouping parentheses pair ( ... ), 0 for argument parentheses in function calls/lambdas, and 0 for object property keys and delimiters (, and :)"
-      },
-      "default_allowed_contexts": [
-        "cond",
-        "expr",
-        "value",
-        "values",
-        "expr:*"
-      ]
-    },
-    "families": {
-      "concatenation": {
-        "name": "Concatenation",
-        "description": "String concatenation and scalar text interpolation.",
-        "precedence_tiers": [
-          4
+      "evaluation_contexts": {
+        "dynamic_attributes": [
+          "cond",
+          "expr",
+          "value",
+          "values",
+          "expr:*"
         ],
-        "operators": [
-          "+"
+        "inert_contexts": [
+          "static attributes",
+          "CDATA"
+        ],
+        "compiler_quotas": {
+          "max_expression_tokens": 40,
+          "warning_expression_tokens": 36,
+          "token_cost_rules": "1 token per operator (2 for ternary ? :), 1 per literal/operand (including unary negative numbers), 1 per data path (including static and dynamic bracket indexing), 1 per array/object container, 1 per grouping parentheses pair ( ... ), 0 for argument parentheses in function calls/lambdas, and 0 for object property keys and delimiters (, and :)"
+        },
+        "default_allowed_contexts": [
+          "cond",
+          "expr",
+          "value",
+          "values",
+          "expr:*"
         ]
       },
-      "arithmetic": {
-        "name": "Arithmetic",
-        "description": "Numeric addition, subtraction, multiplication, division, and modulo.",
-        "precedence_tiers": [
-          3,
-          4
-        ],
-        "operators": [
-          "+",
-          "-",
-          "*",
-          "/",
-          "%"
-        ]
-      },
-      "comparison": {
-        "name": "Comparison",
-        "description": "Relational comparisons and value equality checks.",
-        "precedence_tiers": [
-          5
-        ],
-        "operators": [
-          "==",
-          "!=",
-          "<",
-          ">",
-          "<=",
-          ">="
-        ]
-      },
-      "logical": {
-        "name": "Logical",
-        "description": "Logical conjunction, disjunction, and boolean inversion.",
-        "precedence_tiers": [
-          7,
-          8,
-          9
-        ],
-        "operators": [
-          "and",
-          "or",
-          "not"
-        ]
-      },
-      "membership": {
-        "name": "Membership",
-        "description": "Tests whether an item exists within a collection or string.",
-        "precedence_tiers": [
-          6
-        ],
-        "operators": [
-          "in"
-        ]
-      },
-      "content": {
-        "name": "Content",
-        "description": "Substring search and item containment checks.",
-        "precedence_tiers": [
-          6
-        ],
-        "operators": [
-          "contains"
-        ]
-      },
-      "collection": {
-        "name": "Collection",
-        "description": "Array slicing, pagination limits, and numeric sequence generation.",
-        "precedence_tiers": [
-          5
-        ],
-        "operators": [
-          "take",
-          "skip",
-          "to"
-        ]
-      },
-      "lambda": {
-        "name": "Lambda / Collection Pipeline",
-        "description": "Higher-order collection predicates, projection mapping, and aggregation reductions.",
-        "precedence_tiers": [
-          11
-        ],
-        "operators": [
-          "any",
-          "all",
-          "none",
-          "count",
-          "map",
-          "filter",
-          "first"
-        ]
-      },
-      "ternary": {
-        "name": "Ternary / Conditional",
-        "description": "Inline conditional branching expression (cond ? val1 : val2).",
-        "precedence_tiers": [
-          10
-        ],
-        "operators": [
-          "? :"
-        ]
-      },
-      "elvis": {
-        "name": "Coalescence / Fallback",
-        "description": "Primary nullish fallback value selector for null or undeclared operands (?:).",
-        "precedence_tiers": [
-          2
-        ],
-        "operators": [
-          "?:"
-        ]
-      },
-      "url": {
-        "name": "Transform / URL",
-        "description": "URL path segment joining, query parameter appending, and hash fragmenting.",
-        "precedence_tiers": [
-          4
-        ],
-        "operators": [
-          "path",
-          "params",
-          "appendParams",
-          "fragment"
-        ]
-      },
-      "date": {
-        "name": "Transform / Date",
-        "description": "Localized date formatting using ICU pattern tokens.",
-        "precedence_tiers": [
-          4
-        ],
-        "operators": [
-          "format"
-        ]
-      },
-      "image": {
-        "name": "Transform / Image",
-        "description": "Google CDN image thumbnail resizing and responsive srcset generation.",
-        "precedence_tiers": [
-          4
-        ],
-        "operators": [
-          "resizeImage",
-          "sourceSet"
-        ]
-      },
-      "snippet": {
-        "name": "Transform / Truncation",
-        "description": "Text truncation, snippet extraction, and HTML tag stripping.",
-        "precedence_tiers": [
-          4
-        ],
-        "operators": [
-          "snippet"
-        ]
+      "families": {
+        "concatenation": {
+          "name": "Concatenation",
+          "description": "String concatenation and scalar text interpolation.",
+          "precedence_tiers": [
+            4
+          ],
+          "operators": [
+            "+"
+          ]
+        },
+        "arithmetic": {
+          "name": "Arithmetic",
+          "description": "Numeric addition, subtraction, multiplication, division, and modulo.",
+          "precedence_tiers": [
+            3,
+            4
+          ],
+          "operators": [
+            "+",
+            "-",
+            "*",
+            "/",
+            "%"
+          ]
+        },
+        "comparison": {
+          "name": "Comparison",
+          "description": "Relational comparisons and value equality checks.",
+          "precedence_tiers": [
+            5
+          ],
+          "operators": [
+            "==",
+            "!=",
+            "<",
+            ">",
+            "<=",
+            ">="
+          ]
+        },
+        "logical": {
+          "name": "Logical",
+          "description": "Logical conjunction, disjunction, and boolean inversion.",
+          "precedence_tiers": [
+            7,
+            8,
+            9
+          ],
+          "operators": [
+            "and",
+            "or",
+            "not"
+          ]
+        },
+        "membership": {
+          "name": "Membership",
+          "description": "Tests whether an item exists within a collection or string.",
+          "precedence_tiers": [
+            6
+          ],
+          "operators": [
+            "in"
+          ]
+        },
+        "content": {
+          "name": "Content",
+          "description": "Substring search and item containment checks.",
+          "precedence_tiers": [
+            6
+          ],
+          "operators": [
+            "contains"
+          ]
+        },
+        "collection": {
+          "name": "Collection",
+          "description": "Array slicing, pagination limits, and numeric sequence generation.",
+          "precedence_tiers": [
+            5
+          ],
+          "operators": [
+            "take",
+            "skip",
+            "to"
+          ]
+        },
+        "lambda": {
+          "name": "Lambda / Collection Pipeline",
+          "description": "Higher-order collection predicates, projection mapping, and aggregation reductions.",
+          "precedence_tiers": [
+            11
+          ],
+          "operators": [
+            "any",
+            "all",
+            "none",
+            "count",
+            "map",
+            "filter",
+            "first"
+          ]
+        },
+        "ternary": {
+          "name": "Ternary / Conditional",
+          "description": "Inline conditional branching expression (cond ? val1 : val2).",
+          "precedence_tiers": [
+            10
+          ],
+          "operators": [
+            "? :"
+          ]
+        },
+        "elvis": {
+          "name": "Coalescence / Fallback",
+          "description": "Primary nullish fallback value selector for null or undeclared operands (?:).",
+          "precedence_tiers": [
+            2
+          ],
+          "operators": [
+            "?:"
+          ]
+        },
+        "url": {
+          "name": "Transform / URL",
+          "description": "URL path segment joining, query parameter appending, and hash fragmenting.",
+          "precedence_tiers": [
+            4
+          ],
+          "operators": [
+            "path",
+            "params",
+            "appendParams",
+            "fragment"
+          ]
+        },
+        "date": {
+          "name": "Transform / Date",
+          "description": "Localized date formatting using ICU pattern tokens.",
+          "precedence_tiers": [
+            4
+          ],
+          "operators": [
+            "format"
+          ]
+        },
+        "image": {
+          "name": "Transform / Image",
+          "description": "Google CDN image thumbnail resizing and responsive srcset generation.",
+          "precedence_tiers": [
+            4
+          ],
+          "operators": [
+            "resizeImage",
+            "sourceSet"
+          ]
+        },
+        "snippet": {
+          "name": "Transform / Truncation",
+          "description": "Text truncation, snippet extraction, and HTML tag stripping.",
+          "precedence_tiers": [
+            4
+          ],
+          "operators": [
+            "snippet"
+          ]
+        }
       }
     },
     "operators": {
@@ -4484,63 +4488,64 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "grammar_aliases": [],
         "doc_aliases": []
       }
-    },
-    "version": "1.0.0"
+    }
   },
   "types": {
     "$schema": "./schemas/types.schema.json",
     "title": "Blogger Data Types & Modifiers Master Catalog",
     "description": "Canonical machine-readable ontology of primitive types, platform subtypes, skin variable types, collections, modifiers, and coercion rules in the Blogger Template Engine.",
     "version": "1.0.0",
-    "coercion_rules": {
-      "string_concatenation": {
-        "target_context": "text_addition",
-        "behavior": "String concatenation takes precedence with the + operator when an operand is an explicit string literal in the template expression.",
-        "example": "\"10\" + 10 -> \"1010\""
+    "domain_metadata": {
+      "coercion_rules": {
+        "string_concatenation": {
+          "target_context": "text_addition",
+          "behavior": "String concatenation takes precedence with the + operator when an operand is an explicit string literal in the template expression.",
+          "example": "\"10\" + 10 -> \"1010\""
+        },
+        "arithmetic_coercion": {
+          "target_context": "numeric_arithmetic",
+          "behavior": "The + operator performs arithmetic addition when numbers are combined with runtime data variables (data:...) holding numeric strings.",
+          "example": "10 + data:numString -> 20"
+        },
+        "subscript_unwrapping": {
+          "target_context": "collection_indexing",
+          "behavior": "Accessing array elements via subscript [i] or .first/.last unwraps the collection into its child element type.",
+          "example": "data:posts.first -> object (post)"
+        }
       },
-      "arithmetic_coercion": {
-        "target_context": "numeric_arithmetic",
-        "behavior": "The + operator performs arithmetic addition when numbers are combined with runtime data variables (data:...) holding numeric strings.",
-        "example": "10 + data:numString -> 20"
+      "truthiness_matrix": {
+        "truthy": [
+          "true",
+          "\"yes\"",
+          "non-empty strings (excluding \"false\", \"no\")",
+          "numbers (including 0)",
+          "non-empty arrays",
+          "non-empty objects"
+        ],
+        "falsy": [
+          "false",
+          "\"no\"",
+          "\"false\"",
+          "empty string \"\"",
+          "empty collections []",
+          "undefined/missing properties"
+        ],
+        "falsy_string_literals": [
+          "",
+          "false",
+          "no"
+        ],
+        "truthy_string_literals": [
+          "true",
+          "yes"
+        ]
       },
-      "subscript_unwrapping": {
-        "target_context": "collection_indexing",
-        "behavior": "Accessing array elements via subscript [i] or .first/.last unwraps the collection into its child element type.",
-        "example": "data:posts.first -> object (post)"
-      }
-    },
-    "truthiness_matrix": {
-      "truthy": [
-        "true",
-        "\"yes\"",
-        "non-empty strings (excluding \"false\", \"no\")",
-        "numbers (including 0)",
-        "non-empty arrays",
-        "non-empty objects"
-      ],
-      "falsy": [
-        "false",
-        "\"no\"",
-        "\"false\"",
-        "empty string \"\"",
-        "empty collections []",
-        "undefined/missing properties"
-      ],
-      "falsy_string_literals": [
-        "",
-        "false",
-        "no"
-      ],
-      "truthy_string_literals": [
-        "true",
-        "yes"
+      "scalar_types": [
+        "string",
+        "number",
+        "boolean"
       ]
     },
-    "scalar_types": [
-      "string",
-      "number",
-      "boolean"
-    ],
     "types": {
       "string": {
         "category": "base",
@@ -10051,13 +10056,15 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "title": "Blogger System Messages Master Catalog",
     "description": "Canonical registry of localized UI message tokens available globally via data:messages.<token> in the Blogger Template Engine.",
     "version": "1.0.0",
-    "patterns": [
-      {
-        "template": "data:messages.{key}",
-        "type": "message",
-        "description": "Any platform system message key translated dynamically into data:blog.locale."
-      }
-    ],
+    "domain_metadata": {
+      "patterns": [
+        {
+          "template": "data:messages.{key}",
+          "type": "message",
+          "description": "Any platform system message key translated dynamically into data:blog.locale."
+        }
+      ]
+    },
     "messages": {
       "adsGoHere": {
         "type": "message",
@@ -10542,14 +10549,16 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "title": "Blogger Scope & Resolution Model Catalog",
     "description": "Machine-readable contract defining variable introduction, visibility boundaries, inheritance, and shadowing rules across Blogger XML execution scopes.",
     "version": "1.0.0",
-    "resolution_precedence": [
-      "lambda",
-      "loop",
-      "with",
-      "includable",
-      "widget",
-      "global"
-    ],
+    "domain_metadata": {
+      "resolution_precedence": [
+        "lambda",
+        "loop",
+        "with",
+        "includable",
+        "widget",
+        "global"
+      ]
+    },
     "scopes": {
       "lambda": {
         "name": "Lambda Predicate Scope",
@@ -11054,6 +11063,15 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "message": "XML tag is mismatched or remains unclosed in the template structure.",
         "evidence": "observed",
         "verifiedAt": "2026-10-16"
+      },
+      "BX1042": {
+        "code": "BX1042",
+        "name": "DISALLOWED_EXPRESSION_ATTRIBUTE",
+        "category": "syntax",
+        "severity": "error",
+        "message": "Directive attribute does not allow dynamic expressions ('expr:').",
+        "evidence": "official",
+        "verifiedAt": "2026-10-16"
       }
     }
   },
@@ -11062,10 +11080,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "title": "Blogger System & Platform Inclusions Master Catalog",
     "description": "Canonical registry of platform-level subroutines and system includables resolved by Google Blogger's backend rendering engine.",
     "version": "1.0.0",
-    "super_prefix_rule": {
-      "prefix": "super.",
-      "description": "Prefixing an inclusion identifier with super. (e.g. <b:include name='super.main'/>) instructs the Blogger engine to execute the default platform or theme implementation of that subroutine, bypassing template-level overrides.",
-      "behavior": "delegation"
+    "domain_metadata": {
+      "super_prefix_rule": {
+        "prefix": "super.",
+        "description": "Prefixing an inclusion identifier with super. (e.g. <b:include name='super.main'/>) instructs the Blogger engine to execute the default platform or theme implementation of that subroutine, bypassing template-level overrides.",
+        "behavior": "delegation"
+      }
     },
     "inclusions": {
       "all-head-content": {
@@ -11706,6 +11726,31 @@ export const embeddedSchemas: Record<string, any> = {
         "pattern": "^BX[0-9]{4}$",
         "description": "Canonical Blogger specification diagnostic rule identifier (e.g. BX1001)."
       },
+      "canonicalPropertyType": {
+        "type": "string",
+        "enum": [
+          "string",
+          "number",
+          "boolean",
+          "url",
+          "image",
+          "date",
+          "object",
+          "array",
+          "array[object]",
+          "array[string]",
+          "array[image]",
+          "array[url]",
+          "array[date]",
+          "array[number]",
+          "array[boolean]",
+          "array[array]",
+          "locale",
+          "message",
+          "skin_variable"
+        ],
+        "description": "Canonical Blogger runtime data property type defined in types.json."
+      },
       "deprecatedEntry": {
         "type": "object",
         "required": [
@@ -11734,7 +11779,7 @@ export const embeddedSchemas: Record<string, any> = {
             ]
           },
           "type": {
-            "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+            "$ref": "#/$defs/canonicalPropertyType"
           },
           "replacement": {
             "type": [
@@ -11756,7 +11801,7 @@ export const embeddedSchemas: Record<string, any> = {
         ],
         "properties": {
           "type": {
-            "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+            "$ref": "#/$defs/canonicalPropertyType"
           },
           "description": {
             "type": "string"
@@ -11988,7 +12033,8 @@ export const embeddedSchemas: Record<string, any> = {
               "duplicate_element_id",
               "duplicate_includable_id",
               "invalid_variable_type_attribute",
-              "prohibited_nesting"
+              "prohibited_nesting",
+              "mismatched_or_unclosed_tag"
             ],
             "properties": {
               "missing_required_attribute": {
@@ -12013,6 +12059,9 @@ export const embeddedSchemas: Record<string, any> = {
                 "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "prohibited_nesting": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
+              },
+              "mismatched_or_unclosed_tag": {
                 "$ref": "common.schema.json#/$defs/diagnosticCode"
               }
             },
@@ -12727,7 +12776,7 @@ export const embeddedSchemas: Record<string, any> = {
       "title",
       "description",
       "version",
-      "super_prefix_rule",
+      "domain_metadata",
       "inclusions"
     ],
     "properties": {
@@ -12743,23 +12792,32 @@ export const embeddedSchemas: Record<string, any> = {
       "version": {
         "type": "string"
       },
-      "super_prefix_rule": {
+      "domain_metadata": {
         "type": "object",
         "required": [
-          "prefix",
-          "description",
-          "behavior"
+          "super_prefix_rule"
         ],
         "properties": {
-          "prefix": {
-            "type": "string",
-            "const": "super."
-          },
-          "description": {
-            "type": "string"
-          },
-          "behavior": {
-            "type": "string"
+          "super_prefix_rule": {
+            "type": "object",
+            "required": [
+              "prefix",
+              "description",
+              "behavior"
+            ],
+            "properties": {
+              "prefix": {
+                "type": "string",
+                "const": "super."
+              },
+              "description": {
+                "type": "string"
+              },
+              "behavior": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
           }
         },
         "additionalProperties": false
@@ -12849,6 +12907,7 @@ export const embeddedSchemas: Record<string, any> = {
       "title",
       "description",
       "version",
+      "domain_metadata",
       "messages"
     ],
     "properties": {
@@ -12864,16 +12923,25 @@ export const embeddedSchemas: Record<string, any> = {
       "version": {
         "type": "string"
       },
+      "domain_metadata": {
+        "type": "object",
+        "required": [
+          "patterns"
+        ],
+        "properties": {
+          "patterns": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/patternDefinition"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
       "messages": {
         "type": "object",
         "additionalProperties": {
           "$ref": "#/$defs/messageDefinition"
-        }
-      },
-      "patterns": {
-        "type": "array",
-        "items": {
-          "$ref": "common.schema.json#/$defs/patternDefinition"
         }
       }
     },
@@ -12943,9 +13011,7 @@ export const embeddedSchemas: Record<string, any> = {
       "title",
       "description",
       "version",
-      "precedence_hierarchy",
-      "evaluation_contexts",
-      "families",
+      "domain_metadata",
       "operators"
     ],
     "properties": {
@@ -12958,76 +13024,90 @@ export const embeddedSchemas: Record<string, any> = {
       "description": {
         "type": "string"
       },
-      "precedence_hierarchy": {
-        "type": "array",
-        "description": "Formal 10-level operator precedence hierarchy and associativity rules.",
-        "items": {
-          "$ref": "#/$defs/precedenceLevel"
-        }
+      "version": {
+        "type": "string"
       },
-      "evaluation_contexts": {
+      "domain_metadata": {
         "type": "object",
         "required": [
-          "dynamic_attributes",
-          "inert_contexts",
-          "compiler_quotas",
-          "default_allowed_contexts"
+          "precedence_hierarchy",
+          "evaluation_contexts",
+          "families"
         ],
         "properties": {
-          "dynamic_attributes": {
+          "precedence_hierarchy": {
             "type": "array",
+            "description": "Formal 11-level operator precedence hierarchy and associativity rules.",
             "items": {
-              "type": "string"
+              "$ref": "#/$defs/precedenceLevel"
             }
           },
-          "inert_contexts": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "default_allowed_contexts": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "cond",
-                "expr",
-                "value",
-                "values",
-                "expr:*"
-              ]
-            }
-          },
-          "compiler_quotas": {
+          "evaluation_contexts": {
             "type": "object",
             "required": [
-              "max_expression_tokens",
-              "warning_expression_tokens",
-              "token_cost_rules"
+              "dynamic_attributes",
+              "inert_contexts",
+              "compiler_quotas",
+              "default_allowed_contexts"
             ],
             "properties": {
-              "max_expression_tokens": {
-                "type": "integer"
+              "dynamic_attributes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               },
-              "warning_expression_tokens": {
-                "type": "integer"
+              "inert_contexts": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               },
-              "token_cost_rules": {
-                "type": "string"
+              "default_allowed_contexts": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "cond",
+                    "expr",
+                    "value",
+                    "values",
+                    "expr:*"
+                  ]
+                }
+              },
+              "compiler_quotas": {
+                "type": "object",
+                "required": [
+                  "max_expression_tokens",
+                  "warning_expression_tokens",
+                  "token_cost_rules"
+                ],
+                "properties": {
+                  "max_expression_tokens": {
+                    "type": "integer"
+                  },
+                  "warning_expression_tokens": {
+                    "type": "integer"
+                  },
+                  "token_cost_rules": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
               }
             },
             "additionalProperties": false
+          },
+          "families": {
+            "type": "object",
+            "description": "Dictionary of the operator families in Blogger XML.",
+            "additionalProperties": {
+              "$ref": "#/$defs/operatorFamily"
+            }
           }
         },
         "additionalProperties": false
-      },
-      "families": {
-        "type": "object",
-        "description": "Dictionary of the 14 operator families in Blogger XML.",
-        "additionalProperties": {
-          "$ref": "#/$defs/operatorFamily"
-        }
       },
       "operators": {
         "type": "object",
@@ -13035,9 +13115,6 @@ export const embeddedSchemas: Record<string, any> = {
         "additionalProperties": {
           "$ref": "#/$defs/operatorDefinition"
         }
-      },
-      "version": {
-        "type": "string"
       }
     },
     "additionalProperties": false,
@@ -13378,8 +13455,8 @@ export const embeddedSchemas: Record<string, any> = {
       "title",
       "description",
       "version",
-      "scopes",
-      "resolution_precedence"
+      "domain_metadata",
+      "scopes"
     ],
     "properties": {
       "$schema": {
@@ -13394,12 +13471,21 @@ export const embeddedSchemas: Record<string, any> = {
       "version": {
         "type": "string"
       },
-      "resolution_precedence": {
-        "type": "array",
-        "items": {
-          "type": "string"
+      "domain_metadata": {
+        "type": "object",
+        "required": [
+          "resolution_precedence"
+        ],
+        "properties": {
+          "resolution_precedence": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Ordered precedence list of scopes from narrowest (highest priority) to broadest (fallback)."
+          }
         },
-        "description": "Ordered precedence list of scopes from narrowest (highest priority) to broadest (fallback)."
+        "additionalProperties": false
       },
       "scopes": {
         "type": "object",
@@ -13612,6 +13698,7 @@ export const embeddedSchemas: Record<string, any> = {
       "title",
       "description",
       "version",
+      "domain_metadata",
       "types"
     ],
     "properties": {
@@ -13624,66 +13711,77 @@ export const embeddedSchemas: Record<string, any> = {
       "description": {
         "type": "string"
       },
+      "version": {
+        "type": "string"
+      },
+      "domain_metadata": {
+        "type": "object",
+        "required": [
+          "coercion_rules",
+          "truthiness_matrix",
+          "scalar_types"
+        ],
+        "properties": {
+          "coercion_rules": {
+            "type": "object",
+            "description": "Implicit type coercion behavior across operators and mixed contexts.",
+            "additionalProperties": {
+              "$ref": "#/$defs/coercionRule"
+            }
+          },
+          "truthiness_matrix": {
+            "type": "object",
+            "description": "Evaluation criteria for truthy and falsy states in conditionals.",
+            "required": [
+              "truthy",
+              "falsy"
+            ],
+            "properties": {
+              "truthy": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "falsy": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "falsy_string_literals": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Exact string literals evaluated as falsy in conditional branches."
+              },
+              "truthy_string_literals": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Exact string literals evaluated as truthy in conditional branches."
+              }
+            },
+            "additionalProperties": false
+          },
+          "scalar_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Canonical primitive data types composing the scalar category (string, number, boolean)."
+          }
+        },
+        "additionalProperties": false
+      },
       "types": {
         "type": "object",
         "description": "Dictionary of all recognized Blogger data types, platform subtypes, skin variable types, collections, and meta types.",
         "additionalProperties": {
           "$ref": "#/$defs/typeDefinition"
         }
-      },
-      "coercion_rules": {
-        "type": "object",
-        "description": "Implicit type coercion behavior across operators and mixed contexts.",
-        "additionalProperties": {
-          "$ref": "#/$defs/coercionRule"
-        }
-      },
-      "truthiness_matrix": {
-        "type": "object",
-        "description": "Evaluation criteria for truthy and falsy states in conditionals.",
-        "required": [
-          "truthy",
-          "falsy"
-        ],
-        "properties": {
-          "truthy": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "falsy": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "falsy_string_literals": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Exact string literals evaluated as falsy in conditional branches."
-          },
-          "truthy_string_literals": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Exact string literals evaluated as truthy in conditional branches."
-          }
-        },
-        "additionalProperties": false
-      },
-      "scalar_types": {
-        "type": "array",
-        "items": {
-          "type": "string"
-        },
-        "description": "Canonical primitive data types composing the scalar category (string, number, boolean)."
-      },
-      "version": {
-        "type": "string"
       }
     },
     "additionalProperties": false,
@@ -13839,29 +13937,7 @@ export const embeddedSchemas: Record<string, any> = {
         "additionalProperties": false
       },
       "canonicalPropertyType": {
-        "type": "string",
-        "enum": [
-          "string",
-          "number",
-          "boolean",
-          "url",
-          "image",
-          "date",
-          "object",
-          "array",
-          "array[object]",
-          "array[string]",
-          "array[image]",
-          "array[url]",
-          "array[date]",
-          "array[number]",
-          "array[boolean]",
-          "array[array]",
-          "locale",
-          "message",
-          "skin_variable"
-        ],
-        "description": "Canonical Blogger runtime data property type defined in types.json."
+        "$ref": "common.schema.json#/$defs/canonicalPropertyType"
       },
       "directiveAttributeType": {
         "type": "string",

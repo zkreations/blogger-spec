@@ -1,6 +1,6 @@
 import type { SpecCatalog } from './catalogs/index.js'
 import type {
-  BloggerOperatorDefinition,
+  BloggerCompatibleOperator,
   BloggerTypeDefinition,
   BloggerTypeModifierDefinition,
 } from './types.js'
@@ -100,9 +100,9 @@ export function getCompatibleOperators(
   typeName: string,
   isLoopContext: boolean = false,
   catalog: SpecCatalog = getSpecCatalog(),
-): BloggerOperatorDefinition[] {
+): BloggerCompatibleOperator[] {
   const operatorsCatalog = catalog.getAllOperators()
-  const compatible: BloggerOperatorDefinition[] = []
+  const compatible: BloggerCompatibleOperator[] = []
 
   for (const [opName, opDef] of Object.entries(operatorsCatalog)) {
     const allowedContexts = opDef.allowed_contexts
@@ -148,7 +148,7 @@ export function getCompatibleOperatorNames(
   isLoopContext: boolean = false,
   catalog: SpecCatalog = getSpecCatalog(),
 ): string[] {
-  return getCompatibleOperators(typeName, isLoopContext, catalog).map(op => op.name ?? '').filter(Boolean)
+  return getCompatibleOperators(typeName, isLoopContext, catalog).map(op => op.name).filter(Boolean)
 }
 
 export function resolveOperatorReturnType(

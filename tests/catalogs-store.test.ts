@@ -581,8 +581,8 @@ describe('catalogs and store formal verification suite', () => {
 
       it('propagates compiler quotas mutation to expression budget evaluation', () => {
         const catalogs = createClonedMasterCatalogs()
-        catalogs.operators.evaluation_contexts.compiler_quotas.max_expression_tokens = 10
-        catalogs.operators.evaluation_contexts.compiler_quotas.warning_expression_tokens = 8
+        catalogs.operators.domain_metadata.evaluation_contexts.compiler_quotas.max_expression_tokens = 10
+        catalogs.operators.domain_metadata.evaluation_contexts.compiler_quotas.warning_expression_tokens = 8
         const customStore = new MemoryCatalogStore(catalogs)
         const customSpec = new SpecCatalog(customStore)
 
@@ -599,7 +599,7 @@ describe('catalogs and store formal verification suite', () => {
 
       it('propagates custom truthiness matrix literals to isTruthy evaluation', () => {
         const catalogs = createClonedMasterCatalogs()
-        catalogs.types.truthiness_matrix.falsy_string_literals.push('custom_falsy')
+        catalogs.types.domain_metadata.truthiness_matrix.falsy_string_literals.push('custom_falsy')
         const customStore = new MemoryCatalogStore(catalogs)
         const customSpec = new SpecCatalog(customStore)
 
@@ -610,7 +610,7 @@ describe('catalogs and store formal verification suite', () => {
 
       it('propagates dynamic scalar types to isTypeAssignable', () => {
         const catalogs = createClonedMasterCatalogs()
-        catalogs.types.scalar_types.push('custom_scalar')
+        catalogs.types.domain_metadata.scalar_types.push('custom_scalar')
         catalogs.types.types.custom_scalar = {
           category: 'base',
           description: 'Synthetic custom scalar type',
@@ -680,7 +680,7 @@ describe('catalogs and store formal verification suite', () => {
 
       it('propagates dynamic super inclusion prefix to isServerInclusion and getSuperPrefix', () => {
         const catalogs = createClonedMasterCatalogs()
-        catalogs.inclusions.super_prefix_rule.prefix = 'synthetic_super.'
+        catalogs.inclusions.domain_metadata.super_prefix_rule.prefix = 'synthetic_super.'
         const customStore = new MemoryCatalogStore(catalogs)
         const customSpec = new SpecCatalog(customStore)
 
@@ -872,7 +872,7 @@ describe('catalogs and store formal verification suite', () => {
         const originalStore = getDefaultCatalogStore()
         const catalogs = JSON.parse(JSON.stringify(getAllCatalogs()))
 
-        catalogs.operators.evaluation_contexts.compiler_quotas.max_expression_tokens = 99
+        catalogs.operators.domain_metadata.evaluation_contexts.compiler_quotas.max_expression_tokens = 99
         catalogs.directives.domain_metadata.compiler_limits.max_directive_nesting_depth = 88
         catalogs.directives.domain_metadata.html_void_elements.push('custom-void')
         catalogs.directives.directives['b:custom-self'] = {
@@ -900,7 +900,7 @@ describe('catalogs and store formal verification suite', () => {
           expect(RootExports.BLOGGER_STRICTLY_SELF_CLOSING_TAGS.has('b:custom-self')).toBe(true)
 
           // Top-level exported catalog instances update dynamically
-          expect(RootExports.operators.evaluation_contexts?.compiler_quotas?.max_expression_tokens).toBe(99)
+          expect(RootExports.operators.domain_metadata?.evaluation_contexts?.compiler_quotas?.max_expression_tokens).toBe(99)
           expect(RootExports.directives.domain_metadata?.compiler_limits?.max_directive_nesting_depth).toBe(88)
           expect(RootExports.directives.directives['b:custom-self']).toBeDefined()
         }
@@ -913,7 +913,7 @@ describe('catalogs and store formal verification suite', () => {
         expect(RootExports.COMPILER_NESTING_LIMIT).toBe(50)
         expect(RootExports.HTML_VOID_ELEMENTS.has('custom-void')).toBe(false)
         expect(RootExports.BLOGGER_STRICTLY_SELF_CLOSING_TAGS.has('b:custom-self')).toBe(false)
-        expect(RootExports.operators.evaluation_contexts?.compiler_quotas?.max_expression_tokens).toBe(40)
+        expect(RootExports.operators.domain_metadata?.evaluation_contexts?.compiler_quotas?.max_expression_tokens).toBe(40)
         expect(RootExports.directives.domain_metadata?.compiler_limits?.max_directive_nesting_depth).toBe(50)
         expect(RootExports.directives.directives['b:custom-self']).toBeUndefined()
       })

@@ -56,50 +56,15 @@ function mapPropertyTypeToTs(type: string, typeDefinitions?: Record<string, { ts
   if (definition?.ts_type) {
     return definition.ts_type
   }
-  if (typeDefinitions && !definition) {
+  if (type.startsWith('array[') && type.endsWith(']')) {
+    const inner = type.slice(6, -1).trim()
+    const innerTs = mapPropertyTypeToTs(inner, typeDefinitions)
+    return innerTs.includes('|') ? `(${innerTs})[]` : `${innerTs}[]`
+  }
+  if (typeDefinitions) {
     throw new Error(`Unknown canonical type '${type}' while generating TypeScript declarations.`)
   }
-  switch (type) {
-    case 'string':
-      return 'string'
-    case 'url':
-      return 'BloggerUrl'
-    case 'image':
-      return 'BloggerImage'
-    case 'date':
-      return 'BloggerDate'
-    case 'locale':
-      return 'BloggerLocale'
-    case 'message':
-      return 'BloggerMessage'
-    case 'number':
-      return 'number'
-    case 'boolean':
-      return 'boolean'
-    case 'object':
-      return 'Record<string, any>'
-    case 'array[string]':
-      return 'string[]'
-    case 'array[url]':
-      return 'BloggerUrl[]'
-    case 'array[image]':
-      return 'BloggerImage[]'
-    case 'array[date]':
-      return 'BloggerDate[]'
-    case 'array[number]':
-      return 'number[]'
-    case 'array[boolean]':
-      return 'boolean[]'
-    case 'array[object]':
-      return 'Array<Record<string, any>>'
-    case 'array':
-      return 'any[]'
-    default:
-      if (type.startsWith('array[')) {
-        return 'any[]'
-      }
-      return 'any'
-  }
+  return 'any'
 }
 
 export function generateDts(): string {
@@ -190,10 +155,6 @@ export function generateDts(): string {
       else if (aInfo.type === 'expression')
         tsType = 'BloggerExpression'
 
-      if (Array.isArray(aInfo.allowed_values) && aInfo.allowed_values.length > 0) {
-        tsType = aInfo.allowed_values.map((v: any) => JSON.stringify(v)).join(' | ')
-      }
-
       if (aInfo.description) {
         lines.push(`  /** ${aInfo.description.replace(/\n/g, ' ')} */`)
       }
@@ -204,7 +165,6 @@ export function generateDts(): string {
         lines.push(`  ${sanitizePropName(`expr:${aName}`)}?: BloggerExpression;`)
       }
     }
-    lines.push('  [key: string]: any;')
     lines.push('}')
     lines.push('')
   }
@@ -227,7 +187,7 @@ export function generateDts(): string {
       }
       lines.push(`  ${sanitizePropName(pName)}?: ${tsType};`)
     }
-    if (gName === 'data:messages') {
+    if (globals[gName]?.catalog_ref === 'messages.json') {
       for (const [mName, mDef] of Object.entries(messages).sort(([a], [b]) => a.localeCompare(b))) {
         if ((mDef as any).description) {
           lines.push(`  /** ${(mDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
@@ -235,7 +195,6 @@ export function generateDts(): string {
         lines.push(`  ${sanitizePropName(mName)}?: BloggerMessage;`)
       }
     }
-    lines.push('  [key: string]: any;')
     lines.push('}')
     lines.push('')
   }
@@ -257,7 +216,6 @@ export function generateDts(): string {
       }
       lines.push(`  ${sanitizePropName(pName)}?: ${tsType};`)
     }
-    lines.push('  [key: string]: any;')
     lines.push('}')
     lines.push('')
   }
@@ -277,7 +235,6 @@ export function generateDts(): string {
       }
       lines.push(`  ${sanitizePropName(pName)}?: ${tsType};`)
     }
-    lines.push('  [key: string]: any;')
     lines.push('}')
     lines.push('')
   }

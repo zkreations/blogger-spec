@@ -123,11 +123,11 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
 
   const operatorsCatalog = store.getCatalog('operators')
   const operators = operatorsCatalog.operators || {}
-  const hierarchy = operatorsCatalog.precedence_hierarchy || []
+  const hierarchy = operatorsCatalog.domain_metadata?.precedence_hierarchy || []
 
   // 2.1 Operators hierarchy, precedence level and associativity
   for (const [opKey, opDef] of Object.entries(operators)) {
-    const lvl = hierarchy.find(h => h.level === opDef.precedence_level)
+    const lvl = hierarchy.find((h: any) => h.level === opDef.precedence_level)
     if (!lvl || !lvl.operators.includes(opKey)) {
       errors.push(`Operator '${opKey}' is defined with precedence_level ${opDef.precedence_level} but missing in precedence_hierarchy level ${opDef.precedence_level}.`)
     }
@@ -137,7 +137,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   }
 
   // 2.2 Operator families bidirectional referential integrity
-  const families = operatorsCatalog.families || {}
+  const families = (operatorsCatalog.domain_metadata?.families || {}) as Record<string, { operators?: string[] }>
   for (const [famKey, famDef] of Object.entries(families)) {
     for (const op of famDef.operators || []) {
       const opDef = operators[op]
@@ -157,7 +157,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       if (!families[secFam]) {
         errors.push(`Operator '${opKey}' references unknown secondary family '${secFam}'.`)
       }
-      else if (!families[secFam].operators?.includes(opKey)) {
+      else if (!families[secFam]?.operators?.includes(opKey)) {
         errors.push(`Operator '${opKey}' specifies secondary family '${secFam}', but is missing in family's operators list.`)
       }
     }
@@ -259,9 +259,24 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     if (!knownWidgets.has(widgetKey)) {
       errors.push(`Settings catalog references unknown widget '${widgetKey}'.`)
     }
+    const wProps = widgetsCatalog.widgets?.[widgetKey]?.canonical || {}
     for (const [settingKey, settingDef] of Object.entries(widgetDef.canonical || {})) {
       if (!isKnownType(settingDef.type)) {
         errors.push(`Widget setting '${widgetKey}.${settingKey}' specifies unknown type '${settingDef.type}'.`)
+      }
+      const bound = (settingDef as any).bound_runtime_data
+      if (bound && typeof bound === 'string') {
+        const clean = bound.replace(/^data:/, '')
+        const rootProp = clean.split('.')[0]!.replace(/\[\d+\]/, '')
+        const inWidget = Boolean(wProps[rootProp])
+        const inGlobals = Boolean(
+          globalsCatalog.objects?.[`data:${rootProp}`]
+          || globalsCatalog.objects?.[bound.split('.')[0]!]
+          || ['post', 'posts', 'widgets'].includes(rootProp),
+        )
+        if (!inWidget && !inGlobals) {
+          errors.push(`Widget setting '${widgetKey}.${settingKey}' declares unresolved bound_runtime_data '${bound}'.`)
+        }
       }
     }
   }
@@ -273,10 +288,29 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
 
   const directivesCatalog = store.getCatalog('directives')
   const knownDirectives = new Set(Object.keys(directivesCatalog.directives || {}))
+  const grammarGroups = directivesCatalog.domain_metadata?.grammar_groups || {}
+  const knownGrammarGroups = new Set(Object.keys(grammarGroups))
   for (const [dirKey, dirDef] of Object.entries(directivesCatalog.directives || {})) {
     for (const [attrKey, attrDef] of Object.entries(dirDef.attributes || {})) {
       if (attrDef.type && !isKnownType(attrDef.type)) {
         errors.push(`Directive attribute '${dirKey}[${attrKey}]' specifies unknown type '${attrDef.type}'.`)
+      }
+    }
+    const grammar = dirDef.grammar || {}
+    for (const p of grammar.valid_parents || []) {
+      if (p.startsWith('@') && !knownGrammarGroups.has(p)) {
+        errors.push(`Directive '<${dirKey}>' references unknown grammar group '${p}' in valid_parents.`)
+      }
+    }
+    for (const c of grammar.valid_children || []) {
+      if (c.startsWith('@') && !knownGrammarGroups.has(c)) {
+        errors.push(`Directive '<${dirKey}>' references unknown grammar group '${c}' in valid_children.`)
+      }
+    }
+    const exc = grammar.invalid_nesting_policy?.on_invalid_child?.exceptions || {}
+    for (const excKey of Object.keys(exc)) {
+      if (!knownDirectives.has(excKey) && !knownGrammarGroups.has(excKey)) {
+        errors.push(`Directive '<${dirKey}>' defines nesting exception for unknown target '${excKey}'.`)
       }
     }
   }
@@ -292,7 +326,8 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       }
     }
   }
-  for (const precScope of scopesCatalog.resolution_precedence || []) {
+  const scopeResolution = scopesCatalog.domain_metadata?.resolution_precedence || (scopesCatalog as any).resolution_precedence || []
+  for (const precScope of scopeResolution) {
     if (!scopesCatalog.scopes || !scopesCatalog.scopes[precScope]) {
       errors.push(`Scope resolution precedence references unknown scope '${precScope}'.`)
     }
@@ -305,26 +340,26 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
         errors.push(`Inclusion '${incKey}' references unknown target widget '${targetWidget}'.`)
       }
     }
+  }
 
-    const layoutVersions = directivesCatalog.domain_metadata?.layout_versions
-    if (layoutVersions) {
-      const supported = new Set(layoutVersions.supported_versions)
-      const declared = Object.entries(layoutVersions.versions || {})
-      for (const version of supported) {
-        if (!layoutVersions.versions?.[String(version)]) {
-          errors.push(`Layout version '${version}' is supported but has no definition.`)
-        }
+  const layoutVersions = directivesCatalog.domain_metadata?.layout_versions
+  if (layoutVersions) {
+    const supported = new Set(layoutVersions.supported_versions)
+    const declared = Object.entries(layoutVersions.versions || {})
+    for (const version of supported) {
+      if (!layoutVersions.versions?.[String(version)]) {
+        errors.push(`Layout version '${version}' is supported but has no definition.`)
       }
-      if (!supported.has(layoutVersions.default_version)) {
-        errors.push(`Default layout version '${layoutVersions.default_version}' is not supported.`)
+    }
+    if (!supported.has(layoutVersions.default_version)) {
+      errors.push(`Default layout version '${layoutVersions.default_version}' is not supported.`)
+    }
+    for (const [key, definition] of declared) {
+      if (!supported.has(definition.version)) {
+        errors.push(`Layout definition '${key}' declares unsupported version '${definition.version}'.`)
       }
-      for (const [key, definition] of declared) {
-        if (!supported.has(definition.version)) {
-          errors.push(`Layout definition '${key}' declares unsupported version '${definition.version}'.`)
-        }
-        if (String(definition.version) !== key) {
-          errors.push(`Layout definition key '${key}' does not match version '${definition.version}'.`)
-        }
+      if (String(definition.version) !== key) {
+        errors.push(`Layout definition key '${key}' does not match version '${definition.version}'.`)
       }
     }
   }

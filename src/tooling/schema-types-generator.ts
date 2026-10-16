@@ -57,6 +57,8 @@ export function generateCanonicalSchemaTypes(): string {
   const stdDiagProps = dirSchema.properties?.domain_metadata?.properties?.standard_diagnostics?.properties || {}
   const stdDiagKeys = Object.keys(stdDiagProps).sort()
 
+  const canonicalPropTypeEnum = (commonSchema.$defs?.canonicalPropertyType?.enum as string[]) || []
+
   const lines: string[] = [
     '/**',
     ' * blogger-spec — Canonical Generated Domain & Schema Types.',
@@ -92,6 +94,8 @@ export function generateCanonicalSchemaTypes(): string {
     '',
     `export type BloggerInclusionCategory = ${incCategoryEnum.map(c => `'${c}'`).join(' | ')};`,
     '',
+    `export type BloggerCanonicalPropertyType = ${canonicalPropTypeEnum.map(t => `'${t}'`).join(' | ')};`,
+    '',
     `export type BloggerStandardDiagnosticKey = ${stdDiagKeys.map(k => `'${k}'`).join(' | ')};`,
     '',
     'export type BloggerStandardDiagnostics = Record<BloggerStandardDiagnosticKey, BloggerDiagnosticCode>;',
@@ -106,7 +110,7 @@ export function generateCanonicalSchemaTypes(): string {
       case 'canonicalProperty': return 'BloggerCanonicalProperty'
       case 'deprecatedEntry': return 'Record<string, any>'
       case 'patternDefinition': return 'Record<string, any>'
-      case 'canonicalPropertyType': return 'string'
+      case 'canonicalPropertyType': return 'BloggerCanonicalPropertyType'
       case 'operatorDataType': return 'string'
       case 'widgetSettingType': return 'string'
       case 'directiveAttributeType': return 'string'

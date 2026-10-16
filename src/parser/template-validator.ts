@@ -50,8 +50,9 @@ function handleClosingTag(
   const lower = token.tagName.toLowerCase()
   const top = tagStack[tagStack.length - 1]
   if (!top || top.tagName.toLowerCase() !== lower) {
-    const rule = catalog.getDiagnostic('BX1041')
-    pushDiagnostic(diagnostics, catalog, 'BX1041' as BloggerDiagnosticCode, token, {
+    const code = catalog.getStandardDiagnostic('mismatched_or_unclosed_tag')
+    const rule = catalog.getDiagnostic(code)
+    pushDiagnostic(diagnostics, catalog, code, token, {
       rule,
       message: rule?.message ?? `Closing tag </${token.tagName}> does not match the currently open tag.`,
     })
@@ -308,9 +309,10 @@ export function validateTemplateStructure(
     }
   }
 
-  const rule = catalog.getDiagnostic('BX1041')
+  const unclosedCode = catalog.getStandardDiagnostic('mismatched_or_unclosed_tag')
+  const rule = catalog.getDiagnostic(unclosedCode)
   for (const token of tagStack) {
-    pushDiagnostic(diagnostics, catalog, 'BX1041' as BloggerDiagnosticCode, token, {
+    pushDiagnostic(diagnostics, catalog, unclosedCode, token, {
       rule,
       message: rule?.message ?? `Tag <${token.tagName}> is not closed.`,
     })

@@ -220,10 +220,10 @@ export class SpecCatalog {
 
   private indexOperators(): void {
     const operatorsCatalog = this.store.getCatalog('operators') as BloggerOperatorsCatalog
-    const hierarchy = operatorsCatalog.precedence_hierarchy || []
+    const hierarchy = operatorsCatalog.domain_metadata?.precedence_hierarchy || []
     this.precedenceHierarchy = hierarchy
 
-    const maxLevel = hierarchy.length > 0 ? Math.max(...hierarchy.map(h => h.level)) : 10
+    const maxLevel = hierarchy.length > 0 ? Math.max(...hierarchy.map((h: BloggerPrecedenceHierarchyLevel) => h.level)) : 10
 
     for (const item of hierarchy) {
       const bp = (maxLevel + 1 - item.level) * 10
@@ -333,8 +333,9 @@ export class SpecCatalog {
 
   private indexScopes(): void {
     const scopesData = this.store.getCatalog('scopes') as BloggerScopesCatalog
-    if (Array.isArray(scopesData.resolution_precedence)) {
-      this.scopeOrder.push(...scopesData.resolution_precedence)
+    const precedence = scopesData.domain_metadata?.resolution_precedence
+    if (Array.isArray(precedence)) {
+      this.scopeOrder.push(...precedence)
     }
     const scopes = scopesData.scopes || {}
     for (const [name, def] of Object.entries(scopes)) {
@@ -344,19 +345,20 @@ export class SpecCatalog {
 
   private indexTypes(): void {
     const typesData = this.store.getCatalog('types') as BloggerTypesCatalog
-    if (typesData.coercion_rules) {
-      Object.assign(this.coercionRules, typesData.coercion_rules)
+    const meta = typesData.domain_metadata
+    if (meta?.coercion_rules) {
+      Object.assign(this.coercionRules, meta.coercion_rules)
     }
-    if (Array.isArray(typesData.scalar_types)) {
-      this.scalarTypes.push(...typesData.scalar_types)
+    if (Array.isArray(meta?.scalar_types)) {
+      this.scalarTypes.push(...meta.scalar_types)
     }
-    if (typesData.truthiness_matrix?.falsy_string_literals) {
-      for (const s of typesData.truthiness_matrix.falsy_string_literals) {
+    if (meta?.truthiness_matrix?.falsy_string_literals) {
+      for (const s of meta.truthiness_matrix.falsy_string_literals) {
         this.falsyStringLiterals.add(s.toLowerCase())
       }
     }
-    if (typesData.truthiness_matrix?.truthy_string_literals) {
-      for (const s of typesData.truthiness_matrix.truthy_string_literals) {
+    if (meta?.truthiness_matrix?.truthy_string_literals) {
+      for (const s of meta.truthiness_matrix.truthy_string_literals) {
         this.truthyStringLiterals.add(s.toLowerCase())
       }
     }
@@ -368,8 +370,12 @@ export class SpecCatalog {
 
   private indexInclusions(): void {
     const inclusionsData = this.store.getCatalog('inclusions') as BloggerInclusionsCatalog
-    this.superPrefix = inclusionsData.super_prefix_rule.prefix
-    for (const [name, def] of Object.entries(inclusionsData.inclusions)) {
+    const prefix = inclusionsData.domain_metadata?.super_prefix_rule?.prefix
+    if (!prefix) {
+      throw new Error('Missing domain_metadata.super_prefix_rule.prefix in inclusions catalog')
+    }
+    this.superPrefix = prefix
+    for (const [name, def] of Object.entries(inclusionsData.inclusions || {})) {
       this.inclusionMap.set(name, def)
     }
   }
@@ -864,20 +870,32 @@ export class SpecCatalog {
   }
 
   getDirectiveNestingLimit(): number {
-    return this.getCompilerLimits()?.max_directive_nesting_depth ?? 50
+    const limit = this.getCompilerLimits()?.max_directive_nesting_depth
+    if (limit === undefined) {
+      throw new Error('Missing compiler_limits.max_directive_nesting_depth in directives catalog')
+    }
+    return limit
   }
 
   getCompilerQuotas(): BloggerCompilerQuotas | undefined {
     const opCatalog = this.store.getCatalog('operators') as BloggerOperatorsCatalog
-    return opCatalog.evaluation_contexts?.compiler_quotas
+    return opCatalog.domain_metadata?.evaluation_contexts?.compiler_quotas
   }
 
   getExpressionQuotaLimit(): number {
-    return this.getCompilerQuotas()?.max_expression_tokens ?? 40
+    const limit = this.getCompilerQuotas()?.max_expression_tokens
+    if (limit === undefined) {
+      throw new Error('Missing compiler_quotas.max_expression_tokens in operators catalog')
+    }
+    return limit
   }
 
   getExpressionQuotaWarning(): number {
-    return this.getCompilerQuotas()?.warning_expression_tokens ?? 36
+    const warning = this.getCompilerQuotas()?.warning_expression_tokens
+    if (warning === undefined) {
+      throw new Error('Missing compiler_quotas.warning_expression_tokens in operators catalog')
+    }
+    return warning
   }
 
   getLambdaKeywords(): ReadonlySet<string> {
@@ -923,7 +941,10 @@ export class SpecCatalog {
   }
 
   getScalarTypes(): readonly string[] {
-    return this.scalarTypes.length > 0 ? this.scalarTypes : ['string', 'number', 'boolean']
+    if (this.scalarTypes.length === 0) {
+      throw new Error('Missing scalar_types in types catalog')
+    }
+    return this.scalarTypes
   }
 
   getFalsyStringLiterals(): ReadonlySet<string> {
@@ -964,17 +985,7 @@ export class SpecCatalog {
   }
 
   getStandardDiagnostics(): Readonly<BloggerStandardDiagnostics> {
-    const fallback: BloggerStandardDiagnostics = {
-      missing_required_attribute: 'BX1022',
-      deprecated_attribute: 'BX1024',
-      empty_required_attribute: 'BX1039',
-      disallowed_expression_attribute: 'BX1022',
-      duplicate_element_id: 'BX1033',
-      duplicate_includable_id: 'BX1036',
-      invalid_variable_type_attribute: 'BX1040',
-      prohibited_nesting: 'BX1023',
-    }
-    const result: any = { ...fallback }
+    const result: any = {}
     for (const [k, v] of this.standardDiagnostics.entries()) {
       result[k] = v
     }
@@ -982,7 +993,11 @@ export class SpecCatalog {
   }
 
   getStandardDiagnostic(key: BloggerStandardDiagnosticKey): BloggerDiagnosticCode {
-    return this.standardDiagnostics.get(key) ?? this.getStandardDiagnostics()[key]
+    const code = this.standardDiagnostics.get(key)
+    if (!code) {
+      throw new Error(`Standard diagnostic '${key}' is not defined in directives catalog domain_metadata.standard_diagnostics`)
+    }
+    return code
   }
 
   isDirectiveExpressionAttribute(tagName: string, attrName: string): boolean {

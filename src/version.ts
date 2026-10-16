@@ -69,7 +69,10 @@ export function detectTemplateVersion(
   catalog: SpecCatalog = getSpecCatalog(),
 ): TemplateVersionResult {
   const spec = getLayoutVersionsSpec(catalog)
-  const defaultVersion = (spec?.default_version ?? 3) as BloggerLayoutVersion
+  if (!spec) {
+    throw new Error('Missing layout_versions in directives catalog domain_metadata')
+  }
+  const defaultVersion = spec.default_version
 
   if (!xmlText || typeof xmlText !== 'string') {
     return {
@@ -86,7 +89,7 @@ export function detectTemplateVersion(
     .replace(/<\?xml[\s\S]*?\?>/i, '')
 
   // 1. Check for explicit version declaration attribute derived from catalog
-  const explicitAttrs = spec?.explicit_attributes ?? ['b:layoutsVersion', 'b:version', 'layoutsVersion']
+  const explicitAttrs = spec.explicit_attributes
   const explicitPattern = new RegExp(`\\b(?:${explicitAttrs.map(escapeRegex).join('|')})\\s*=\\s*(['"])(.*?)\\1`, 'i')
   const explicitMatch = sanitized.match(explicitPattern)
 
@@ -96,7 +99,7 @@ export function detectTemplateVersion(
   if (explicitMatch) {
     const rawVal = explicitMatch[2].trim()
     const major = Number.parseInt(rawVal.split('.')[0], 10)
-    const supported = spec?.supported_versions ?? [1, 2, 3]
+    const supported = spec.supported_versions
     if ((supported as readonly number[]).includes(major)) {
       explicitVersion = major as BloggerLayoutVersion
       explicitFeature = explicitMatch[0]
@@ -104,9 +107,9 @@ export function detectTemplateVersion(
   }
 
   // Detect structural markers dynamically from catalog definitions
-  const versionKeys: number[] = spec?.versions
-    ? Object.keys(spec.versions).map(v => Number.parseInt(v, 10)).sort((a, b) => b - a)
-    : [3, 2, 1]
+  const versionKeys: number[] = Object.keys(spec.versions)
+    .map(v => Number.parseInt(v, 10))
+    .sort((a, b) => b - a)
 
   const versionMarkers = new Map<number, string[]>()
   for (const v of versionKeys) {
