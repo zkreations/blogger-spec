@@ -12,7 +12,6 @@
       "id": "expressions/arithmetic/addition-integers",
       "title": "Addition Integers",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -25,13 +24,13 @@
       "expected": {
         "outcome": "value",
         "value": 15
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/multiplication-precedence",
       "title": "Multiplication Precedence",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+",
@@ -45,13 +44,13 @@
       "expected": {
         "outcome": "value",
         "value": 14
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/grouping-parentheses",
       "title": "Grouping Parentheses",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+",
@@ -65,13 +64,13 @@
       "expected": {
         "outcome": "value",
         "value": 20
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/modulo-remainder",
       "title": "Modulo Remainder",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:%"
@@ -84,13 +83,13 @@
       "expected": {
         "outcome": "value",
         "value": 1
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/division-float",
       "title": "Division Float",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:/"
@@ -103,13 +102,13 @@
       "expected": {
         "outcome": "value",
         "value": 3.5
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/string-number-concatenation",
       "title": "String Number Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -122,13 +121,13 @@
       "expected": {
         "outcome": "value",
         "value": "Count: 5"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/literal-string-number-concatenation",
       "title": "Literal String Number Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -141,13 +140,13 @@
       "expected": {
         "outcome": "value",
         "value": "1010"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/literal-number-string-concatenation",
       "title": "Literal Number String Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -160,13 +159,13 @@
       "expected": {
         "outcome": "value",
         "value": "1010"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/runtime-variable-numeric-addition",
       "title": "Runtime Variable Numeric Addition",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -181,13 +180,13 @@
       "expected": {
         "outcome": "value",
         "value": 20
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/runtime-variable-text-concatenation",
       "title": "Runtime Variable Text Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -202,13 +201,13 @@
       "expected": {
         "outcome": "value",
         "value": "10posts"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/subtraction-integers",
       "title": "Binary Subtraction Integers",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:arithmetic",
         "operator:-"
@@ -221,13 +220,13 @@
       "expected": {
         "outcome": "value",
         "value": 15
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/arithmetic/unary-negation-integer",
       "title": "Unary Negation On Numeric Literal",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:arithmetic",
         "operator:-"
@@ -240,13 +239,13 @@
       "expected": {
         "outcome": "value",
         "value": -5
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/coercion/addition-literal-string-concatenation",
       "title": "Literal Numeric String Concatenation With Literal Number",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-literal"
@@ -259,13 +258,13 @@
       "expected": {
         "outcome": "value",
         "value": "1010"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-literal-reversed-concatenation",
       "title": "Reversed Literal Numeric String Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-literal"
@@ -278,13 +277,13 @@
       "expected": {
         "outcome": "value",
         "value": "1010"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-runtime-variable-arithmetic",
       "title": "Runtime Variable String Numeric Addition",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-runtime-numeric"
@@ -299,13 +298,13 @@
       "expected": {
         "outcome": "value",
         "value": 20
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-runtime-variable-reversed-arithmetic",
       "title": "Reversed Runtime Variable String Numeric Addition",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-runtime-numeric"
@@ -320,13 +319,13 @@
       "expected": {
         "outcome": "value",
         "value": 20
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-runtime-two-variables-arithmetic",
       "title": "Two Runtime Variable Strings Numeric Addition",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-runtime-numeric"
@@ -342,13 +341,13 @@
       "expected": {
         "outcome": "value",
         "value": 20
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-runtime-non-numeric-text-fallback",
       "title": "Runtime Non-Numeric String Fallback To Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-runtime-fallback"
@@ -363,13 +362,13 @@
       "expected": {
         "outcome": "value",
         "value": "10posts"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-runtime-with-literal-string-override",
       "title": "Literal String Operand Forcing Concatenation On Runtime Number",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-literal-dominance"
@@ -384,13 +383,13 @@
       "expected": {
         "outcome": "value",
         "value": "10 items"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/equality-runtime-numeric-string",
       "title": "Weak Equality Between Number And Runtime Numeric String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:==",
         "semantics:coercion-equality"
@@ -405,13 +404,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/equality-number-to-canonical-string",
       "title": "Equality Between Numeric Literal And Canonical String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-canonical-string"
@@ -424,13 +423,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/equality-number-to-non-canonical-string-rejection",
       "title": "Inequality Between Number And Non-Canonical String With Leading Zero",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-canonical-string"
@@ -443,13 +442,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/equality-boolean-to-canonical-string",
       "title": "Equality Between Boolean Literal And Canonical Boolean String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-canonical-string"
@@ -462,13 +461,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/equality-boolean-to-number-rejection",
       "title": "Inequality Between Boolean Literal And Integer",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-strict-types"
@@ -481,13 +480,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/equality-null-property-to-empty-string",
       "title": "Equality Between Missing Property And Empty String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-nullish"
@@ -502,13 +501,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/equality-empty-array-to-falsy-rejection",
       "title": "Inequality Between Empty Array And Boolean False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-strict-types"
@@ -521,13 +520,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/concatenation-boolean-and-string",
       "title": "String Concatenation Between Boolean Literal And String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "operator:+",
         "semantics:coercion-canonical-string"
@@ -540,13 +539,13 @@
       "expected": {
         "outcome": "value",
         "value": "true is truthy"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/coercion/concatenation-string-and-boolean",
       "title": "String Concatenation Between String And Boolean Literal",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "operator:+",
         "semantics:coercion-canonical-string"
@@ -559,13 +558,13 @@
       "expected": {
         "outcome": "value",
         "value": "Status: false"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/coercion/elvis-preserves-empty-string",
       "title": "Elvis Operator Preserves Non-Null Empty String Without Triggering Fallback",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "operator:?:",
         "semantics:coercion-nullish"
@@ -578,13 +577,13 @@
       "expected": {
         "outcome": "value",
         "value": ""
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/coercion/elvis-preserves-zero",
       "title": "Elvis Operator Preserves Numeric Zero Without Triggering Fallback",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "operator:?:",
         "semantics:coercion-nullish"
@@ -597,13 +596,13 @@
       "expected": {
         "outcome": "value",
         "value": 0
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/collections_and_lambdas/collection-take",
       "title": "Collection Take",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:take"
@@ -635,13 +634,13 @@
             "title": "Second"
           }
         ]
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/collection-skip",
       "title": "Collection Skip",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:skip"
@@ -664,13 +663,13 @@
           3,
           4
         ]
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/lambda-count",
       "title": "Lambda Count",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas"
       ],
@@ -694,13 +693,13 @@
       "expected": {
         "outcome": "value",
         "value": 2
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/lambda-any",
       "title": "Lambda Any",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas"
       ],
@@ -724,13 +723,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/lambda-all-falsy",
       "title": "Lambda All Falsy",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas"
       ],
@@ -754,13 +753,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-in-array",
       "title": "Membership In Array",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -779,13 +778,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/collection-take-precedence-contains",
       "title": "Collection Take Precedence Contains",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains",
@@ -799,13 +798,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/collection-chaining-skip-take",
       "title": "Collection Chaining Skip Take",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains",
@@ -820,13 +819,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/collection-take-arithmetic-parens",
       "title": "Collection Take Arithmetic Parens",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:+",
@@ -841,13 +840,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/lambda-iterator-data-prefix-tolerance",
       "title": "Lambda Iterator Data Prefix Tolerance",
       "evidence": "observed",
-      "verifiedAt": "2026-10-11",
       "covers": [
         "subsystem:collections_and_lambdas",
         "rule:BX1019"
@@ -869,13 +868,13 @@
       "expected": {
         "outcome": "value",
         "value": 1
-      }
+      },
+      "verified_at": "2026-10-11"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-string-substring-match",
       "title": "Substring Membership In String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -888,13 +887,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-string-empty-always-present",
       "title": "Empty String Membership In String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -907,13 +906,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-array-number-coercion",
       "title": "Array Element Membership With Numeric String Coercion",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -926,13 +925,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-array-boolean-string-coercion",
       "title": "Array Element Membership With Boolean Canonical String Coercion",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -945,13 +944,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-functional-in",
       "title": "Functional Syntax For In Membership Operator",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -964,13 +963,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-string-substring",
       "title": "String Substring Containment Check",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -983,13 +982,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-array-coercion",
       "title": "Array Containment Check With Numeric String Coercion",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -1002,13 +1001,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-functional",
       "title": "Functional Syntax For Contains Content Operator",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -1021,13 +1020,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-array-functional",
       "title": "Functional Syntax For Contains Content Operator on Array",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -1040,13 +1039,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-array-missing",
       "title": "Array Containment Check For Non-Existent Element Evaluates False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -1059,13 +1058,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-string-missing",
       "title": "String Substring In Membership For Non-Existent Substring Evaluates False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -1078,13 +1077,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-string-missing",
       "title": "String Contains Substring For Non-Existent Substring Evaluates False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -1097,13 +1096,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/helpers_and_transforms/url-params-append",
       "title": "Url Params Append",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:helpers_and_transforms"
       ],
@@ -1119,13 +1118,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://example.blogspot.com?m=1"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/helpers_and_transforms/url-params-alphabetical-sort",
       "title": "Url Params Alphabetical Sort",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:params"
@@ -1140,13 +1139,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://mi-blog.blogspot.com/p/articulo.html?hl=es&m=1"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/url-append-params-preservation",
       "title": "Url Append Params Preservation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:appendParams"
@@ -1159,13 +1158,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://mi-blog.blogspot.com/?a=1&b=2"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/url-fragment-append",
       "title": "Url Fragment Append",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:helpers_and_transforms"
       ],
@@ -1181,13 +1180,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://example.blogspot.com/post.html#comments"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/helpers_and_transforms/image-resize-helper",
       "title": "Image Resize Helper",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:resizeImage"
@@ -1202,13 +1201,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample=w600-h337-p-k-no-nu"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/helpers_and_transforms/image-resize-integer",
       "title": "Image Resize Integer Dimension",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:resizeImage"
@@ -1223,13 +1222,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample_id=w320"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/image-resize-infix",
       "title": "Image Resize Infix Syntax",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:resizeImage"
@@ -1244,13 +1243,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample_id=w240"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/image-resize-external-passthrough",
       "title": "Image Resize External URL Passthrough",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:resizeImage"
@@ -1265,13 +1264,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://example.com/external-photo.jpg"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/image-sourceset-infix",
       "title": "Image SourceSet Infix Generator",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:sourceSet"
@@ -1286,13 +1285,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample_id=w320 320w, https://blogger.googleusercontent.com/img/a/sample_id=w640 640w, https://blogger.googleusercontent.com/img/a/sample_id=w1024 1024w"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/image-sourceset-functional-ratio",
       "title": "Image SourceSet Functional With Aspect Ratio",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:sourceSet"
@@ -1307,13 +1306,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample_id=w480-h480-p-k-no-nu 480w, https://blogger.googleusercontent.com/img/a/sample_id=w800-h800-p-k-no-nu 800w"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/date-format-pattern",
       "title": "Date Format ICU Pattern",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:format"
@@ -1328,13 +1327,13 @@
       "expected": {
         "outcome": "value",
         "value": "2026-08-29"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/date-format-precedence-relational",
       "title": "Date Format Precedence Over Relational Equality",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:format",
@@ -1350,13 +1349,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/locale_modifiers/locale-name-access",
       "title": "Locale Name Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:name"
@@ -1381,13 +1380,13 @@
       "expected": {
         "outcome": "value",
         "value": "Spanish (Spain)"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-language-and-country",
       "title": "Locale Language and Country Modifiers Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:language",
@@ -1413,13 +1412,13 @@
       "expected": {
         "outcome": "value",
         "value": "en-US"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-language-direction",
       "title": "Locale Language Direction Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:languageDirection"
@@ -1444,13 +1443,13 @@
       "expected": {
         "outcome": "value",
         "value": "rtl"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-inherits-string-length",
       "title": "Locale Inherits String Length Modifier",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:length"
@@ -1467,13 +1466,13 @@
       "expected": {
         "outcome": "value",
         "value": 5
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-variant-access",
       "title": "Locale Variant Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:variant"
@@ -1498,13 +1497,13 @@
       "expected": {
         "outcome": "value",
         "value": "VALENCIA"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-script-access",
       "title": "Locale Script Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:script"
@@ -1529,13 +1528,13 @@
       "expected": {
         "outcome": "value",
         "value": "Latn"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-language-alignment",
       "title": "Locale Language Alignment Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:languageAlignment"
@@ -1560,13 +1559,13 @@
       "expected": {
         "outcome": "value",
         "value": "right"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-inherits-string-escaped",
       "title": "Locale Inherits String Escaped Modifier",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:escaped"
@@ -1583,13 +1582,13 @@
       "expected": {
         "outcome": "value",
         "value": "es_ES"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-variant-empty-fallback",
       "title": "Locale Variant Empty Fallback Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:variant"
@@ -1614,13 +1613,13 @@
       "expected": {
         "outcome": "value",
         "value": ""
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-script-empty-fallback",
       "title": "Locale Script Empty Fallback Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:script"
@@ -1645,13 +1644,13 @@
       "expected": {
         "outcome": "value",
         "value": ""
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/logical_and_comparisons/equality-numbers",
       "title": "Equality Numbers",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:=="
@@ -1664,13 +1663,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/relational-greater-than",
       "title": "Relational Greater Than",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -1682,13 +1681,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/logical-and-short-circuit",
       "title": "Logical And Short Circuit",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:and"
@@ -1701,13 +1700,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/logical-or-truthy",
       "title": "Logical Or Truthy",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:or"
@@ -1720,13 +1719,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/logical-not",
       "title": "Logical Not",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:not"
@@ -1739,13 +1738,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/elvis-fallback-triggered",
       "title": "Elvis Fallback Triggered",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -1759,13 +1758,13 @@
       "expected": {
         "outcome": "value",
         "value": "Default"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/elvis-fallback-empty-string",
       "title": "Elvis Fallback Empty String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -1779,13 +1778,13 @@
       "expected": {
         "outcome": "value",
         "value": ""
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/ternary-conditional",
       "title": "Ternary Conditional",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -1799,13 +1798,13 @@
       "expected": {
         "outcome": "value",
         "value": "article"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/missing-property-equality-empty-string",
       "title": "Missing Property Equality Empty String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:=="
@@ -1822,13 +1821,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/nested-missing-property-elvis-fallback",
       "title": "Nested Missing Property Elvis Fallback",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -1844,13 +1843,13 @@
       "expected": {
         "outcome": "value",
         "value": "FALLBACK"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/elvis-fallback-number-zero",
       "title": "Elvis Fallback Does Not Trigger On Numeric Zero",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:?:"
@@ -1863,13 +1862,13 @@
       "expected": {
         "outcome": "value",
         "value": 0
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/logical_and_comparisons/elvis-fallback-boolean-false",
       "title": "Elvis Fallback Does Not Trigger On Boolean False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:?:"
@@ -1882,13 +1881,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/logical_and_comparisons/date-identity-equality",
       "title": "Date Object Self Identity Equality",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:=="
@@ -1905,13 +1904,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/logical_and_comparisons/formatted-date-relational-comparison",
       "title": "Relational Comparison Over Formatted Date String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:<",
@@ -1929,13 +1928,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/logical_and_comparisons/date-iso8601-property-access",
       "title": "Date Object ISO8601 String Property Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -1953,13 +1952,13 @@
       "expected": {
         "outcome": "value",
         "value": "2026-08-29T14:48:00-05:00"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/subtype_modifiers/url-canonical",
       "title": "Url Canonical Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:canonical",
@@ -1977,13 +1976,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://dev.zkreations.com/2026/08/test-2.html"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/url-http",
       "title": "Url HTTP Scheme Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:http",
@@ -2001,13 +2000,13 @@
       "expected": {
         "outcome": "value",
         "value": "http://dev.zkreations.com/2026/08/test-2.html"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/url-https",
       "title": "Url HTTPS Scheme Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:https",
@@ -2025,13 +2024,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://dev.zkreations.com/2026/08/test-2.html"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/url-chained-canonical-https",
       "title": "Url Chained Modifiers Canonical and HTTPS Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:canonical",
@@ -2050,13 +2049,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://dev.zkreations.com/2026/08/test-2.html"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/url-inherits-string-length",
       "title": "Url Subtype Inherits String Length Modifier",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:length",
@@ -2074,13 +2073,13 @@
       "expected": {
         "outcome": "value",
         "value": 46
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-iso8601",
       "title": "Date ISO 8601 Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:iso8601",
@@ -2100,13 +2099,13 @@
       "expected": {
         "outcome": "value",
         "value": "2026-08-29T14:48:00-05:00"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-year",
       "title": "Date Year Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:year",
@@ -2126,13 +2125,13 @@
       "expected": {
         "outcome": "value",
         "value": 2026
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-month",
       "title": "Date Month Modifier 1-Indexed Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:month",
@@ -2152,13 +2151,13 @@
       "expected": {
         "outcome": "value",
         "value": 8
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-day",
       "title": "Date Day Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:day",
@@ -2178,13 +2177,13 @@
       "expected": {
         "outcome": "value",
         "value": 29
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-day-of-week",
       "title": "Date DayOfWeek Modifier ISO Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:dayOfWeek",
@@ -2204,13 +2203,13 @@
       "expected": {
         "outcome": "value",
         "value": 6
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-day-of-year",
       "title": "Date DayOfYear Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:dayOfYear",
@@ -2230,13 +2229,13 @@
       "expected": {
         "outcome": "value",
         "value": 241
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-inherits-string-length",
       "title": "Date Subtype Inherits String Length Modifier",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:length",
@@ -2254,13 +2253,13 @@
       "expected": {
         "outcome": "value",
         "value": 15
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/image-is-resizable",
       "title": "Image IsResizable Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:isResizable",
@@ -2280,13 +2279,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/image-is-youtube",
       "title": "Image IsYouTube Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:isYouTube",
@@ -2306,13 +2305,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/image-youtube-max-res-falsy",
       "title": "Image YoutubeMaxResDefaultUrl Modifier Returns Boolean False When Non YouTube",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:youtubeMaxResDefaultUrl",
@@ -2332,13 +2331,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/image-original-dimensions",
       "title": "Image Original Dimensions Modifiers Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:originalWidth",
@@ -2360,13 +2359,13 @@
       "expected": {
         "outcome": "value",
         "value": "939x934"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/image-inherits-string-length",
       "title": "Image Subtype Inherits String Length Modifier",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:length",
@@ -2384,13 +2383,13 @@
       "expected": {
         "outcome": "value",
         "value": 280
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/conditional_rendering/if-elseif-else-flow",
       "title": "If Elseif Else Flow",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:conditional_rendering",
         "tag:b:if",
@@ -2412,13 +2411,13 @@
         "outcome": "html",
         "html": "<main>Static Page</main>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "rendering/conditional_rendering/switch-case-matching",
       "title": "Switch Case Matching",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:conditional_rendering",
         "tag:b:switch",
@@ -2439,13 +2438,13 @@
         "outcome": "html",
         "html": "Item View",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "rendering/conditional_rendering/dynamic-boolean-attribute-stringification",
       "title": "Dynamic Boolean Attribute Stringification",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:conditional_rendering"
       ],
@@ -2459,13 +2458,13 @@
         "outcome": "html",
         "html": "<input checked='false' type='checkbox'/>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/includable_inheritance/include-caller-loop-context-inheritance",
       "title": "Include Caller Loop Context Inheritance",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:includable_inheritance",
         "tag:b:defaultmarkups",
@@ -2484,13 +2483,13 @@
         "outcome": "html",
         "html": "<p>Mickey</p><p>Donald</p>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/includable_inheritance/include-default-widget-payload-binding",
       "title": "Include Default Widget Payload Binding",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:includable_inheritance",
         "tag:b:defaultmarkups",
@@ -2510,13 +2509,13 @@
         "outcome": "html",
         "html": "<h2>Widget de prueba</h2>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/includable_inheritance/include-object-literal-with-nested-array",
       "title": "Include Object Literal With Nested Array Indexing Via Eval",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:includable_inheritance",
         "tag:b:defaultmarkups",
@@ -2535,13 +2534,13 @@
         "outcome": "html",
         "html": "<div>Widget Sub OK:x</div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/loop_rendering/loop-list-items",
       "title": "Loop List Items",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:loop_rendering",
         "tag:b:loop"
@@ -2567,13 +2566,13 @@
         "outcome": "html",
         "html": "<ul><li><a href=\"/about\">About Us</a></li><li><a href=\"/contact\">Contact</a></li></ul>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "rendering/loop_rendering/loop-numeric-range",
       "title": "Loop Numeric Range",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:loop_rendering",
         "tag:b:loop"
@@ -2588,13 +2587,13 @@
         "outcome": "html",
         "html": "<nav><span>1</span><span>2</span><span>3</span></nav>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/loop_shadowing/nested-loop-shadowing",
       "title": "Nested Loop Shadowing",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:loop_shadowing",
         "tag:b:loop"
@@ -2620,13 +2619,13 @@
         "outcome": "html",
         "html": "[POST:101][LABEL:News][POST_AFTER:101]",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/loop_shadowing/loop-index-counter",
       "title": "Loop Index Counter",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:loop_shadowing",
         "tag:b:loop"
@@ -2641,13 +2640,13 @@
         "outcome": "html",
         "html": "0:a;1:b;",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "rendering/message_rendering/direct-global-message-tag",
       "title": "Direct Non-Parameterized Global Message Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering"
       ],
@@ -2665,13 +2664,13 @@
         "outcome": "html",
         "html": "Comments",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/parameterized-message-by-author",
       "title": "Parameterized Message byAuthor with Positional Param",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2691,13 +2690,13 @@
         "outcome": "html",
         "html": "By John Doe",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/parameterized-message-author-said",
       "title": "Parameterized Message authorSaid with Positional Param",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2717,13 +2716,13 @@
         "outcome": "html",
         "html": "John Doe said&hellip;",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/parameterized-message-author-said-with-link",
       "title": "Parameterized Message authorSaidWithLink with Multiple Params",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2743,13 +2742,13 @@
         "outcome": "html",
         "html": "<a href=\"https://example.com/user\" rel=\"nofollow\">John Doe</a> said&hellip;",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/parameterized-message-by-author-link",
       "title": "Parameterized Message byAuthorLink with Multiple Params",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2769,13 +2768,13 @@
         "outcome": "html",
         "html": "By <a href=\"https://example.com/user\">John Doe</a>",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/parameterized-message-posted-by-author",
       "title": "Parameterized Message postedByAuthor with Positional Param",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2795,13 +2794,13 @@
         "outcome": "html",
         "html": "Posted by John Doe",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/parameterized-message-posted-by-author-link",
       "title": "Parameterized Message postedByAuthorLink with Multiple Params",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2821,13 +2820,13 @@
         "outcome": "html",
         "html": "Posted by <a href=\"https://example.com/user\">John Doe</a>",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/parameterized-message-powered-by-blogger-link",
       "title": "Parameterized Message poweredByBloggerLink with Positional Param",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2847,13 +2846,13 @@
         "outcome": "html",
         "html": "Powered by <a href='https://www.blogger.com' target='_blank'>Blogger</a>",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/parameterized-message-template-images-by",
       "title": "Parameterized Message templateImagesBy with Positional Param",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2873,13 +2872,13 @@
         "outcome": "html",
         "html": "Theme images by Jane Designer",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/parameterized-message-template-images-by-link",
       "title": "Parameterized Message templateImagesByLink with URL first and Name second",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2899,13 +2898,13 @@
         "outcome": "html",
         "html": "Theme images by <a href=\"https://example.com/designer\">Jane Designer</a>",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/plural-message-directive-zero-comments",
       "title": "Plural Message Directive with Zero Comments",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2925,13 +2924,13 @@
         "outcome": "html",
         "html": "No comments",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/plural-message-directive-singular-comment",
       "title": "Plural Message Directive with Singular Comment",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2951,13 +2950,13 @@
         "outcome": "html",
         "html": "1 comment",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/plural-message-directive-with-named-param",
       "title": "Plural Message Directive with Named Param",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -2977,13 +2976,13 @@
         "outcome": "html",
         "html": "5 comments",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/message_rendering/plural-message-directive-large-count",
       "title": "Plural Message Directive with Count 21",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:message_rendering",
         "tag:b:message",
@@ -3003,13 +3002,13 @@
         "outcome": "html",
         "html": "21 comments",
         "canonicalDom": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "rendering/widget_rendering/blog-widget-wrapper-and-includables",
       "title": "Blog Widget Wrapper And Includables",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:widget",
@@ -3027,13 +3026,13 @@
         "outcome": "html",
         "html": "<div class=\"widget Header\" data-version=\"2\" id=\"Header1\"><h1>My Tech Blog</h1></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "rendering/widget_rendering/dynamic-tag-and-attributes",
       "title": "Dynamic Tag And Attributes",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:tag",
@@ -3054,13 +3053,13 @@
         "outcome": "html",
         "html": "<h1 class=\"is-featured\" data-id=\"999\">Hello World</h1>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "rendering/widget_rendering/eval-closing-tag-tolerance",
       "title": "Eval Closing Tag Body Ignored Tolerance",
       "evidence": "observed",
-      "verifiedAt": "2026-10-11",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:eval",
@@ -3078,13 +3077,13 @@
         "outcome": "html",
         "html": "Desarrollo",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-11"
     },
     {
       "id": "rendering/widget_rendering/comment-render-emission",
       "title": "Comment Render True Emission",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:comment"
@@ -3099,13 +3098,13 @@
         "outcome": "html",
         "html": "<!--TEST COMMENT-->",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/class-conditional-append-and-omission",
       "title": "Class Conditional Append And False Omission",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:class"
@@ -3120,13 +3119,13 @@
         "outcome": "html",
         "html": "<div class=\"base-box is-active\"><span>Box</span></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/attr-conditional-omission-on-false",
       "title": "Attr Conditional Emission And Omission On False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:attr"
@@ -3141,13 +3140,13 @@
         "outcome": "html",
         "html": "<div data-presente=\"activo\"><span>Box</span></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/widget-wrapper-mutation-direct-main",
       "title": "Widget Wrapper Mutation Direct In Main Includable",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:widget",
@@ -3165,13 +3164,13 @@
         "outcome": "html",
         "html": "<div class=\"widget Header header-widget-mutated\" data-header-wrapper-attr=\"header-wrapper-ok\" data-version=\"2\" id=\"Header2\"><h1>Title</h1></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/dom-mutation-hoisting-across-include",
       "title": "DOM Mutation Hoisting Across Include Subroutine Boundary",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:widget",
@@ -3190,13 +3189,13 @@
         "outcome": "html",
         "html": "<div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><div class=\"box-wrapper mutated-from-sub\" data-sub=\"ok\"><span>Sub Content</span></div></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/dom-mutation-loop-accumulation",
       "title": "DOM Mutation Loop Class And Attr Accumulation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:loop",
@@ -3214,13 +3213,13 @@
         "outcome": "html",
         "html": "<ul class=\"lista-loop iter-1 iter-2\" data-i-1=\"1\" data-i-2=\"2\"><li>1</li><li>2</li></ul>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/dom-mutation-deep-hoisting-and-branching",
       "title": "DOM Mutation Deep Hoisting Through Logic Containers",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:if",
@@ -3239,13 +3238,13 @@
         "outcome": "html",
         "html": "<div class=\"box active-branch\" data-ok=\"true\"><span>Content</span></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/dom-mutation-sibling-neutrality",
       "title": "DOM Mutation Sibling Neutrality Ancestor Binding",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:class",
@@ -3261,13 +3260,13 @@
         "outcome": "html",
         "html": "<div class=\"parent floating-class\" data-float=\"parent\"><span>One</span><span>Two</span></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/widget-settings-and-setting-directive",
       "title": "Widget Settings Container And Setting Elements",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:widget",
@@ -3287,13 +3286,13 @@
         "outcome": "html",
         "html": "<div class=\"widget Followers\" data-version=\"2\" id=\"Followers1\"><h2>Followers</h2></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "scopes/with_nesting/with-alias-resolution",
       "title": "With Alias Resolution",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:with_nesting",
         "tag:b:with"
@@ -3312,13 +3311,13 @@
         "outcome": "html",
         "html": "<h1>Blogger Guide</h1>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/with_nesting/with-nested-shadowing",
       "title": "With Nested Shadowing",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:with_nesting",
         "tag:b:with"
@@ -3333,13 +3332,13 @@
         "outcome": "html",
         "html": "<span>Inner</span><span>Outer</span>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/with_nesting/with-nested-shadowing-referencing-outer",
       "title": "With Nested Shadowing Referencing Outer Scope",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:with_nesting",
         "tag:b:with"
@@ -3354,13 +3353,13 @@
         "outcome": "html",
         "html": "<span>15</span>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "scopes/with_nesting/with-widget-scope-shadowing-and-restoration",
       "title": "With Widget Scope Variable Shadowing and Restoration",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:with_nesting",
         "tag:b:with"
@@ -3377,13 +3376,13 @@
         "outcome": "html",
         "html": "<div>[Desarrollo][Shadowed Widget Title][Desarrollo]</div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-for-tag",
       "title": "Prohibited <b:for> Loop Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1001"
       ],
@@ -3398,13 +3397,13 @@
           "BX1001"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-set-tag",
       "title": "Prohibited <b:set> Assignment Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1003"
       ],
@@ -3419,13 +3418,13 @@
           "BX1003"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-hyphen-elseif",
       "title": "Prohibited Hyphenated <b:else-if>",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1006"
       ],
@@ -3440,13 +3439,13 @@
           "BX1006"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/inverted-includable-attributes",
       "title": "Inverted Includable Name and Include Id",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1015",
         "rule:BX1016"
@@ -3463,13 +3462,13 @@
           "BX1016"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-javascript-array-methods",
       "title": "Prohibited JavaScript Array Filter And Slice Methods",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1017"
       ],
@@ -3484,13 +3483,13 @@
           "BX1017"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-javascript-strict-equality",
       "title": "Prohibited JavaScript Strict Equality Operator",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1018"
       ],
@@ -3505,13 +3504,13 @@
           "BX1018"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-lambda-data-prefix",
       "title": "Prohibited Lambda Iterator Data Prefix",
       "evidence": "observed",
-      "verifiedAt": "2026-10-11",
       "covers": [
         "rule:BX1019"
       ],
@@ -3526,13 +3525,13 @@
           "BX1019"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-11"
     },
     {
       "id": "diagnostics/negative_syntax/invalid-null-literal",
       "title": "Prohibited Literal Null Comparison In Expression",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1020"
       ],
@@ -3547,13 +3546,13 @@
           "BX1020"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-closing-eval-delimiter",
       "title": "Prohibited Closing Tag For Self-Closing b:eval Directive",
       "evidence": "observed",
-      "verifiedAt": "2026-10-11",
       "covers": [
         "rule:BX1013"
       ],
@@ -3568,13 +3567,13 @@
           "BX1013"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-11"
     },
     {
       "id": "diagnostics/negative_syntax/switch-uses-expr-instead-of-var",
       "title": "b:switch Directive Using expr Instead of var",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1014"
       ],
@@ -3589,13 +3588,13 @@
           "BX1014"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-date-relational-comparison",
       "title": "Prohibited Direct Date Relational Comparison",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "rule:BX1026"
       ],
@@ -3614,13 +3613,13 @@
           "BX1026"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-literal-null-empty-comparison",
       "title": "Prohibited Literal Null Equality With Empty String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "rule:BX1020"
       ],
@@ -3635,13 +3634,13 @@
           "BX1020"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-each-tag",
       "title": "Prohibited <b:each> Loop Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1002"
       ],
@@ -3656,13 +3655,13 @@
           "BX1002"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-var-tag",
       "title": "Prohibited <b:var> Variable Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1004"
       ],
@@ -3677,13 +3676,13 @@
           "BX1004"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-let-tag",
       "title": "Prohibited <b:let> Variable Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1005"
       ],
@@ -3698,13 +3697,13 @@
           "BX1005"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-choose-tag",
       "title": "Prohibited <b:choose> Conditional Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1007"
       ],
@@ -3719,13 +3718,13 @@
           "BX1007"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-when-tag",
       "title": "Prohibited <b:when> Branch Tag In Switch",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1008"
       ],
@@ -3740,13 +3739,13 @@
           "BX1008"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-otherwise-tag",
       "title": "Prohibited <b:otherwise> Default Tag In Switch",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1009"
       ],
@@ -3761,13 +3760,13 @@
           "BX1009"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-template-tag",
       "title": "Prohibited <b:template> Subroutine Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1010"
       ],
@@ -3782,13 +3781,13 @@
           "BX1010"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-macro-tag",
       "title": "Prohibited <b:macro> Helper Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1011"
       ],
@@ -3803,13 +3802,13 @@
           "BX1011"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-function-tag",
       "title": "Prohibited <b:function> Definition Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1012"
       ],
@@ -3824,13 +3823,13 @@
           "BX1012"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/expression-token-quota-exceeded",
       "title": "Expression Token Quota Exceeded (40 Token Limit)",
       "evidence": "official",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1021"
       ],
@@ -3845,13 +3844,13 @@
           "BX1021"
         ],
         "stage": "quota"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/mandatory-attribute-missing",
       "title": "Mandatory Directive Attribute Missing In b:loop",
       "evidence": "official",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1022"
       ],
@@ -3866,13 +3865,13 @@
           "BX1022"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-directive-nesting",
       "title": "Prohibited Directive Nesting (b:includable outside b:widget)",
       "evidence": "official",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1023"
       ],
@@ -3887,13 +3886,13 @@
           "BX1023"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/deprecated-directive-attribute",
       "title": "Deprecated Directive Attribute In Layouts V3",
       "evidence": "official",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1024"
       ],
@@ -3908,13 +3907,13 @@
           "BX1024"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/unknown-directive-in-blogger-namespace",
       "title": "Unknown Directive In Blogger Namespace",
       "evidence": "official",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1025"
       ],
@@ -3929,13 +3928,13 @@
           "BX1025"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/direct-parameterized-message-invocation",
       "title": "Direct Parameterized Message Invocation Warning",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1027"
       ],
@@ -3950,13 +3949,13 @@
           "BX1027"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/plural-message-param-missing-name",
       "title": "Plural Message Param Missing Name Attribute",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1028"
       ],
@@ -3971,13 +3970,13 @@
           "BX1028"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/inline-concatenated-message-params",
       "title": "Inline Concatenated Message Params Without Whitespace",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1029"
       ],
@@ -3992,13 +3991,13 @@
           "BX1029"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-unary-expression-negation",
       "title": "Prohibited Unary Negation on Compound Parenthesized Expression",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1030"
       ],
@@ -4012,13 +4011,13 @@
           "BX1030"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/non-object-include-data-payload",
       "title": "Non-Object Scalar Payload Passed to b:include data Attribute",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1031"
       ],
@@ -4033,13 +4032,13 @@
           "BX1031"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-bracket-indexing-in-data-tag",
       "title": "Prohibited Direct Bracket Indexing in data:* Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1032"
       ],
@@ -4054,13 +4053,13 @@
           "BX1032"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/duplicate-element-id",
       "title": "Duplicate Section or Widget Identifier",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1033"
       ],
@@ -4075,13 +4074,13 @@
           "BX1033"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/widget-outside-section",
       "title": "Widget Declared Outside Section",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1034"
       ],
@@ -4096,13 +4095,13 @@
           "BX1034"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/nested-section",
       "title": "Nested Section Container Prohibited",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1035"
       ],
@@ -4117,13 +4116,13 @@
           "BX1035"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/duplicate-includable-id",
       "title": "Duplicate Includable Identifier in Widget",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1036"
       ],
@@ -4138,13 +4137,13 @@
           "BX1036"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/unresolved-inclusion",
       "title": "Unresolved Includable Reference in b:include",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1037"
       ],
@@ -4159,13 +4158,13 @@
           "BX1037"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/string-boolean-in-expression",
       "title": "String Quoted Boolean Literal in Expression",
       "evidence": "observed",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1038"
       ],
@@ -4180,13 +4179,13 @@
           "BX1038"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/empty-required-attribute",
       "title": "Empty Required Attribute on Directive",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1039"
       ],
@@ -4201,13 +4200,13 @@
           "BX1039"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/invalid-variable-type-attribute",
       "title": "Invalid Attribute for Variable Type",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1040"
       ],
@@ -4222,13 +4221,13 @@
           "BX1040"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/mismatched-or-unclosed-tag",
       "title": "Mismatched or Unclosed XML Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-16",
       "covers": [
         "rule:BX1041"
       ],
@@ -4243,13 +4242,13 @@
           "BX1041"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-16"
     },
     {
       "id": "diagnostics/negative_syntax/disallowed-expression-attribute",
       "title": "Disallowed Expression on Static Attribute",
       "evidence": "official",
-      "verifiedAt": "2026-10-16",
       "covers": [
         "rule:BX1042"
       ],
@@ -4264,7 +4263,8 @@
           "BX1042"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-16"
     }
   ]
 }

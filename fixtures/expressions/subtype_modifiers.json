@@ -5,7 +5,6 @@
       "id": "expressions/subtype_modifiers/url-canonical",
       "title": "Url Canonical Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:canonical",
@@ -23,13 +22,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://dev.zkreations.com/2026/08/test-2.html"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/url-http",
       "title": "Url HTTP Scheme Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:http",
@@ -47,13 +46,13 @@
       "expected": {
         "outcome": "value",
         "value": "http://dev.zkreations.com/2026/08/test-2.html"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/url-https",
       "title": "Url HTTPS Scheme Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:https",
@@ -71,13 +70,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://dev.zkreations.com/2026/08/test-2.html"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/url-chained-canonical-https",
       "title": "Url Chained Modifiers Canonical and HTTPS Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:canonical",
@@ -96,13 +95,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://dev.zkreations.com/2026/08/test-2.html"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/url-inherits-string-length",
       "title": "Url Subtype Inherits String Length Modifier",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:length",
@@ -120,13 +119,13 @@
       "expected": {
         "outcome": "value",
         "value": 46
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-iso8601",
       "title": "Date ISO 8601 Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:iso8601",
@@ -146,13 +145,13 @@
       "expected": {
         "outcome": "value",
         "value": "2026-08-29T14:48:00-05:00"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-year",
       "title": "Date Year Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:year",
@@ -172,13 +171,13 @@
       "expected": {
         "outcome": "value",
         "value": 2026
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-month",
       "title": "Date Month Modifier 1-Indexed Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:month",
@@ -198,13 +197,13 @@
       "expected": {
         "outcome": "value",
         "value": 8
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-day",
       "title": "Date Day Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:day",
@@ -224,13 +223,13 @@
       "expected": {
         "outcome": "value",
         "value": 29
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-day-of-week",
       "title": "Date DayOfWeek Modifier ISO Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:dayOfWeek",
@@ -250,13 +249,13 @@
       "expected": {
         "outcome": "value",
         "value": 6
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-day-of-year",
       "title": "Date DayOfYear Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:dayOfYear",
@@ -276,13 +275,13 @@
       "expected": {
         "outcome": "value",
         "value": 241
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/date-inherits-string-length",
       "title": "Date Subtype Inherits String Length Modifier",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:length",
@@ -300,13 +299,13 @@
       "expected": {
         "outcome": "value",
         "value": 15
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/image-is-resizable",
       "title": "Image IsResizable Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:isResizable",
@@ -326,13 +325,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/image-is-youtube",
       "title": "Image IsYouTube Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:isYouTube",
@@ -352,13 +351,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/image-youtube-max-res-falsy",
       "title": "Image YoutubeMaxResDefaultUrl Modifier Returns Boolean False When Non YouTube",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:youtubeMaxResDefaultUrl",
@@ -378,13 +377,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/image-original-dimensions",
       "title": "Image Original Dimensions Modifiers Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:originalWidth",
@@ -406,13 +405,13 @@
       "expected": {
         "outcome": "value",
         "value": "939x934"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/subtype_modifiers/image-inherits-string-length",
       "title": "Image Subtype Inherits String Length Modifier",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:length",
@@ -430,7 +429,8 @@
       "expected": {
         "outcome": "value",
         "value": 280
-      }
+      },
+      "verified_at": "2026-10-14"
     }
   ]
 }

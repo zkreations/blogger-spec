@@ -5,7 +5,6 @@
       "id": "scopes/with_nesting/with-alias-resolution",
       "title": "With Alias Resolution",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:with_nesting",
         "tag:b:with"
@@ -24,13 +23,13 @@
         "outcome": "html",
         "html": "<h1>Blogger Guide</h1>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/with_nesting/with-nested-shadowing",
       "title": "With Nested Shadowing",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:with_nesting",
         "tag:b:with"
@@ -45,13 +44,13 @@
         "outcome": "html",
         "html": "<span>Inner</span><span>Outer</span>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/with_nesting/with-nested-shadowing-referencing-outer",
       "title": "With Nested Shadowing Referencing Outer Scope",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:with_nesting",
         "tag:b:with"
@@ -66,13 +65,13 @@
         "outcome": "html",
         "html": "<span>15</span>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "scopes/with_nesting/with-widget-scope-shadowing-and-restoration",
       "title": "With Widget Scope Variable Shadowing and Restoration",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:with_nesting",
         "tag:b:with"
@@ -89,7 +88,8 @@
         "outcome": "html",
         "html": "<div>[Desarrollo][Shadowed Widget Title][Desarrollo]</div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-14"
     }
   ]
 }

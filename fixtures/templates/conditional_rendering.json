@@ -5,7 +5,6 @@
       "id": "rendering/conditional_rendering/if-elseif-else-flow",
       "title": "If Elseif Else Flow",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:conditional_rendering",
         "tag:b:if",
@@ -27,13 +26,13 @@
         "outcome": "html",
         "html": "<main>Static Page</main>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "rendering/conditional_rendering/switch-case-matching",
       "title": "Switch Case Matching",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:conditional_rendering",
         "tag:b:switch",
@@ -54,13 +53,13 @@
         "outcome": "html",
         "html": "Item View",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "rendering/conditional_rendering/dynamic-boolean-attribute-stringification",
       "title": "Dynamic Boolean Attribute Stringification",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:conditional_rendering"
       ],
@@ -74,7 +73,8 @@
         "outcome": "html",
         "html": "<input checked='false' type='checkbox'/>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     }
   ]
 }

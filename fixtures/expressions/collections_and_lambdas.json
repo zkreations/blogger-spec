@@ -5,7 +5,6 @@
       "id": "expressions/collections_and_lambdas/collection-take",
       "title": "Collection Take",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:take"
@@ -37,13 +36,13 @@
             "title": "Second"
           }
         ]
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/collection-skip",
       "title": "Collection Skip",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:skip"
@@ -66,13 +65,13 @@
           3,
           4
         ]
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/lambda-count",
       "title": "Lambda Count",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas"
       ],
@@ -96,13 +95,13 @@
       "expected": {
         "outcome": "value",
         "value": 2
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/lambda-any",
       "title": "Lambda Any",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas"
       ],
@@ -126,13 +125,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/lambda-all-falsy",
       "title": "Lambda All Falsy",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas"
       ],
@@ -156,13 +155,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-in-array",
       "title": "Membership In Array",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -181,13 +180,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/collection-take-precedence-contains",
       "title": "Collection Take Precedence Contains",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains",
@@ -201,13 +200,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/collection-chaining-skip-take",
       "title": "Collection Chaining Skip Take",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains",
@@ -222,13 +221,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/collection-take-arithmetic-parens",
       "title": "Collection Take Arithmetic Parens",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:+",
@@ -243,13 +242,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/collections_and_lambdas/lambda-iterator-data-prefix-tolerance",
       "title": "Lambda Iterator Data Prefix Tolerance",
       "evidence": "observed",
-      "verifiedAt": "2026-10-11",
       "covers": [
         "subsystem:collections_and_lambdas",
         "rule:BX1019"
@@ -271,13 +270,13 @@
       "expected": {
         "outcome": "value",
         "value": 1
-      }
+      },
+      "verified_at": "2026-10-11"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-string-substring-match",
       "title": "Substring Membership In String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -290,13 +289,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-string-empty-always-present",
       "title": "Empty String Membership In String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -309,13 +308,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-array-number-coercion",
       "title": "Array Element Membership With Numeric String Coercion",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -328,13 +327,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-array-boolean-string-coercion",
       "title": "Array Element Membership With Boolean Canonical String Coercion",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -347,13 +346,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-functional-in",
       "title": "Functional Syntax For In Membership Operator",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -366,13 +365,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-string-substring",
       "title": "String Substring Containment Check",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -385,13 +384,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-array-coercion",
       "title": "Array Containment Check With Numeric String Coercion",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -404,13 +403,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-functional",
       "title": "Functional Syntax For Contains Content Operator",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -423,13 +422,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-array-functional",
       "title": "Functional Syntax For Contains Content Operator on Array",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -442,13 +441,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-array-missing",
       "title": "Array Containment Check For Non-Existent Element Evaluates False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -461,13 +460,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-string-missing",
       "title": "String Substring In Membership For Non-Existent Substring Evaluates False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:in"
@@ -480,13 +479,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/collections_and_lambdas/content-contains-string-missing",
       "title": "String Contains Substring For Non-Existent Substring Evaluates False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:collections_and_lambdas",
         "operator:contains"
@@ -499,7 +498,8 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-14"
     }
   ]
 }

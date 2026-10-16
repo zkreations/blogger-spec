@@ -5,7 +5,6 @@
       "id": "rendering/widget_rendering/blog-widget-wrapper-and-includables",
       "title": "Blog Widget Wrapper And Includables",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:widget",
@@ -23,13 +22,13 @@
         "outcome": "html",
         "html": "<div class=\"widget Header\" data-version=\"2\" id=\"Header1\"><h1>My Tech Blog</h1></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "rendering/widget_rendering/dynamic-tag-and-attributes",
       "title": "Dynamic Tag And Attributes",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:tag",
@@ -50,13 +49,13 @@
         "outcome": "html",
         "html": "<h1 class=\"is-featured\" data-id=\"999\">Hello World</h1>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "rendering/widget_rendering/eval-closing-tag-tolerance",
       "title": "Eval Closing Tag Body Ignored Tolerance",
       "evidence": "observed",
-      "verifiedAt": "2026-10-11",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:eval",
@@ -74,13 +73,13 @@
         "outcome": "html",
         "html": "Desarrollo",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-11"
     },
     {
       "id": "rendering/widget_rendering/comment-render-emission",
       "title": "Comment Render True Emission",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:comment"
@@ -95,13 +94,13 @@
         "outcome": "html",
         "html": "<!--TEST COMMENT-->",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/class-conditional-append-and-omission",
       "title": "Class Conditional Append And False Omission",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:class"
@@ -116,13 +115,13 @@
         "outcome": "html",
         "html": "<div class=\"base-box is-active\"><span>Box</span></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/attr-conditional-omission-on-false",
       "title": "Attr Conditional Emission And Omission On False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:attr"
@@ -137,13 +136,13 @@
         "outcome": "html",
         "html": "<div data-presente=\"activo\"><span>Box</span></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/widget-wrapper-mutation-direct-main",
       "title": "Widget Wrapper Mutation Direct In Main Includable",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:widget",
@@ -161,13 +160,13 @@
         "outcome": "html",
         "html": "<div class=\"widget Header header-widget-mutated\" data-header-wrapper-attr=\"header-wrapper-ok\" data-version=\"2\" id=\"Header2\"><h1>Title</h1></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/dom-mutation-hoisting-across-include",
       "title": "DOM Mutation Hoisting Across Include Subroutine Boundary",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:widget",
@@ -186,13 +185,13 @@
         "outcome": "html",
         "html": "<div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><div class=\"box-wrapper mutated-from-sub\" data-sub=\"ok\"><span>Sub Content</span></div></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/dom-mutation-loop-accumulation",
       "title": "DOM Mutation Loop Class And Attr Accumulation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:loop",
@@ -210,13 +209,13 @@
         "outcome": "html",
         "html": "<ul class=\"lista-loop iter-1 iter-2\" data-i-1=\"1\" data-i-2=\"2\"><li>1</li><li>2</li></ul>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/dom-mutation-deep-hoisting-and-branching",
       "title": "DOM Mutation Deep Hoisting Through Logic Containers",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:if",
@@ -235,13 +234,13 @@
         "outcome": "html",
         "html": "<div class=\"box active-branch\" data-ok=\"true\"><span>Content</span></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/dom-mutation-sibling-neutrality",
       "title": "DOM Mutation Sibling Neutrality Ancestor Binding",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:class",
@@ -257,13 +256,13 @@
         "outcome": "html",
         "html": "<div class=\"parent floating-class\" data-float=\"parent\"><span>One</span><span>Two</span></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "rendering/widget_rendering/widget-settings-and-setting-directive",
       "title": "Widget Settings Container And Setting Elements",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:widget",
@@ -283,7 +282,8 @@
         "outcome": "html",
         "html": "<div class=\"widget Followers\" data-version=\"2\" id=\"Followers1\"><h2>Followers</h2></div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-14"
     }
   ]
 }

@@ -5,7 +5,6 @@
       "id": "scopes/loop_shadowing/nested-loop-shadowing",
       "title": "Nested Loop Shadowing",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:loop_shadowing",
         "tag:b:loop"
@@ -31,13 +30,13 @@
         "outcome": "html",
         "html": "[POST:101][LABEL:News][POST_AFTER:101]",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/loop_shadowing/loop-index-counter",
       "title": "Loop Index Counter",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:loop_shadowing",
         "tag:b:loop"
@@ -52,7 +51,8 @@
         "outcome": "html",
         "html": "0:a;1:b;",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     }
   ]
 }

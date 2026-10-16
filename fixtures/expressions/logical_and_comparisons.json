@@ -5,7 +5,6 @@
       "id": "expressions/logical_and_comparisons/equality-numbers",
       "title": "Equality Numbers",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:=="
@@ -18,13 +17,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/relational-greater-than",
       "title": "Relational Greater Than",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -36,13 +35,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/logical-and-short-circuit",
       "title": "Logical And Short Circuit",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:and"
@@ -55,13 +54,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/logical-or-truthy",
       "title": "Logical Or Truthy",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:or"
@@ -74,13 +73,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/logical-not",
       "title": "Logical Not",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:not"
@@ -93,13 +92,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/elvis-fallback-triggered",
       "title": "Elvis Fallback Triggered",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -113,13 +112,13 @@
       "expected": {
         "outcome": "value",
         "value": "Default"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/elvis-fallback-empty-string",
       "title": "Elvis Fallback Empty String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -133,13 +132,13 @@
       "expected": {
         "outcome": "value",
         "value": ""
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/ternary-conditional",
       "title": "Ternary Conditional",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -153,13 +152,13 @@
       "expected": {
         "outcome": "value",
         "value": "article"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/missing-property-equality-empty-string",
       "title": "Missing Property Equality Empty String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:=="
@@ -176,13 +175,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/nested-missing-property-elvis-fallback",
       "title": "Nested Missing Property Elvis Fallback",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -198,13 +197,13 @@
       "expected": {
         "outcome": "value",
         "value": "FALLBACK"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/logical_and_comparisons/elvis-fallback-number-zero",
       "title": "Elvis Fallback Does Not Trigger On Numeric Zero",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:?:"
@@ -217,13 +216,13 @@
       "expected": {
         "outcome": "value",
         "value": 0
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/logical_and_comparisons/elvis-fallback-boolean-false",
       "title": "Elvis Fallback Does Not Trigger On Boolean False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:?:"
@@ -236,13 +235,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/logical_and_comparisons/date-identity-equality",
       "title": "Date Object Self Identity Equality",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:=="
@@ -259,13 +258,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/logical_and_comparisons/formatted-date-relational-comparison",
       "title": "Relational Comparison Over Formatted Date String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:logical_and_comparisons",
         "operator:<",
@@ -283,13 +282,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/logical_and_comparisons/date-iso8601-property-access",
       "title": "Date Object ISO8601 String Property Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:logical_and_comparisons"
       ],
@@ -307,7 +306,8 @@
       "expected": {
         "outcome": "value",
         "value": "2026-08-29T14:48:00-05:00"
-      }
+      },
+      "verified_at": "2026-10-12"
     }
   ]
 }

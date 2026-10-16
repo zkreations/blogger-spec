@@ -5,7 +5,6 @@
       "id": "expressions/helpers_and_transforms/url-params-append",
       "title": "Url Params Append",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:helpers_and_transforms"
       ],
@@ -21,13 +20,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://example.blogspot.com?m=1"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/helpers_and_transforms/url-params-alphabetical-sort",
       "title": "Url Params Alphabetical Sort",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:params"
@@ -42,13 +41,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://mi-blog.blogspot.com/p/articulo.html?hl=es&m=1"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/url-append-params-preservation",
       "title": "Url Append Params Preservation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:appendParams"
@@ -61,13 +60,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://mi-blog.blogspot.com/?a=1&b=2"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/url-fragment-append",
       "title": "Url Fragment Append",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:helpers_and_transforms"
       ],
@@ -83,13 +82,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://example.blogspot.com/post.html#comments"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/helpers_and_transforms/image-resize-helper",
       "title": "Image Resize Helper",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:resizeImage"
@@ -104,13 +103,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample=w600-h337-p-k-no-nu"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/helpers_and_transforms/image-resize-integer",
       "title": "Image Resize Integer Dimension",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:resizeImage"
@@ -125,13 +124,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample_id=w320"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/image-resize-infix",
       "title": "Image Resize Infix Syntax",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:resizeImage"
@@ -146,13 +145,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample_id=w240"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/image-resize-external-passthrough",
       "title": "Image Resize External URL Passthrough",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:resizeImage"
@@ -167,13 +166,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://example.com/external-photo.jpg"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/image-sourceset-infix",
       "title": "Image SourceSet Infix Generator",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:sourceSet"
@@ -188,13 +187,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample_id=w320 320w, https://blogger.googleusercontent.com/img/a/sample_id=w640 640w, https://blogger.googleusercontent.com/img/a/sample_id=w1024 1024w"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/image-sourceset-functional-ratio",
       "title": "Image SourceSet Functional With Aspect Ratio",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:sourceSet"
@@ -209,13 +208,13 @@
       "expected": {
         "outcome": "value",
         "value": "https://blogger.googleusercontent.com/img/a/sample_id=w480-h480-p-k-no-nu 480w, https://blogger.googleusercontent.com/img/a/sample_id=w800-h800-p-k-no-nu 800w"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/date-format-pattern",
       "title": "Date Format ICU Pattern",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:format"
@@ -230,13 +229,13 @@
       "expected": {
         "outcome": "value",
         "value": "2026-08-29"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/helpers_and_transforms/date-format-precedence-relational",
       "title": "Date Format Precedence Over Relational Equality",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "subsystem:helpers_and_transforms",
         "operator:format",
@@ -252,7 +251,8 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     }
   ]
 }

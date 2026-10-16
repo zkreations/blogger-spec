@@ -5,7 +5,6 @@
       "id": "expressions/arithmetic/addition-integers",
       "title": "Addition Integers",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -18,13 +17,13 @@
       "expected": {
         "outcome": "value",
         "value": 15
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/multiplication-precedence",
       "title": "Multiplication Precedence",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+",
@@ -38,13 +37,13 @@
       "expected": {
         "outcome": "value",
         "value": 14
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/grouping-parentheses",
       "title": "Grouping Parentheses",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+",
@@ -58,13 +57,13 @@
       "expected": {
         "outcome": "value",
         "value": 20
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/modulo-remainder",
       "title": "Modulo Remainder",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:%"
@@ -77,13 +76,13 @@
       "expected": {
         "outcome": "value",
         "value": 1
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/division-float",
       "title": "Division Float",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:/"
@@ -96,13 +95,13 @@
       "expected": {
         "outcome": "value",
         "value": 3.5
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/string-number-concatenation",
       "title": "String Number Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -115,13 +114,13 @@
       "expected": {
         "outcome": "value",
         "value": "Count: 5"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/literal-string-number-concatenation",
       "title": "Literal String Number Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -134,13 +133,13 @@
       "expected": {
         "outcome": "value",
         "value": "1010"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/literal-number-string-concatenation",
       "title": "Literal Number String Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -153,13 +152,13 @@
       "expected": {
         "outcome": "value",
         "value": "1010"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/runtime-variable-numeric-addition",
       "title": "Runtime Variable Numeric Addition",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -174,13 +173,13 @@
       "expected": {
         "outcome": "value",
         "value": 20
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/runtime-variable-text-concatenation",
       "title": "Runtime Variable Text Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:arithmetic",
         "operator:+"
@@ -195,13 +194,13 @@
       "expected": {
         "outcome": "value",
         "value": "10posts"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/arithmetic/subtraction-integers",
       "title": "Binary Subtraction Integers",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:arithmetic",
         "operator:-"
@@ -214,13 +213,13 @@
       "expected": {
         "outcome": "value",
         "value": 15
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/arithmetic/unary-negation-integer",
       "title": "Unary Negation On Numeric Literal",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:arithmetic",
         "operator:-"
@@ -233,7 +232,8 @@
       "expected": {
         "outcome": "value",
         "value": -5
-      }
+      },
+      "verified_at": "2026-10-14"
     }
   ]
 }

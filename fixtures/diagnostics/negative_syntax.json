@@ -5,7 +5,6 @@
       "id": "diagnostics/negative_syntax/prohibited-for-tag",
       "title": "Prohibited <b:for> Loop Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1001"
       ],
@@ -20,13 +19,13 @@
           "BX1001"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-set-tag",
       "title": "Prohibited <b:set> Assignment Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1003"
       ],
@@ -41,13 +40,13 @@
           "BX1003"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-hyphen-elseif",
       "title": "Prohibited Hyphenated <b:else-if>",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1006"
       ],
@@ -62,13 +61,13 @@
           "BX1006"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/inverted-includable-attributes",
       "title": "Inverted Includable Name and Include Id",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1015",
         "rule:BX1016"
@@ -85,13 +84,13 @@
           "BX1016"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-javascript-array-methods",
       "title": "Prohibited JavaScript Array Filter And Slice Methods",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1017"
       ],
@@ -106,13 +105,13 @@
           "BX1017"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-javascript-strict-equality",
       "title": "Prohibited JavaScript Strict Equality Operator",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1018"
       ],
@@ -127,13 +126,13 @@
           "BX1018"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-lambda-data-prefix",
       "title": "Prohibited Lambda Iterator Data Prefix",
       "evidence": "observed",
-      "verifiedAt": "2026-10-11",
       "covers": [
         "rule:BX1019"
       ],
@@ -148,13 +147,13 @@
           "BX1019"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-11"
     },
     {
       "id": "diagnostics/negative_syntax/invalid-null-literal",
       "title": "Prohibited Literal Null Comparison In Expression",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1020"
       ],
@@ -169,13 +168,13 @@
           "BX1020"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-closing-eval-delimiter",
       "title": "Prohibited Closing Tag For Self-Closing b:eval Directive",
       "evidence": "observed",
-      "verifiedAt": "2026-10-11",
       "covers": [
         "rule:BX1013"
       ],
@@ -190,13 +189,13 @@
           "BX1013"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-11"
     },
     {
       "id": "diagnostics/negative_syntax/switch-uses-expr-instead-of-var",
       "title": "b:switch Directive Using expr Instead of var",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "rule:BX1014"
       ],
@@ -211,13 +210,13 @@
           "BX1014"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-date-relational-comparison",
       "title": "Prohibited Direct Date Relational Comparison",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "rule:BX1026"
       ],
@@ -236,13 +235,13 @@
           "BX1026"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-literal-null-empty-comparison",
       "title": "Prohibited Literal Null Equality With Empty String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "rule:BX1020"
       ],
@@ -257,13 +256,13 @@
           "BX1020"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-each-tag",
       "title": "Prohibited <b:each> Loop Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1002"
       ],
@@ -278,13 +277,13 @@
           "BX1002"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-var-tag",
       "title": "Prohibited <b:var> Variable Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1004"
       ],
@@ -299,13 +298,13 @@
           "BX1004"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-let-tag",
       "title": "Prohibited <b:let> Variable Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1005"
       ],
@@ -320,13 +319,13 @@
           "BX1005"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-choose-tag",
       "title": "Prohibited <b:choose> Conditional Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1007"
       ],
@@ -341,13 +340,13 @@
           "BX1007"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-when-tag",
       "title": "Prohibited <b:when> Branch Tag In Switch",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1008"
       ],
@@ -362,13 +361,13 @@
           "BX1008"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-otherwise-tag",
       "title": "Prohibited <b:otherwise> Default Tag In Switch",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1009"
       ],
@@ -383,13 +382,13 @@
           "BX1009"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-template-tag",
       "title": "Prohibited <b:template> Subroutine Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1010"
       ],
@@ -404,13 +403,13 @@
           "BX1010"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-macro-tag",
       "title": "Prohibited <b:macro> Helper Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1011"
       ],
@@ -425,13 +424,13 @@
           "BX1011"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-function-tag",
       "title": "Prohibited <b:function> Definition Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1012"
       ],
@@ -446,13 +445,13 @@
           "BX1012"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/expression-token-quota-exceeded",
       "title": "Expression Token Quota Exceeded (40 Token Limit)",
       "evidence": "official",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1021"
       ],
@@ -467,13 +466,13 @@
           "BX1021"
         ],
         "stage": "quota"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/mandatory-attribute-missing",
       "title": "Mandatory Directive Attribute Missing In b:loop",
       "evidence": "official",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1022"
       ],
@@ -488,13 +487,13 @@
           "BX1022"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-directive-nesting",
       "title": "Prohibited Directive Nesting (b:includable outside b:widget)",
       "evidence": "official",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1023"
       ],
@@ -509,13 +508,13 @@
           "BX1023"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/deprecated-directive-attribute",
       "title": "Deprecated Directive Attribute In Layouts V3",
       "evidence": "official",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1024"
       ],
@@ -530,13 +529,13 @@
           "BX1024"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/unknown-directive-in-blogger-namespace",
       "title": "Unknown Directive In Blogger Namespace",
       "evidence": "official",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1025"
       ],
@@ -551,13 +550,13 @@
           "BX1025"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/direct-parameterized-message-invocation",
       "title": "Direct Parameterized Message Invocation Warning",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1027"
       ],
@@ -572,13 +571,13 @@
           "BX1027"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/plural-message-param-missing-name",
       "title": "Plural Message Param Missing Name Attribute",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1028"
       ],
@@ -593,13 +592,13 @@
           "BX1028"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/inline-concatenated-message-params",
       "title": "Inline Concatenated Message Params Without Whitespace",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1029"
       ],
@@ -614,13 +613,13 @@
           "BX1029"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-unary-expression-negation",
       "title": "Prohibited Unary Negation on Compound Parenthesized Expression",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1030"
       ],
@@ -634,13 +633,13 @@
           "BX1030"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/non-object-include-data-payload",
       "title": "Non-Object Scalar Payload Passed to b:include data Attribute",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1031"
       ],
@@ -655,13 +654,13 @@
           "BX1031"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/prohibited-bracket-indexing-in-data-tag",
       "title": "Prohibited Direct Bracket Indexing in data:* Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "rule:BX1032"
       ],
@@ -676,13 +675,13 @@
           "BX1032"
         ],
         "stage": "parser"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "diagnostics/negative_syntax/duplicate-element-id",
       "title": "Duplicate Section or Widget Identifier",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1033"
       ],
@@ -697,13 +696,13 @@
           "BX1033"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/widget-outside-section",
       "title": "Widget Declared Outside Section",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1034"
       ],
@@ -718,13 +717,13 @@
           "BX1034"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/nested-section",
       "title": "Nested Section Container Prohibited",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1035"
       ],
@@ -739,13 +738,13 @@
           "BX1035"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/duplicate-includable-id",
       "title": "Duplicate Includable Identifier in Widget",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1036"
       ],
@@ -760,13 +759,13 @@
           "BX1036"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/unresolved-inclusion",
       "title": "Unresolved Includable Reference in b:include",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1037"
       ],
@@ -781,13 +780,13 @@
           "BX1037"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/string-boolean-in-expression",
       "title": "String Quoted Boolean Literal in Expression",
       "evidence": "observed",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1038"
       ],
@@ -802,13 +801,13 @@
           "BX1038"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/empty-required-attribute",
       "title": "Empty Required Attribute on Directive",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1039"
       ],
@@ -823,13 +822,13 @@
           "BX1039"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/invalid-variable-type-attribute",
       "title": "Invalid Attribute for Variable Type",
       "evidence": "official",
-      "verifiedAt": "2026-10-15",
       "covers": [
         "rule:BX1040"
       ],
@@ -844,13 +843,13 @@
           "BX1040"
         ],
         "stage": "compiler"
-      }
+      },
+      "verified_at": "2026-10-15"
     },
     {
       "id": "diagnostics/negative_syntax/mismatched-or-unclosed-tag",
       "title": "Mismatched or Unclosed XML Tag",
       "evidence": "observed",
-      "verifiedAt": "2026-10-16",
       "covers": [
         "rule:BX1041"
       ],
@@ -865,13 +864,13 @@
           "BX1041"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-16"
     },
     {
       "id": "diagnostics/negative_syntax/disallowed-expression-attribute",
       "title": "Disallowed Expression on Static Attribute",
       "evidence": "official",
-      "verifiedAt": "2026-10-16",
       "covers": [
         "rule:BX1042"
       ],
@@ -886,7 +885,8 @@
           "BX1042"
         ],
         "stage": "linter"
-      }
+      },
+      "verified_at": "2026-10-16"
     }
   ]
 }

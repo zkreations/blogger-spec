@@ -5,7 +5,6 @@
       "id": "expressions/coercion/addition-literal-string-concatenation",
       "title": "Literal Numeric String Concatenation With Literal Number",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-literal"
@@ -18,13 +17,13 @@
       "expected": {
         "outcome": "value",
         "value": "1010"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-literal-reversed-concatenation",
       "title": "Reversed Literal Numeric String Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-literal"
@@ -37,13 +36,13 @@
       "expected": {
         "outcome": "value",
         "value": "1010"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-runtime-variable-arithmetic",
       "title": "Runtime Variable String Numeric Addition",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-runtime-numeric"
@@ -58,13 +57,13 @@
       "expected": {
         "outcome": "value",
         "value": 20
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-runtime-variable-reversed-arithmetic",
       "title": "Reversed Runtime Variable String Numeric Addition",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-runtime-numeric"
@@ -79,13 +78,13 @@
       "expected": {
         "outcome": "value",
         "value": 20
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-runtime-two-variables-arithmetic",
       "title": "Two Runtime Variable Strings Numeric Addition",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-runtime-numeric"
@@ -101,13 +100,13 @@
       "expected": {
         "outcome": "value",
         "value": 20
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-runtime-non-numeric-text-fallback",
       "title": "Runtime Non-Numeric String Fallback To Concatenation",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-runtime-fallback"
@@ -122,13 +121,13 @@
       "expected": {
         "outcome": "value",
         "value": "10posts"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/addition-runtime-with-literal-string-override",
       "title": "Literal String Operand Forcing Concatenation On Runtime Number",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:+",
         "semantics:coercion-literal-dominance"
@@ -143,13 +142,13 @@
       "expected": {
         "outcome": "value",
         "value": "10 items"
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/equality-runtime-numeric-string",
       "title": "Weak Equality Between Number And Runtime Numeric String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "operator:==",
         "semantics:coercion-equality"
@@ -164,13 +163,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "expressions/coercion/equality-number-to-canonical-string",
       "title": "Equality Between Numeric Literal And Canonical String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-canonical-string"
@@ -183,13 +182,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/equality-number-to-non-canonical-string-rejection",
       "title": "Inequality Between Number And Non-Canonical String With Leading Zero",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-canonical-string"
@@ -202,13 +201,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/equality-boolean-to-canonical-string",
       "title": "Equality Between Boolean Literal And Canonical Boolean String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-canonical-string"
@@ -221,13 +220,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/equality-boolean-to-number-rejection",
       "title": "Inequality Between Boolean Literal And Integer",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-strict-types"
@@ -240,13 +239,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/equality-null-property-to-empty-string",
       "title": "Equality Between Missing Property And Empty String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-nullish"
@@ -261,13 +260,13 @@
       "expected": {
         "outcome": "value",
         "value": true
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/equality-empty-array-to-falsy-rejection",
       "title": "Inequality Between Empty Array And Boolean False",
       "evidence": "observed",
-      "verifiedAt": "2026-10-12",
       "covers": [
         "operator:==",
         "semantics:coercion-strict-types"
@@ -280,13 +279,13 @@
       "expected": {
         "outcome": "value",
         "value": false
-      }
+      },
+      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/coercion/concatenation-boolean-and-string",
       "title": "String Concatenation Between Boolean Literal And String",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "operator:+",
         "semantics:coercion-canonical-string"
@@ -299,13 +298,13 @@
       "expected": {
         "outcome": "value",
         "value": "true is truthy"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/coercion/concatenation-string-and-boolean",
       "title": "String Concatenation Between String And Boolean Literal",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "operator:+",
         "semantics:coercion-canonical-string"
@@ -318,13 +317,13 @@
       "expected": {
         "outcome": "value",
         "value": "Status: false"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/coercion/elvis-preserves-empty-string",
       "title": "Elvis Operator Preserves Non-Null Empty String Without Triggering Fallback",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "operator:?:",
         "semantics:coercion-nullish"
@@ -337,13 +336,13 @@
       "expected": {
         "outcome": "value",
         "value": ""
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/coercion/elvis-preserves-zero",
       "title": "Elvis Operator Preserves Numeric Zero Without Triggering Fallback",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "operator:?:",
         "semantics:coercion-nullish"
@@ -356,7 +355,8 @@
       "expected": {
         "outcome": "value",
         "value": 0
-      }
+      },
+      "verified_at": "2026-10-14"
     }
   ]
 }

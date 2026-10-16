@@ -5,7 +5,6 @@
       "id": "scopes/includable_inheritance/include-caller-loop-context-inheritance",
       "title": "Include Caller Loop Context Inheritance",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:includable_inheritance",
         "tag:b:defaultmarkups",
@@ -24,13 +23,13 @@
         "outcome": "html",
         "html": "<p>Mickey</p><p>Donald</p>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/includable_inheritance/include-default-widget-payload-binding",
       "title": "Include Default Widget Payload Binding",
       "evidence": "observed",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:includable_inheritance",
         "tag:b:defaultmarkups",
@@ -50,13 +49,13 @@
         "outcome": "html",
         "html": "<h2>Widget de prueba</h2>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "scopes/includable_inheritance/include-object-literal-with-nested-array",
       "title": "Include Object Literal With Nested Array Indexing Via Eval",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:includable_inheritance",
         "tag:b:defaultmarkups",
@@ -75,7 +74,8 @@
         "outcome": "html",
         "html": "<div>Widget Sub OK:x</div>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-14"
     }
   ]
 }

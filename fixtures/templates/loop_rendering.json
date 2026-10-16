@@ -5,7 +5,6 @@
       "id": "rendering/loop_rendering/loop-list-items",
       "title": "Loop List Items",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:loop_rendering",
         "tag:b:loop"
@@ -31,13 +30,13 @@
         "outcome": "html",
         "html": "<ul><li><a href=\"/about\">About Us</a></li><li><a href=\"/contact\">Contact</a></li></ul>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     },
     {
       "id": "rendering/loop_rendering/loop-numeric-range",
       "title": "Loop Numeric Range",
       "evidence": "official",
-      "verifiedAt": "2026-10-10",
       "covers": [
         "subsystem:loop_rendering",
         "tag:b:loop"
@@ -52,7 +51,8 @@
         "outcome": "html",
         "html": "<nav><span>1</span><span>2</span><span>3</span></nav>",
         "canonicalDom": true
-      }
+      },
+      "verified_at": "2026-10-10"
     }
   ]
 }

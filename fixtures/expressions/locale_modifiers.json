@@ -5,7 +5,6 @@
       "id": "expressions/locale_modifiers/locale-name-access",
       "title": "Locale Name Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:name"
@@ -30,13 +29,13 @@
       "expected": {
         "outcome": "value",
         "value": "Spanish (Spain)"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-language-and-country",
       "title": "Locale Language and Country Modifiers Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:language",
@@ -62,13 +61,13 @@
       "expected": {
         "outcome": "value",
         "value": "en-US"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-language-direction",
       "title": "Locale Language Direction Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:languageDirection"
@@ -93,13 +92,13 @@
       "expected": {
         "outcome": "value",
         "value": "rtl"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-inherits-string-length",
       "title": "Locale Inherits String Length Modifier",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:length"
@@ -116,13 +115,13 @@
       "expected": {
         "outcome": "value",
         "value": 5
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-variant-access",
       "title": "Locale Variant Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:variant"
@@ -147,13 +146,13 @@
       "expected": {
         "outcome": "value",
         "value": "VALENCIA"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-script-access",
       "title": "Locale Script Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:script"
@@ -178,13 +177,13 @@
       "expected": {
         "outcome": "value",
         "value": "Latn"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-language-alignment",
       "title": "Locale Language Alignment Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:languageAlignment"
@@ -209,13 +208,13 @@
       "expected": {
         "outcome": "value",
         "value": "right"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-inherits-string-escaped",
       "title": "Locale Inherits String Escaped Modifier",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:escaped"
@@ -232,13 +231,13 @@
       "expected": {
         "outcome": "value",
         "value": "es_ES"
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-variant-empty-fallback",
       "title": "Locale Variant Empty Fallback Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:variant"
@@ -263,13 +262,13 @@
       "expected": {
         "outcome": "value",
         "value": ""
-      }
+      },
+      "verified_at": "2026-10-14"
     },
     {
       "id": "expressions/locale_modifiers/locale-script-empty-fallback",
       "title": "Locale Script Empty Fallback Modifier Access",
       "evidence": "observed",
-      "verifiedAt": "2026-10-14",
       "covers": [
         "subsystem:locale_modifiers",
         "modifier:script"
@@ -294,7 +293,8 @@
       "expected": {
         "outcome": "value",
         "value": ""
-      }
+      },
+      "verified_at": "2026-10-14"
     }
   ]
 }
