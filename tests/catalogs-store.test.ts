@@ -977,19 +977,25 @@ describe('catalogs and store formal verification suite', () => {
       expect(generatedContent).toContain('export type BloggerStandardDiagnosticKey =')
       expect(generatedContent).toContain('export interface BloggerOperatorsCatalog')
       expect(generatedContent).toContain('export interface BloggerDirectivesCatalog')
+      expect(generatedContent).toContain('export interface BloggerCDATADirectiveAttributes')
+      expect(generatedContent).toContain('export interface BloggerBlogGlobal')
+      expect(generatedContent).toContain('export interface BloggerBlogWidgetData')
     })
 
     it('generates clean, non-duplicate type definitions in dist/index.d.ts', () => {
       const dtsContent = generateDts()
-      // Should not contain duplicate inline declarations of domain union types
+      // Should re-export from modular declaration files
+      expect(dtsContent).toContain('export * from \'./types.js\';')
+      expect(dtsContent).toContain('export * from \'./ast.js\';')
+      expect(dtsContent).toContain('export * from \'./catalogs/index.js\';')
+      // Should not contain duplicate inline declarations of domain union types or manual models
       expect(dtsContent).not.toContain('export type BloggerDirectiveName =')
       expect(dtsContent).not.toContain('export type BloggerDiagnosticCode =')
       expect(dtsContent).not.toContain('export type BloggerOperatorName =')
       expect(dtsContent).not.toContain('export type BloggerMessageKey =')
       expect(dtsContent).not.toContain('export type BloggerWidgetType =')
-      // Should contain directive attributes and globals
-      expect(dtsContent).toContain('export interface BloggerCDATADirectiveAttributes')
-      expect(dtsContent).toContain('export interface BloggerBlogGlobal')
+      expect(dtsContent).not.toContain('export interface BloggerCDATADirectiveAttributes')
+      expect(dtsContent).not.toContain('export interface BloggerBlogGlobal')
     })
   })
 })

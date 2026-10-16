@@ -5,12 +5,6 @@ import { join } from 'node:path'
 import ts from 'typescript'
 import {
   CATALOG_NAMES,
-  getDirectives,
-  getGlobals,
-  getMessages,
-  getSettings,
-  getTypes,
-  getWidgets,
   MemoryCatalogStore,
   setDefaultCatalogStore,
 } from '../catalogs/index.js'
@@ -29,54 +23,8 @@ export interface VerificationFreshnessReport {
   items: VerificationFreshnessItem[]
 }
 
-function toPascalCase(name: string): string {
-  const cleaned = name.replace(/^b:/, '').replace(/[^a-z0-9]/gi, ' ')
-  return cleaned
-    .split(/\s+/)
-    .filter(Boolean)
-    .map(p => p.charAt(0).toUpperCase() + p.slice(1))
-    .join('')
-}
-
-function sanitizePropName(name: string): string {
-  if (/^[A-Z_$][\w$]*$/i.test(name)) {
-    return name
-  }
-  return JSON.stringify(name)
-}
-
-function mapPropertyTypeToTs(type: string, typeDefinitions?: Record<string, { ts_type?: string }>): string {
-  if (!type) {
-    return 'any'
-  }
-  if (type.includes('|')) {
-    return type.split('|').map(t => mapPropertyTypeToTs(t.trim(), typeDefinitions)).join(' | ')
-  }
-  const definition = typeDefinitions?.[type]
-  if (definition?.ts_type) {
-    return definition.ts_type
-  }
-  if (type.startsWith('array[') && type.endsWith(']')) {
-    const inner = type.slice(6, -1).trim()
-    const innerTs = mapPropertyTypeToTs(inner, typeDefinitions)
-    return innerTs.includes('|') ? `(${innerTs})[]` : `${innerTs}[]`
-  }
-  if (typeDefinitions) {
-    throw new Error(`Unknown canonical type '${type}' while generating TypeScript declarations.`)
-  }
-  return 'any'
-}
-
 export function generateDts(): string {
-  const directivesData = getDirectives()
-  const globalsData = getGlobals()
-  const widgetsData = getWidgets()
-  const settingsData = getSettings()
-  const messagesData = getMessages()
-  const typesData = getTypes()
-  const typeDefinitions = typesData.types || {}
-
-  const lines: string[] = [
+  return [
     '/**',
     ' * blogger-spec — Canonical Blogger XML Template & Expression Language Type Definitions.',
     ' * Automatically generated from master JSON catalogs.',
@@ -91,155 +39,7 @@ export function generateDts(): string {
     'export * from \'./type-system.js\';',
     'export * from \'./version.js\';',
     '',
-    '// --- Subtypes & Modifiers ---',
-  ]
-
-  const stringModifiers = typesData.types?.string?.modifiers || {}
-  const platformSubtypes = Object.entries(typeDefinitions)
-    .filter(([, definition]) => definition.category === 'subtype')
-    .map(([name]) => name)
-    .sort()
-
-  for (const st of platformSubtypes) {
-    const pascal = toPascalCase(st)
-    const ownMods = typesData.types?.[st]?.modifiers || {}
-    lines.push(`export interface Blogger${pascal}Modifiers {`)
-    for (const [mName, mDef] of Object.entries(ownMods)) {
-      if ((mDef as any).description) {
-        lines.push(`  /** ${(mDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
-      }
-      let propType: string
-      if (Array.isArray((mDef as any).allowed_values) && (mDef as any).allowed_values.length > 0) {
-        propType = (mDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
-      }
-      else {
-        propType = mapPropertyTypeToTs((mDef as any).output_type, typeDefinitions)
-      }
-      lines.push(`  ${sanitizePropName(mName)}?: ${propType};`)
-    }
-    for (const [sName, sDef] of Object.entries(stringModifiers)) {
-      if (!ownMods[sName]) {
-        if ((sDef as any).description) {
-          lines.push(`  /** ${(sDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
-        }
-        const propType = mapPropertyTypeToTs((sDef as any).output_type, typeDefinitions)
-        lines.push(`  ${sanitizePropName(sName)}?: ${propType};`)
-      }
-    }
-    lines.push('}')
-    lines.push(`export type Blogger${pascal} = string & Blogger${pascal}Modifiers;`)
-  }
-
-  lines.push('export type BloggerExpression = string;')
-  lines.push('')
-
-  const directives = directivesData.directives || {}
-  const dirNames = Object.keys(directives).sort()
-
-  for (const dName of dirNames) {
-    const dInfo = directives[dName]
-    const pascal = toPascalCase(dName)
-    lines.push(`/** Attributes for directive \`<${dName}>\` */`)
-    lines.push(`export interface Blogger${pascal}DirectiveAttributes {`)
-    const attrs = dInfo.attributes || {}
-    for (const aName of Object.keys(attrs).sort()) {
-      const aInfo = attrs[aName]
-      const opt = aInfo.required ? '' : '?'
-      let tsType = 'any'
-      if (aInfo.type === 'string')
-        tsType = 'string'
-      else if (aInfo.type === 'number')
-        tsType = 'number'
-      else if (aInfo.type === 'boolean')
-        tsType = 'boolean'
-      else if (aInfo.type === 'expression')
-        tsType = 'BloggerExpression'
-
-      if (aInfo.description) {
-        lines.push(`  /** ${aInfo.description.replace(/\n/g, ' ')} */`)
-      }
-      lines.push(`  ${sanitizePropName(aName)}${opt}: ${tsType};`)
-
-      if (aInfo.expr) {
-        lines.push(`  /** Dynamic expression for \`${aName}\` */`)
-        lines.push(`  ${sanitizePropName(`expr:${aName}`)}?: BloggerExpression;`)
-      }
-    }
-    lines.push('}')
-    lines.push('')
-  }
-
-  const messages = messagesData.messages || {}
-
-  const globals = globalsData.objects || {}
-  for (const gName of Object.keys(globals).sort()) {
-    const cleanName = gName.replace(/^data:/, '')
-    const pascal = toPascalCase(cleanName)
-    lines.push(`/** Schema for global object \`${gName}\` */`)
-    lines.push(`export interface Blogger${pascal}Global {`)
-    const props = globals[gName]?.canonical || {}
-    for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
-      const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
-        ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
-        : mapPropertyTypeToTs((pDef as any).type, typeDefinitions)
-      if ((pDef as any).description) {
-        lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
-      }
-      lines.push(`  ${sanitizePropName(pName)}?: ${tsType};`)
-    }
-    if (globals[gName]?.catalog_ref === 'messages.json') {
-      for (const [mName, mDef] of Object.entries(messages).sort(([a], [b]) => a.localeCompare(b))) {
-        if ((mDef as any).description) {
-          lines.push(`  /** ${(mDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
-        }
-        lines.push(`  ${sanitizePropName(mName)}?: BloggerMessage;`)
-      }
-    }
-    lines.push('}')
-    lines.push('')
-  }
-
-  const widgets = widgetsData.widgets || {}
-  const widgetTypes = Object.keys(widgets).sort()
-
-  for (const wName of widgetTypes) {
-    const pascal = toPascalCase(wName)
-    lines.push(`/** Canonical data dictionary for widget \`${wName}\` */`)
-    lines.push(`export interface Blogger${pascal}WidgetData {`)
-    const props = widgets[wName]?.canonical || {}
-    for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
-      const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
-        ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
-        : mapPropertyTypeToTs((pDef as any).type, typeDefinitions)
-      if ((pDef as any).description) {
-        lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
-      }
-      lines.push(`  ${sanitizePropName(pName)}?: ${tsType};`)
-    }
-    lines.push('}')
-    lines.push('')
-  }
-
-  const settings = settingsData.widgets || {}
-  for (const wName of Object.keys(settings).sort()) {
-    const pascal = toPascalCase(wName)
-    lines.push(`/** Schema settings dictionary for widget \`${wName}\` */`)
-    lines.push(`export interface Blogger${pascal}WidgetSettings {`)
-    const props = settings[wName]?.canonical || {}
-    for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
-      const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
-        ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
-        : mapPropertyTypeToTs((pDef as any).type, typeDefinitions)
-      if ((pDef as any).description) {
-        lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
-      }
-      lines.push(`  ${sanitizePropName(pName)}?: ${tsType};`)
-    }
-    lines.push('}')
-    lines.push('')
-  }
-
-  return lines.join('\n')
+  ].join('\n')
 }
 
 export function buildDts(): void {

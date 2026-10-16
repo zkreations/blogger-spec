@@ -326,7 +326,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       }
     }
   }
-  const scopeResolution = scopesCatalog.domain_metadata?.resolution_precedence || (scopesCatalog as any).resolution_precedence || []
+  const scopeResolution = scopesCatalog.domain_metadata?.resolution_precedence || []
   for (const precScope of scopeResolution) {
     if (!scopesCatalog.scopes || !scopesCatalog.scopes[precScope]) {
       errors.push(`Scope resolution precedence references unknown scope '${precScope}'.`)
