@@ -41,8 +41,22 @@ function pushDiagnostic(
   })
 }
 
-function handleClosingTag(token: BloggerDirectiveToken, tagStack: BloggerDirectiveToken[]): void {
+function handleClosingTag(
+  token: BloggerDirectiveToken,
+  tagStack: BloggerDirectiveToken[],
+  catalog: SpecCatalog,
+  diagnostics: BloggerStructureDiagnostic[],
+): void {
   const lower = token.tagName.toLowerCase()
+  const top = tagStack[tagStack.length - 1]
+  if (!top || top.tagName.toLowerCase() !== lower) {
+    const rule = catalog.getDiagnostic('BX1041')
+    pushDiagnostic(diagnostics, catalog, 'BX1041' as BloggerDiagnosticCode, token, {
+      rule,
+      message: rule?.message ?? `Closing tag </${token.tagName}> does not match the currently open tag.`,
+    })
+  }
+
   let matchIdx = -1
   for (let i = tagStack.length - 1; i >= 0; i--) {
     if (tagStack[i]!.tagName.toLowerCase() === lower) {
@@ -270,7 +284,7 @@ export function validateTemplateStructure(
   catalog: SpecCatalog = getSpecCatalog(),
 ): BloggerStructureDiagnostic[] {
   const tokens = typeof tokensOrXml === 'string'
-    ? scanDirectiveTokens(tokensOrXml)
+    ? scanDirectiveTokens(tokensOrXml, { catalog })
     : tokensOrXml
 
   const diagnostics: BloggerStructureDiagnostic[] = []
@@ -280,7 +294,7 @@ export function validateTemplateStructure(
 
   for (const token of tokens) {
     if (token.isClosing) {
-      handleClosingTag(token, tagStack)
+      handleClosingTag(token, tagStack, catalog, diagnostics)
       continue
     }
 
@@ -292,6 +306,14 @@ export function validateTemplateStructure(
     if (!token.isSelfClosing) {
       tagStack.push(token)
     }
+  }
+
+  const rule = catalog.getDiagnostic('BX1041')
+  for (const token of tagStack) {
+    pushDiagnostic(diagnostics, catalog, 'BX1041' as BloggerDiagnosticCode, token, {
+      rule,
+      message: rule?.message ?? `Tag <${token.tagName}> is not closed.`,
+    })
   }
 
   return diagnostics
