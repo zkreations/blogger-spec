@@ -1,7 +1,7 @@
 {
   "$schema": "./schemas/operators.schema.json",
   "title": "Blogger Operators & Expressions Master Catalog",
-  "description": "Canonical machine-readable catalog of Blogger expression operators, dual-syntax execution grammar, 10-level precedence hierarchy, operand typing, and compiler quotas.",
+  "description": "Canonical machine-readable catalog of Blogger expression operators, dual-syntax execution grammar, 11-level precedence hierarchy, operand typing, and compiler quotas.",
   "precedence_hierarchy": [
     {
       "level": 1,
@@ -13,17 +13,24 @@
     },
     {
       "level": 2,
-      "category": "Null Coalescence & Arithmetic (Multiplicative)",
+      "category": "Null Coalescence / Primary Fallback",
+      "associativity": "right-to-left",
+      "operators": [
+        "?:"
+      ]
+    },
+    {
+      "level": 3,
+      "category": "Arithmetic (Multiplicative)",
       "associativity": "left-to-right",
       "operators": [
-        "?:",
         "*",
         "/",
         "%"
       ]
     },
     {
-      "level": 3,
+      "level": 4,
       "category": "Arithmetic (Additive), URL, Date, Image & Snippet Transforms",
       "associativity": "left-to-right",
       "operators": [
@@ -40,7 +47,7 @@
       ]
     },
     {
-      "level": 4,
+      "level": 5,
       "category": "Relational, Comparisons & Collection Slices",
       "associativity": "left-to-right",
       "operators": [
@@ -64,7 +71,7 @@
       ]
     },
     {
-      "level": 5,
+      "level": 6,
       "category": "Membership & Content",
       "associativity": "left-to-right",
       "operators": [
@@ -73,7 +80,7 @@
       ]
     },
     {
-      "level": 6,
+      "level": 7,
       "category": "Logical NOT",
       "associativity": "right-to-left",
       "operators": [
@@ -82,7 +89,7 @@
       ]
     },
     {
-      "level": 7,
+      "level": 8,
       "category": "Logical AND",
       "associativity": "left-to-right",
       "operators": [
@@ -91,7 +98,7 @@
       ]
     },
     {
-      "level": 8,
+      "level": 9,
       "category": "Logical OR",
       "associativity": "left-to-right",
       "operators": [
@@ -100,7 +107,7 @@
       ]
     },
     {
-      "level": 9,
+      "level": 10,
       "category": "Ternary / Conditional",
       "associativity": "right-to-left",
       "operators": [
@@ -108,18 +115,16 @@
       ]
     },
     {
-      "level": 10,
-      "category": "Lambda / Collection Pipelines",
+      "level": 11,
+      "category": "Lambda / Collection Pipeline",
       "associativity": "left-to-right",
       "operators": [
-        "where",
-        "map",
-        "select",
-        "filter",
         "any",
         "all",
         "none",
         "count",
+        "map",
+        "filter",
         "first"
       ]
     }
@@ -154,7 +159,7 @@
       "name": "Concatenation",
       "description": "String concatenation and scalar text interpolation.",
       "precedence_tiers": [
-        3
+        4
       ],
       "operators": [
         "+"
@@ -164,8 +169,8 @@
       "name": "Arithmetic",
       "description": "Numeric addition, subtraction, multiplication, division, and modulo.",
       "precedence_tiers": [
-        2,
-        3
+        3,
+        4
       ],
       "operators": [
         "+",
@@ -179,7 +184,7 @@
       "name": "Comparison",
       "description": "Relational comparisons and value equality checks.",
       "precedence_tiers": [
-        4
+        5
       ],
       "operators": [
         "==",
@@ -194,9 +199,9 @@
       "name": "Logical",
       "description": "Logical conjunction, disjunction, and boolean inversion.",
       "precedence_tiers": [
-        6,
         7,
-        8
+        8,
+        9
       ],
       "operators": [
         "and",
@@ -208,7 +213,7 @@
       "name": "Membership",
       "description": "Tests whether an item exists within a collection or string.",
       "precedence_tiers": [
-        5
+        6
       ],
       "operators": [
         "in"
@@ -218,7 +223,7 @@
       "name": "Content",
       "description": "Substring search and item containment checks.",
       "precedence_tiers": [
-        5
+        6
       ],
       "operators": [
         "contains"
@@ -228,7 +233,7 @@
       "name": "Collection",
       "description": "Array slicing, pagination limits, and numeric sequence generation.",
       "precedence_tiers": [
-        4
+        5
       ],
       "operators": [
         "take",
@@ -240,7 +245,7 @@
       "name": "Lambda / Collection Pipeline",
       "description": "Higher-order collection predicates, projection mapping, and aggregation reductions.",
       "precedence_tiers": [
-        10
+        11
       ],
       "operators": [
         "any",
@@ -256,7 +261,7 @@
       "name": "Ternary / Conditional",
       "description": "Inline conditional branching expression (cond ? val1 : val2).",
       "precedence_tiers": [
-        9
+        10
       ],
       "operators": [
         "? :"
@@ -276,7 +281,7 @@
       "name": "Transform / URL",
       "description": "URL path segment joining, query parameter appending, and hash fragmenting.",
       "precedence_tiers": [
-        3
+        4
       ],
       "operators": [
         "path",
@@ -289,7 +294,7 @@
       "name": "Transform / Date",
       "description": "Localized date formatting using ICU pattern tokens.",
       "precedence_tiers": [
-        3
+        4
       ],
       "operators": [
         "format"
@@ -299,7 +304,7 @@
       "name": "Transform / Image",
       "description": "Google CDN image thumbnail resizing and responsive srcset generation.",
       "precedence_tiers": [
-        3
+        4
       ],
       "operators": [
         "resizeImage",
@@ -310,7 +315,7 @@
       "name": "Transform / Truncation",
       "description": "Text truncation, snippet extraction, and HTML tag stripping.",
       "precedence_tiers": [
-        3
+        4
       ],
       "operators": [
         "snippet"
@@ -329,7 +334,7 @@
         "infix": "a + b",
         "functional": "+(a, b)"
       },
-      "precedence_level": 3,
+      "precedence_level": 4,
       "operands": [
         {
           "name": "left",
@@ -444,6 +449,9 @@
       "grammar_aliases": [],
       "doc_aliases": [
         "plus"
+      ],
+      "secondary_families": [
+        "concatenation"
       ]
     },
     "-": {
@@ -457,7 +465,7 @@
         "infix": "a - b",
         "functional": "-(a, b)"
       },
-      "precedence_level": 3,
+      "precedence_level": 4,
       "operands": [
         {
           "name": "left",
@@ -550,7 +558,7 @@
         "infix": "a * b",
         "functional": "*(a, b)"
       },
-      "precedence_level": 2,
+      "precedence_level": 3,
       "operands": [
         {
           "name": "left",
@@ -596,7 +604,7 @@
         "infix": "a / b",
         "functional": "/(a, b)"
       },
-      "precedence_level": 2,
+      "precedence_level": 3,
       "operands": [
         {
           "name": "left",
@@ -645,7 +653,7 @@
         "infix": "a % b",
         "functional": "%(a, b)"
       },
-      "precedence_level": 2,
+      "precedence_level": 3,
       "operands": [
         {
           "name": "left",
@@ -694,7 +702,7 @@
         "infix": "a == b",
         "functional": "eq(a, b)"
       },
-      "precedence_level": 4,
+      "precedence_level": 5,
       "operands": [
         {
           "name": "left",
@@ -742,7 +750,7 @@
         "infix": "a != b",
         "functional": "neq(a, b)"
       },
-      "precedence_level": 4,
+      "precedence_level": 5,
       "operands": [
         {
           "name": "left",
@@ -789,7 +797,7 @@
         "infix": "a < b",
         "functional": "lt(a, b)"
       },
-      "precedence_level": 4,
+      "precedence_level": 5,
       "operands": [
         {
           "name": "left",
@@ -838,7 +846,7 @@
         "infix": "a > b",
         "functional": "gt(a, b)"
       },
-      "precedence_level": 4,
+      "precedence_level": 5,
       "operands": [
         {
           "name": "left",
@@ -887,7 +895,7 @@
         "infix": "a <= b",
         "functional": "lte(a, b)"
       },
-      "precedence_level": 4,
+      "precedence_level": 5,
       "operands": [
         {
           "name": "left",
@@ -936,7 +944,7 @@
         "infix": "a >= b",
         "functional": "gte(a, b)"
       },
-      "precedence_level": 4,
+      "precedence_level": 5,
       "operands": [
         {
           "name": "left",
@@ -985,7 +993,7 @@
         "infix": "a and b",
         "functional": "and(a, b)"
       },
-      "precedence_level": 7,
+      "precedence_level": 8,
       "operands": [
         {
           "name": "left",
@@ -1036,7 +1044,7 @@
         "infix": "a or b",
         "functional": "or(a, b)"
       },
-      "precedence_level": 8,
+      "precedence_level": 9,
       "operands": [
         {
           "name": "left",
@@ -1087,7 +1095,7 @@
         "infix": "not a",
         "functional": null
       },
-      "precedence_level": 6,
+      "precedence_level": 7,
       "operands": [
         {
           "name": "operand",
@@ -1130,7 +1138,7 @@
         "infix": "item in array",
         "functional": "in(item, array)"
       },
-      "precedence_level": 5,
+      "precedence_level": 6,
       "operands": [
         {
           "name": "item",
@@ -1222,7 +1230,7 @@
         "infix": "haystack contains needle",
         "functional": "contains(haystack, needle)"
       },
-      "precedence_level": 5,
+      "precedence_level": 6,
       "operands": [
         {
           "name": "haystack",
@@ -1317,7 +1325,7 @@
         "infix": "array take number",
         "functional": "take(array, number)"
       },
-      "precedence_level": 4,
+      "precedence_level": 5,
       "operands": [
         {
           "name": "array",
@@ -1372,7 +1380,7 @@
         "infix": "array skip number",
         "functional": "skip(array, number)"
       },
-      "precedence_level": 4,
+      "precedence_level": 5,
       "operands": [
         {
           "name": "array",
@@ -1424,7 +1432,7 @@
         "infix": "start to end",
         "functional": null
       },
-      "precedence_level": 4,
+      "precedence_level": 5,
       "operands": [
         {
           "name": "start",
@@ -1472,7 +1480,7 @@
         "infix": "array any (var => expr)",
         "functional": null
       },
-      "precedence_level": 10,
+      "precedence_level": 11,
       "token_cost": 1,
       "operands": [
         {
@@ -1518,7 +1526,7 @@
         "infix": "array all (var => expr)",
         "functional": null
       },
-      "precedence_level": 10,
+      "precedence_level": 11,
       "token_cost": 1,
       "operands": [
         {
@@ -1561,7 +1569,7 @@
         "infix": "array none (var => expr)",
         "functional": null
       },
-      "precedence_level": 10,
+      "precedence_level": 11,
       "token_cost": 1,
       "operands": [
         {
@@ -1604,7 +1612,7 @@
         "infix": "array count (var => expr)",
         "functional": null
       },
-      "precedence_level": 10,
+      "precedence_level": 11,
       "token_cost": 1,
       "operands": [
         {
@@ -1647,7 +1655,7 @@
         "infix": "array map (var => expr)",
         "functional": null
       },
-      "precedence_level": 10,
+      "precedence_level": 11,
       "token_cost": 1,
       "operands": [
         {
@@ -1703,7 +1711,7 @@
         "infix": "array filter (var => expr)",
         "functional": null
       },
-      "precedence_level": 10,
+      "precedence_level": 11,
       "token_cost": 1,
       "operands": [
         {
@@ -1754,7 +1762,7 @@
         "infix": "array first (var => expr)",
         "functional": null
       },
-      "precedence_level": 10,
+      "precedence_level": 11,
       "token_cost": 1,
       "operands": [
         {
@@ -1847,7 +1855,7 @@
         "infix": "cond ? val1 : val2",
         "functional": null
       },
-      "precedence_level": 9,
+      "precedence_level": 10,
       "associativity": "right-to-left",
       "token_cost": 2,
       "operands": [
@@ -1910,7 +1918,7 @@
         "infix": "url path string",
         "functional": "path(url, string)"
       },
-      "precedence_level": 3,
+      "precedence_level": 4,
       "operands": [
         {
           "name": "url",
@@ -1959,7 +1967,7 @@
         "infix": "url params object",
         "functional": "params(url, object)"
       },
-      "precedence_level": 3,
+      "precedence_level": 4,
       "operands": [
         {
           "name": "url",
@@ -2011,7 +2019,7 @@
         "infix": "url appendParams object",
         "functional": "appendParams(url, object)"
       },
-      "precedence_level": 3,
+      "precedence_level": 4,
       "operands": [
         {
           "name": "url",
@@ -2060,7 +2068,7 @@
         "infix": "url fragment string",
         "functional": "fragment(url, string)"
       },
-      "precedence_level": 3,
+      "precedence_level": 4,
       "operands": [
         {
           "name": "url",
@@ -2109,7 +2117,7 @@
         "infix": "date format string",
         "functional": "format(date, string)"
       },
-      "precedence_level": 3,
+      "precedence_level": 4,
       "operands": [
         {
           "name": "date",
@@ -2152,7 +2160,7 @@
         "infix": "image resizeImage number",
         "functional": "resizeImage(image, number)"
       },
-      "precedence_level": 3,
+      "precedence_level": 4,
       "operands": [
         {
           "name": "image",
@@ -2266,7 +2274,7 @@
         "infix": "image sourceSet array[number]",
         "functional": "sourceSet(image, array[number])"
       },
-      "precedence_level": 3,
+      "precedence_level": 4,
       "operands": [
         {
           "name": "image",
@@ -2324,7 +2332,7 @@
         "infix": "string snippet object",
         "functional": "snippet(string, object)"
       },
-      "precedence_level": 3,
+      "precedence_level": 4,
       "operands": [
         {
           "name": "text",
@@ -2364,5 +2372,6 @@
       "grammar_aliases": [],
       "doc_aliases": []
     }
-  }
+  },
+  "version": "1.0.0"
 }
