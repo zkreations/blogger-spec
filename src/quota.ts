@@ -13,9 +13,9 @@ import {
   unescapeXmlEntities,
 } from './parser/lexer.js'
 
-export const COMPILER_QUOTA_LIMIT = 40
-export const COMPILER_QUOTA_WARNING = 36
-export const COMPILER_NESTING_LIMIT = 50
+export const COMPILER_QUOTA_LIMIT = getSpecCatalog().getExpressionQuotaLimit()
+export const COMPILER_QUOTA_WARNING = getSpecCatalog().getExpressionQuotaWarning()
+export const COMPILER_NESTING_LIMIT = getSpecCatalog().getDirectiveNestingLimit()
 
 export {
   flattenMultilineExpression,
@@ -410,7 +410,21 @@ export function tokenizeExpression(
       }
 
       const opDef = catalog.getOperator(token.value)
-      if (nextToken?.type === 'LPAREN' && opDef?.syntax?.supports_functional && ['url', 'image', 'snippet', 'date', 'transform', 'content'].includes(opDef.family)) {
+      const isPrefixContext
+        = tokens.length === 0
+          || lastToken === undefined
+          || lastToken.tokenType === 'DELIMITER_COMMA'
+          || lastToken.tokenType === 'GROUPING_PAREN_OPEN'
+          || lastToken.tokenType === 'CONTAINER_ARRAY'
+          || lastToken.tokenType === 'DELIMITER_COLON'
+          || lastToken.tokenType.startsWith('OPERATOR_')
+
+      if (
+        nextToken?.type === 'LPAREN'
+        && opDef?.syntax?.supports_functional
+        && opDef.family !== 'lambda'
+        && (isPrefixContext || !['comparison', 'logical', 'arithmetic'].includes(opDef.family))
+      ) {
         tokens.push({
           value: token.value,
           tokenType: 'NATIVE_FUNCTION',
@@ -548,24 +562,27 @@ export function evaluateExpressionBudget(
   }))
   const totalTokens = tokenStream.reduce((acc, t) => acc + t.tokensConsumed, 0)
 
+  const quotaLimit = catalog.getExpressionQuotaLimit()
+  const quotaWarning = catalog.getExpressionQuotaWarning()
+
   let status: BloggerExpressionBudgetStatus
   let isValid: boolean
   let recommendation: string
 
-  if (totalTokens > COMPILER_QUOTA_LIMIT) {
+  if (totalTokens > quotaLimit) {
     status = 'EXCEEDED'
     isValid = false
-    recommendation = `CRITICAL: Expression uses ${totalTokens} tokens (limit is ${COMPILER_QUOTA_LIMIT}). Blogger compiler will abort with a fatal 'Invalid expression' error. Decompose using <b:with value='...' var='...'>.`
+    recommendation = `CRITICAL: Expression uses ${totalTokens} tokens (limit is ${quotaLimit}). Blogger compiler will abort with a fatal 'Invalid expression' error. Decompose using <b:with value='...' var='...'>.`
   }
-  else if (totalTokens >= COMPILER_QUOTA_WARNING) {
+  else if (totalTokens >= quotaWarning) {
     status = 'WARNING'
     isValid = true
-    recommendation = `CAUTION: Expression uses ${totalTokens} tokens (limit is ${COMPILER_QUOTA_LIMIT}). Approaching compiler ceiling. Consider decomposing with <b:with> for safety.`
+    recommendation = `CAUTION: Expression uses ${totalTokens} tokens (limit is ${quotaLimit}). Approaching compiler ceiling. Consider decomposing with <b:with> for safety.`
   }
   else {
     status = 'SAFE'
     isValid = true
-    recommendation = `SAFE: Expression consumes ${totalTokens}/${COMPILER_QUOTA_LIMIT} tokens.`
+    recommendation = `SAFE: Expression consumes ${totalTokens}/${quotaLimit} tokens.`
   }
 
   return {

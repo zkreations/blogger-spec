@@ -371,6 +371,8 @@ describe('canonical type system & coercion engine', () => {
       expect(getTypeDefinition('image', customCatalog)?.parent_type).toBe('string')
       expect(getTypeModifiers('string', customCatalog).length).toBeDefined()
       expect(resolveOperatorReturnType('+', 'number', 'number', customCatalog)).toBe('number')
+      expect(isTruthy('false', customCatalog)).toBe(false)
+      expect(isTruthy('0', customCatalog)).toBe(true)
     })
   })
 })

@@ -7,25 +7,28 @@ import type {
   ScanDirectiveOptions,
 } from '../types.js'
 
+import { getSpecCatalog } from '../catalogs/index.js'
+
 export type {
   BloggerDirectiveAttributeToken,
   BloggerDirectiveToken,
   ScanDirectiveOptions,
 }
 
-export const BLOGGER_STRICTLY_SELF_CLOSING_TAGS: ReadonlySet<string> = new Set([
-  'b:attr',
-  'b:case',
-  'b:class',
-  'b:default',
-  'b:else',
-  'b:elseif',
-  'b:eval',
-  'b:include',
-  'b:param',
-  'b:template-script',
-  'Variable',
-])
+function getCanonicalSelfClosingTags(): Set<string> {
+  const result = new Set<string>()
+  const directives = getSpecCatalog().getAllDirectives()
+  for (const [name, def] of Object.entries(directives)) {
+    if (def.self_closing || def.closure_mode === 'self_closing') {
+      if (name !== 'data:*') {
+        result.add(name)
+      }
+    }
+  }
+  return result
+}
+
+export const BLOGGER_STRICTLY_SELF_CLOSING_TAGS: ReadonlySet<string> = getCanonicalSelfClosingTags()
 
 export const STRICTLY_SELF_CLOSING_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS
 export const STRICTLY_SELF_CLOSING_BLOGGER_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS

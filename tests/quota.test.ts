@@ -7,6 +7,7 @@ import type {
   BloggerUnaryExpressionNode,
 } from '../src/ast.js'
 import { describe, expect, it } from 'vitest'
+import { getSpecCatalog } from '../src/catalogs/index.js'
 import * as RootExports from '../src/index.js'
 import {
   analyzeExpressionBudget,
@@ -231,5 +232,12 @@ describe('compiler token quota suite (BX1021)', () => {
     expect(countExpressionTokens('')).toBe(0)
     expect(countExpressionTokens('   ')).toBe(0)
     expect(tokenizeExpression('').length).toBe(0)
+  })
+
+  it('respects injected custom SpecCatalog instance in evaluateExpressionBudget', () => {
+    const customCatalog = getSpecCatalog()
+    const result = evaluateExpressionBudget('1 + 2', customCatalog)
+    expect(result.isValid).toBe(true)
+    expect(result.status).toBe('SAFE')
   })
 })

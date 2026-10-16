@@ -55,24 +55,44 @@ function validateNestingRules(
   catalog: SpecCatalog,
   diagnostics: BloggerStructureDiagnostic[],
 ): void {
+  if (catalog.isHallucinatedDirective(token.tagName)) {
+    const diagCode = catalog.getHallucinatedDirectiveDiagnostic(token.tagName) ?? 'BX1023'
+    pushDiagnostic(diagnostics, catalog, diagCode, token)
+    return
+  }
+
   const isSection = token.tagName === 'b:section'
-  const isWidget = token.tagName === 'b:widget'
-  const isIncludable = token.tagName === 'b:includable'
   const parentToken = tagStack.length > 0 ? tagStack[tagStack.length - 1] : undefined
 
   if (isSection && tagStack.some(t => t.tagName === 'b:section')) {
-    pushDiagnostic(diagnostics, catalog, 'BX1035', token)
-  }
-  else if (isWidget && !tagStack.some(t => t.tagName === 'b:section')) {
-    pushDiagnostic(diagnostics, catalog, 'BX1034', token)
-  }
-  else if (isIncludable && !parentToken && !tagStack.some(t => t.tagName === 'b:widget' || t.tagName === 'b:defaultmarkup')) {
-    pushDiagnostic(diagnostics, catalog, 'BX1023', token, {
-      message: `<b:includable> must be placed inside <b:widget> or <b:defaultmarkup>.`,
-    })
+    const violation = validateDirectiveNesting('b:section', 'b:section', catalog)
+    if (violation) {
+      pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
+        rule: violation.rule,
+        message: violation.message,
+      })
+    }
   }
   else if (parentToken) {
     const violation = validateDirectiveNesting(parentToken.tagName, token.tagName, catalog)
+    if (violation) {
+      pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
+        rule: violation.rule,
+        message: violation.message,
+      })
+    }
+  }
+  else if (token.tagName === 'b:widget' && !tagStack.some(t => t.tagName === 'b:section')) {
+    const violation = validateDirectiveNesting('body', 'b:widget', catalog)
+    if (violation) {
+      pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
+        rule: violation.rule,
+        message: violation.message,
+      })
+    }
+  }
+  else if (token.tagName === 'b:includable' && !tagStack.some(t => t.tagName === 'b:widget' || t.tagName === 'b:defaultmarkup')) {
+    const violation = validateDirectiveNesting('b:section', 'b:includable', catalog)
     if (violation) {
       pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
         rule: violation.rule,

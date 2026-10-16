@@ -46,17 +46,21 @@ const LEVEL_TO_BINDING_POWER: Record<number, number> = {
   10: 10, // Collection lambdas: filter, map, any, count, etc.
 }
 
-const LAMBDA_KEYWORDS = new Set([
-  'filter',
-  'where',
-  'map',
-  'select',
-  'any',
-  'all',
-  'none',
-  'count',
-  'first',
-])
+const INFIX_TOKEN_SYMBOLS: Partial<Record<TokenType, string>> = {
+  STAR: '*',
+  SLASH: '/',
+  PERCENT: '%',
+  PLUS: '+',
+  MINUS: '-',
+  EQ: '==',
+  NEQ: '!=',
+  LT: '<',
+  GT: '>',
+  LTE: '<=',
+  GTE: '>=',
+  AND: '&&',
+  OR: '||',
+}
 
 function toSourcePosition(pos: TokenPosition): BloggerSourcePosition {
   return {
@@ -612,61 +616,25 @@ export class ExpressionParser {
       return { name: '?', bindingPower: LEVEL_TO_BINDING_POWER[9]!, catalogLevel: 9, isTernary: true, isRightAssociative: true }
     }
 
-    if (token.type === 'STAR') {
-      return { name: '*', bindingPower: LEVEL_TO_BINDING_POWER[2]!, catalogLevel: 2 }
-    }
-    if (token.type === 'SLASH') {
-      return { name: '/', bindingPower: LEVEL_TO_BINDING_POWER[2]!, catalogLevel: 2 }
-    }
-    if (token.type === 'PERCENT') {
-      return { name: '%', bindingPower: LEVEL_TO_BINDING_POWER[2]!, catalogLevel: 2 }
-    }
-
-    if (token.type === 'PLUS') {
-      return { name: '+', bindingPower: LEVEL_TO_BINDING_POWER[3]!, catalogLevel: 3 }
-    }
-    if (token.type === 'MINUS') {
-      return { name: '-', bindingPower: LEVEL_TO_BINDING_POWER[3]!, catalogLevel: 3 }
-    }
-
-    if (token.type === 'EQ') {
-      return { name: '==', bindingPower: LEVEL_TO_BINDING_POWER[4]!, catalogLevel: 4 }
-    }
-    if (token.type === 'NEQ') {
-      return { name: '!=', bindingPower: LEVEL_TO_BINDING_POWER[4]!, catalogLevel: 4 }
-    }
-    if (token.type === 'LT') {
-      return { name: '<', bindingPower: LEVEL_TO_BINDING_POWER[4]!, catalogLevel: 4 }
-    }
-    if (token.type === 'GT') {
-      return { name: '>', bindingPower: LEVEL_TO_BINDING_POWER[4]!, catalogLevel: 4 }
-    }
-    if (token.type === 'LTE') {
-      return { name: '<=', bindingPower: LEVEL_TO_BINDING_POWER[4]!, catalogLevel: 4 }
-    }
-    if (token.type === 'GTE') {
-      return { name: '>=', bindingPower: LEVEL_TO_BINDING_POWER[4]!, catalogLevel: 4 }
-    }
-
-    if (token.type === 'AND') {
-      return { name: '&&', bindingPower: LEVEL_TO_BINDING_POWER[7]!, catalogLevel: 7, isLogical: true }
-    }
-    if (token.type === 'OR') {
-      return { name: '||', bindingPower: LEVEL_TO_BINDING_POWER[8]!, catalogLevel: 8, isLogical: true }
+    const symbol = INFIX_TOKEN_SYMBOLS[token.type]
+    if (symbol) {
+      const opQuery = symbol === '&&' ? 'and' : (symbol === '||' ? 'or' : symbol)
+      const precLevel = this.catalog.getOperatorPrecedence(opQuery)
+      if (precLevel !== undefined && precLevel in LEVEL_TO_BINDING_POWER) {
+        return {
+          name: symbol,
+          bindingPower: LEVEL_TO_BINDING_POWER[precLevel]!,
+          catalogLevel: precLevel,
+          isLogical: precLevel === 7 || precLevel === 8,
+        }
+      }
     }
 
     if (token.type === 'IDENTIFIER') {
       const lower = token.value.toLowerCase()
 
-      if (LAMBDA_KEYWORDS.has(lower)) {
+      if (this.catalog.getLambdaKeywords().has(lower)) {
         return { name: token.value, bindingPower: LEVEL_TO_BINDING_POWER[10]!, catalogLevel: 10, isLambda: true }
-      }
-
-      if (lower === 'and') {
-        return { name: 'and', bindingPower: LEVEL_TO_BINDING_POWER[7]!, catalogLevel: 7, isLogical: true }
-      }
-      if (lower === 'or') {
-        return { name: 'or', bindingPower: LEVEL_TO_BINDING_POWER[8]!, catalogLevel: 8, isLogical: true }
       }
 
       const precLevel = this.catalog.getOperatorPrecedence(token.value) ?? this.catalog.getOperatorPrecedence(lower)
@@ -675,6 +643,7 @@ export class ExpressionParser {
           name: token.value,
           bindingPower: LEVEL_TO_BINDING_POWER[precLevel]!,
           catalogLevel: precLevel,
+          isLogical: precLevel === 7 || precLevel === 8,
         }
       }
     }

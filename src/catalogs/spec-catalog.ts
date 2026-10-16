@@ -109,6 +109,9 @@ export class SpecCatalog {
   private readonly coercionRules: Record<string, any> = {}
   private readonly inclusionMap = new Map<string, BloggerInclusionDefinition>()
   private readonly hallucinatedDirectives: Record<string, BloggerDiagnosticCode> = {}
+  private readonly scalarTypes: string[] = []
+  private readonly falsyStringLiterals = new Set<string>()
+  private readonly truthyStringLiterals = new Set<string>()
   private superPrefix = 'super.'
 
   constructor(store: CatalogStore = getDefaultCatalogStore()) {
@@ -273,6 +276,19 @@ export class SpecCatalog {
     const typesData = this.store.getCatalog('types') as BloggerTypesCatalog
     if (typesData.coercion_rules) {
       Object.assign(this.coercionRules, typesData.coercion_rules)
+    }
+    if (Array.isArray(typesData.scalar_types)) {
+      this.scalarTypes.push(...typesData.scalar_types)
+    }
+    if (typesData.truthiness_matrix?.falsy_string_literals) {
+      for (const s of typesData.truthiness_matrix.falsy_string_literals) {
+        this.falsyStringLiterals.add(s.toLowerCase())
+      }
+    }
+    if (typesData.truthiness_matrix?.truthy_string_literals) {
+      for (const s of typesData.truthiness_matrix.truthy_string_literals) {
+        this.truthyStringLiterals.add(s.toLowerCase())
+      }
     }
     const types = typesData.types || {}
     for (const [name, def] of Object.entries(types)) {
@@ -785,6 +801,47 @@ export class SpecCatalog {
     const inc = this.inclusionMap.get(name)
     return inc?.category === 'universal'
   }
+
+  getScalarTypes(): readonly string[] {
+    return this.scalarTypes.length > 0 ? this.scalarTypes : ['string', 'number', 'boolean']
+  }
+
+  getFalsyStringLiterals(): ReadonlySet<string> {
+    return this.falsyStringLiterals
+  }
+
+  getTruthyStringLiterals(): ReadonlySet<string> {
+    return this.truthyStringLiterals
+  }
+
+  isTruthy(value: any): boolean {
+    if (value === null || value === undefined) {
+      return false
+    }
+    if (typeof value === 'boolean') {
+      return value
+    }
+    if (typeof value === 'number') {
+      return !Number.isNaN(value)
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim().toLowerCase()
+      if (this.falsyStringLiterals.has(trimmed)) {
+        return false
+      }
+      if (this.truthyStringLiterals.has(trimmed)) {
+        return true
+      }
+      return true
+    }
+    if (Array.isArray(value)) {
+      return value.length > 0
+    }
+    if (typeof value === 'object') {
+      return Object.keys(value).length > 0
+    }
+    return Boolean(value)
+  }
 }
 
 export function isDirective(tagName: string, catalog: SpecCatalog = getSpecCatalog()): tagName is BloggerDirectiveName {
@@ -992,4 +1049,16 @@ export function isHallucinatedDirective(tagName: string, catalog: SpecCatalog = 
 
 export function getHallucinatedDirectiveDiagnostic(tagName: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticCode | undefined {
   return catalog.getHallucinatedDirectiveDiagnostic(tagName)
+}
+
+export function getScalarTypes(catalog: SpecCatalog = getSpecCatalog()): readonly string[] {
+  return catalog.getScalarTypes()
+}
+
+export function getFalsyStringLiterals(catalog: SpecCatalog = getSpecCatalog()): ReadonlySet<string> {
+  return catalog.getFalsyStringLiterals()
+}
+
+export function getTruthyStringLiterals(catalog: SpecCatalog = getSpecCatalog()): ReadonlySet<string> {
+  return catalog.getTruthyStringLiterals()
 }

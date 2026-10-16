@@ -212,6 +212,22 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diags.some(d => d.code === 'BX1034')).toBe(true)
     })
 
+    it('detects hallucinated directives such as <b:for> in template structure (BX1001)', () => {
+      const xml = `
+        <b:section id='main'>
+          <b:widget id='Blog1' type='Blog'>
+            <b:includable id='main'>
+              <b:for each='post' in='data:posts'>
+                <p>Hello</p>
+              </b:for>
+            </b:includable>
+          </b:widget>
+        </b:section>
+      `
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1001')).toBe(true)
+    })
+
     it('detects duplicate element id across sections and widgets (BX1033)', () => {
       const xml = `
         <b:section id='main'>

@@ -20,11 +20,7 @@ export function isTypeAssignable(
   }
 
   if (target === 'scalar') {
-    return (
-      isTypeAssignable(source, 'string', catalog)
-      || isTypeAssignable(source, 'number', catalog)
-      || isTypeAssignable(source, 'boolean', catalog)
-    )
+    return catalog.getScalarTypes().some(scalarType => isTypeAssignable(source, scalarType, catalog))
   }
 
   if (source.startsWith('array[') && target === 'array') {
@@ -194,45 +190,23 @@ export function resolveOperatorReturnType(
   }
 
   const canonicalName = opDef.syntax?.functional_identifier || operatorName.toLowerCase()
-  if (canonicalName === 'first' || opDef.description.includes('Extracts the first element')) {
+  if (opDef.return_type_rule === 'element_type' || canonicalName === 'first') {
     if (leftType.startsWith('array[') && leftType.endsWith(']')) {
       return leftType.slice(6, -1)
     }
     return 'unknown'
   }
 
-  if (opDef.return_type === 'array' && canonicalName !== 'map') {
+  if (opDef.return_type_rule === 'self_or_array' || (opDef.return_type === 'array' && canonicalName !== 'map')) {
     return leftType.startsWith('array[') ? leftType : (leftType === 'unknown' ? 'array' : leftType)
   }
 
   return opDef.return_type ?? 'unknown'
 }
 
-export function isTruthy(value: any): boolean {
-  if (value === null || value === undefined) {
-    return false
-  }
-  if (typeof value === 'boolean') {
-    return value
-  }
-  if (typeof value === 'number') {
-    return !Number.isNaN(value)
-  }
-  if (typeof value === 'string') {
-    const trimmed = value.trim().toLowerCase()
-    if (trimmed === '' || trimmed === 'false' || trimmed === 'no') {
-      return false
-    }
-    if (trimmed === 'true' || trimmed === 'yes') {
-      return true
-    }
-    return true
-  }
-  if (Array.isArray(value)) {
-    return value.length > 0
-  }
-  if (typeof value === 'object') {
-    return Object.keys(value).length > 0
-  }
-  return Boolean(value)
+export function isTruthy(
+  value: any,
+  catalog: SpecCatalog = getSpecCatalog(),
+): boolean {
+  return catalog.isTruthy(value)
 }
