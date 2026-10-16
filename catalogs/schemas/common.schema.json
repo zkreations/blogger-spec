@@ -25,6 +25,31 @@
       "pattern": "^BX[0-9]{4}$",
       "description": "Canonical Blogger specification diagnostic rule identifier (e.g. BX1001)."
     },
+    "canonicalPropertyType": {
+      "type": "string",
+      "enum": [
+        "string",
+        "number",
+        "boolean",
+        "url",
+        "image",
+        "date",
+        "object",
+        "array",
+        "array[object]",
+        "array[string]",
+        "array[image]",
+        "array[url]",
+        "array[date]",
+        "array[number]",
+        "array[boolean]",
+        "array[array]",
+        "locale",
+        "message",
+        "skin_variable"
+      ],
+      "description": "Canonical Blogger runtime data property type defined in types.json."
+    },
     "deprecatedEntry": {
       "type": "object",
       "required": [
@@ -53,7 +78,7 @@
           ]
         },
         "type": {
-          "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+          "$ref": "#/$defs/canonicalPropertyType"
         },
         "replacement": {
           "type": [
@@ -75,7 +100,7 @@
       ],
       "properties": {
         "type": {
-          "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+          "$ref": "#/$defs/canonicalPropertyType"
         },
         "description": {
           "type": "string"

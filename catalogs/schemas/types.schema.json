@@ -9,6 +9,7 @@
     "title",
     "description",
     "version",
+    "domain_metadata",
     "types"
   ],
   "properties": {
@@ -21,66 +22,77 @@
     "description": {
       "type": "string"
     },
+    "version": {
+      "type": "string"
+    },
+    "domain_metadata": {
+      "type": "object",
+      "required": [
+        "coercion_rules",
+        "truthiness_matrix",
+        "scalar_types"
+      ],
+      "properties": {
+        "coercion_rules": {
+          "type": "object",
+          "description": "Implicit type coercion behavior across operators and mixed contexts.",
+          "additionalProperties": {
+            "$ref": "#/$defs/coercionRule"
+          }
+        },
+        "truthiness_matrix": {
+          "type": "object",
+          "description": "Evaluation criteria for truthy and falsy states in conditionals.",
+          "required": [
+            "truthy",
+            "falsy"
+          ],
+          "properties": {
+            "truthy": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "falsy": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "falsy_string_literals": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Exact string literals evaluated as falsy in conditional branches."
+            },
+            "truthy_string_literals": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Exact string literals evaluated as truthy in conditional branches."
+            }
+          },
+          "additionalProperties": false
+        },
+        "scalar_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Canonical primitive data types composing the scalar category (string, number, boolean)."
+        }
+      },
+      "additionalProperties": false
+    },
     "types": {
       "type": "object",
       "description": "Dictionary of all recognized Blogger data types, platform subtypes, skin variable types, collections, and meta types.",
       "additionalProperties": {
         "$ref": "#/$defs/typeDefinition"
       }
-    },
-    "coercion_rules": {
-      "type": "object",
-      "description": "Implicit type coercion behavior across operators and mixed contexts.",
-      "additionalProperties": {
-        "$ref": "#/$defs/coercionRule"
-      }
-    },
-    "truthiness_matrix": {
-      "type": "object",
-      "description": "Evaluation criteria for truthy and falsy states in conditionals.",
-      "required": [
-        "truthy",
-        "falsy"
-      ],
-      "properties": {
-        "truthy": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "falsy": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "falsy_string_literals": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Exact string literals evaluated as falsy in conditional branches."
-        },
-        "truthy_string_literals": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Exact string literals evaluated as truthy in conditional branches."
-        }
-      },
-      "additionalProperties": false
-    },
-    "scalar_types": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      },
-      "description": "Canonical primitive data types composing the scalar category (string, number, boolean)."
-    },
-    "version": {
-      "type": "string"
     }
   },
   "additionalProperties": false,
@@ -236,29 +248,7 @@
       "additionalProperties": false
     },
     "canonicalPropertyType": {
-      "type": "string",
-      "enum": [
-        "string",
-        "number",
-        "boolean",
-        "url",
-        "image",
-        "date",
-        "object",
-        "array",
-        "array[object]",
-        "array[string]",
-        "array[image]",
-        "array[url]",
-        "array[date]",
-        "array[number]",
-        "array[boolean]",
-        "array[array]",
-        "locale",
-        "message",
-        "skin_variable"
-      ],
-      "description": "Canonical Blogger runtime data property type defined in types.json."
+      "$ref": "common.schema.json#/$defs/canonicalPropertyType"
     },
     "directiveAttributeType": {
       "type": "string",

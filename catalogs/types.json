@@ -3,55 +3,57 @@
   "title": "Blogger Data Types & Modifiers Master Catalog",
   "description": "Canonical machine-readable ontology of primitive types, platform subtypes, skin variable types, collections, modifiers, and coercion rules in the Blogger Template Engine.",
   "version": "1.0.0",
-  "coercion_rules": {
-    "string_concatenation": {
-      "target_context": "text_addition",
-      "behavior": "String concatenation takes precedence with the + operator when an operand is an explicit string literal in the template expression.",
-      "example": "\"10\" + 10 -> \"1010\""
+  "domain_metadata": {
+    "coercion_rules": {
+      "string_concatenation": {
+        "target_context": "text_addition",
+        "behavior": "String concatenation takes precedence with the + operator when an operand is an explicit string literal in the template expression.",
+        "example": "\"10\" + 10 -> \"1010\""
+      },
+      "arithmetic_coercion": {
+        "target_context": "numeric_arithmetic",
+        "behavior": "The + operator performs arithmetic addition when numbers are combined with runtime data variables (data:...) holding numeric strings.",
+        "example": "10 + data:numString -> 20"
+      },
+      "subscript_unwrapping": {
+        "target_context": "collection_indexing",
+        "behavior": "Accessing array elements via subscript [i] or .first/.last unwraps the collection into its child element type.",
+        "example": "data:posts.first -> object (post)"
+      }
     },
-    "arithmetic_coercion": {
-      "target_context": "numeric_arithmetic",
-      "behavior": "The + operator performs arithmetic addition when numbers are combined with runtime data variables (data:...) holding numeric strings.",
-      "example": "10 + data:numString -> 20"
+    "truthiness_matrix": {
+      "truthy": [
+        "true",
+        "\"yes\"",
+        "non-empty strings (excluding \"false\", \"no\")",
+        "numbers (including 0)",
+        "non-empty arrays",
+        "non-empty objects"
+      ],
+      "falsy": [
+        "false",
+        "\"no\"",
+        "\"false\"",
+        "empty string \"\"",
+        "empty collections []",
+        "undefined/missing properties"
+      ],
+      "falsy_string_literals": [
+        "",
+        "false",
+        "no"
+      ],
+      "truthy_string_literals": [
+        "true",
+        "yes"
+      ]
     },
-    "subscript_unwrapping": {
-      "target_context": "collection_indexing",
-      "behavior": "Accessing array elements via subscript [i] or .first/.last unwraps the collection into its child element type.",
-      "example": "data:posts.first -> object (post)"
-    }
-  },
-  "truthiness_matrix": {
-    "truthy": [
-      "true",
-      "\"yes\"",
-      "non-empty strings (excluding \"false\", \"no\")",
-      "numbers (including 0)",
-      "non-empty arrays",
-      "non-empty objects"
-    ],
-    "falsy": [
-      "false",
-      "\"no\"",
-      "\"false\"",
-      "empty string \"\"",
-      "empty collections []",
-      "undefined/missing properties"
-    ],
-    "falsy_string_literals": [
-      "",
-      "false",
-      "no"
-    ],
-    "truthy_string_literals": [
-      "true",
-      "yes"
+    "scalar_types": [
+      "string",
+      "number",
+      "boolean"
     ]
   },
-  "scalar_types": [
-    "string",
-    "number",
-    "boolean"
-  ],
   "types": {
     "string": {
       "category": "base",
