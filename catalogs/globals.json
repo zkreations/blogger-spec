@@ -2,6 +2,7 @@
   "$schema": "./schemas/globals.schema.json",
   "title": "Blogger Global Data Objects Master Catalog",
   "description": "Comprehensive, machine-readable registry of universal and host-scoped data objects in Blogger Layouts v3, categorizing properties into canonical (modern), patterns (dynamic lookups), and deprecated (obsolete or non-functional).",
+  "version": "1.0.0",
   "objects": {
     "data:view": {
       "cardinality": "singleton",
