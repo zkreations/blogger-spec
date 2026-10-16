@@ -8,6 +8,7 @@
     "$schema",
     "title",
     "description",
+    "version",
     "scopes",
     "resolution_precedence"
   ],
@@ -19,6 +20,9 @@
       "type": "string"
     },
     "description": {
+      "type": "string"
+    },
+    "version": {
       "type": "string"
     },
     "resolution_precedence": {
@@ -95,14 +99,7 @@
           ]
         },
         "evidence": {
-          "type": "string",
-          "enum": [
-            "official",
-            "observed",
-            "documented-project",
-            "approximate",
-            "unknown"
-          ]
+          "$ref": "common.schema.json#/$defs/evidenceLevel"
         },
         "notes": {
           "type": "string"

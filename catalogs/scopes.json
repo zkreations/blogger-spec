@@ -2,6 +2,7 @@
   "$schema": "./schemas/scopes.schema.json",
   "title": "Blogger Scope & Resolution Model Catalog",
   "description": "Machine-readable contract defining variable introduction, visibility boundaries, inheritance, and shadowing rules across Blogger XML execution scopes.",
+  "version": "1.0.0",
   "resolution_precedence": [
     "lambda",
     "loop",
