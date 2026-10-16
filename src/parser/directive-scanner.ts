@@ -313,12 +313,15 @@ export function getNearestUnclosedTag(text: string, offset?: number): string | u
   return getNearestUnclosedDirective(text, offset)
 }
 
-export function directiveTokenToAstNode(token: BloggerDirectiveToken): BloggerDirectiveNode {
+export function directiveTokenToAstNode(
+  token: BloggerDirectiveToken,
+  catalog: SpecCatalog = getSpecCatalog(),
+): BloggerDirectiveNode {
   const attributes: BloggerAttributeNode[] = Object.values(token.attributes).map(attr => ({
     type: 'Attribute',
     name: attr.name,
     value: attr.value,
-    isExpression: attr.name.startsWith('expr:') || attr.name === 'cond',
+    isExpression: catalog.isDirectiveExpressionAttribute(token.tagName, attr.name),
     loc: {
       start: { line: 0, column: 0, offset: attr.start },
       end: { line: 0, column: 0, offset: attr.end },

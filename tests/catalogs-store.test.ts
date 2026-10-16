@@ -47,6 +47,8 @@ import {
   getScopes,
   getSettings,
   getSpecCatalog,
+  getStandardDiagnostic,
+  getStandardDiagnostics,
   getSuperPrefix,
   getTruthyStringLiterals,
   getType,
@@ -56,6 +58,7 @@ import {
   getWidgetSettings,
   isDiagnosticCode,
   isDirective,
+  isDirectiveExpressionAttribute,
   isDocAlias,
   isGlobal,
   isGrammarOperator,
@@ -623,6 +626,52 @@ describe('catalogs and store formal verification suite', () => {
         expect(customSpec.isServerInclusion('synthetic_super.header')).toBe(true)
         expect(customSpec.isServerInclusion('super.header')).toBe(false)
       })
+
+      it('propagates standard_diagnostics mutation to template validator and nesting checks', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.directives.domain_metadata.standard_diagnostics.missing_required_attribute = 'BX9991'
+        catalogs.directives.domain_metadata.standard_diagnostics.prohibited_nesting = 'BX9992'
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        expect(customSpec.getStandardDiagnostic('missing_required_attribute')).toBe('BX9991')
+        expect(customSpec.getStandardDiagnostic('prohibited_nesting')).toBe('BX9992')
+
+        // Missing id on b:section should emit custom code BX9991
+        const missingAttrXml = '<b:section></b:section>'
+        const diags1 = RootExports.validateTemplateStructure(missingAttrXml, customSpec)
+        expect(diags1.some(d => (d.code as string) === 'BX9991')).toBe(true)
+
+        // Prohibited nesting without explicit policy should emit fallback prohibited_nesting code BX9992
+        const violation = customSpec.validateDirectiveNesting('b:tag', 'b:section')
+        expect((violation?.code as string)).toBe('BX9992')
+
+        const prohibitedXml = '<b:tag name="div"><b:section id="test"/></b:tag>'
+        const diags2 = RootExports.validateTemplateStructure(prohibitedXml, customSpec)
+        expect(diags2.some(d => (d.code as string) === 'BX9992')).toBe(true)
+      })
+
+      it('propagates dynamic directive expression attributes to AST token conversion', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.directives.directives['b:include'].attributes.custom_data = {
+          type: 'expression',
+          required: false,
+          description: 'Custom expression attribute',
+        }
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        expect(customSpec.isDirectiveExpressionAttribute('b:include', 'custom_data')).toBe(true)
+        expect(getSpecCatalog().isDirectiveExpressionAttribute('b:include', 'custom_data')).toBe(false)
+
+        const xml = '<b:include name="sub" custom_data="data:blog.title" />'
+        const [token] = RootExports.scanDirectiveTokens(xml)
+        const astCustom = RootExports.directiveTokenToAstNode(token!, customSpec)
+        const astDefault = RootExports.directiveTokenToAstNode(token!)
+
+        expect(astCustom.attributes.find(a => a.name === 'custom_data')?.isExpression).toBe(true)
+        expect(astDefault.attributes.find(a => a.name === 'custom_data')?.isExpression).toBe(false)
+      })
     })
   })
 
@@ -654,6 +703,9 @@ describe('catalogs and store formal verification suite', () => {
       expect(RootExports.getScalarTypes).toBe(getScalarTypes)
       expect(RootExports.getFalsyStringLiterals).toBe(getFalsyStringLiterals)
       expect(RootExports.getTruthyStringLiterals).toBe(getTruthyStringLiterals)
+      expect(RootExports.getStandardDiagnostics).toBe(getStandardDiagnostics)
+      expect(RootExports.getStandardDiagnostic).toBe(getStandardDiagnostic)
+      expect(RootExports.isDirectiveExpressionAttribute).toBe(isDirectiveExpressionAttribute)
     })
   })
 })

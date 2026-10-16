@@ -265,6 +265,18 @@ export interface BloggerCompilerQuotas {
   token_cost_rules?: string
 }
 
+export type BloggerStandardDiagnosticKey
+  = | 'missing_required_attribute'
+    | 'deprecated_attribute'
+    | 'empty_required_attribute'
+    | 'disallowed_expression_attribute'
+    | 'duplicate_element_id'
+    | 'duplicate_includable_id'
+    | 'invalid_variable_type_attribute'
+    | 'prohibited_nesting'
+
+export type BloggerStandardDiagnostics = Record<BloggerStandardDiagnosticKey, BloggerDiagnosticCode>
+
 export interface BloggerDirectivesCatalog {
   $schema?: string
   version?: string
@@ -276,6 +288,7 @@ export interface BloggerDirectivesCatalog {
     layout_versions?: BloggerLayoutVersionsCatalog
     compiler_limits?: BloggerCompilerLimits
     hallucinated_directives?: Record<string, BloggerDiagnosticCode>
+    standard_diagnostics?: BloggerStandardDiagnostics
     [key: string]: any
   }
   [key: string]: any

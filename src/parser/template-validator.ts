@@ -22,17 +22,23 @@ function pushDiagnostic(
   },
 ): void {
   const rule = options?.rule ?? catalog.getDiagnostic(code)
-  if (rule) {
-    diagnostics.push({
-      code: rule.code,
-      rule,
-      message: options?.message ?? rule.message,
-      severity: rule.severity,
-      tagName: token.tagName,
-      tagStart: options?.start ?? token.tagStart,
-      tagEnd: options?.end ?? token.tagEnd,
-    })
-  }
+  diagnostics.push({
+    code: rule?.code ?? code,
+    rule: rule ?? {
+      code,
+      name: `Diagnostic ${code}`,
+      category: 'syntax',
+      severity: 'error',
+      message: options?.message ?? `Diagnostic ${code}`,
+      evidence: 'unknown',
+      verifiedAt: '2026-01-01',
+    },
+    message: options?.message ?? rule?.message ?? `Diagnostic ${code}`,
+    severity: rule?.severity ?? 'error',
+    tagName: token.tagName,
+    tagStart: options?.start ?? token.tagStart,
+    tagEnd: options?.end ?? token.tagEnd,
+  })
 }
 
 function handleClosingTag(token: BloggerDirectiveToken, tagStack: BloggerDirectiveToken[]): void {
@@ -56,7 +62,8 @@ function validateNestingRules(
   diagnostics: BloggerStructureDiagnostic[],
 ): void {
   if (catalog.isHallucinatedDirective(token.tagName)) {
-    const diagCode = catalog.getHallucinatedDirectiveDiagnostic(token.tagName) ?? 'BX1023'
+    const diagCode = catalog.getHallucinatedDirectiveDiagnostic(token.tagName)
+      ?? catalog.getStandardDiagnostic('prohibited_nesting')
     pushDiagnostic(diagnostics, catalog, diagCode, token)
     return
   }
@@ -118,36 +125,40 @@ function validateDirectiveAttributeRules(
     pushDiagnostic(diagnostics, catalog, inv.code as BloggerDiagnosticCode, token)
   }
 
+  const missingDiag = catalog.getStandardDiagnostic('missing_required_attribute')
   for (const missing of attrValidation.missingRequired) {
-    pushDiagnostic(diagnostics, catalog, 'BX1022', token, {
+    pushDiagnostic(diagnostics, catalog, missingDiag, token, {
       message: `Mandatory attribute '${missing}' is missing on <${token.tagName}>.`,
     })
   }
 
+  const deprecatedDiag = catalog.getStandardDiagnostic('deprecated_attribute')
   for (const dep of attrValidation.deprecated) {
     const attrToken = token.attributes[dep.name]
-    pushDiagnostic(diagnostics, catalog, 'BX1024', token, {
+    pushDiagnostic(diagnostics, catalog, deprecatedDiag, token, {
       message: `Attribute '${dep.name}' on <${token.tagName}> is deprecated. ${dep.reason || ''}`.trim(),
       start: attrToken?.start ?? token.tagStart,
       end: attrToken?.end ?? token.tagEnd,
     })
   }
 
+  const invalidExprDiag = catalog.getStandardDiagnostic('disallowed_expression_attribute')
   for (const invalidExpr of attrValidation.invalidExpressions) {
     const attrToken = token.attributes[invalidExpr]
-    pushDiagnostic(diagnostics, catalog, 'BX1022', token, {
+    pushDiagnostic(diagnostics, catalog, invalidExprDiag, token, {
       message: `Attribute '${invalidExpr}' on <${token.tagName}> does not support expressions.`,
       start: attrToken?.start ?? token.tagStart,
       end: attrToken?.end ?? token.tagEnd,
     })
   }
 
+  const emptyDiag = catalog.getStandardDiagnostic('empty_required_attribute')
   const allowedAttrs = catalog.getDirectiveAttributes(token.tagName) || {}
   for (const [attrName, meta] of Object.entries(allowedAttrs)) {
     if (meta.required && !meta.allow_empty) {
       const attrToken = token.attributes[attrName] || token.attributes[`expr:${attrName}`]
       if (attrToken && !attrToken.value.trim()) {
-        pushDiagnostic(diagnostics, catalog, 'BX1039', token, {
+        pushDiagnostic(diagnostics, catalog, emptyDiag, token, {
           message: `Element <${token.tagName}> has an empty '${attrToken.name}' attribute.`,
           start: attrToken.start,
           end: attrToken.end,
@@ -175,7 +186,8 @@ function validateIdentifierUniqueness(
       const idVal = idAttr.value.trim()
       if (idVal) {
         if (globalSectionWidgetIds.has(idVal)) {
-          pushDiagnostic(diagnostics, catalog, 'BX1033', token, {
+          const dupElemDiag = catalog.getStandardDiagnostic('duplicate_element_id')
+          pushDiagnostic(diagnostics, catalog, dupElemDiag, token, {
             message: `Duplicate element identifier '${idVal}' detected. Blogger requires all <b:section> and <b:widget> elements to have unique 'id' attributes.`,
             start: idAttr.start,
             end: idAttr.end,
@@ -207,7 +219,8 @@ function validateIdentifierUniqueness(
           containerIncludableIds.set(container, idSet)
         }
         if (idSet.has(idVal)) {
-          pushDiagnostic(diagnostics, catalog, 'BX1036', token, {
+          const dupIncDiag = catalog.getStandardDiagnostic('duplicate_includable_id')
+          pushDiagnostic(diagnostics, catalog, dupIncDiag, token, {
             message: `Duplicate includable identifier '${idVal}' in <${container.tagName}>.`,
             start: idAttr.start,
             end: idAttr.end,
@@ -236,7 +249,8 @@ function validateVariableElement(
     const presentAttrs = Object.keys(token.attributes)
     const varValidation = catalog.validateVariableAttributes(varType, presentAttrs)
     if (!varValidation.valid && varValidation.invalidAttributes.length > 0) {
-      pushDiagnostic(diagnostics, catalog, 'BX1040', token, {
+      const invalidVarTypeDiag = catalog.getStandardDiagnostic('invalid_variable_type_attribute')
+      pushDiagnostic(diagnostics, catalog, invalidVarTypeDiag, token, {
         message: `Attribute(s) '${varValidation.invalidAttributes.join(', ')}' not supported for <Variable type="${varType}">.`,
       })
     }

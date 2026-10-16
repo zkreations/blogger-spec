@@ -21,6 +21,8 @@ import type {
   BloggerScopeDefinition,
   BloggerScopesCatalog,
   BloggerSettingsCatalog,
+  BloggerStandardDiagnosticKey,
+  BloggerStandardDiagnostics,
   BloggerTypeDefinition,
   BloggerTypesCatalog,
   BloggerWidgetDefinition,
@@ -109,6 +111,7 @@ export class SpecCatalog {
   private readonly coercionRules: Record<string, any> = {}
   private readonly inclusionMap = new Map<string, BloggerInclusionDefinition>()
   private readonly hallucinatedDirectives: Record<string, BloggerDiagnosticCode> = {}
+  private readonly standardDiagnostics = new Map<BloggerStandardDiagnosticKey, BloggerDiagnosticCode>()
   private readonly scalarTypes: string[] = []
   private readonly falsyStringLiterals = new Set<string>()
   private readonly truthyStringLiterals = new Set<string>()
@@ -141,6 +144,11 @@ export class SpecCatalog {
     const hallucinated = dirCatalog.domain_metadata?.hallucinated_directives || {}
     for (const [tag, code] of Object.entries(hallucinated)) {
       this.hallucinatedDirectives[tag.toLowerCase()] = code as BloggerDiagnosticCode
+    }
+
+    const stdDiags = (dirCatalog.domain_metadata?.standard_diagnostics as Record<string, string>) || {}
+    for (const [key, code] of Object.entries(stdDiags)) {
+      this.standardDiagnostics.set(key as BloggerStandardDiagnosticKey, code as BloggerDiagnosticCode)
     }
 
     for (const [name, def] of Object.entries(directives)) {
@@ -373,7 +381,8 @@ export class SpecCatalog {
     const parentDef = this.getDirective(parentTag)
     const childDef = this.getDirective(childTag)
 
-    let diagCode = 'BX1023'
+    const defaultProhibitedCode = this.getStandardDiagnostic('prohibited_nesting')
+    let diagCode = defaultProhibitedCode
     let action: DirectiveNestingAction = 'reject'
 
     const parentPolicy = parentDef?.grammar?.invalid_nesting_policy?.on_invalid_child
@@ -396,10 +405,20 @@ export class SpecCatalog {
       }
     }
 
-    const rule = this.getDiagnostic(diagCode) ?? this.getDiagnostic('BX1023')!
+    const rule = this.getDiagnostic(diagCode)
+      ?? this.getDiagnostic(defaultProhibitedCode)
+      ?? {
+        code: diagCode,
+        name: `Nesting Diagnostic ${diagCode}`,
+        category: 'syntax',
+        severity: 'error',
+        message: `Tag <${childTag}> is not permitted inside <${parentTag}>.`,
+        evidence: 'unknown',
+        verifiedAt: '2026-01-01',
+      }
 
     let message = rule.message
-    if (rule.code === 'BX1023') {
+    if (rule.code === defaultProhibitedCode) {
       message = `Tag <${childTag}> is not permitted inside <${parentTag}>.`
     }
 
@@ -842,6 +861,37 @@ export class SpecCatalog {
     }
     return Boolean(value)
   }
+
+  getStandardDiagnostics(): Readonly<BloggerStandardDiagnostics> {
+    const fallback: BloggerStandardDiagnostics = {
+      missing_required_attribute: 'BX1022',
+      deprecated_attribute: 'BX1024',
+      empty_required_attribute: 'BX1039',
+      disallowed_expression_attribute: 'BX1022',
+      duplicate_element_id: 'BX1033',
+      duplicate_includable_id: 'BX1036',
+      invalid_variable_type_attribute: 'BX1040',
+      prohibited_nesting: 'BX1023',
+    }
+    const result: any = { ...fallback }
+    for (const [k, v] of this.standardDiagnostics.entries()) {
+      result[k] = v
+    }
+    return result
+  }
+
+  getStandardDiagnostic(key: BloggerStandardDiagnosticKey): BloggerDiagnosticCode {
+    return this.standardDiagnostics.get(key) ?? this.getStandardDiagnostics()[key]
+  }
+
+  isDirectiveExpressionAttribute(tagName: string, attrName: string): boolean {
+    if (attrName.startsWith('expr:')) {
+      return true
+    }
+    const def = this.getDirective(tagName)
+    const attrDef = def?.attributes?.[attrName]
+    return Boolean(attrDef?.attribute_kind === 'native_expression' || attrDef?.type === 'expression')
+  }
 }
 
 export function isDirective(tagName: string, catalog: SpecCatalog = getSpecCatalog()): tagName is BloggerDirectiveName {
@@ -1061,4 +1111,23 @@ export function getFalsyStringLiterals(catalog: SpecCatalog = getSpecCatalog()):
 
 export function getTruthyStringLiterals(catalog: SpecCatalog = getSpecCatalog()): ReadonlySet<string> {
   return catalog.getTruthyStringLiterals()
+}
+
+export function getStandardDiagnostics(catalog: SpecCatalog = getSpecCatalog()): Readonly<BloggerStandardDiagnostics> {
+  return catalog.getStandardDiagnostics()
+}
+
+export function getStandardDiagnostic(
+  key: BloggerStandardDiagnosticKey,
+  catalog: SpecCatalog = getSpecCatalog(),
+): BloggerDiagnosticCode {
+  return catalog.getStandardDiagnostic(key)
+}
+
+export function isDirectiveExpressionAttribute(
+  tagName: string,
+  attrName: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): boolean {
+  return catalog.isDirectiveExpressionAttribute(tagName, attrName)
 }

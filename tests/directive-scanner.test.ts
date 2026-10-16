@@ -247,9 +247,32 @@ describe('directive scanner suite', () => {
       expect(condAttr?.isExpression).toBe(true)
       expect(condAttr?.value).toBe('data:view.isPost')
 
+      const dataAttr = astNode.attributes.find(a => a.name === 'data')
+      expect(dataAttr?.isExpression).toBe(true)
+      expect(dataAttr?.value).toBe('post')
+
       const nameAttr = astNode.attributes.find(a => a.name === 'name')
       expect(nameAttr?.isExpression).toBe(false)
       expect(nameAttr?.value).toBe('post')
+    })
+
+    it('identifies native expression attributes from catalog without expr: prefix', () => {
+      const loopXml = '<b:loop values=\'data:posts\' var=\'post\'>'
+      const [loopToken] = scanDirectiveTokens(loopXml)
+      const loopAst = directiveTokenToAstNode(loopToken!)
+      expect(loopAst.attributes.find(a => a.name === 'values')?.isExpression).toBe(true)
+      expect(loopAst.attributes.find(a => a.name === 'var')?.isExpression).toBe(false)
+
+      const withXml = '<b:with value=\'data:blog.title\' var=\'title\'>'
+      const [withToken] = scanDirectiveTokens(withXml)
+      const withAst = directiveTokenToAstNode(withToken!)
+      expect(withAst.attributes.find(a => a.name === 'value')?.isExpression).toBe(true)
+      expect(withAst.attributes.find(a => a.name === 'var')?.isExpression).toBe(false)
+
+      const evalXml = '<b:eval expr=\'data:view.title\' />'
+      const [evalToken] = scanDirectiveTokens(evalXml)
+      const evalAst = directiveTokenToAstNode(evalToken!)
+      expect(evalAst.attributes.find(a => a.name === 'expr')?.isExpression).toBe(true)
     })
   })
 

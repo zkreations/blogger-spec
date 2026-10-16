@@ -54,6 +54,55 @@
             "pattern": "^BX[0-9]{4}$"
           }
         },
+        "standard_diagnostics": {
+          "type": "object",
+          "description": "Standard diagnostic codes associated with template syntax and structural violations.",
+          "required": [
+            "missing_required_attribute",
+            "deprecated_attribute",
+            "empty_required_attribute",
+            "disallowed_expression_attribute",
+            "duplicate_element_id",
+            "duplicate_includable_id",
+            "invalid_variable_type_attribute",
+            "prohibited_nesting"
+          ],
+          "properties": {
+            "missing_required_attribute": {
+              "type": "string",
+              "pattern": "^BX[0-9]{4}$"
+            },
+            "deprecated_attribute": {
+              "type": "string",
+              "pattern": "^BX[0-9]{4}$"
+            },
+            "empty_required_attribute": {
+              "type": "string",
+              "pattern": "^BX[0-9]{4}$"
+            },
+            "disallowed_expression_attribute": {
+              "type": "string",
+              "pattern": "^BX[0-9]{4}$"
+            },
+            "duplicate_element_id": {
+              "type": "string",
+              "pattern": "^BX[0-9]{4}$"
+            },
+            "duplicate_includable_id": {
+              "type": "string",
+              "pattern": "^BX[0-9]{4}$"
+            },
+            "invalid_variable_type_attribute": {
+              "type": "string",
+              "pattern": "^BX[0-9]{4}$"
+            },
+            "prohibited_nesting": {
+              "type": "string",
+              "pattern": "^BX[0-9]{4}$"
+            }
+          },
+          "additionalProperties": false
+        },
         "theme_designer_descriptions": {
           "type": "array",
           "items": {

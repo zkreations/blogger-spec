@@ -23,6 +23,16 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "b:let": "BX1005",
         "b:else-if": "BX1006"
       },
+      "standard_diagnostics": {
+        "missing_required_attribute": "BX1022",
+        "deprecated_attribute": "BX1024",
+        "empty_required_attribute": "BX1039",
+        "disallowed_expression_attribute": "BX1022",
+        "duplicate_element_id": "BX1033",
+        "duplicate_includable_id": "BX1036",
+        "invalid_variable_type_attribute": "BX1040",
+        "prohibited_nesting": "BX1023"
+      },
       "theme_designer_descriptions": [
         "Accents",
         "Action color",
@@ -618,7 +628,13 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           ],
           "valid_children": [
             "@flow_content"
-          ]
+          ],
+          "invalid_nesting_policy": {
+            "on_invalid_parent": {
+              "diagnostic": "BX1023",
+              "action": "reject"
+            }
+          }
         },
         "attributes": {
           "id": {
@@ -11800,6 +11816,55 @@ export const embeddedSchemas: Record<string, any> = {
               "type": "string",
               "pattern": "^BX[0-9]{4}$"
             }
+          },
+          "standard_diagnostics": {
+            "type": "object",
+            "description": "Standard diagnostic codes associated with template syntax and structural violations.",
+            "required": [
+              "missing_required_attribute",
+              "deprecated_attribute",
+              "empty_required_attribute",
+              "disallowed_expression_attribute",
+              "duplicate_element_id",
+              "duplicate_includable_id",
+              "invalid_variable_type_attribute",
+              "prohibited_nesting"
+            ],
+            "properties": {
+              "missing_required_attribute": {
+                "type": "string",
+                "pattern": "^BX[0-9]{4}$"
+              },
+              "deprecated_attribute": {
+                "type": "string",
+                "pattern": "^BX[0-9]{4}$"
+              },
+              "empty_required_attribute": {
+                "type": "string",
+                "pattern": "^BX[0-9]{4}$"
+              },
+              "disallowed_expression_attribute": {
+                "type": "string",
+                "pattern": "^BX[0-9]{4}$"
+              },
+              "duplicate_element_id": {
+                "type": "string",
+                "pattern": "^BX[0-9]{4}$"
+              },
+              "duplicate_includable_id": {
+                "type": "string",
+                "pattern": "^BX[0-9]{4}$"
+              },
+              "invalid_variable_type_attribute": {
+                "type": "string",
+                "pattern": "^BX[0-9]{4}$"
+              },
+              "prohibited_nesting": {
+                "type": "string",
+                "pattern": "^BX[0-9]{4}$"
+              }
+            },
+            "additionalProperties": false
           },
           "theme_designer_descriptions": {
             "type": "array",
