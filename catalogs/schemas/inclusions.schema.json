@@ -9,7 +9,7 @@
     "title",
     "description",
     "version",
-    "super_prefix_rule",
+    "domain_metadata",
     "inclusions"
   ],
   "properties": {
@@ -25,23 +25,32 @@
     "version": {
       "type": "string"
     },
-    "super_prefix_rule": {
+    "domain_metadata": {
       "type": "object",
       "required": [
-        "prefix",
-        "description",
-        "behavior"
+        "super_prefix_rule"
       ],
       "properties": {
-        "prefix": {
-          "type": "string",
-          "const": "super."
-        },
-        "description": {
-          "type": "string"
-        },
-        "behavior": {
-          "type": "string"
+        "super_prefix_rule": {
+          "type": "object",
+          "required": [
+            "prefix",
+            "description",
+            "behavior"
+          ],
+          "properties": {
+            "prefix": {
+              "type": "string",
+              "const": "super."
+            },
+            "description": {
+              "type": "string"
+            },
+            "behavior": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

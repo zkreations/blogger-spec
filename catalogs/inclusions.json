@@ -3,10 +3,12 @@
   "title": "Blogger System & Platform Inclusions Master Catalog",
   "description": "Canonical registry of platform-level subroutines and system includables resolved by Google Blogger's backend rendering engine.",
   "version": "1.0.0",
-  "super_prefix_rule": {
-    "prefix": "super.",
-    "description": "Prefixing an inclusion identifier with super. (e.g. <b:include name='super.main'/>) instructs the Blogger engine to execute the default platform or theme implementation of that subroutine, bypassing template-level overrides.",
-    "behavior": "delegation"
+  "domain_metadata": {
+    "super_prefix_rule": {
+      "prefix": "super.",
+      "description": "Prefixing an inclusion identifier with super. (e.g. <b:include name='super.main'/>) instructs the Blogger engine to execute the default platform or theme implementation of that subroutine, bypassing template-level overrides.",
+      "behavior": "delegation"
+    }
   },
   "inclusions": {
     "all-head-content": {
