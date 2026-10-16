@@ -83,6 +83,13 @@
             "type": "string"
           },
           "description": "Canonical primitive data types composing the scalar category (string, number, boolean)."
+        },
+        "theme_designer_descriptions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
         }
       },
       "additionalProperties": false
@@ -139,12 +146,9 @@
           "type": "string",
           "description": "Underlying child element type for homogeneous collections (e.g. for array types)."
         },
-        "parameterized_forms": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Recognized parameterized collection variants (e.g. array[string], array[object])."
+        "generic": {
+          "type": "boolean",
+          "description": "True if the type represents an open generic/parameterized container."
         },
         "modifiers": {
           "type": "object",
@@ -263,52 +267,10 @@
       ],
       "description": "Blogger XML directive attribute data type defined in types.json."
     },
-    "widgetSettingType": {
-      "type": "string",
-      "enum": [
-        "string",
-        "number",
-        "boolean",
-        "url"
-      ],
-      "description": "Blogger widget setting data type supported in <b:widget-setting>."
-    },
     "operatorDataType": {
       "type": "string",
-      "enum": [
-        "string",
-        "number",
-        "boolean",
-        "url",
-        "image",
-        "date",
-        "object",
-        "array",
-        "array[object]",
-        "array[string]",
-        "array[image]",
-        "array[url]",
-        "array[date]",
-        "array[number]",
-        "array[boolean]",
-        "array[array]",
-        "locale",
-        "message",
-        "skin_variable",
-        "skin:color",
-        "skin:font",
-        "skin:background",
-        "skin:length",
-        "skin:automatic",
-        "skin:string",
-        "skin:url",
-        "scalar",
-        "expression",
-        "predicate",
-        "any",
-        "child_item"
-      ],
-      "description": "Blogger Expression Engine operator and operand data type defined in types.json."
+      "pattern": "^[a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?$",
+      "description": "Allowed Blogger expression operator operand/return type identifier, generic collection, or primitive."
     }
   }
 }
