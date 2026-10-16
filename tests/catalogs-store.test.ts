@@ -26,6 +26,7 @@ import {
   getDirectives,
   getExpressionQuotaLimit,
   getExpressionQuotaWarning,
+  getFalsyStringLiterals,
   getGlobal,
   getGlobals,
   getGrammarOperators,
@@ -39,6 +40,7 @@ import {
   getOperator,
   getOperatorPrecedence,
   getOperators,
+  getScalarTypes,
   getSchema,
   getScope,
   getScopePrecedence,
@@ -46,6 +48,7 @@ import {
   getSettings,
   getSpecCatalog,
   getSuperPrefix,
+  getTruthyStringLiterals,
   getType,
   getTypes,
   getWidget,
@@ -507,6 +510,120 @@ describe('catalogs and store formal verification suite', () => {
         expect(validSwitch.unknown).toHaveLength(0)
       })
     })
+
+    describe('dynamic mutation and SSoT propagation across all engine domains (Phase 5)', () => {
+      function createClonedMasterCatalogs() {
+        const raw = getAllCatalogs()
+        return JSON.parse(JSON.stringify(raw)) as Record<string, any>
+      }
+
+      it('propagates directive nesting limit mutation to SpecCatalog without touching code', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.directives.domain_metadata.compiler_limits.max_directive_nesting_depth = 25
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        expect(customSpec.getDirectiveNestingLimit()).toBe(25)
+        expect(customSpec.getCompilerLimits()?.max_directive_nesting_depth).toBe(25)
+      })
+
+      it('propagates compiler quotas mutation to expression budget evaluation', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.operators.evaluation_contexts.compiler_quotas.max_expression_tokens = 10
+        catalogs.operators.evaluation_contexts.compiler_quotas.warning_expression_tokens = 8
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        expect(customSpec.getExpressionQuotaLimit()).toBe(10)
+        expect(customSpec.getExpressionQuotaWarning()).toBe(8)
+
+        // 1 + 2 + 3 + 4 + 5 + 6 has 11 tokens (> 10 limit)
+        const budget = RootExports.evaluateExpressionBudget('1 + 2 + 3 + 4 + 5 + 6', customSpec)
+        expect(budget.totalTokens).toBe(11)
+        expect(budget.status).toBe('EXCEEDED')
+        expect(budget.isValid).toBe(false)
+        expect(budget.recommendation).toContain('limit is 10')
+      })
+
+      it('propagates custom truthiness matrix literals to isTruthy evaluation', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.types.truthiness_matrix.falsy_string_literals.push('custom_falsy')
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        expect(customSpec.isTruthy('custom_falsy')).toBe(false)
+        expect(RootExports.isTruthy('custom_falsy', customSpec)).toBe(false)
+        expect(RootExports.isTruthy('custom_falsy')).toBe(true)
+      })
+
+      it('propagates dynamic scalar types to isTypeAssignable', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.types.scalar_types.push('custom_scalar')
+        catalogs.types.types.custom_scalar = {
+          category: 'base',
+          description: 'Synthetic custom scalar type',
+          parent_type: null,
+          user_constructible: false,
+          ts_type: 'string',
+        }
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        expect(RootExports.isTypeAssignable('custom_scalar', 'scalar', customSpec)).toBe(true)
+        expect(RootExports.isTypeAssignable('custom_scalar', 'scalar')).toBe(false)
+      })
+
+      it('propagates dynamic hallucinated directives to template structure validator', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.directives.domain_metadata.hallucinated_directives['b:synthetic-for'] = 'BX1001'
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        expect(customSpec.isHallucinatedDirective('b:synthetic-for')).toBe(true)
+        expect(customSpec.getHallucinatedDirectiveDiagnostic('b:synthetic-for')).toBe('BX1001')
+
+        const xml = `
+          <b:section id='main'>
+            <b:widget id='Blog1' type='Blog'>
+              <b:includable id='main'>
+                <b:synthetic-for each='item' in='data:items'/>
+              </b:includable>
+            </b:widget>
+          </b:section>
+        `
+        const diags = RootExports.validateTemplateStructure(xml, customSpec)
+        expect(diags.some(d => d.code === 'BX1001')).toBe(true)
+      })
+
+      it('propagates dynamic attribute inversions to validateDirectiveAttributes', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.directives.directives['b:section'].attribute_inversions = {
+          custom_inverted: {
+            expected: 'id',
+            diagnostic: 'BX1035',
+          },
+        }
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        const res = customSpec.validateDirectiveAttributes('b:section', ['custom_inverted'])
+        expect(res.inverted).toEqual([
+          { code: 'BX1035', attribute: 'custom_inverted', expected: 'id' },
+        ])
+        expect(res.unknown).not.toContain('custom_inverted')
+      })
+
+      it('propagates dynamic super inclusion prefix to isServerInclusion and getSuperPrefix', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.inclusions.super_prefix_rule.prefix = 'synthetic_super.'
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        expect(customSpec.getSuperPrefix()).toBe('synthetic_super.')
+        expect(customSpec.isServerInclusion('synthetic_super.header')).toBe(true)
+        expect(customSpec.isServerInclusion('super.header')).toBe(false)
+      })
+    })
   })
 
   describe('rootExports parity', () => {
@@ -534,6 +651,9 @@ describe('catalogs and store formal verification suite', () => {
       expect(RootExports.getHallucinatedDirectiveDiagnostic).toBe(getHallucinatedDirectiveDiagnostic)
       expect(RootExports.getSuperPrefix).toBe(getSuperPrefix)
       expect(RootExports.validateDirectiveAttributes).toBe(validateDirectiveAttributes)
+      expect(RootExports.getScalarTypes).toBe(getScalarTypes)
+      expect(RootExports.getFalsyStringLiterals).toBe(getFalsyStringLiterals)
+      expect(RootExports.getTruthyStringLiterals).toBe(getTruthyStringLiterals)
     })
   })
 })
