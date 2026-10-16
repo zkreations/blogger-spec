@@ -8,6 +8,7 @@
     "$schema",
     "title",
     "description",
+    "version",
     "widgets"
   ],
   "properties": {
@@ -18,6 +19,9 @@
       "type": "string"
     },
     "description": {
+      "type": "string"
+    },
+    "version": {
       "type": "string"
     },
     "widgets": {
@@ -48,13 +52,13 @@
         "patterns": {
           "type": "array",
           "items": {
-            "$ref": "#/$defs/patternDefinition"
+            "$ref": "common.schema.json#/$defs/patternDefinition"
           }
         },
         "deprecated": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/$defs/deprecatedEntry"
+            "$ref": "common.schema.json#/$defs/deprecatedEntry"
           }
         }
       },
@@ -111,87 +115,6 @@
           "additionalProperties": {
             "$ref": "#/$defs/canonicalSetting"
           }
-        }
-      },
-      "additionalProperties": false
-    },
-    "patternDefinition": {
-      "type": "object",
-      "required": [
-        "template",
-        "type",
-        "index_start",
-        "description"
-      ],
-      "properties": {
-        "template": {
-          "type": "string"
-        },
-        "type": {
-          "$ref": "types.schema.json#/$defs/widgetSettingType"
-        },
-        "index_start": {
-          "type": "integer"
-        },
-        "index_end": {
-          "type": [
-            "integer",
-            "null"
-          ]
-        },
-        "paired_with": {
-          "type": "string"
-        },
-        "description": {
-          "type": "string"
-        },
-        "supported_types": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      },
-      "additionalProperties": false
-    },
-    "deprecatedEntry": {
-      "type": "object",
-      "required": [
-        "status",
-        "action",
-        "type",
-        "replacement",
-        "reason"
-      ],
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": [
-            "deprecated_in_widget_v2",
-            "deprecated_in_layout_v3",
-            "ignored_in_layout_v3",
-            "obsolete",
-            "legacy"
-          ]
-        },
-        "action": {
-          "type": "string",
-          "enum": [
-            "migrate",
-            "remove"
-          ]
-        },
-        "type": {
-          "$ref": "types.schema.json#/$defs/widgetSettingType"
-        },
-        "replacement": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "reason": {
-          "type": "string"
         }
       },
       "additionalProperties": false

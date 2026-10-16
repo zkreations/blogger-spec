@@ -2,6 +2,7 @@
   "$schema": "./schemas/settings.schema.json",
   "title": "Blogger Widget Settings Master Catalog",
   "description": "Exhaustive, machine-readable registry of valid <b:widget-setting name='...'> keys across all official Blogger gadget types in Gadget Version 2 (Layouts v3). Organizes settings into canonical (actively supported), patterns (zero-based dynamic indexed keys), nested structures, and deprecated (obsolete or inactive in Layouts v3).",
+  "version": "1.0.0",
   "widgets": {
     "AdSense": {
       "description": "Configuration settings for official Google AdSense banner ad units, governing ad format dimensions and responsive slots.",
