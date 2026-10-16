@@ -2,6 +2,7 @@ import type { BloggerAttributeNode, BloggerDirectiveNode } from '../ast.js'
 import type { SpecCatalog } from '../catalogs/index.js'
 import type {
   BloggerDirectiveAttributeToken,
+  BloggerDirectiveName,
   BloggerDirectiveToken,
   ScanDirectiveOptions,
 } from '../types.js'
@@ -323,7 +324,7 @@ export function directiveTokenToAstNode(token: BloggerDirectiveToken): BloggerDi
 
   return {
     type: 'Directive',
-    name: token.tagName,
+    name: token.tagName as BloggerDirectiveName,
     attributes,
     children: [],
     selfClosing: token.isSelfClosing,

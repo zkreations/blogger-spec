@@ -49,6 +49,9 @@ function mapPropertyTypeToTs(type: string): string {
   if (!type) {
     return 'any'
   }
+  if (type.includes('|')) {
+    return type.split('|').map(t => mapPropertyTypeToTs(t.trim())).join(' | ')
+  }
   switch (type) {
     case 'string':
       return 'string'
@@ -134,9 +137,6 @@ export function generateDts(): string {
       let propType: string
       if (Array.isArray((mDef as any).allowed_values) && (mDef as any).allowed_values.length > 0) {
         propType = (mDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
-      }
-      else if (mName === 'youtubeMaxResDefaultUrl') {
-        propType = 'BloggerImage | boolean'
       }
       else {
         propType = mapPropertyTypeToTs((mDef as any).output_type)
@@ -349,6 +349,57 @@ export function buildFixturesManifest(): BloggerFixturesManifest {
   return manifest
 }
 
+export function generateDomainTypes(): string {
+  const directivesData = getDirectives()
+  const operatorsData = getOperators()
+  const diagnosticsData = getDiagnostics()
+  const widgetsData = getWidgets()
+  const messagesData = getMessages()
+
+  const directives = directivesData.directives || {}
+  const dirNames = Object.keys(directives).sort()
+
+  const widgets = widgetsData.widgets || {}
+  const widgetTypes = Object.keys(widgets).sort()
+
+  const rules = diagnosticsData.rules || {}
+  const ruleCodes = Object.keys(rules).sort()
+
+  const operators = operatorsData.operators || {}
+  const opNames = Object.keys(operators).sort()
+
+  const messages = messagesData.messages || {}
+  const msgKeys = Object.keys(messages).sort()
+
+  const lines: string[] = [
+    '/**',
+    ' * blogger-spec — Canonical Generated Domain Types.',
+    ' * Automatically generated from master JSON catalogs.',
+    ' * DO NOT EDIT MANUALLY.',
+    ' */',
+    '',
+    `export type BloggerDirectiveName = ${dirNames.map(d => `'${d}'`).join(' | ')};`,
+    '',
+    `export type BloggerWidgetType = ${widgetTypes.map(w => `'${w}'`).join(' | ')};`,
+    '',
+    `export type BloggerDiagnosticCode = ${ruleCodes.map(c => `'${c}'`).join(' | ')};`,
+    '',
+    `export type BloggerOperatorName = ${opNames.map(o => JSON.stringify(o)).join(' | ')};`,
+    '',
+    `export type BloggerMessageKey = ${msgKeys.map(m => `'${m}'`).join(' | ')};`,
+    '',
+  ]
+
+  return lines.join('\n')
+}
+
+export function buildDomainTypes(): void {
+  const paths = getWorkspacePaths()
+  const targetPath = join(paths.root, 'src/catalogs/types.generated.ts')
+  const content = generateDomainTypes()
+  writeFileSync(targetPath, content, 'utf-8')
+}
+
 export function generateEmbeddedCatalogs(): string {
   const paths = getWorkspacePaths()
   const catalogsDir = paths.catalogs
@@ -489,6 +540,7 @@ export function buildAll(): void {
   cleanDist()
   const paths = getWorkspacePaths()
   buildEmbeddedCatalogs()
+  buildDomainTypes()
   buildFixturesManifest()
   compileTypescript()
   buildDts()
@@ -525,8 +577,14 @@ export function compile(target?: string): void {
   switch (t) {
     case 'catalogs':
     case 'embedded':
-      console.log('-> Generating embedded catalogs...')
+      console.log('-> Generating embedded catalogs and domain types...')
       buildEmbeddedCatalogs()
+      buildDomainTypes()
+      break
+    case 'types':
+    case 'domain-types':
+      console.log('-> Generating domain types...')
+      buildDomainTypes()
       break
     case 'fixtures':
     case 'manifest':
@@ -606,6 +664,21 @@ export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): Veri
       name: 'src/catalogs/embedded.generated.ts',
       valid,
       error: valid ? undefined : 'src/catalogs/embedded.generated.ts is out of date.',
+    })
+  }
+
+  const typesGeneratedPath = join(paths.root, 'src/catalogs/types.generated.ts')
+  if (!existsSync(typesGeneratedPath)) {
+    items.push({ name: 'src/catalogs/types.generated.ts', valid: false, error: 'File does not exist.' })
+  }
+  else {
+    const currentTypes = readFileSync(typesGeneratedPath, 'utf-8')
+    const freshTypes = generateDomainTypes()
+    const valid = currentTypes === freshTypes
+    items.push({
+      name: 'src/catalogs/types.generated.ts',
+      valid,
+      error: valid ? undefined : 'src/catalogs/types.generated.ts is out of date.',
     })
   }
 

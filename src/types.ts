@@ -2,6 +2,14 @@
  * Shared TypeScript types for Blogger Specification models, catalogs, and test fixtures.
  */
 
+import type {
+  BloggerDiagnosticCode,
+  BloggerDirectiveName,
+  BloggerMessageKey,
+  BloggerOperatorName,
+  BloggerWidgetType,
+} from './catalogs/types.generated.js'
+
 export type BloggerEvidenceLevel = 'official' | 'observed' | 'approximate' | 'unknown'
 
 export type BloggerDiagnosticCategory
@@ -15,40 +23,16 @@ export type BloggerDiagnosticCategory
 
 export type BloggerDiagnosticSeverity = 'error' | 'warning' | 'info'
 
-export type BloggerDiagnosticCode = string
-export type BloggerDirectiveName = string
-export type BloggerOperatorName = string
-
-export type BloggerWidgetType
-  = | 'AdSense'
-    | 'Attribution'
-    | 'BlogArchive'
-    | 'BlogList'
-    | 'BlogSearch'
-    | 'Blog'
-    | 'BloggerButton'
-    | 'ContactForm'
-    | 'FeaturedPost'
-    | 'Feed'
-    | 'Followers'
-    | 'Header'
-    | 'Image'
-    | 'Label'
-    | 'LinkList'
-    | 'PageList'
-    | 'PopularPosts'
-    | 'Profile'
-    | 'ReportAbuse'
-    | 'Stats'
-    | 'Subscribe'
-    | 'HTML'
-    | 'Text'
-    | 'TextList'
-    | 'Translate'
-    | 'Wikipedia'
+export type {
+  BloggerDiagnosticCode,
+  BloggerDirectiveName,
+  BloggerMessageKey,
+  BloggerOperatorName,
+  BloggerWidgetType,
+}
 
 export interface BloggerDiagnosticRule {
-  code: string
+  code: BloggerDiagnosticCode
   name: string
   category: BloggerDiagnosticCategory
   severity: BloggerDiagnosticSeverity
@@ -59,7 +43,7 @@ export interface BloggerDiagnosticRule {
 }
 
 export interface BloggerStructureDiagnostic {
-  code: string
+  code: BloggerDiagnosticCode
   rule: BloggerDiagnosticRule
   message: string
   severity: BloggerDiagnosticSeverity
@@ -71,7 +55,7 @@ export interface BloggerStructureDiagnostic {
 export type DirectiveNestingAction = 'reject' | 'strip' | 'ignore'
 
 export interface DirectiveNestingPolicyAction {
-  diagnostic: string
+  diagnostic: BloggerDiagnosticCode
   action: DirectiveNestingAction
 }
 
@@ -83,7 +67,7 @@ export interface DirectiveInvalidNestingPolicy {
 }
 
 export interface DirectiveNestingViolation {
-  code: string
+  code: BloggerDiagnosticCode
   rule: BloggerDiagnosticRule
   action: DirectiveNestingAction
   message: string

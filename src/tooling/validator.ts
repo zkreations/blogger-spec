@@ -1,19 +1,8 @@
+import type { CatalogStore } from '../catalogs/store.js'
 import type { BloggerCatalogName } from '../types.js'
 import addFormats from 'ajv-formats'
 import Ajv2020 from 'ajv/dist/2020.js'
-import {
-  getAllSchemas,
-  getCatalog,
-  getDirectives,
-  getGlobals,
-  getInclusions,
-  getMessages,
-  getOperators,
-  getScopes,
-  getSettings,
-  getTypes,
-  getWidgets,
-} from '../catalogs/index.js'
+import { FsCatalogStore } from '../catalogs/fs-store.js'
 import { verifyArtifactsFreshness } from './compiler.js'
 
 export {
@@ -34,9 +23,11 @@ export interface SpecValidationReport {
 export interface ValidateSpecOptions {
   reporter?: (message: string) => void
   checkDtsFreshness?: boolean
+  store?: CatalogStore
 }
 
 export function validateSpec(options?: ValidateSpecOptions): SpecValidationReport {
+  const store = options?.store || new FsCatalogStore()
   const log = options?.reporter || (() => {})
   const errors: string[] = []
   const metrics = {
@@ -48,7 +39,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   const ajv = new (Ajv2020 as unknown as new (opts: any) => any)({ allErrors: true, strict: true, allowUnionTypes: true });
   (addFormats as unknown as (ajv: any) => void)(ajv)
 
-  const schemas = getAllSchemas()
+  const schemas = store.getAllSchemas()
   for (const { schema } of schemas) {
     ajv.addSchema(schema)
   }
@@ -67,7 +58,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   ]
 
   for (const name of catalogNames) {
-    const data = getCatalog(name)
+    const data = store.getCatalog(name)
     const schemaFile = schemas.find(s => s.name === name)
     if (!schemaFile) {
       errors.push(`Missing schema for catalog: ${name}`)
@@ -88,7 +79,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   }
 
   log('-> 2. Validating catalogs referential integrity...')
-  const operatorsCatalog = getOperators()
+  const operatorsCatalog = store.getCatalog('operators')
   const operators = operatorsCatalog.operators || {}
   const hierarchy = operatorsCatalog.precedence_hierarchy || []
 
@@ -125,7 +116,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   }
 
   // 2.3 Type referential integrity across catalogs
-  const typesCatalog = getTypes()
+  const typesCatalog = store.getCatalog('types')
   const knownTypes = new Set(Object.keys(typesCatalog.types || {}))
 
   function isKnownType(type?: string): boolean {
@@ -163,7 +154,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     }
   }
 
-  const globalsCatalog = getGlobals()
+  const globalsCatalog = store.getCatalog('globals')
   for (const [objKey, objDef] of Object.entries(globalsCatalog.objects || {})) {
     if (objDef.item_type && !isKnownType(objDef.item_type)) {
       errors.push(`Global object '${objKey}' specifies unknown item_type '${objDef.item_type}'.`)
@@ -178,7 +169,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     }
   }
 
-  const widgetsCatalog = getWidgets()
+  const widgetsCatalog = store.getCatalog('widgets')
   const knownWidgets = new Set(Object.keys(widgetsCatalog.widgets || {}))
   for (const [widgetKey, widgetDef] of Object.entries(widgetsCatalog.widgets || {})) {
     for (const [propKey, propDef] of Object.entries(widgetDef.canonical || {})) {
@@ -191,7 +182,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     }
   }
 
-  const settingsCatalog = getSettings()
+  const settingsCatalog = store.getCatalog('settings')
   for (const [widgetKey, widgetDef] of Object.entries(settingsCatalog.widgets || {})) {
     if (!knownWidgets.has(widgetKey)) {
       errors.push(`Settings catalog references unknown widget '${widgetKey}'.`)
@@ -208,7 +199,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     }
   }
 
-  const directivesCatalog = getDirectives()
+  const directivesCatalog = store.getCatalog('directives')
   const knownDirectives = new Set(Object.keys(directivesCatalog.directives || {}))
   for (const [dirKey, dirDef] of Object.entries(directivesCatalog.directives || {})) {
     for (const [attrKey, attrDef] of Object.entries(dirDef.attributes || {})) {
@@ -218,7 +209,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     }
   }
 
-  const scopesCatalog = getScopes()
+  const scopesCatalog = store.getCatalog('scopes')
   for (const [scopeKey, scopeDef] of Object.entries(scopesCatalog.scopes || {})) {
     if (scopeDef.boundary_tag) {
       const tags = Array.isArray(scopeDef.boundary_tag) ? scopeDef.boundary_tag : [scopeDef.boundary_tag]
@@ -235,7 +226,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     }
   }
 
-  const inclusionsCatalog = getInclusions()
+  const inclusionsCatalog = store.getCatalog('inclusions')
   for (const [incKey, incDef] of Object.entries(inclusionsCatalog.inclusions || {})) {
     for (const targetWidget of incDef.target_widgets || []) {
       if (!knownWidgets.has(targetWidget)) {
@@ -245,7 +236,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   }
 
   // 2.4 Messages referential integrity
-  const messagesCatalog = getMessages()
+  const messagesCatalog = store.getCatalog('messages')
   const messages = messagesCatalog.messages || {}
   const knownMessageKeys = new Set(Object.keys(messages))
 
@@ -280,7 +271,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
 
   const freshness = verifyArtifactsFreshness({ checkDts: options?.checkDtsFreshness ?? true })
 
-  log('-> 3. Validating TypeScript definitions freshness...')
+  log('-> 3. Validating TypeScript definitions and generated artifacts freshness...')
   const checkFreshness = options?.checkDtsFreshness ?? true
   if (checkFreshness) {
     const dtsItem = freshness.items.find(i => i.name === 'dist/index.d.ts')
@@ -289,6 +280,22 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     }
     else if (dtsItem?.valid) {
       log('  [PASS] dist/index.d.ts is up to date.')
+    }
+
+    const embeddedItem = freshness.items.find(i => i.name === 'src/catalogs/embedded.generated.ts')
+    if (embeddedItem && !embeddedItem.valid) {
+      errors.push(embeddedItem.error || 'src/catalogs/embedded.generated.ts is out of date. Run `pnpm run build` to synchronize.')
+    }
+    else if (embeddedItem?.valid) {
+      log('  [PASS] src/catalogs/embedded.generated.ts is up to date.')
+    }
+
+    const typesItem = freshness.items.find(i => i.name === 'src/catalogs/types.generated.ts')
+    if (typesItem && !typesItem.valid) {
+      errors.push(typesItem.error || 'src/catalogs/types.generated.ts is out of date. Run `pnpm run build` to synchronize.')
+    }
+    else if (typesItem?.valid) {
+      log('  [PASS] src/catalogs/types.generated.ts is up to date.')
     }
   }
   else {

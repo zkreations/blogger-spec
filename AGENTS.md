@@ -8,7 +8,7 @@ Zero-runtime-dependency specification authority and execution engine for Blogger
 - `catalogs/schemas/`: Draft 2020-12 canonical validation schemas.
 - `fixtures/`: Empirical test suite (`expressions/`, `templates/`, `diagnostics/`).
 - `src/`: Engine and tooling (`ast.ts`, `parser/` [`expr-parser.ts`, `lexer.ts`, `directive-scanner.ts`, `template-validator.ts`], `version.ts`, `quota.ts`, `type-system.ts`, `catalogs/`, `runner.ts`, `tooling/`, `types.ts`).
-- **Generated artifacts**: `dist/`, `fixtures/index.json`, and `src/catalogs/embedded.generated.ts`. Never edit directly.
+- **Generated artifacts**: `dist/`, `fixtures/index.json`, `src/catalogs/embedded.generated.ts`, and `src/catalogs/types.generated.ts`. Never edit directly.
 
 ## Verification Loop
 
