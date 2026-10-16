@@ -6,18 +6,24 @@ import type {
   BloggerDirectiveDefinition,
   BloggerDirectiveName,
   BloggerDirectivesCatalog,
+  BloggerGlobalObjectDefinition,
   BloggerGlobalsCatalog,
   BloggerInclusionDefinition,
   BloggerInclusionsCatalog,
   BloggerLayoutVersionsCatalog,
+  BloggerMessageDefinition,
   BloggerMessagesCatalog,
   BloggerOperatorDefinition,
   BloggerOperatorName,
   BloggerOperatorsCatalog,
+  BloggerScopeDefinition,
   BloggerScopesCatalog,
   BloggerSettingsCatalog,
+  BloggerTypeDefinition,
   BloggerTypesCatalog,
+  BloggerWidgetDefinition,
   BloggerWidgetsCatalog,
+  BloggerWidgetSettingsDefinition,
   BloggerWidgetType,
   DirectiveAttributesValidationResult,
   DirectiveNestingAction,
@@ -43,35 +49,43 @@ export function getSpecCatalog(store?: CatalogStore): SpecCatalog {
   return defaultSpecCatalogInstance
 }
 
-export function getOperatorPrecedence(op: string, store?: CatalogStore): number | undefined {
-  return getSpecCatalog(store).getOperatorPrecedence(op)
+export function getOperatorPrecedence(op: string, catalog: SpecCatalog = getSpecCatalog()): number | undefined {
+  return catalog.getOperatorPrecedence(op)
 }
 
 export function validateVariableAttributes(
   variableType: string,
   presentAttributes: string[],
-  store?: CatalogStore,
+  catalog: SpecCatalog = getSpecCatalog(),
 ): VariableAttributesValidationResult {
-  return getSpecCatalog(store).validateVariableAttributes(variableType, presentAttributes)
+  return catalog.validateVariableAttributes(variableType, presentAttributes)
 }
 
 export function validateDirectiveAttributes(
   tagName: string,
   presentAttributes: string[],
-  store?: CatalogStore,
+  catalog: SpecCatalog = getSpecCatalog(),
 ): DirectiveAttributesValidationResult {
-  return getSpecCatalog(store).validateDirectiveAttributes(tagName, presentAttributes)
+  return catalog.validateDirectiveAttributes(tagName, presentAttributes)
 }
 
-export function getThemeDesignerDescriptions(store?: CatalogStore): readonly string[] {
-  return getSpecCatalog(store).getThemeDesignerDescriptions()
+export function getThemeDesignerDescriptions(catalog: SpecCatalog = getSpecCatalog()): readonly string[] {
+  return catalog.getThemeDesignerDescriptions()
 }
 
-export function getVariableTypeAttributes(type?: string, store?: CatalogStore): any {
-  return getSpecCatalog(store).getVariableTypeAttributes(type)
+export function getVariableTypeAttributes(type?: undefined, catalog?: SpecCatalog): Record<string, { allowed: string[], required?: string[] }> | undefined
+export function getVariableTypeAttributes(type: string, catalog?: SpecCatalog): { allowed: string[], required?: string[] } | undefined
+export function getVariableTypeAttributes(
+  type?: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): { allowed: string[], required?: string[] } | Record<string, { allowed: string[], required?: string[] }> | undefined {
+  return type !== undefined ? catalog.getVariableTypeAttributes(type) : catalog.getVariableTypeAttributes()
 }
 
-export type { DirectiveAttributesValidationResult } from '../types.js'
+export type {
+  DirectiveAttributesValidationResult,
+  VariableAttributesValidationResult,
+} from '../types.js'
 
 export class SpecCatalog {
   private readonly store: CatalogStore
@@ -83,13 +97,13 @@ export class SpecCatalog {
   private readonly grammarGroupMap = new Map<string, string[]>()
   private readonly expandedValidChildrenMap = new Map<string, Set<string>>()
   private readonly expandedValidParentsMap = new Map<string, Set<string>>()
-  private readonly widgetMap = new Map<string, any>()
-  private readonly settingMap = new Map<string, any>()
-  private readonly globalMap = new Map<string, any>()
-  private readonly messageMap = new Map<string, any>()
-  private readonly scopeMap = new Map<string, any>()
+  private readonly widgetMap = new Map<string, BloggerWidgetDefinition>()
+  private readonly settingMap = new Map<string, BloggerWidgetSettingsDefinition>()
+  private readonly globalMap = new Map<string, BloggerGlobalObjectDefinition>()
+  private readonly messageMap = new Map<string, BloggerMessageDefinition>()
+  private readonly scopeMap = new Map<string, BloggerScopeDefinition>()
   private readonly scopeOrder: string[] = []
-  private readonly typeMap = new Map<string, any>()
+  private readonly typeMap = new Map<string, BloggerTypeDefinition>()
   private readonly coercionRules: Record<string, any> = {}
   private readonly inclusionMap = new Map<string, BloggerInclusionDefinition>()
 
@@ -475,6 +489,8 @@ export class SpecCatalog {
     return directivesCatalog.domain_metadata?.layout_versions
   }
 
+  getVariableTypeAttributes(): Record<string, { allowed: string[], required?: string[] }> | undefined
+  getVariableTypeAttributes(type: string): { allowed: string[], required?: string[] } | undefined
   getVariableTypeAttributes(type?: string): { allowed: string[], required?: string[] } | Record<string, { allowed: string[], required?: string[] }> | undefined {
     const varDef = this.getDirective('Variable')
     const typeAttrs = varDef?.type_attributes
@@ -491,7 +507,7 @@ export class SpecCatalog {
     variableType: string,
     presentAttributes: string[],
   ): VariableAttributesValidationResult {
-    const meta = this.getVariableTypeAttributes(variableType) as { allowed: string[], required?: string[] } | undefined
+    const meta = this.getVariableTypeAttributes(variableType)
     if (!meta) {
       return {
         valid: false,
@@ -582,24 +598,24 @@ export class SpecCatalog {
     return this.widgetMap.has(name)
   }
 
-  getWidget(name: string): any {
+  getWidget(name: string): BloggerWidgetDefinition | undefined {
     return this.widgetMap.get(name)
   }
 
-  getAllWidgets(): Record<string, any> {
-    const result: Record<string, any> = {}
+  getAllWidgets(): Record<string, BloggerWidgetDefinition> {
+    const result: Record<string, BloggerWidgetDefinition> = {}
     for (const [k, v] of this.widgetMap.entries()) {
       result[k] = v
     }
     return result
   }
 
-  getWidgetSettings(widgetName: string): any {
+  getWidgetSettings(widgetName: string): BloggerWidgetSettingsDefinition | undefined {
     return this.settingMap.get(widgetName)
   }
 
-  getAllWidgetSettings(): Record<string, any> {
-    const result: Record<string, any> = {}
+  getAllWidgetSettings(): Record<string, BloggerWidgetSettingsDefinition> {
+    const result: Record<string, BloggerWidgetSettingsDefinition> = {}
     for (const [k, v] of this.settingMap.entries()) {
       result[k] = v
     }
@@ -610,12 +626,12 @@ export class SpecCatalog {
     return this.globalMap.has(name)
   }
 
-  getGlobal(name: string): any {
+  getGlobal(name: string): BloggerGlobalObjectDefinition | undefined {
     return this.globalMap.get(name)
   }
 
-  getAllGlobals(): Record<string, any> {
-    const result: Record<string, any> = {}
+  getAllGlobals(): Record<string, BloggerGlobalObjectDefinition> {
+    const result: Record<string, BloggerGlobalObjectDefinition> = {}
     for (const [k, v] of this.globalMap.entries()) {
       result[k] = v
     }
@@ -626,12 +642,12 @@ export class SpecCatalog {
     return this.messageMap.has(key)
   }
 
-  getMessage(key: string): any {
+  getMessage(key: string): BloggerMessageDefinition | undefined {
     return this.messageMap.get(key)
   }
 
-  getAllMessages(): Record<string, any> {
-    const result: Record<string, any> = {}
+  getAllMessages(): Record<string, BloggerMessageDefinition> {
+    const result: Record<string, BloggerMessageDefinition> = {}
     for (const [k, v] of this.messageMap.entries()) {
       result[k] = v
     }
@@ -642,12 +658,12 @@ export class SpecCatalog {
     return this.scopeMap.has(name)
   }
 
-  getScope(name: string): any {
+  getScope(name: string): BloggerScopeDefinition | undefined {
     return this.scopeMap.get(name)
   }
 
-  getAllScopes(): Record<string, any> {
-    const result: Record<string, any> = {}
+  getAllScopes(): Record<string, BloggerScopeDefinition> {
+    const result: Record<string, BloggerScopeDefinition> = {}
     for (const [k, v] of this.scopeMap.entries()) {
       result[k] = v
     }
@@ -662,12 +678,12 @@ export class SpecCatalog {
     return this.typeMap.has(name)
   }
 
-  getType(name: string): any {
+  getType(name: string): BloggerTypeDefinition | undefined {
     return this.typeMap.get(name)
   }
 
-  getAllTypes(): Record<string, any> {
-    const result: Record<string, any> = {}
+  getAllTypes(): Record<string, BloggerTypeDefinition> {
+    const result: Record<string, BloggerTypeDefinition> = {}
     for (const [k, v] of this.typeMap.entries()) {
       result[k] = v
     }
@@ -706,166 +722,169 @@ export class SpecCatalog {
   }
 }
 
-export function isDirective(tagName: string, store?: CatalogStore): tagName is BloggerDirectiveName {
-  return getSpecCatalog(store).isDirective(tagName)
+export function isDirective(tagName: string, catalog: SpecCatalog = getSpecCatalog()): tagName is BloggerDirectiveName {
+  return catalog.isDirective(tagName)
 }
 
-export function getDirective(tagName: string, store?: CatalogStore): BloggerDirectiveDefinition | undefined {
-  return getSpecCatalog(store).getDirective(tagName)
+export function getDirective(tagName: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDirectiveDefinition | undefined {
+  return catalog.getDirective(tagName)
 }
 
-export function getAllDirectives(store?: CatalogStore): Record<string, BloggerDirectiveDefinition> {
-  return getSpecCatalog(store).getAllDirectives()
+export function getAllDirectives(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerDirectiveDefinition> {
+  return catalog.getAllDirectives()
 }
 
-export function isSelfClosingDirective(tagName: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).isSelfClosingDirective(tagName)
+export function isSelfClosingDirective(tagName: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isSelfClosingDirective(tagName)
 }
 
-export function canNest(parentTagName: string, childTagName: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).canNest(parentTagName, childTagName)
+export function canNest(parentTagName: string, childTagName: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.canNest(parentTagName, childTagName)
 }
 
-export function validateNesting(parentTagName: string, childTagName: string, store?: CatalogStore): DirectiveNestingViolation | null {
-  return getSpecCatalog(store).validateNesting(parentTagName, childTagName)
+export function validateNesting(parentTagName: string, childTagName: string, catalog: SpecCatalog = getSpecCatalog()): DirectiveNestingViolation | null {
+  return catalog.validateNesting(parentTagName, childTagName)
 }
 
-export function getDirectiveAttributes(tagName: string, store?: CatalogStore): Record<string, BloggerDirectiveAttribute> | undefined {
-  return getSpecCatalog(store).getDirectiveAttributes(tagName)
+export function getDirectiveAttributes(tagName: string, catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerDirectiveAttribute> | undefined {
+  return catalog.getDirectiveAttributes(tagName)
 }
 
-export function getLayoutVersions(store?: CatalogStore): BloggerLayoutVersionsCatalog | undefined {
-  return getSpecCatalog(store).getLayoutVersions()
+export function getLayoutVersions(catalog: SpecCatalog = getSpecCatalog()): BloggerLayoutVersionsCatalog | undefined {
+  return catalog.getLayoutVersions()
 }
 
-export function isOperator(op: string, store?: CatalogStore): op is BloggerOperatorName {
-  return getSpecCatalog(store).isOperator(op)
+export function isOperator(op: string, catalog: SpecCatalog = getSpecCatalog()): op is BloggerOperatorName {
+  return catalog.isOperator(op)
 }
 
-export function isGrammarOperator(op: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).isGrammarOperator(op)
+export function isGrammarOperator(op: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isGrammarOperator(op)
 }
 
-export function isDocAlias(alias: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).isDocAlias(alias)
+export function isDocAlias(alias: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isDocAlias(alias)
 }
 
-export function getOperator(op: string, store?: CatalogStore): BloggerOperatorDefinition | undefined {
-  return getSpecCatalog(store).getOperator(op)
+export function getOperator(op: string, catalog: SpecCatalog = getSpecCatalog()): BloggerOperatorDefinition | undefined {
+  return catalog.getOperator(op)
 }
 
-export function getAllOperators(store?: CatalogStore): Record<string, BloggerOperatorDefinition> {
-  return getSpecCatalog(store).getAllOperators()
+export function getAllOperators(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerOperatorDefinition> {
+  return catalog.getAllOperators()
 }
 
-export function getGrammarOperators(store?: CatalogStore): Record<string, BloggerOperatorDefinition> {
-  return getSpecCatalog(store).getGrammarOperators()
+export function getGrammarOperators(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerOperatorDefinition> {
+  return catalog.getGrammarOperators()
 }
 
-export function isDiagnosticCode(code: string, store?: CatalogStore): code is BloggerDiagnosticCode {
-  return getSpecCatalog(store).isDiagnosticCode(code)
+export function isDiagnosticCode(code: string, catalog: SpecCatalog = getSpecCatalog()): code is BloggerDiagnosticCode {
+  return catalog.isDiagnosticCode(code)
 }
 
-export function getDiagnosticRule(code: string, store?: CatalogStore): BloggerDiagnosticRule | undefined {
-  return getSpecCatalog(store).getDiagnosticRule(code)
+export function getDiagnosticRule(code: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticRule | undefined {
+  return catalog.getDiagnosticRule(code)
 }
 
-export function getDiagnostic(code: string, store?: CatalogStore): BloggerDiagnosticRule | undefined {
-  return getSpecCatalog(store).getDiagnostic(code)
+export function getDiagnostic(code: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticRule | undefined {
+  return catalog.getDiagnostic(code)
 }
 
-export function getAllDiagnostics(store?: CatalogStore): Record<string, BloggerDiagnosticRule> {
-  return getSpecCatalog(store).getAllDiagnostics()
+export function getAllDiagnostics(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerDiagnosticRule> {
+  return catalog.getAllDiagnostics()
 }
 
-export function isWidget(name: string, store?: CatalogStore): name is BloggerWidgetType {
-  return getSpecCatalog(store).isWidget(name)
+export function isWidget(name: string, catalog: SpecCatalog = getSpecCatalog()): name is BloggerWidgetType {
+  return catalog.isWidget(name)
 }
 
-export function getWidget(name: string, store?: CatalogStore): any {
-  return getSpecCatalog(store).getWidget(name)
+export function getWidget(name: string, catalog: SpecCatalog = getSpecCatalog()): BloggerWidgetDefinition | undefined {
+  return catalog.getWidget(name)
 }
 
-export function getAllWidgets(store?: CatalogStore): Record<string, any> {
-  return getSpecCatalog(store).getAllWidgets()
+export function getAllWidgets(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerWidgetDefinition> {
+  return catalog.getAllWidgets()
 }
 
-export function getWidgetSettings(widgetName: string, store?: CatalogStore): any {
-  return getSpecCatalog(store).getWidgetSettings(widgetName)
+export function getWidgetSettings(widgetName: string, catalog: SpecCatalog = getSpecCatalog()): BloggerWidgetSettingsDefinition | undefined {
+  return catalog.getWidgetSettings(widgetName)
 }
 
-export function getAllWidgetSettings(store?: CatalogStore): Record<string, any> {
-  return getSpecCatalog(store).getAllWidgetSettings()
+export function getAllWidgetSettings(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerWidgetSettingsDefinition> {
+  return catalog.getAllWidgetSettings()
 }
 
-export function isGlobal(name: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).isGlobal(name)
+export function isGlobal(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isGlobal(name)
 }
 
-export function getGlobal(name: string, store?: CatalogStore): any {
-  return getSpecCatalog(store).getGlobal(name)
+export function getGlobal(name: string, catalog: SpecCatalog = getSpecCatalog()): BloggerGlobalObjectDefinition | undefined {
+  return catalog.getGlobal(name)
 }
 
-export function getAllGlobals(store?: CatalogStore): Record<string, any> {
-  return getSpecCatalog(store).getAllGlobals()
+export function getAllGlobals(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerGlobalObjectDefinition> {
+  return catalog.getAllGlobals()
 }
 
-export function isMessage(key: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).isMessage(key)
+export function isMessage(key: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isMessage(key)
 }
 
-export function getMessage(key: string, store?: CatalogStore): any {
-  return getSpecCatalog(store).getMessage(key)
+export function getMessage(key: string, catalog: SpecCatalog = getSpecCatalog()): BloggerMessageDefinition | undefined {
+  return catalog.getMessage(key)
 }
 
-export function getAllMessages(store?: CatalogStore): Record<string, any> {
-  return getSpecCatalog(store).getAllMessages()
+export function getAllMessages(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerMessageDefinition> {
+  return catalog.getAllMessages()
 }
 
-export function isScope(name: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).isScope(name)
+export function isScope(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isScope(name)
 }
 
-export function getScope(name: string, store?: CatalogStore): any {
-  return getSpecCatalog(store).getScope(name)
+export function getScope(name: string, catalog: SpecCatalog = getSpecCatalog()): BloggerScopeDefinition | undefined {
+  return catalog.getScope(name)
 }
 
-export function getAllScopes(store?: CatalogStore): Record<string, any> {
-  return getSpecCatalog(store).getAllScopes()
+export function getAllScopes(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerScopeDefinition> {
+  return catalog.getAllScopes()
 }
 
-export function getScopePrecedence(store?: CatalogStore): string[] {
-  return getSpecCatalog(store).getScopePrecedence()
+export function getScopePrecedence(catalog: SpecCatalog = getSpecCatalog()): string[] {
+  return catalog.getScopePrecedence()
 }
 
-export function isType(name: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).isType(name)
+export function isType(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isType(name)
 }
 
-export function getType(name: string, store?: CatalogStore): any {
-  return getSpecCatalog(store).getType(name)
+export function getType(name: string, catalog: SpecCatalog = getSpecCatalog()): BloggerTypeDefinition | undefined {
+  return catalog.getType(name)
 }
 
-export function getAllTypes(store?: CatalogStore): Record<string, any> {
-  return getSpecCatalog(store).getAllTypes()
+export function getAllTypes(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerTypeDefinition> {
+  return catalog.getAllTypes()
 }
 
-export function getCoercionRules(store?: CatalogStore): Record<string, any> {
-  return getSpecCatalog(store).getCoercionRules()
+export function getCoercionRules(catalog: SpecCatalog = getSpecCatalog()): Record<string, any> {
+  return catalog.getCoercionRules()
 }
 
-export function isServerInclusion(name: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).isServerInclusion(name)
+export function isServerInclusion(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isServerInclusion(name)
 }
 
-export function getServerInclusion(name: string, store?: CatalogStore): BloggerInclusionDefinition | undefined {
-  return getSpecCatalog(store).getInclusion(name)
+export function getInclusion(name: string, catalog: SpecCatalog = getSpecCatalog()): BloggerInclusionDefinition | undefined {
+  return catalog.getInclusion(name)
 }
 
-export function getAllServerInclusions(store?: CatalogStore): Record<string, BloggerInclusionDefinition> {
-  return getSpecCatalog(store).getAllInclusions()
+export function getAllInclusions(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerInclusionDefinition> {
+  return catalog.getAllInclusions()
 }
 
-export function isUniversalInclusion(name: string, store?: CatalogStore): boolean {
-  return getSpecCatalog(store).isUniversalInclusion(name)
+export const getServerInclusion = getInclusion
+export const getAllServerInclusions = getAllInclusions
+
+export function isUniversalInclusion(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isUniversalInclusion(name)
 }

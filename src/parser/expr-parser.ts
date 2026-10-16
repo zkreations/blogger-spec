@@ -16,8 +16,9 @@ import type {
   BloggerSourcePosition,
   BloggerUnaryExpressionNode,
 } from '../ast.js'
+import type { SpecCatalog } from '../catalogs/index.js'
 import type { Token, TokenPosition, TokenType } from './lexer.js'
-import { getOperatorPrecedence } from '../catalogs/index.js'
+import { getSpecCatalog } from '../catalogs/index.js'
 import { tokenize } from './lexer.js'
 
 interface InfixOpInfo {
@@ -75,11 +76,13 @@ function makeLoc(start: TokenPosition, end: TokenPosition): BloggerSourceLocatio
 export class ExpressionParser {
   private readonly tokens: Token[]
   private readonly source: string
+  private readonly catalog: SpecCatalog
   private current = 0
 
-  constructor(source: string) {
+  constructor(source: string, catalog: SpecCatalog = getSpecCatalog()) {
     this.source = source
     this.tokens = tokenize(source)
+    this.catalog = catalog
   }
 
   public parse(): BloggerExpressionNode {
@@ -666,7 +669,7 @@ export class ExpressionParser {
         return { name: 'or', bindingPower: LEVEL_TO_BINDING_POWER[8]!, catalogLevel: 8, isLogical: true }
       }
 
-      const precLevel = getOperatorPrecedence(token.value) ?? getOperatorPrecedence(lower)
+      const precLevel = this.catalog.getOperatorPrecedence(token.value) ?? this.catalog.getOperatorPrecedence(lower)
       if (precLevel !== undefined && precLevel in LEVEL_TO_BINDING_POWER) {
         return {
           name: token.value,
@@ -710,7 +713,10 @@ export class ExpressionParser {
   }
 }
 
-export function parseExpression(source: string): BloggerExpressionNode {
-  const parser = new ExpressionParser(source)
+export function parseExpression(
+  source: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): BloggerExpressionNode {
+  const parser = new ExpressionParser(source, catalog)
   return parser.parse()
 }

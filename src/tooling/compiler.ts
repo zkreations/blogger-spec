@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import type { BloggerFixturesManifest } from '../types.js'
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import ts from 'typescript'
 import {
@@ -478,7 +478,15 @@ export function compileTypescript(): void {
   }
 }
 
+export function cleanDist(): void {
+  const paths = getWorkspacePaths()
+  if (existsSync(paths.dist)) {
+    rmSync(paths.dist, { recursive: true, force: true })
+  }
+}
+
 export function buildAll(): void {
+  cleanDist()
   const paths = getWorkspacePaths()
   buildEmbeddedCatalogs()
   buildFixturesManifest()

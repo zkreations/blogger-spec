@@ -54,9 +54,9 @@ describe('helpers & canonical structure validation suite', () => {
     it('returns full attribute definition maps when no type is provided', () => {
       const allTypeAttrs = getVariableTypeAttributes()
       expect(allTypeAttrs).toBeDefined()
-      expect(allTypeAttrs.color).toBeDefined()
-      expect(allTypeAttrs.font).toBeDefined()
-      expect(allTypeAttrs.length).toBeDefined()
+      expect(allTypeAttrs?.color).toBeDefined()
+      expect(allTypeAttrs?.font).toBeDefined()
+      expect(allTypeAttrs?.length).toBeDefined()
     })
   })
 

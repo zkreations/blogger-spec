@@ -28,6 +28,20 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
     expect(RootExports.ExpressionParser).toBe(ExpressionParser)
   })
 
+  it('supports custom SpecCatalog injection in ExpressionParser and parseExpression', () => {
+    const customCatalog = RootExports.getSpecCatalog()
+    const node = parseExpression('10 + 5', customCatalog) as BloggerBinaryExpressionNode
+    expect(node.type).toBe('BinaryExpression')
+    expect(node.operator).toBe('+')
+    expect(node.precedence).toBe(3)
+
+    const parser = new ExpressionParser('data:posts take 5', customCatalog)
+    const parsed = parser.parse() as BloggerBinaryExpressionNode
+    expect(parsed.type).toBe('BinaryExpression')
+    expect(parsed.operator).toBe('take')
+    expect(parsed.precedence).toBe(4)
+  })
+
   describe('literals & primitives', () => {
     it('parses numeric integer and decimal literals', () => {
       const intNode = parseExpression('42') as BloggerLiteralNode

@@ -6,6 +6,7 @@ import {
   getAllDiagnostics,
   getAllDirectives,
   getAllGlobals,
+  getAllInclusions,
   getAllMessages,
   getAllOperators,
   getAllSchemas,
@@ -23,6 +24,7 @@ import {
   getGlobal,
   getGlobals,
   getGrammarOperators,
+  getInclusion,
   getInclusions,
   getMessage,
   getMessages,
@@ -288,15 +290,15 @@ describe('catalogs and store formal verification suite', () => {
 
         const blogWidget = getWidget('Blog')
         expect(blogWidget).toBeDefined()
-        expect(blogWidget.description).toBeDefined()
-        expect(blogWidget.canonical).toBeDefined()
+        expect(blogWidget?.description).toBeDefined()
+        expect(blogWidget?.canonical).toBeDefined()
 
         const allWidgets = getAllWidgets()
         expect(Object.keys(allWidgets).length).toBe(26)
 
         const followersSettings = getWidgetSettings('Followers')
         expect(followersSettings).toBeDefined()
-        expect(followersSettings.canonical).toBeDefined()
+        expect(followersSettings?.canonical).toBeDefined()
 
         const allSettings = getAllWidgetSettings()
         expect(Object.keys(allSettings).length).toBe(26)
@@ -328,7 +330,7 @@ describe('catalogs and store formal verification suite', () => {
 
         const archiveMsg = getMessage('archive')
         expect(archiveMsg).toBeDefined()
-        expect(archiveMsg.type).toBe('message')
+        expect(archiveMsg?.type).toBe('message')
 
         const allMessages = getAllMessages()
         expect(Object.keys(allMessages).length).toBeGreaterThanOrEqual(50)
@@ -364,7 +366,7 @@ describe('catalogs and store formal verification suite', () => {
 
         const imgType = getType('image')
         expect(imgType).toBeDefined()
-        expect(imgType.parent_type).toBe('string')
+        expect(imgType?.parent_type).toBe('string')
 
         const allTypes = getAllTypes()
         expect(allTypes.string).toBeDefined()
@@ -373,6 +375,31 @@ describe('catalogs and store formal verification suite', () => {
         const coercion = getSpecCatalog().getCoercionRules()
         expect(coercion.string_concatenation).toBeDefined()
         expect(coercion.arithmetic_coercion).toBeDefined()
+      })
+    })
+
+    describe('inclusions domain & DI consistency', () => {
+      it('queries canonical inclusions with typed getters', () => {
+        const headContent = getInclusion('all-head-content')
+        expect(headContent).toBeDefined()
+        expect(headContent?.category).toBe('universal')
+
+        const allInc = getAllInclusions()
+        expect(Object.keys(allInc).length).toBeGreaterThanOrEqual(10)
+        expect(allInc['all-head-content']).toBeDefined()
+      })
+
+      it('respects injected custom SpecCatalog instance in query functions', () => {
+        const customCatalog = getSpecCatalog()
+        expect(getWidget('Blog', customCatalog)?.canonical).toBeDefined()
+        expect(getGlobal('blog', customCatalog)?.canonical).toBeDefined()
+        expect(getType('image', customCatalog)?.parent_type).toBe('string')
+        expect(getDirective('b:if', customCatalog)?.category).toBe('Logic')
+        expect(getOperator('+', customCatalog)?.precedence_level).toBe(3)
+        expect(getScope('loop', customCatalog)?.name).toBe('Loop Block Scope')
+        expect(getMessage('archive', customCatalog)?.type).toBe('message')
+        expect(getInclusion('all-head-content', customCatalog)?.category).toBe('universal')
+        expect(getWidgetSettings('Followers', customCatalog)?.canonical).toBeDefined()
       })
     })
   })
