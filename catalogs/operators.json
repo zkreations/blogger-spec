@@ -2,324 +2,327 @@
   "$schema": "./schemas/operators.schema.json",
   "title": "Blogger Operators & Expressions Master Catalog",
   "description": "Canonical machine-readable catalog of Blogger expression operators, dual-syntax execution grammar, 11-level precedence hierarchy, operand typing, and compiler quotas.",
-  "precedence_hierarchy": [
-    {
-      "level": 1,
-      "category": "Grouping",
-      "associativity": "inner-to-outer",
-      "operators": [
-        "( ... )"
-      ]
-    },
-    {
-      "level": 2,
-      "category": "Null Coalescence / Primary Fallback",
-      "associativity": "right-to-left",
-      "operators": [
-        "?:"
-      ]
-    },
-    {
-      "level": 3,
-      "category": "Arithmetic (Multiplicative)",
-      "associativity": "left-to-right",
-      "operators": [
-        "*",
-        "/",
-        "%"
-      ]
-    },
-    {
-      "level": 4,
-      "category": "Arithmetic (Additive), URL, Date, Image & Snippet Transforms",
-      "associativity": "left-to-right",
-      "operators": [
-        "+",
-        "-",
-        "path",
-        "params",
-        "appendParams",
-        "fragment",
-        "format",
-        "resizeImage",
-        "sourceSet",
-        "snippet"
-      ]
-    },
-    {
-      "level": 5,
-      "category": "Relational, Comparisons & Collection Slices",
-      "associativity": "left-to-right",
-      "operators": [
-        "==",
-        "!=",
-        "<",
-        ">",
-        "<=",
-        ">=",
-        "eq",
-        "neq",
-        "lt",
-        "gt",
-        "lte",
-        "gte",
-        "take",
-        "skip",
-        "limit",
-        "offset",
-        "to"
-      ]
-    },
-    {
-      "level": 6,
-      "category": "Membership & Content",
-      "associativity": "left-to-right",
-      "operators": [
-        "in",
-        "contains"
-      ]
-    },
-    {
-      "level": 7,
-      "category": "Logical NOT",
-      "associativity": "right-to-left",
-      "operators": [
-        "!",
-        "not"
-      ]
-    },
-    {
-      "level": 8,
-      "category": "Logical AND",
-      "associativity": "left-to-right",
-      "operators": [
-        "&&",
-        "and"
-      ]
-    },
-    {
-      "level": 9,
-      "category": "Logical OR",
-      "associativity": "left-to-right",
-      "operators": [
-        "||",
-        "or"
-      ]
-    },
-    {
-      "level": 10,
-      "category": "Ternary / Conditional",
-      "associativity": "right-to-left",
-      "operators": [
-        "? :"
-      ]
-    },
-    {
-      "level": 11,
-      "category": "Lambda / Collection Pipeline",
-      "associativity": "left-to-right",
-      "operators": [
-        "any",
-        "all",
-        "none",
-        "count",
-        "map",
-        "filter",
-        "first"
-      ]
-    }
-  ],
-  "evaluation_contexts": {
-    "dynamic_attributes": [
-      "cond",
-      "expr",
-      "value",
-      "values",
-      "expr:*"
+  "version": "1.0.0",
+  "domain_metadata": {
+    "precedence_hierarchy": [
+      {
+        "level": 1,
+        "category": "Grouping",
+        "associativity": "inner-to-outer",
+        "operators": [
+          "( ... )"
+        ]
+      },
+      {
+        "level": 2,
+        "category": "Null Coalescence / Primary Fallback",
+        "associativity": "right-to-left",
+        "operators": [
+          "?:"
+        ]
+      },
+      {
+        "level": 3,
+        "category": "Arithmetic (Multiplicative)",
+        "associativity": "left-to-right",
+        "operators": [
+          "*",
+          "/",
+          "%"
+        ]
+      },
+      {
+        "level": 4,
+        "category": "Arithmetic (Additive), URL, Date, Image & Snippet Transforms",
+        "associativity": "left-to-right",
+        "operators": [
+          "+",
+          "-",
+          "path",
+          "params",
+          "appendParams",
+          "fragment",
+          "format",
+          "resizeImage",
+          "sourceSet",
+          "snippet"
+        ]
+      },
+      {
+        "level": 5,
+        "category": "Relational, Comparisons & Collection Slices",
+        "associativity": "left-to-right",
+        "operators": [
+          "==",
+          "!=",
+          "<",
+          ">",
+          "<=",
+          ">=",
+          "eq",
+          "neq",
+          "lt",
+          "gt",
+          "lte",
+          "gte",
+          "take",
+          "skip",
+          "limit",
+          "offset",
+          "to"
+        ]
+      },
+      {
+        "level": 6,
+        "category": "Membership & Content",
+        "associativity": "left-to-right",
+        "operators": [
+          "in",
+          "contains"
+        ]
+      },
+      {
+        "level": 7,
+        "category": "Logical NOT",
+        "associativity": "right-to-left",
+        "operators": [
+          "!",
+          "not"
+        ]
+      },
+      {
+        "level": 8,
+        "category": "Logical AND",
+        "associativity": "left-to-right",
+        "operators": [
+          "&&",
+          "and"
+        ]
+      },
+      {
+        "level": 9,
+        "category": "Logical OR",
+        "associativity": "left-to-right",
+        "operators": [
+          "||",
+          "or"
+        ]
+      },
+      {
+        "level": 10,
+        "category": "Ternary / Conditional",
+        "associativity": "right-to-left",
+        "operators": [
+          "? :"
+        ]
+      },
+      {
+        "level": 11,
+        "category": "Lambda / Collection Pipeline",
+        "associativity": "left-to-right",
+        "operators": [
+          "any",
+          "all",
+          "none",
+          "count",
+          "map",
+          "filter",
+          "first"
+        ]
+      }
     ],
-    "inert_contexts": [
-      "static attributes",
-      "CDATA"
-    ],
-    "compiler_quotas": {
-      "max_expression_tokens": 40,
-      "warning_expression_tokens": 36,
-      "token_cost_rules": "1 token per operator (2 for ternary ? :), 1 per literal/operand (including unary negative numbers), 1 per data path (including static and dynamic bracket indexing), 1 per array/object container, 1 per grouping parentheses pair ( ... ), 0 for argument parentheses in function calls/lambdas, and 0 for object property keys and delimiters (, and :)"
-    },
-    "default_allowed_contexts": [
-      "cond",
-      "expr",
-      "value",
-      "values",
-      "expr:*"
-    ]
-  },
-  "families": {
-    "concatenation": {
-      "name": "Concatenation",
-      "description": "String concatenation and scalar text interpolation.",
-      "precedence_tiers": [
-        4
+    "evaluation_contexts": {
+      "dynamic_attributes": [
+        "cond",
+        "expr",
+        "value",
+        "values",
+        "expr:*"
       ],
-      "operators": [
-        "+"
+      "inert_contexts": [
+        "static attributes",
+        "CDATA"
+      ],
+      "compiler_quotas": {
+        "max_expression_tokens": 40,
+        "warning_expression_tokens": 36,
+        "token_cost_rules": "1 token per operator (2 for ternary ? :), 1 per literal/operand (including unary negative numbers), 1 per data path (including static and dynamic bracket indexing), 1 per array/object container, 1 per grouping parentheses pair ( ... ), 0 for argument parentheses in function calls/lambdas, and 0 for object property keys and delimiters (, and :)"
+      },
+      "default_allowed_contexts": [
+        "cond",
+        "expr",
+        "value",
+        "values",
+        "expr:*"
       ]
     },
-    "arithmetic": {
-      "name": "Arithmetic",
-      "description": "Numeric addition, subtraction, multiplication, division, and modulo.",
-      "precedence_tiers": [
-        3,
-        4
-      ],
-      "operators": [
-        "+",
-        "-",
-        "*",
-        "/",
-        "%"
-      ]
-    },
-    "comparison": {
-      "name": "Comparison",
-      "description": "Relational comparisons and value equality checks.",
-      "precedence_tiers": [
-        5
-      ],
-      "operators": [
-        "==",
-        "!=",
-        "<",
-        ">",
-        "<=",
-        ">="
-      ]
-    },
-    "logical": {
-      "name": "Logical",
-      "description": "Logical conjunction, disjunction, and boolean inversion.",
-      "precedence_tiers": [
-        7,
-        8,
-        9
-      ],
-      "operators": [
-        "and",
-        "or",
-        "not"
-      ]
-    },
-    "membership": {
-      "name": "Membership",
-      "description": "Tests whether an item exists within a collection or string.",
-      "precedence_tiers": [
-        6
-      ],
-      "operators": [
-        "in"
-      ]
-    },
-    "content": {
-      "name": "Content",
-      "description": "Substring search and item containment checks.",
-      "precedence_tiers": [
-        6
-      ],
-      "operators": [
-        "contains"
-      ]
-    },
-    "collection": {
-      "name": "Collection",
-      "description": "Array slicing, pagination limits, and numeric sequence generation.",
-      "precedence_tiers": [
-        5
-      ],
-      "operators": [
-        "take",
-        "skip",
-        "to"
-      ]
-    },
-    "lambda": {
-      "name": "Lambda / Collection Pipeline",
-      "description": "Higher-order collection predicates, projection mapping, and aggregation reductions.",
-      "precedence_tiers": [
-        11
-      ],
-      "operators": [
-        "any",
-        "all",
-        "none",
-        "count",
-        "map",
-        "filter",
-        "first"
-      ]
-    },
-    "ternary": {
-      "name": "Ternary / Conditional",
-      "description": "Inline conditional branching expression (cond ? val1 : val2).",
-      "precedence_tiers": [
-        10
-      ],
-      "operators": [
-        "? :"
-      ]
-    },
-    "elvis": {
-      "name": "Coalescence / Fallback",
-      "description": "Primary nullish fallback value selector for null or undeclared operands (?:).",
-      "precedence_tiers": [
-        2
-      ],
-      "operators": [
-        "?:"
-      ]
-    },
-    "url": {
-      "name": "Transform / URL",
-      "description": "URL path segment joining, query parameter appending, and hash fragmenting.",
-      "precedence_tiers": [
-        4
-      ],
-      "operators": [
-        "path",
-        "params",
-        "appendParams",
-        "fragment"
-      ]
-    },
-    "date": {
-      "name": "Transform / Date",
-      "description": "Localized date formatting using ICU pattern tokens.",
-      "precedence_tiers": [
-        4
-      ],
-      "operators": [
-        "format"
-      ]
-    },
-    "image": {
-      "name": "Transform / Image",
-      "description": "Google CDN image thumbnail resizing and responsive srcset generation.",
-      "precedence_tiers": [
-        4
-      ],
-      "operators": [
-        "resizeImage",
-        "sourceSet"
-      ]
-    },
-    "snippet": {
-      "name": "Transform / Truncation",
-      "description": "Text truncation, snippet extraction, and HTML tag stripping.",
-      "precedence_tiers": [
-        4
-      ],
-      "operators": [
-        "snippet"
-      ]
+    "families": {
+      "concatenation": {
+        "name": "Concatenation",
+        "description": "String concatenation and scalar text interpolation.",
+        "precedence_tiers": [
+          4
+        ],
+        "operators": [
+          "+"
+        ]
+      },
+      "arithmetic": {
+        "name": "Arithmetic",
+        "description": "Numeric addition, subtraction, multiplication, division, and modulo.",
+        "precedence_tiers": [
+          3,
+          4
+        ],
+        "operators": [
+          "+",
+          "-",
+          "*",
+          "/",
+          "%"
+        ]
+      },
+      "comparison": {
+        "name": "Comparison",
+        "description": "Relational comparisons and value equality checks.",
+        "precedence_tiers": [
+          5
+        ],
+        "operators": [
+          "==",
+          "!=",
+          "<",
+          ">",
+          "<=",
+          ">="
+        ]
+      },
+      "logical": {
+        "name": "Logical",
+        "description": "Logical conjunction, disjunction, and boolean inversion.",
+        "precedence_tiers": [
+          7,
+          8,
+          9
+        ],
+        "operators": [
+          "and",
+          "or",
+          "not"
+        ]
+      },
+      "membership": {
+        "name": "Membership",
+        "description": "Tests whether an item exists within a collection or string.",
+        "precedence_tiers": [
+          6
+        ],
+        "operators": [
+          "in"
+        ]
+      },
+      "content": {
+        "name": "Content",
+        "description": "Substring search and item containment checks.",
+        "precedence_tiers": [
+          6
+        ],
+        "operators": [
+          "contains"
+        ]
+      },
+      "collection": {
+        "name": "Collection",
+        "description": "Array slicing, pagination limits, and numeric sequence generation.",
+        "precedence_tiers": [
+          5
+        ],
+        "operators": [
+          "take",
+          "skip",
+          "to"
+        ]
+      },
+      "lambda": {
+        "name": "Lambda / Collection Pipeline",
+        "description": "Higher-order collection predicates, projection mapping, and aggregation reductions.",
+        "precedence_tiers": [
+          11
+        ],
+        "operators": [
+          "any",
+          "all",
+          "none",
+          "count",
+          "map",
+          "filter",
+          "first"
+        ]
+      },
+      "ternary": {
+        "name": "Ternary / Conditional",
+        "description": "Inline conditional branching expression (cond ? val1 : val2).",
+        "precedence_tiers": [
+          10
+        ],
+        "operators": [
+          "? :"
+        ]
+      },
+      "elvis": {
+        "name": "Coalescence / Fallback",
+        "description": "Primary nullish fallback value selector for null or undeclared operands (?:).",
+        "precedence_tiers": [
+          2
+        ],
+        "operators": [
+          "?:"
+        ]
+      },
+      "url": {
+        "name": "Transform / URL",
+        "description": "URL path segment joining, query parameter appending, and hash fragmenting.",
+        "precedence_tiers": [
+          4
+        ],
+        "operators": [
+          "path",
+          "params",
+          "appendParams",
+          "fragment"
+        ]
+      },
+      "date": {
+        "name": "Transform / Date",
+        "description": "Localized date formatting using ICU pattern tokens.",
+        "precedence_tiers": [
+          4
+        ],
+        "operators": [
+          "format"
+        ]
+      },
+      "image": {
+        "name": "Transform / Image",
+        "description": "Google CDN image thumbnail resizing and responsive srcset generation.",
+        "precedence_tiers": [
+          4
+        ],
+        "operators": [
+          "resizeImage",
+          "sourceSet"
+        ]
+      },
+      "snippet": {
+        "name": "Transform / Truncation",
+        "description": "Text truncation, snippet extraction, and HTML tag stripping.",
+        "precedence_tiers": [
+          4
+        ],
+        "operators": [
+          "snippet"
+        ]
+      }
     }
   },
   "operators": {
@@ -2372,6 +2375,5 @@
       "grammar_aliases": [],
       "doc_aliases": []
     }
-  },
-  "version": "1.0.0"
+  }
 }

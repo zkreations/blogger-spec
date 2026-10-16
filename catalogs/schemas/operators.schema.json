@@ -9,9 +9,7 @@
     "title",
     "description",
     "version",
-    "precedence_hierarchy",
-    "evaluation_contexts",
-    "families",
+    "domain_metadata",
     "operators"
   ],
   "properties": {
@@ -24,76 +22,90 @@
     "description": {
       "type": "string"
     },
-    "precedence_hierarchy": {
-      "type": "array",
-      "description": "Formal 10-level operator precedence hierarchy and associativity rules.",
-      "items": {
-        "$ref": "#/$defs/precedenceLevel"
-      }
+    "version": {
+      "type": "string"
     },
-    "evaluation_contexts": {
+    "domain_metadata": {
       "type": "object",
       "required": [
-        "dynamic_attributes",
-        "inert_contexts",
-        "compiler_quotas",
-        "default_allowed_contexts"
+        "precedence_hierarchy",
+        "evaluation_contexts",
+        "families"
       ],
       "properties": {
-        "dynamic_attributes": {
+        "precedence_hierarchy": {
           "type": "array",
+          "description": "Formal 11-level operator precedence hierarchy and associativity rules.",
           "items": {
-            "type": "string"
+            "$ref": "#/$defs/precedenceLevel"
           }
         },
-        "inert_contexts": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
-        "default_allowed_contexts": {
-          "type": "array",
-          "items": {
-            "type": "string",
-            "enum": [
-              "cond",
-              "expr",
-              "value",
-              "values",
-              "expr:*"
-            ]
-          }
-        },
-        "compiler_quotas": {
+        "evaluation_contexts": {
           "type": "object",
           "required": [
-            "max_expression_tokens",
-            "warning_expression_tokens",
-            "token_cost_rules"
+            "dynamic_attributes",
+            "inert_contexts",
+            "compiler_quotas",
+            "default_allowed_contexts"
           ],
           "properties": {
-            "max_expression_tokens": {
-              "type": "integer"
+            "dynamic_attributes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
-            "warning_expression_tokens": {
-              "type": "integer"
+            "inert_contexts": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
             },
-            "token_cost_rules": {
-              "type": "string"
+            "default_allowed_contexts": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "cond",
+                  "expr",
+                  "value",
+                  "values",
+                  "expr:*"
+                ]
+              }
+            },
+            "compiler_quotas": {
+              "type": "object",
+              "required": [
+                "max_expression_tokens",
+                "warning_expression_tokens",
+                "token_cost_rules"
+              ],
+              "properties": {
+                "max_expression_tokens": {
+                  "type": "integer"
+                },
+                "warning_expression_tokens": {
+                  "type": "integer"
+                },
+                "token_cost_rules": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false
+        },
+        "families": {
+          "type": "object",
+          "description": "Dictionary of the operator families in Blogger XML.",
+          "additionalProperties": {
+            "$ref": "#/$defs/operatorFamily"
+          }
         }
       },
       "additionalProperties": false
-    },
-    "families": {
-      "type": "object",
-      "description": "Dictionary of the 14 operator families in Blogger XML.",
-      "additionalProperties": {
-        "$ref": "#/$defs/operatorFamily"
-      }
     },
     "operators": {
       "type": "object",
@@ -101,9 +113,6 @@
       "additionalProperties": {
         "$ref": "#/$defs/operatorDefinition"
       }
-    },
-    "version": {
-      "type": "string"
     }
   },
   "additionalProperties": false,
