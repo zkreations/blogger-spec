@@ -158,7 +158,8 @@ export function getAllSchemas(): Array<{ name: string, schema: any }> {
 
 export function clearCatalogCache(): void {
   defaultStore.clearCache?.()
-  for (const listener of cacheResetListeners) {
+  const listeners = [...cacheResetListeners]
+  for (const listener of listeners) {
     listener()
   }
 }
