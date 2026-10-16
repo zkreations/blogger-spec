@@ -14,12 +14,6 @@
       ],
       "description": "Standard empirical evidence classification level for Blogger specifications."
     },
-    "verifiedAt": {
-      "type": "string",
-      "format": "date",
-      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-      "description": "ISO 8601 calendar date (YYYY-MM-DD) indicating the empirical verification milestone."
-    },
     "diagnosticCode": {
       "type": "string",
       "pattern": "^BX[0-9]{4}$",
@@ -27,28 +21,8 @@
     },
     "canonicalPropertyType": {
       "type": "string",
-      "enum": [
-        "string",
-        "number",
-        "boolean",
-        "url",
-        "image",
-        "date",
-        "object",
-        "array",
-        "array[object]",
-        "array[string]",
-        "array[image]",
-        "array[url]",
-        "array[date]",
-        "array[number]",
-        "array[boolean]",
-        "array[array]",
-        "locale",
-        "message",
-        "skin_variable"
-      ],
-      "description": "Canonical Blogger runtime data property type defined in types.json."
+      "pattern": "^[a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?$",
+      "description": "Canonical Blogger runtime data property type, parameterized collection, or skin variable."
     },
     "deprecatedEntry": {
       "type": "object",
@@ -172,6 +146,12 @@
         }
       },
       "additionalProperties": false
+    },
+    "verified_at": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+      "description": "ISO 8601 calendar date (YYYY-MM-DD) indicating the empirical verification milestone."
     }
   }
 }
