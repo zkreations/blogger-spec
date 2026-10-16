@@ -36,13 +36,12 @@
     "diagnosticRule": {
       "type": "object",
       "required": [
-        "code",
         "name",
         "category",
         "severity",
         "message",
         "evidence",
-        "verifiedAt"
+        "verified_at"
       ],
       "properties": {
         "code": {
@@ -80,8 +79,8 @@
         "evidence": {
           "$ref": "common.schema.json#/$defs/evidenceLevel"
         },
-        "verifiedAt": {
-          "$ref": "common.schema.json#/$defs/verifiedAt"
+        "verified_at": {
+          "$ref": "common.schema.json#/$defs/verified_at"
         }
       },
       "additionalProperties": false
