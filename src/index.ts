@@ -28,45 +28,33 @@ export let inclusions = getInclusions()
 
 registerCacheResetListener(() => {
   try {
-    directives = getDirectives()
+    const next = {
+      directives: getDirectives(),
+      operators: getOperators(),
+      types: getTypes(),
+      widgets: getWidgets(),
+      settings: getSettings(),
+      globals: getGlobals(),
+      messages: getMessages(),
+      scopes: getScopes(),
+      diagnostics: getDiagnostics(),
+      inclusions: getInclusions(),
+    }
+
+    directives = next.directives
+    operators = next.operators
+    types = next.types
+    widgets = next.widgets
+    settings = next.settings
+    globals = next.globals
+    messages = next.messages
+    scopes = next.scopes
+    diagnostics = next.diagnostics
+    inclusions = next.inclusions
   }
-  catch {}
-  try {
-    operators = getOperators()
+  catch (error) {
+    console.error('Failed to refresh exported catalog snapshots.', error)
   }
-  catch {}
-  try {
-    types = getTypes()
-  }
-  catch {}
-  try {
-    widgets = getWidgets()
-  }
-  catch {}
-  try {
-    settings = getSettings()
-  }
-  catch {}
-  try {
-    globals = getGlobals()
-  }
-  catch {}
-  try {
-    messages = getMessages()
-  }
-  catch {}
-  try {
-    scopes = getScopes()
-  }
-  catch {}
-  try {
-    diagnostics = getDiagnostics()
-  }
-  catch {}
-  try {
-    inclusions = getInclusions()
-  }
-  catch {}
 })
 
 export {
