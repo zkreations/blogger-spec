@@ -60,7 +60,6 @@
     "./operators": "./catalogs/operators.json",
     "./types": "./catalogs/types.json",
     "./widgets": "./catalogs/widgets.json",
-    "./settings": "./catalogs/settings.json",
     "./globals": "./catalogs/globals.json",
     "./messages": "./catalogs/messages.json",
     "./scopes": "./catalogs/scopes.json",

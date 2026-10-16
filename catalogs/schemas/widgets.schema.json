@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "widgets.schema.json",
-  "title": "Blogger Widget Data Dictionaries Master Catalog Schema",
-  "description": "JSON Schema specification for the Blogger widget data dictionary master catalog.",
+  "title": "Blogger Widget Unified Master Catalog Schema",
+  "description": "JSON Schema specification for the Blogger unified gadget catalog (runtime data and configuration settings).",
   "type": "object",
   "required": [
     "$schema",
@@ -36,23 +36,107 @@
     "widgetEntry": {
       "type": "object",
       "required": [
-        "description",
-        "canonical"
+        "description"
       ],
       "properties": {
         "description": {
           "type": "string"
         },
-        "canonical": {
+        "data": {
           "type": "object",
-          "additionalProperties": {
-            "$ref": "common.schema.json#/$defs/canonicalProperty"
+          "properties": {
+            "canonical": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "common.schema.json#/$defs/canonicalProperty"
+              }
+            },
+            "deprecated": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "common.schema.json#/$defs/deprecatedEntry"
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "settings": {
+          "type": "object",
+          "properties": {
+            "canonical": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/canonicalSetting"
+              }
+            },
+            "patterns": {
+              "type": "array",
+              "items": {
+                "$ref": "common.schema.json#/$defs/patternDefinition"
+              }
+            },
+            "deprecated": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "common.schema.json#/$defs/deprecatedEntry"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "canonicalSetting": {
+      "type": "object",
+      "required": [
+        "type",
+        "description"
+      ],
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "default": {
+          "type": [
+            "string",
+            "null",
+            "boolean",
+            "integer",
+            "number"
+          ]
+        },
+        "allowed_values": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         },
-        "deprecated": {
+        "bound_runtime_data": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "serialization_format": {
+          "type": "string",
+          "enum": [
+            "json"
+          ]
+        },
+        "properties": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "common.schema.json#/$defs/deprecatedEntry"
+            "$ref": "#/$defs/canonicalSetting"
+          }
+        },
+        "item_properties": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/canonicalSetting"
           }
         }
       },
