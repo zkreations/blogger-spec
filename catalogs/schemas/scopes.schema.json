@@ -9,8 +9,8 @@
     "title",
     "description",
     "version",
-    "scopes",
-    "resolution_precedence"
+    "domain_metadata",
+    "scopes"
   ],
   "properties": {
     "$schema": {
@@ -25,12 +25,21 @@
     "version": {
       "type": "string"
     },
-    "resolution_precedence": {
-      "type": "array",
-      "items": {
-        "type": "string"
+    "domain_metadata": {
+      "type": "object",
+      "required": [
+        "resolution_precedence"
+      ],
+      "properties": {
+        "resolution_precedence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Ordered precedence list of scopes from narrowest (highest priority) to broadest (fallback)."
+        }
       },
-      "description": "Ordered precedence list of scopes from narrowest (highest priority) to broadest (fallback)."
+      "additionalProperties": false
     },
     "scopes": {
       "type": "object",
