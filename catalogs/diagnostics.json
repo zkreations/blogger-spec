@@ -396,6 +396,15 @@
       "message": "XML tag is mismatched or remains unclosed in the template structure.",
       "evidence": "observed",
       "verifiedAt": "2026-10-16"
+    },
+    "BX1042": {
+      "code": "BX1042",
+      "name": "DISALLOWED_EXPRESSION_ATTRIBUTE",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Directive attribute does not allow dynamic expressions ('expr:').",
+      "evidence": "official",
+      "verifiedAt": "2026-10-16"
     }
   }
 }
