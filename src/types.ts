@@ -145,6 +145,7 @@ export interface BloggerOperatorDefinition {
   token_cost?: number
   operands: BloggerOperatorOperand[]
   return_type: string
+  return_type_rule?: 'element_type' | 'self_or_array' | string
   grammar_aliases?: string[]
   doc_aliases?: string[]
   aliases?: string[]
@@ -182,6 +183,7 @@ export interface BloggerDirectiveDefinition {
   deprecated_attributes?: Record<string, any>
   constraints?: Record<string, any>
   type_attributes?: Record<string, { allowed: string[], required?: string[] }>
+  attribute_inversions?: Record<string, { expected: string, diagnostic: string }>
 }
 
 export interface BloggerDirectiveAttributeToken {
@@ -278,6 +280,10 @@ export interface BloggerDirectivesCatalog {
   domain_metadata?: {
     theme_designer_descriptions?: string[]
     layout_versions?: BloggerLayoutVersionsCatalog
+    compiler_limits?: {
+      max_directive_nesting_depth: number
+    }
+    hallucinated_directives?: Record<string, string>
     [key: string]: any
   }
   [key: string]: any
@@ -343,7 +349,10 @@ export interface BloggerTypesCatalog {
   truthiness_matrix?: {
     truthy: string[]
     falsy: string[]
+    falsy_string_literals?: string[]
+    truthy_string_literals?: string[]
   }
+  scalar_types?: string[]
   types: Record<string, BloggerTypeDefinition>
   modifiers?: Record<string, any>
   [key: string]: any

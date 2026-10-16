@@ -23,20 +23,34 @@
     "truthy": [
       "true",
       "\"yes\"",
-      "non-empty strings",
-      "numbers != 0",
+      "non-empty strings (excluding \"false\", \"no\")",
+      "numbers (including 0)",
       "non-empty arrays",
       "non-empty objects"
     ],
     "falsy": [
       "false",
       "\"no\"",
+      "\"false\"",
       "empty string \"\"",
-      "0",
       "empty collections []",
       "undefined/missing properties"
+    ],
+    "falsy_string_literals": [
+      "",
+      "false",
+      "no"
+    ],
+    "truthy_string_literals": [
+      "true",
+      "yes"
     ]
   },
+  "scalar_types": [
+    "string",
+    "number",
+    "boolean"
+  ],
   "types": {
     "string": {
       "category": "base",
@@ -357,7 +371,7 @@
         },
         "youtubeMaxResDefaultUrl": {
           "description": "Provides the URL for the YouTube maxresdefault.jpg thumbnail if image is a YouTube video poster; returns boolean false if not a YouTube asset.",
-          "output_type": "image",
+          "output_type": "image | boolean",
           "syntax": ".youtubeMaxResDefaultUrl",
           "direct_syntax": "<data:image.youtubeMaxResDefaultUrl/>",
           "expr_syntax": "([expr]).youtubeMaxResDefaultUrl",

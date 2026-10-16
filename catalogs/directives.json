@@ -3,32 +3,16 @@
   "title": "Blogger XML Directives & Tags Master Catalog",
   "description": "Registry of Blogger XML directives, syntax grammar constraints, styling components, and attribute migration paths.",
   "domain_metadata": {
-    "inclusion_classifications": {
-      "universal": {
-        "description": "Backend-hosted global inclusion available within a specific scope that can be overridden or replaced by custom definitions in the theme.",
-        "location": "Back-End",
-        "super_inclusion": false,
-        "default_markup": false
-      },
-      "common": {
-        "description": "Inclusion that can operate across multiple gadgets or throughout the blog.",
-        "location": "Back-End",
-        "super_inclusion": true,
-        "default_markup": true
-      },
-      "widget": {
-        "description": "Inclusion restricted to a specific widget. Its call must be located inside that widget.",
-        "location": "XML editor and/or Back-End",
-        "super_inclusion": true,
-        "default_markup": true
-      }
+    "compiler_limits": {
+      "max_directive_nesting_depth": 50
     },
-    "super_inclusion": {
-      "syntax": "super.INCLUDABLE_ID",
-      "description": "References the original backend inclusion using the super prefix.",
-      "requirements": [
-        "The inclusion in the default widget template must be customized, closed, or empty."
-      ]
+    "hallucinated_directives": {
+      "b:for": "BX1001",
+      "b:each": "BX1002",
+      "b:set": "BX1003",
+      "b:var": "BX1004",
+      "b:let": "BX1005",
+      "b:else-if": "BX1006"
     },
     "theme_designer_descriptions": [
       "Accents",
@@ -642,6 +626,12 @@
           "expr": true
         }
       },
+      "attribute_inversions": {
+        "name": {
+          "expected": "id",
+          "diagnostic": "BX1015"
+        }
+      },
       "constraints": {
         "widget": {
           "required_ids": [
@@ -690,6 +680,12 @@
           "description": "Invocation condition. If false, the inclusion is skipped.",
           "attribute_kind": "native_expression",
           "expr": true
+        }
+      },
+      "attribute_inversions": {
+        "id": {
+          "expected": "name",
+          "diagnostic": "BX1016"
         }
       },
       "constraints": {
@@ -1127,6 +1123,12 @@
           ],
           "attribute_kind": "native_expression",
           "expr": true
+        }
+      },
+      "attribute_inversions": {
+        "expr": {
+          "expected": "var",
+          "diagnostic": "BX1014"
         }
       },
       "constraints": {

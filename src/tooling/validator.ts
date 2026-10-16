@@ -132,6 +132,9 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     if (!type) {
       return true
     }
+    if (type.includes('|')) {
+      return type.split('|').every(t => isKnownType(t.trim()))
+    }
     if (knownTypes.has(type)) {
       return true
     }
@@ -249,16 +252,6 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   const globalMessages = globalsCatalog.objects?.['data:messages']
   if (globalMessages?.catalog_ref && globalMessages.catalog_ref !== 'messages.json') {
     errors.push(`Global object 'data:messages' specifies invalid catalog_ref '${globalMessages.catalog_ref}'.`)
-  }
-
-  const bMessage = directivesCatalog.directives?.['b:message']
-  const paramReason = bMessage?.constraints?.direct_invocation?.reason || ''
-  for (const [msgKey, msgDef] of Object.entries(messages)) {
-    if (msgDef.direct_invocation === false) {
-      if (!paramReason.includes(msgKey)) {
-        errors.push(`Parameterized message '${msgKey}' is not listed in b:message constraints direct_invocation reason.`)
-      }
-    }
   }
 
   function checkMessageReplacements(obj: any, location: string) {

@@ -68,10 +68,14 @@
           "type": "object",
           "required": [
             "max_expression_tokens",
+            "warning_expression_tokens",
             "token_cost_rules"
           ],
           "properties": {
             "max_expression_tokens": {
+              "type": "integer"
+            },
+            "warning_expression_tokens": {
               "type": "integer"
             },
             "token_cost_rules": {
@@ -228,6 +232,14 @@
         },
         "return_type": {
           "$ref": "#/$defs/operatorDataType"
+        },
+        "return_type_rule": {
+          "type": "string",
+          "enum": [
+            "element_type",
+            "self_or_array"
+          ],
+          "description": "Dynamic return type resolution rule when return_type depends on operand type."
         },
         "grammar_aliases": {
           "type": "array",

@@ -30,59 +30,29 @@
     "domain_metadata": {
       "type": "object",
       "required": [
-        "inclusion_classifications",
-        "super_inclusion"
+        "compiler_limits"
       ],
       "properties": {
-        "inclusion_classifications": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "object",
-            "required": [
-              "description",
-              "location",
-              "super_inclusion",
-              "default_markup"
-            ],
-            "properties": {
-              "description": {
-                "type": "string"
-              },
-              "location": {
-                "type": "string"
-              },
-              "super_inclusion": {
-                "type": "boolean"
-              },
-              "default_markup": {
-                "type": "boolean"
-              }
-            },
-            "additionalProperties": false
-          }
-        },
-        "super_inclusion": {
+        "compiler_limits": {
           "type": "object",
           "required": [
-            "syntax",
-            "description",
-            "requirements"
+            "max_directive_nesting_depth"
           ],
           "properties": {
-            "syntax": {
-              "type": "string"
-            },
-            "description": {
-              "type": "string"
-            },
-            "requirements": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              }
+            "max_directive_nesting_depth": {
+              "type": "integer",
+              "minimum": 1
             }
           },
           "additionalProperties": false
+        },
+        "hallucinated_directives": {
+          "type": "object",
+          "description": "Prohibited or hallucinated directives mapped to their canonical diagnostic code.",
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^BX[0-9]{4}$"
+          }
         },
         "theme_designer_descriptions": {
           "type": "array",
@@ -216,6 +186,27 @@
           "type": "object",
           "additionalProperties": {
             "$ref": "#/$defs/attributeDefinition"
+          }
+        },
+        "attribute_inversions": {
+          "type": "object",
+          "description": "Commonly inverted attribute mistakes mapped to their expected attribute name and diagnostic code.",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "expected",
+              "diagnostic"
+            ],
+            "properties": {
+              "expected": {
+                "type": "string"
+              },
+              "diagnostic": {
+                "type": "string",
+                "pattern": "^BX[0-9]{4}$"
+              }
+            },
+            "additionalProperties": false
           }
         },
         "constraints": {

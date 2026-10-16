@@ -53,9 +53,30 @@
           "items": {
             "type": "string"
           }
+        },
+        "falsy_string_literals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Exact string literals evaluated as falsy in conditional branches."
+        },
+        "truthy_string_literals": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Exact string literals evaluated as truthy in conditional branches."
         }
       },
       "additionalProperties": false
+    },
+    "scalar_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Canonical primitive data types composing the scalar category (string, number, boolean)."
     }
   },
   "additionalProperties": false,

@@ -216,11 +216,11 @@ export function isTruthy(value: any): boolean {
     return value
   }
   if (typeof value === 'number') {
-    return !Number.isNaN(value) && value !== 0
+    return !Number.isNaN(value)
   }
   if (typeof value === 'string') {
     const trimmed = value.trim().toLowerCase()
-    if (trimmed === '' || trimmed === 'false' || trimmed === 'no' || trimmed === '0') {
+    if (trimmed === '' || trimmed === 'false' || trimmed === 'no') {
       return false
     }
     if (trimmed === 'true' || trimmed === 'yes') {

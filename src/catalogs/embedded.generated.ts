@@ -12,32 +12,16 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "title": "Blogger XML Directives & Tags Master Catalog",
     "description": "Registry of Blogger XML directives, syntax grammar constraints, styling components, and attribute migration paths.",
     "domain_metadata": {
-      "inclusion_classifications": {
-        "universal": {
-          "description": "Backend-hosted global inclusion available within a specific scope that can be overridden or replaced by custom definitions in the theme.",
-          "location": "Back-End",
-          "super_inclusion": false,
-          "default_markup": false
-        },
-        "common": {
-          "description": "Inclusion that can operate across multiple gadgets or throughout the blog.",
-          "location": "Back-End",
-          "super_inclusion": true,
-          "default_markup": true
-        },
-        "widget": {
-          "description": "Inclusion restricted to a specific widget. Its call must be located inside that widget.",
-          "location": "XML editor and/or Back-End",
-          "super_inclusion": true,
-          "default_markup": true
-        }
+      "compiler_limits": {
+        "max_directive_nesting_depth": 50
       },
-      "super_inclusion": {
-        "syntax": "super.INCLUDABLE_ID",
-        "description": "References the original backend inclusion using the super prefix.",
-        "requirements": [
-          "The inclusion in the default widget template must be customized, closed, or empty."
-        ]
+      "hallucinated_directives": {
+        "b:for": "BX1001",
+        "b:each": "BX1002",
+        "b:set": "BX1003",
+        "b:var": "BX1004",
+        "b:let": "BX1005",
+        "b:else-if": "BX1006"
       },
       "theme_designer_descriptions": [
         "Accents",
@@ -651,6 +635,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "expr": true
           }
         },
+        "attribute_inversions": {
+          "name": {
+            "expected": "id",
+            "diagnostic": "BX1015"
+          }
+        },
         "constraints": {
           "widget": {
             "required_ids": [
@@ -699,6 +689,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "Invocation condition. If false, the inclusion is skipped.",
             "attribute_kind": "native_expression",
             "expr": true
+          }
+        },
+        "attribute_inversions": {
+          "id": {
+            "expected": "name",
+            "diagnostic": "BX1016"
           }
         },
         "constraints": {
@@ -1136,6 +1132,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             ],
             "attribute_kind": "native_expression",
             "expr": true
+          }
+        },
+        "attribute_inversions": {
+          "expr": {
+            "expected": "var",
+            "diagnostic": "BX1014"
           }
         },
         "constraints": {
@@ -2244,6 +2246,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       ],
       "compiler_quotas": {
         "max_expression_tokens": 40,
+        "warning_expression_tokens": 36,
         "token_cost_rules": "1 token per operator (2 for ternary ? :), 1 per literal/operand (including unary negative numbers), 1 per data path (including static and dynamic bracket indexing), 1 per array/object container, 1 per grouping parentheses pair ( ... ), 0 for argument parentheses in function calls/lambdas, and 0 for object property keys and delimiters (, and :)"
       },
       "default_allowed_contexts": [
@@ -3827,6 +3830,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           }
         ],
         "return_type": "array",
+        "return_type_rule": "self_or_array",
         "aliases": [
           "where"
         ],
@@ -3877,6 +3881,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           }
         ],
         "return_type": "any",
+        "return_type_rule": "element_type",
         "aliases": [],
         "examples": [
           {
@@ -4491,20 +4496,34 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       "truthy": [
         "true",
         "\"yes\"",
-        "non-empty strings",
-        "numbers != 0",
+        "non-empty strings (excluding \"false\", \"no\")",
+        "numbers (including 0)",
         "non-empty arrays",
         "non-empty objects"
       ],
       "falsy": [
         "false",
         "\"no\"",
+        "\"false\"",
         "empty string \"\"",
-        "0",
         "empty collections []",
         "undefined/missing properties"
+      ],
+      "falsy_string_literals": [
+        "",
+        "false",
+        "no"
+      ],
+      "truthy_string_literals": [
+        "true",
+        "yes"
       ]
     },
+    "scalar_types": [
+      "string",
+      "number",
+      "boolean"
+    ],
     "types": {
       "string": {
         "category": "base",
@@ -4825,7 +4844,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           },
           "youtubeMaxResDefaultUrl": {
             "description": "Provides the URL for the YouTube maxresdefault.jpg thumbnail if image is a YouTube video poster; returns boolean false if not a YouTube asset.",
-            "output_type": "image",
+            "output_type": "image | boolean",
             "syntax": ".youtubeMaxResDefaultUrl",
             "direct_syntax": "<data:image.youtubeMaxResDefaultUrl/>",
             "expr_syntax": "([expr]).youtubeMaxResDefaultUrl",
@@ -11758,59 +11777,29 @@ export const embeddedSchemas: Record<string, any> = {
       "domain_metadata": {
         "type": "object",
         "required": [
-          "inclusion_classifications",
-          "super_inclusion"
+          "compiler_limits"
         ],
         "properties": {
-          "inclusion_classifications": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object",
-              "required": [
-                "description",
-                "location",
-                "super_inclusion",
-                "default_markup"
-              ],
-              "properties": {
-                "description": {
-                  "type": "string"
-                },
-                "location": {
-                  "type": "string"
-                },
-                "super_inclusion": {
-                  "type": "boolean"
-                },
-                "default_markup": {
-                  "type": "boolean"
-                }
-              },
-              "additionalProperties": false
-            }
-          },
-          "super_inclusion": {
+          "compiler_limits": {
             "type": "object",
             "required": [
-              "syntax",
-              "description",
-              "requirements"
+              "max_directive_nesting_depth"
             ],
             "properties": {
-              "syntax": {
-                "type": "string"
-              },
-              "description": {
-                "type": "string"
-              },
-              "requirements": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
+              "max_directive_nesting_depth": {
+                "type": "integer",
+                "minimum": 1
               }
             },
             "additionalProperties": false
+          },
+          "hallucinated_directives": {
+            "type": "object",
+            "description": "Prohibited or hallucinated directives mapped to their canonical diagnostic code.",
+            "additionalProperties": {
+              "type": "string",
+              "pattern": "^BX[0-9]{4}$"
+            }
           },
           "theme_designer_descriptions": {
             "type": "array",
@@ -11944,6 +11933,27 @@ export const embeddedSchemas: Record<string, any> = {
             "type": "object",
             "additionalProperties": {
               "$ref": "#/$defs/attributeDefinition"
+            }
+          },
+          "attribute_inversions": {
+            "type": "object",
+            "description": "Commonly inverted attribute mistakes mapped to their expected attribute name and diagnostic code.",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "expected",
+                "diagnostic"
+              ],
+              "properties": {
+                "expected": {
+                  "type": "string"
+                },
+                "diagnostic": {
+                  "type": "string",
+                  "pattern": "^BX[0-9]{4}$"
+                }
+              },
+              "additionalProperties": false
             }
           },
           "constraints": {
@@ -12793,10 +12803,14 @@ export const embeddedSchemas: Record<string, any> = {
             "type": "object",
             "required": [
               "max_expression_tokens",
+              "warning_expression_tokens",
               "token_cost_rules"
             ],
             "properties": {
               "max_expression_tokens": {
+                "type": "integer"
+              },
+              "warning_expression_tokens": {
                 "type": "integer"
               },
               "token_cost_rules": {
@@ -12953,6 +12967,14 @@ export const embeddedSchemas: Record<string, any> = {
           },
           "return_type": {
             "$ref": "#/$defs/operatorDataType"
+          },
+          "return_type_rule": {
+            "type": "string",
+            "enum": [
+              "element_type",
+              "self_or_array"
+            ],
+            "description": "Dynamic return type resolution rule when return_type depends on operand type."
           },
           "grammar_aliases": {
             "type": "array",
@@ -13504,9 +13526,30 @@ export const embeddedSchemas: Record<string, any> = {
             "items": {
               "type": "string"
             }
+          },
+          "falsy_string_literals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact string literals evaluated as falsy in conditional branches."
+          },
+          "truthy_string_literals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exact string literals evaluated as truthy in conditional branches."
           }
         },
         "additionalProperties": false
+      },
+      "scalar_types": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "Canonical primitive data types composing the scalar category (string, number, boolean)."
       }
     },
     "additionalProperties": false,
