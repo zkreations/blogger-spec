@@ -52,7 +52,6 @@
     "messageDefinition": {
       "type": "object",
       "required": [
-        "type",
         "description"
       ],
       "properties": {
