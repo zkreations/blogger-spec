@@ -59,7 +59,7 @@ describe('universal ESM & in-memory store suite', () => {
     expect(operators.operators['+']).toBeDefined()
 
     const schemas = getAllSchemas()
-    expect(schemas.length).toBe(10)
+    expect(schemas.length).toBe(12)
     expect(schemas.some(s => s.name === 'directives')).toBe(true)
   })
 

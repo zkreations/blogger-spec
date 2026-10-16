@@ -33,13 +33,13 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
     const node = parseExpression('10 + 5', customCatalog) as BloggerBinaryExpressionNode
     expect(node.type).toBe('BinaryExpression')
     expect(node.operator).toBe('+')
-    expect(node.precedence).toBe(3)
+    expect(node.precedence).toBe(4)
 
     const parser = new ExpressionParser('data:posts take 5', customCatalog)
     const parsed = parser.parse() as BloggerBinaryExpressionNode
     expect(parsed.type).toBe('BinaryExpression')
     expect(parsed.operator).toBe('take')
-    expect(parsed.precedence).toBe(4)
+    expect(parsed.precedence).toBe(5)
   })
 
   describe('literals & primitives', () => {
@@ -161,13 +161,13 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       const node = parseExpression('2 + 3 * 4') as BloggerBinaryExpressionNode
       expect(node.type).toBe('BinaryExpression')
       expect(node.operator).toBe('+')
-      expect(node.precedence).toBe(3)
+      expect(node.precedence).toBe(4)
       expect((node.left as BloggerLiteralNode).value).toBe(2)
 
       const right = node.right as BloggerBinaryExpressionNode
       expect(right.type).toBe('BinaryExpression')
       expect(right.operator).toBe('*')
-      expect(right.precedence).toBe(2)
+      expect(right.precedence).toBe(3)
       expect((right.left as BloggerLiteralNode).value).toBe(3)
       expect((right.right as BloggerLiteralNode).value).toBe(4)
     })
@@ -176,7 +176,7 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       const node = parseExpression('(2 + 3) * 4') as BloggerBinaryExpressionNode
       expect(node.type).toBe('BinaryExpression')
       expect(node.operator).toBe('*')
-      expect(node.precedence).toBe(2)
+      expect(node.precedence).toBe(3)
 
       const left = node.left as BloggerBinaryExpressionNode
       expect(left.type).toBe('BinaryExpression')
@@ -205,7 +205,7 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       const eq = parseExpression('5 == 5') as BloggerBinaryExpressionNode
       expect(eq.type).toBe('BinaryExpression')
       expect(eq.operator).toBe('==')
-      expect(eq.precedence).toBe(4)
+      expect(eq.precedence).toBe(5)
 
       const gt = parseExpression('10 > 5') as BloggerBinaryExpressionNode
       expect(gt.type).toBe('BinaryExpression')
@@ -216,7 +216,7 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       const eqText = parseExpression('data:view.type eq "item"') as BloggerBinaryExpressionNode
       expect(eqText.type).toBe('BinaryExpression')
       expect(eqText.operator).toBe('eq')
-      expect(eqText.precedence).toBe(4)
+      expect(eqText.precedence).toBe(5)
 
       const ltText = parseExpression('data:count lt 10') as BloggerBinaryExpressionNode
       expect(ltText.type).toBe('BinaryExpression')
@@ -227,7 +227,7 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       const takeNode = parseExpression('data:posts take 5') as BloggerBinaryExpressionNode
       expect(takeNode.type).toBe('BinaryExpression')
       expect(takeNode.operator).toBe('take')
-      expect(takeNode.precedence).toBe(4)
+      expect(takeNode.precedence).toBe(5)
 
       const skipNode = parseExpression('data:numbers skip 2') as BloggerBinaryExpressionNode
       expect(skipNode.type).toBe('BinaryExpression')
@@ -244,7 +244,7 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       const fragNode = parseExpression('data:post.url fragment "comments"') as BloggerBinaryExpressionNode
       expect(fragNode.type).toBe('BinaryExpression')
       expect(fragNode.operator).toBe('fragment')
-      expect(fragNode.precedence).toBe(3)
+      expect(fragNode.precedence).toBe(4)
 
       const formatNode = parseExpression('data:post.date format "YYYY"') as BloggerBinaryExpressionNode
       expect(formatNode.type).toBe('BinaryExpression')
@@ -494,22 +494,22 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       const resizeInfix = parseExpression('data:cdnImg resizeImage 240') as BloggerBinaryExpressionNode
       expect(resizeInfix.type).toBe('BinaryExpression')
       expect(resizeInfix.operator).toBe('resizeImage')
-      expect(resizeInfix.precedence).toBe(3)
+      expect(resizeInfix.precedence).toBe(4)
 
       const sourceSetInfix = parseExpression('data:cdnImg sourceSet [320, 640]') as BloggerBinaryExpressionNode
       expect(sourceSetInfix.type).toBe('BinaryExpression')
       expect(sourceSetInfix.operator).toBe('sourceSet')
-      expect(sourceSetInfix.precedence).toBe(3)
+      expect(sourceSetInfix.precedence).toBe(4)
 
       const paramsInfix = parseExpression('data:baseUri params { m: "1", hl: "es" }') as BloggerBinaryExpressionNode
       expect(paramsInfix.type).toBe('BinaryExpression')
       expect(paramsInfix.operator).toBe('params')
-      expect(paramsInfix.precedence).toBe(3)
+      expect(paramsInfix.precedence).toBe(4)
 
       const appendParamsInfix = parseExpression('"https://mi-blog.blogspot.com/?a=1" appendParams { b: "2" }') as BloggerBinaryExpressionNode
       expect(appendParamsInfix.type).toBe('BinaryExpression')
       expect(appendParamsInfix.operator).toBe('appendParams')
-      expect(appendParamsInfix.precedence).toBe(3)
+      expect(appendParamsInfix.precedence).toBe(4)
     })
 
     it('correctly associates format precedence higher than relational equality', () => {
@@ -518,8 +518,8 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect(relNode.operator).toBe('==')
       expect(relNode.left.type).toBe('BinaryExpression')
       expect((relNode.left as BloggerBinaryExpressionNode).operator).toBe('format')
-      expect((relNode.left as BloggerBinaryExpressionNode).precedence).toBe(3)
-      expect(relNode.precedence).toBe(4)
+      expect((relNode.left as BloggerBinaryExpressionNode).precedence).toBe(4)
+      expect(relNode.precedence).toBe(5)
     })
   })
 

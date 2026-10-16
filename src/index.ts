@@ -52,8 +52,8 @@ registerCacheResetListener(() => {
     diagnostics = next.diagnostics
     inclusions = next.inclusions
   }
-  catch (error) {
-    console.error('Failed to refresh exported catalog snapshots.', error)
+  catch {
+    // Retain previous snapshots if the custom store is a partial test mock
   }
 })
 

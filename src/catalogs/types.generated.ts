@@ -43,12 +43,13 @@ export type BloggerStandardDiagnostics = Record<BloggerStandardDiagnosticKey, Bl
 export interface BloggerDiagnosticRule {
   code: BloggerDiagnosticCode;
   name: string;
-  category: BloggerDiagnosticCategory;
-  severity: BloggerDiagnosticSeverity;
+  category: 'hallucination' | 'syntax' | 'expressions' | 'quota' | 'structure' | 'deprecation' | 'runtime';
+  severity: 'error' | 'warning' | 'info';
   message: string;
   replacement?: string;
   evidence: BloggerEvidenceLevel;
-  verifiedAt: string;
+  verifiedAt: any;
+  [key: string]: any;
 }
 
 export interface BloggerDiagnosticsCatalog {
@@ -64,9 +65,11 @@ export interface BloggerDiagnosticsCatalog {
 // Directives & Nesting Catalog Models (SSoT: directives.schema.json)
 // =========================================================================
 
+/** Nesting policy enforcement action and associated diagnostic code. */
 export interface DirectiveNestingPolicyAction {
   diagnostic: BloggerDiagnosticCode;
-  action: DirectiveNestingAction;
+  action: 'reject' | 'strip' | 'ignore';
+  [key: string]: any;
 }
 
 export interface DirectiveInvalidNestingPolicy {
@@ -76,33 +79,64 @@ export interface DirectiveInvalidNestingPolicy {
   };
 }
 
+export interface BloggerDirectiveGrammar {
+  valid_parents: string[];
+  valid_children: string[];
+  arbitrary_attributes?: boolean;
+  cdata_content?: string[];
+  invalid_nesting_policy?: DirectiveInvalidNestingPolicy;
+  [key: string]: any;
+}
+
+/** Commonly inverted attribute mistakes mapped to their expected attribute name and diagnostic code. */
+export interface BloggerDirectiveAttributeInversion {
+  expected: string;
+  diagnostic: BloggerDiagnosticCode;
+  [key: string]: any;
+}
+
+/** Allowed and mandatory attributes mapped per subtype (e.g. for <Variable>). */
+export interface BloggerDirectiveTypeAttributeDefinition {
+  allowed: string[];
+  required?: string[];
+  [key: string]: any;
+}
+
 export interface BloggerDirectiveAttribute {
-  type?: string;
-  attribute_kind?: 'native_expression' | 'prefixed_expression' | 'static_literal';
-  description?: string;
+  type: string;
+  /** Functional compilation classification: 'native_expression' (attribute natively evaluates dynamic expressions in unadorned form; when expr is true, the expr: prefix enables dynamic runtime dereferencing / double-evaluation, e.g. cond, values, value), 'prefixed_expression' (unadorned form evaluates as a static literal; dynamic expression evaluation requires the expr: prefix, e.g. name, value, class), or 'static_literal' (strictly literal value; expr: prefix is strictly prohibited, e.g. id, type, locked). */
+  attribute_kind: 'native_expression' | 'prefixed_expression' | 'static_literal';
+  accepted_types?: string[];
   required?: boolean;
+  /** Specifies whether an empty literal string value (e.g. value='') is valid semantics and exempt from empty attribute warnings (e.g. b:attr value='' to remove parent attribute). */
   allow_empty?: boolean;
-  expr?: boolean;
-  allowed_values?: any[];
+  /** Specifies whether the 'expr:' dynamic attribute prefix is allowed for this attribute. Must be false for 'static_literal'. Must be true for 'prefixed_expression'. For 'native_expression', true indicates that expr: prefix is supported to enable dynamic dereferencing / runtime double evaluation, while false indicates expr: prefix is forbidden (e.g. b:eval expr where expr:expr is invalid syntax). */
+  expr: boolean;
+  description: string;
+  /** Default value for the attribute if omitted. */
+  default?: string | number | boolean | null;
+  accepted_forms?: string[];
+  [key: string]: any;
 }
 
 export interface BloggerDirectiveDefinition {
   category: string;
-  namespace: string;
+  /** XML namespace prefix or syntactic domain for this directive. */
+  namespace?: 'b' | 'data' | 'skin' | 'xml';
   description: string;
-  closure_mode?: 'self_closing' | 'container' | 'dual';
-  self_closing?: boolean;
-  grammar?: {
-    valid_parents?: string[];
-    valid_children?: string[];
-    invalid_nesting_policy?: DirectiveInvalidNestingPolicy;
-    arbitrary_attributes?: boolean;
-  };
-  attributes?: Record<string, BloggerDirectiveAttribute>;
+  /** Syntactic closure model: 'self_closing' (must self-close with />), 'container' (requires paired closing tag </...>), or 'dual' (self-closing when unparameterized, container when nesting child tags, e.g. b:message). */
+  closure_mode: 'self_closing' | 'container' | 'dual';
+  grammar: BloggerDirectiveGrammar;
+  attributes: Record<string, BloggerDirectiveAttribute>;
+  /** Commonly inverted attribute mistakes mapped to their expected attribute name and diagnostic code. */
+  attribute_inversions?: Record<string, BloggerDirectiveAttributeInversion>;
+  constraints?: Record<string, Record<string, any>>;
   deprecated_attributes?: Record<string, any>;
-  constraints?: Record<string, any>;
-  type_attributes?: Record<string, { allowed: string[], required?: string[] }>;
-  attribute_inversions?: Record<string, { expected: string, diagnostic: BloggerDiagnosticCode }>;
+  spec_extensions?: Record<string, Record<string, Record<string, any>>>;
+  syntax_patterns?: Record<string, Record<string, any>>;
+  /** Allowed and mandatory attributes mapped per subtype (e.g. for <Variable>). */
+  type_attributes?: Record<string, BloggerDirectiveTypeAttributeDefinition>;
+  [key: string]: any;
 }
 
 export type BloggerLayoutVersion = 1 | 2 | 3;
@@ -153,27 +187,35 @@ export interface BloggerOperatorOperand {
   types: string[];
   required: boolean;
   description?: string;
+  [key: string]: any;
 }
 
 export interface BloggerOperatorOverload {
   signature: string;
-  description?: string;
+  description: string;
   operands: BloggerOperatorOperand[];
   return_type: string;
+  [key: string]: any;
 }
 
 export interface BloggerOperatorSyntax {
+  /** Specifies whether the operator supports infix syntax (operand op operand). */
   supports_infix: boolean;
+  /** Specifies whether the operator supports functional call syntax (func(a, b)). */
   supports_functional: boolean;
+  /** Canonical function identifier used in functional syntax (e.g. 'eq' for ==, 'take' for take, '+' for +). Null if functional syntax is not supported. */
   functional_identifier: string | null;
+  /** True for associative operators that support 3+ operands in functional syntax (+, and, or, ?:). */
   variadic: boolean;
+  /** Human-readable informational pattern for infix syntax (e.g. 'a + b'). */
   infix?: string | null;
+  /** Human-readable informational pattern for functional syntax (e.g. '+(a, b)'). */
   functional?: string | null;
+  [key: string]: any;
 }
 
 export interface BloggerOperatorDefinition {
-  name?: string;
-  family: string;
+  family: 'concatenation' | 'arithmetic' | 'comparison' | 'logical' | 'membership' | 'content' | 'collection' | 'lambda' | 'ternary' | 'elvis' | 'url' | 'date' | 'image' | 'snippet';
   description: string;
   syntax: BloggerOperatorSyntax;
   precedence_level: number;
@@ -181,25 +223,29 @@ export interface BloggerOperatorDefinition {
   token_cost?: number;
   operands: BloggerOperatorOperand[];
   return_type: string;
-  return_type_rule?: 'element_type' | 'self_or_array' | string;
+  /** Dynamic return type resolution rule when return_type depends on operand type. */
+  return_type_rule?: 'element_type' | 'self_or_array';
+  /** Alternative tokens or keywords recognized as valid syntax in Blogger expressions (e.g. 'eq' for ==, 'where' for filter, 'limit' for take). */
   grammar_aliases?: string[];
+  /** Conceptual or search aliases for tooling and documentation (e.g. 'plus' for +, 'modulo' for %, 'elvis' for ?:). Not valid syntax tokens in Blogger expressions. */
   doc_aliases?: string[];
+  /** Combined list of aliases for backward compatibility. */
   aliases?: string[];
+  allowed_contexts?: ('cond' | 'expr' | 'value' | 'values' | 'expr:*')[];
   overloads?: BloggerOperatorOverload[];
-  allowed_contexts?: string[];
   anti_patterns?: string[];
-  examples?: Array<{
-    expression: string;
-    result: string;
-    description: string;
-  }>;
+  examples?: any[];
+  /** Secondary or intersecting semantic families this operator participates in. */
+  secondary_families?: string[];
+  [key: string]: any;
 }
 
 export interface BloggerPrecedenceHierarchyLevel {
   level: number;
   category: string;
-  associativity: string;
+  associativity: 'left-to-right' | 'right-to-left' | 'inner-to-outer' | 'non-associative';
   operators: string[];
+  [key: string]: any;
 }
 
 export interface BloggerCompilerQuotas {
@@ -232,25 +278,37 @@ export interface BloggerOperatorsCatalog {
 
 export interface BloggerTypeModifierDefinition {
   description: string;
+  /** Return type of the modifier, referencing a canonical Blogger type or 'child_item'. */
   output_type: string;
+  /** Canonical syntax pattern (e.g. '.escaped', '.width', '.first'). */
   syntax: string;
-  direct_syntax?: string;
-  expr_syntax?: string;
-  example?: string;
+  /** Example invocation using <data:...> tag syntax. */
+  direct_syntax: string;
+  /** Example invocation inside expression attributes. */
+  expr_syntax: string;
+  example: string;
+  /** Permitted literal values returned by this modifier. */
   allowed_values?: string[];
   [key: string]: any;
 }
 
 export interface BloggerTypeDefinition {
+  /** Architectural classification of the data type. */
   category: 'base' | 'subtype' | 'skin' | 'collection' | 'meta';
   description: string;
-  parent_type: string | null;
+  /** Underlying base type or supertype in the hierarchy (e.g. 'url' extends 'string', 'locale' extends 'string'). */
+  parent_type?: string | null;
+  /** Whether template authors can construct instances via literals or type conversion. */
   user_constructible: boolean;
+  /** Target TypeScript type or alias emitted in dist/index.d.ts. */
   ts_type: string;
+  /** Underlying child element type for homogeneous collections (e.g. for array types). */
   item_type?: string;
+  /** Recognized parameterized collection variants (e.g. array[string], array[object]). */
   parameterized_forms?: string[];
+  /** Native data modifiers / accessors directly defined on this type. */
+  modifiers?: Record<string, BloggerTypeModifierDefinition>;
   skin_metadata?: Record<string, any>;
-  modifiers: Record<string, BloggerTypeModifierDefinition>;
   [key: string]: any;
 }
 
@@ -283,19 +341,20 @@ export interface BloggerCanonicalProperty {
   allowed_values?: string[];
   properties?: Record<string, BloggerCanonicalProperty>;
   item_properties?: Record<string, BloggerCanonicalProperty>;
-  deprecated?: Record<string, any>;
+  deprecated?: Record<string, Record<string, any>>;
   [key: string]: any;
 }
 
 export interface BloggerGlobalObjectDefinition {
   cardinality: 'singleton' | 'collection';
-  description: string;
   item_type?: string;
   item_properties?: Record<string, BloggerCanonicalProperty>;
+  description: string;
+  /** Relative reference to an external catalog providing the full entity dictionary (e.g. 'messages.json'). */
   catalog_ref?: string;
-  canonical?: Record<string, BloggerCanonicalProperty>;
-  patterns?: any[];
-  deprecated?: Record<string, any>;
+  canonical: Record<string, BloggerCanonicalProperty>;
+  patterns?: Record<string, any>[];
+  deprecated?: Record<string, Record<string, any>>;
   [key: string]: any;
 }
 
@@ -311,7 +370,7 @@ export interface BloggerGlobalsCatalog {
 export interface BloggerWidgetDefinition {
   description: string;
   canonical: Record<string, BloggerCanonicalProperty>;
-  deprecated?: Record<string, any>;
+  deprecated?: Record<string, Record<string, any>>;
   [key: string]: any;
 }
 
@@ -331,17 +390,20 @@ export interface BloggerWidgetsCatalog {
 export interface BloggerCanonicalSetting {
   type: string;
   description: string;
-  default_value?: any;
-  allowed_values?: any[];
-  properties?: Record<string, any>;
+  default?: string | null | boolean | number | number;
+  allowed_values?: string[];
+  bound_runtime_data?: string | null;
+  serialization_format?: 'json';
+  properties?: Record<string, BloggerCanonicalSetting>;
+  item_properties?: Record<string, BloggerCanonicalSetting>;
   [key: string]: any;
 }
 
 export interface BloggerWidgetSettingsDefinition {
   description: string;
   canonical: Record<string, BloggerCanonicalSetting>;
-  patterns?: any[];
-  deprecated?: Record<string, any>;
+  patterns?: Record<string, any>[];
+  deprecated?: Record<string, Record<string, any>>;
   [key: string]: any;
 }
 
@@ -359,15 +421,21 @@ export interface BloggerSettingsCatalog {
 // =========================================================================
 
 export interface BloggerMessageParameterDefinition {
+  /** Reserved parameter identifier name for the b:param tag. */
   name: string;
+  /** Description of the parameter value to interpolate. */
   description?: string;
+  [key: string]: any;
 }
 
 export interface BloggerMessageDefinition {
   type: 'message';
   description: string;
+  /** Canonical un-interpolated template token or ICU plural format string (e.g. 'By %1', '{numComments, plural, ...}'). */
   pattern?: string;
+  /** Specifies whether direct tag invocation (<data:messages.key/>) is allowed. Forbidden (false) for parameterized messages requiring <b:message>. */
   direct_invocation?: boolean;
+  /** Positional substitution parameters required by this message via child <b:param> tags. */
   parameters?: BloggerMessageParameterDefinition[];
   [key: string]: any;
 }
@@ -389,12 +457,15 @@ export interface BloggerMessagesCatalog {
 export interface BloggerScopeDefinition {
   name: string;
   description: string;
-  boundary_tag: string | string[] | null;
+  boundary_tag: string | null;
+  /** Whether this scope inherits symbols from its lexical parent scope. */
   inherits: boolean;
+  /** Variable identifiers introduced into scope (e.g. var, index, alias). */
   introduces: string[];
+  /** Whether variables in this scope require the 'data:' prefix when accessed. */
   data_prefix_required?: boolean;
-  visibility: 'local_only' | 'descendants' | 'global';
-  shadowing: 'local-wins' | 'none' | 'prohibited';
+  visibility: 'descendants' | 'local_only' | 'global';
+  shadowing: 'local-wins' | 'prohibited' | 'none';
   evidence: BloggerEvidenceLevel;
   notes?: string;
   [key: string]: any;
@@ -416,19 +487,23 @@ export interface BloggerScopesCatalog {
 
 export interface BloggerInclusionDefinition {
   name: string;
-  category: BloggerInclusionCategory;
+  category: 'universal' | 'common' | 'icon' | 'theme' | 'deprecated';
   description: string;
   evidence: BloggerEvidenceLevel;
-  verifiedAt: string;
+  verifiedAt: any;
   deprecated?: boolean;
   deprecation_note?: string;
+  /** Blogger template engine architecture version(s) (b:layoutsVersion='1' | '2' | '3') where this inclusion is available. */
   layouts_versions?: number[];
-  widget_version?: number;
+  /** Gadget engine version (<b:widget version='1' | '2'>) required when invoked inside a widget. */
+  widget_version?: 1 | 2;
   target_widgets?: string[];
+  [key: string]: any;
 }
 
 export interface BloggerInclusionsCatalog {
   $schema?: string;
+  version?: string;
   title?: string;
   description?: string;
   super_prefix_rule: {

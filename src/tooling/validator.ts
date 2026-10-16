@@ -76,8 +76,9 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       errors.push(`Catalog '${name}.json' has no matching schema.`)
     }
   }
+  const SHARED_SCHEMAS = new Set(['common', 'fixture'])
   for (const schema of schemas) {
-    if (!catalogNames.includes(schema.name as BloggerCatalogName)) {
+    if (!catalogNames.includes(schema.name as BloggerCatalogName) && !SHARED_SCHEMAS.has(schema.name)) {
       errors.push(`Schema '${schema.name}.schema.json' has no matching canonical catalog.`)
     }
   }
@@ -114,15 +115,51 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     validateDeclarativeReferences(store.getCatalog(name), `${name}.json`)
   }
 
+  for (const [codeKey, rule] of Object.entries(diagnosticsCatalog.rules || {})) {
+    if (codeKey !== rule.code) {
+      errors.push(`Diagnostic rule key '${codeKey}' does not match rule.code '${rule.code}'.`)
+    }
+  }
+
   const operatorsCatalog = store.getCatalog('operators')
   const operators = operatorsCatalog.operators || {}
   const hierarchy = operatorsCatalog.precedence_hierarchy || []
 
-  // 2.1 Operators hierarchy and precedence level
+  // 2.1 Operators hierarchy, precedence level and associativity
   for (const [opKey, opDef] of Object.entries(operators)) {
     const lvl = hierarchy.find(h => h.level === opDef.precedence_level)
     if (!lvl || !lvl.operators.includes(opKey)) {
       errors.push(`Operator '${opKey}' is defined with precedence_level ${opDef.precedence_level} but missing in precedence_hierarchy level ${opDef.precedence_level}.`)
+    }
+    if (lvl && opDef.associativity && lvl.associativity !== opDef.associativity) {
+      errors.push(`Operator '${opKey}' specifies associativity '${opDef.associativity}', but precedence level ${lvl.level} specifies '${lvl.associativity}'.`)
+    }
+  }
+
+  // 2.2 Operator families bidirectional referential integrity
+  const families = operatorsCatalog.families || {}
+  for (const [famKey, famDef] of Object.entries(families)) {
+    for (const op of famDef.operators || []) {
+      const opDef = operators[op]
+      if (!opDef) {
+        errors.push(`Family '${famKey}' references unknown operator '${op}'.`)
+      }
+      else if (opDef.family !== famKey && !(opDef.secondary_families || []).includes(famKey)) {
+        errors.push(`Operator '${op}' listed in family '${famKey}' does not declare '${famKey}' as family or secondary_family.`)
+      }
+    }
+  }
+  for (const [opKey, opDef] of Object.entries(operators)) {
+    if (!families[opDef.family]) {
+      errors.push(`Operator '${opKey}' references unknown family '${opDef.family}'.`)
+    }
+    for (const secFam of opDef.secondary_families || []) {
+      if (!families[secFam]) {
+        errors.push(`Operator '${opKey}' references unknown secondary family '${secFam}'.`)
+      }
+      else if (!families[secFam].operators?.includes(opKey)) {
+        errors.push(`Operator '${opKey}' specifies secondary family '${secFam}', but is missing in family's operators list.`)
+      }
     }
   }
 
@@ -367,6 +404,8 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   else if (manifestItem?.valid) {
     metrics.fixturesChecked = manifestItem.count || 0
     log(`  [PASS] fixtures/index.json verified (${metrics.fixturesChecked} fixtures).`)
+    const fixtureValidate = ajv.getSchema('fixture.schema.json#/$defs/fixture')
+      || ajv.compile({ $ref: 'fixture.schema.json#/$defs/fixture' })
     const manifest = JSON.parse(readFileSync(getWorkspacePaths().fixturesManifest, 'utf-8')) as {
       fixtures?: Array<{
         id: string
@@ -377,9 +416,19 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       }>
     }
     for (const fixture of manifest.fixtures || []) {
+      if (!fixtureValidate(fixture)) {
+        for (const err of fixtureValidate.errors || []) {
+          errors.push(`Fixture '${fixture.id}': ${err.instancePath || '/'} ${err.message}`)
+        }
+      }
       if (fixture.expected?.outcome === 'rejected'
         && (!fixture.expected.diagnosticCodes || fixture.expected.diagnosticCodes.length === 0)) {
         errors.push(`Fixture '${fixture.id}' with outcome 'rejected' must define at least one diagnostic code.`)
+      }
+      for (const diagCode of fixture.expected?.diagnosticCodes || []) {
+        if (!knownDiagnosticCodes.has(diagCode)) {
+          errors.push(`Fixture '${fixture.id}' references unknown diagnostic code '${diagCode}'.`)
+        }
       }
     }
   }

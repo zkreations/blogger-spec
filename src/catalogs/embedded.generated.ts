@@ -518,8 +518,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "reason": "Legacy horizontal/vertical layout hint in deprecated GUI."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:widget": {
         "category": "Structuring",
@@ -631,8 +630,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "reason": "Legacy attribute used to control widget display on designated page types."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:includable": {
         "category": "Structuring",
@@ -689,14 +687,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "Direct child b:class and b:attr elements within id='main' directly mutate the widget's synthetic HTML root container element (<div class='widget [Type]' ...>)."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:include": {
         "category": "Structuring",
         "namespace": "b",
         "description": "Invokes a b:includable block and can pass a data alias or condition to the called inclusion.",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "@any_container"
@@ -786,8 +782,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "reason": "b:defaultmarkups does not operate inside CDATA sections."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:defaultmarkup": {
         "category": "Structuring",
@@ -845,8 +840,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             }
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:widget-settings": {
         "category": "Structuring",
@@ -874,8 +868,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "The element is generated automatically and cannot be created, deleted, or moved manually."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:widget-setting": {
         "category": "Structuring",
@@ -911,8 +904,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "The element is generated automatically and cannot be created, deleted, or moved manually."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:loop": {
         "category": "Logic",
@@ -965,8 +957,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "b:loop elements can be nested."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:with": {
         "category": "Logic",
@@ -1009,8 +1000,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "The alias is available through its variable name in child nodes."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:if": {
         "category": "Logic",
@@ -1052,14 +1042,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "A b:if container evaluates conditions sequentially with optional trailing b:elseif and b:else delimiters."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:elseif": {
         "category": "Logic",
         "namespace": "b",
         "description": "Conditional branch tag that evaluates an additional condition when the preceding b:if or b:elseif condition is false.",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "b:if"
@@ -1105,7 +1093,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "category": "Logic",
         "namespace": "b",
         "description": "Fallback branch tag that executes when all preceding conditions in the enclosing b:if sequence are false.",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "b:if"
@@ -1187,14 +1174,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "A b:switch container requires at least one b:case child branch."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:case": {
         "category": "Logic",
         "namespace": "b",
         "description": "Switch branch that matches its value against the value evaluated by the enclosing b:switch.",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "b:switch"
@@ -1233,7 +1218,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "category": "Logic",
         "namespace": "b",
         "description": "Fallback switch branch that executes when none of the preceding b:case branches match.",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "b:switch"
@@ -1310,14 +1294,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "Standard HTML attributes may be passed statically or dynamically via expr: (e.g., class, expr:href)."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:attr": {
         "category": "DOM Gen",
         "namespace": "b",
         "description": "Instruction tag that adds an attribute and its value to the parent element.",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "@any_container"
@@ -1378,7 +1360,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "category": "DOM Gen",
         "namespace": "b",
         "description": "Instruction tag that adds a class value to the class attribute of the parent element.",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "@any_container"
@@ -1438,7 +1419,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "category": "Output",
         "namespace": "b",
         "description": "Instruction tag that explicitly outputs the value resulting from a Blogger expression.",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "@any_container"
@@ -1483,7 +1463,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "category": "Output",
         "namespace": "data",
         "description": "Self-closing output tag for scalar data properties (recognized in parsers/linters by namespace prefix 'data:' matching any <data:PROPERTY_PATH/>; 'data:*' is documentation wildcard notation).",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "@any_container"
@@ -1571,14 +1550,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "Sequential sibling b:param elements nested inside b:message must be separated by whitespace or newlines. Writing multiple b:param tags directly inline on the same line without whitespace (<b:param .../><b:param .../>) triggers an engine evaluation abort: 'Invalid parameters for message'."
           }
         },
-        "closure_mode": "dual",
-        "self_closing": false
+        "closure_mode": "dual"
       },
       "b:param": {
         "category": "Localization",
         "namespace": "b",
         "description": "Tag that supplies a parameter value to a parent b:message.",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "b:message"
@@ -1662,8 +1639,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "Exactly one b:skin element is permitted per theme."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:template-skin": {
         "category": "Styling",
@@ -1702,8 +1678,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "At most one b:template-skin element is permitted per theme."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "Group": {
         "category": "Styling",
@@ -1756,14 +1731,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "Group elements must reside inside a CDATA block within b:skin."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "Variable": {
         "category": "Styling",
         "namespace": "skin",
         "description": "Declaration of a skin variable whose value can be configured through the Blogger Theme Designer.",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "Group",
@@ -2035,14 +2008,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "description": "Blogger expressions contained within the comment are evaluated before the resulting comment is generated."
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       },
       "b:template-script": {
         "category": "Utility",
         "namespace": "b",
         "description": "Instruction tag that loads a JavaScript file hosted by Blogger and associated with an official Blogger theme.",
-        "self_closing": true,
         "grammar": {
           "valid_parents": [
             "head",
@@ -2134,15 +2105,15 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             }
           }
         },
-        "closure_mode": "container",
-        "self_closing": false
+        "closure_mode": "container"
       }
-    }
+    },
+    "version": "1.0.0"
   },
   "operators": {
     "$schema": "./schemas/operators.schema.json",
     "title": "Blogger Operators & Expressions Master Catalog",
-    "description": "Canonical machine-readable catalog of Blogger expression operators, dual-syntax execution grammar, 10-level precedence hierarchy, operand typing, and compiler quotas.",
+    "description": "Canonical machine-readable catalog of Blogger expression operators, dual-syntax execution grammar, 11-level precedence hierarchy, operand typing, and compiler quotas.",
     "precedence_hierarchy": [
       {
         "level": 1,
@@ -2154,17 +2125,24 @@ export const embeddedCatalogs: BloggerCatalogMap = {
       },
       {
         "level": 2,
-        "category": "Null Coalescence & Arithmetic (Multiplicative)",
+        "category": "Null Coalescence / Primary Fallback",
+        "associativity": "right-to-left",
+        "operators": [
+          "?:"
+        ]
+      },
+      {
+        "level": 3,
+        "category": "Arithmetic (Multiplicative)",
         "associativity": "left-to-right",
         "operators": [
-          "?:",
           "*",
           "/",
           "%"
         ]
       },
       {
-        "level": 3,
+        "level": 4,
         "category": "Arithmetic (Additive), URL, Date, Image & Snippet Transforms",
         "associativity": "left-to-right",
         "operators": [
@@ -2181,7 +2159,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       {
-        "level": 4,
+        "level": 5,
         "category": "Relational, Comparisons & Collection Slices",
         "associativity": "left-to-right",
         "operators": [
@@ -2205,7 +2183,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       {
-        "level": 5,
+        "level": 6,
         "category": "Membership & Content",
         "associativity": "left-to-right",
         "operators": [
@@ -2214,7 +2192,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       {
-        "level": 6,
+        "level": 7,
         "category": "Logical NOT",
         "associativity": "right-to-left",
         "operators": [
@@ -2223,7 +2201,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       {
-        "level": 7,
+        "level": 8,
         "category": "Logical AND",
         "associativity": "left-to-right",
         "operators": [
@@ -2232,7 +2210,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       {
-        "level": 8,
+        "level": 9,
         "category": "Logical OR",
         "associativity": "left-to-right",
         "operators": [
@@ -2241,7 +2219,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       {
-        "level": 9,
+        "level": 10,
         "category": "Ternary / Conditional",
         "associativity": "right-to-left",
         "operators": [
@@ -2249,18 +2227,16 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       {
-        "level": 10,
-        "category": "Lambda / Collection Pipelines",
+        "level": 11,
+        "category": "Lambda / Collection Pipeline",
         "associativity": "left-to-right",
         "operators": [
-          "where",
-          "map",
-          "select",
-          "filter",
           "any",
           "all",
           "none",
           "count",
+          "map",
+          "filter",
           "first"
         ]
       }
@@ -2295,7 +2271,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Concatenation",
         "description": "String concatenation and scalar text interpolation.",
         "precedence_tiers": [
-          3
+          4
         ],
         "operators": [
           "+"
@@ -2305,8 +2281,8 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Arithmetic",
         "description": "Numeric addition, subtraction, multiplication, division, and modulo.",
         "precedence_tiers": [
-          2,
-          3
+          3,
+          4
         ],
         "operators": [
           "+",
@@ -2320,7 +2296,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Comparison",
         "description": "Relational comparisons and value equality checks.",
         "precedence_tiers": [
-          4
+          5
         ],
         "operators": [
           "==",
@@ -2335,9 +2311,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Logical",
         "description": "Logical conjunction, disjunction, and boolean inversion.",
         "precedence_tiers": [
-          6,
           7,
-          8
+          8,
+          9
         ],
         "operators": [
           "and",
@@ -2349,7 +2325,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Membership",
         "description": "Tests whether an item exists within a collection or string.",
         "precedence_tiers": [
-          5
+          6
         ],
         "operators": [
           "in"
@@ -2359,7 +2335,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Content",
         "description": "Substring search and item containment checks.",
         "precedence_tiers": [
-          5
+          6
         ],
         "operators": [
           "contains"
@@ -2369,7 +2345,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Collection",
         "description": "Array slicing, pagination limits, and numeric sequence generation.",
         "precedence_tiers": [
-          4
+          5
         ],
         "operators": [
           "take",
@@ -2381,7 +2357,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Lambda / Collection Pipeline",
         "description": "Higher-order collection predicates, projection mapping, and aggregation reductions.",
         "precedence_tiers": [
-          10
+          11
         ],
         "operators": [
           "any",
@@ -2397,7 +2373,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Ternary / Conditional",
         "description": "Inline conditional branching expression (cond ? val1 : val2).",
         "precedence_tiers": [
-          9
+          10
         ],
         "operators": [
           "? :"
@@ -2417,7 +2393,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Transform / URL",
         "description": "URL path segment joining, query parameter appending, and hash fragmenting.",
         "precedence_tiers": [
-          3
+          4
         ],
         "operators": [
           "path",
@@ -2430,7 +2406,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Transform / Date",
         "description": "Localized date formatting using ICU pattern tokens.",
         "precedence_tiers": [
-          3
+          4
         ],
         "operators": [
           "format"
@@ -2440,7 +2416,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Transform / Image",
         "description": "Google CDN image thumbnail resizing and responsive srcset generation.",
         "precedence_tiers": [
-          3
+          4
         ],
         "operators": [
           "resizeImage",
@@ -2451,7 +2427,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "name": "Transform / Truncation",
         "description": "Text truncation, snippet extraction, and HTML tag stripping.",
         "precedence_tiers": [
-          3
+          4
         ],
         "operators": [
           "snippet"
@@ -2470,7 +2446,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a + b",
           "functional": "+(a, b)"
         },
-        "precedence_level": 3,
+        "precedence_level": 4,
         "operands": [
           {
             "name": "left",
@@ -2585,6 +2561,9 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "grammar_aliases": [],
         "doc_aliases": [
           "plus"
+        ],
+        "secondary_families": [
+          "concatenation"
         ]
       },
       "-": {
@@ -2598,7 +2577,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a - b",
           "functional": "-(a, b)"
         },
-        "precedence_level": 3,
+        "precedence_level": 4,
         "operands": [
           {
             "name": "left",
@@ -2691,7 +2670,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a * b",
           "functional": "*(a, b)"
         },
-        "precedence_level": 2,
+        "precedence_level": 3,
         "operands": [
           {
             "name": "left",
@@ -2737,7 +2716,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a / b",
           "functional": "/(a, b)"
         },
-        "precedence_level": 2,
+        "precedence_level": 3,
         "operands": [
           {
             "name": "left",
@@ -2786,7 +2765,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a % b",
           "functional": "%(a, b)"
         },
-        "precedence_level": 2,
+        "precedence_level": 3,
         "operands": [
           {
             "name": "left",
@@ -2835,7 +2814,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a == b",
           "functional": "eq(a, b)"
         },
-        "precedence_level": 4,
+        "precedence_level": 5,
         "operands": [
           {
             "name": "left",
@@ -2883,7 +2862,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a != b",
           "functional": "neq(a, b)"
         },
-        "precedence_level": 4,
+        "precedence_level": 5,
         "operands": [
           {
             "name": "left",
@@ -2930,7 +2909,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a < b",
           "functional": "lt(a, b)"
         },
-        "precedence_level": 4,
+        "precedence_level": 5,
         "operands": [
           {
             "name": "left",
@@ -2979,7 +2958,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a > b",
           "functional": "gt(a, b)"
         },
-        "precedence_level": 4,
+        "precedence_level": 5,
         "operands": [
           {
             "name": "left",
@@ -3028,7 +3007,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a <= b",
           "functional": "lte(a, b)"
         },
-        "precedence_level": 4,
+        "precedence_level": 5,
         "operands": [
           {
             "name": "left",
@@ -3077,7 +3056,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a >= b",
           "functional": "gte(a, b)"
         },
-        "precedence_level": 4,
+        "precedence_level": 5,
         "operands": [
           {
             "name": "left",
@@ -3126,7 +3105,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a and b",
           "functional": "and(a, b)"
         },
-        "precedence_level": 7,
+        "precedence_level": 8,
         "operands": [
           {
             "name": "left",
@@ -3177,7 +3156,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "a or b",
           "functional": "or(a, b)"
         },
-        "precedence_level": 8,
+        "precedence_level": 9,
         "operands": [
           {
             "name": "left",
@@ -3228,7 +3207,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "not a",
           "functional": null
         },
-        "precedence_level": 6,
+        "precedence_level": 7,
         "operands": [
           {
             "name": "operand",
@@ -3271,7 +3250,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "item in array",
           "functional": "in(item, array)"
         },
-        "precedence_level": 5,
+        "precedence_level": 6,
         "operands": [
           {
             "name": "item",
@@ -3363,7 +3342,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "haystack contains needle",
           "functional": "contains(haystack, needle)"
         },
-        "precedence_level": 5,
+        "precedence_level": 6,
         "operands": [
           {
             "name": "haystack",
@@ -3458,7 +3437,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "array take number",
           "functional": "take(array, number)"
         },
-        "precedence_level": 4,
+        "precedence_level": 5,
         "operands": [
           {
             "name": "array",
@@ -3513,7 +3492,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "array skip number",
           "functional": "skip(array, number)"
         },
-        "precedence_level": 4,
+        "precedence_level": 5,
         "operands": [
           {
             "name": "array",
@@ -3565,7 +3544,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "start to end",
           "functional": null
         },
-        "precedence_level": 4,
+        "precedence_level": 5,
         "operands": [
           {
             "name": "start",
@@ -3613,7 +3592,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "array any (var => expr)",
           "functional": null
         },
-        "precedence_level": 10,
+        "precedence_level": 11,
         "token_cost": 1,
         "operands": [
           {
@@ -3659,7 +3638,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "array all (var => expr)",
           "functional": null
         },
-        "precedence_level": 10,
+        "precedence_level": 11,
         "token_cost": 1,
         "operands": [
           {
@@ -3702,7 +3681,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "array none (var => expr)",
           "functional": null
         },
-        "precedence_level": 10,
+        "precedence_level": 11,
         "token_cost": 1,
         "operands": [
           {
@@ -3745,7 +3724,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "array count (var => expr)",
           "functional": null
         },
-        "precedence_level": 10,
+        "precedence_level": 11,
         "token_cost": 1,
         "operands": [
           {
@@ -3788,7 +3767,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "array map (var => expr)",
           "functional": null
         },
-        "precedence_level": 10,
+        "precedence_level": 11,
         "token_cost": 1,
         "operands": [
           {
@@ -3844,7 +3823,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "array filter (var => expr)",
           "functional": null
         },
-        "precedence_level": 10,
+        "precedence_level": 11,
         "token_cost": 1,
         "operands": [
           {
@@ -3895,7 +3874,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "array first (var => expr)",
           "functional": null
         },
-        "precedence_level": 10,
+        "precedence_level": 11,
         "token_cost": 1,
         "operands": [
           {
@@ -3988,7 +3967,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "cond ? val1 : val2",
           "functional": null
         },
-        "precedence_level": 9,
+        "precedence_level": 10,
         "associativity": "right-to-left",
         "token_cost": 2,
         "operands": [
@@ -4051,7 +4030,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "url path string",
           "functional": "path(url, string)"
         },
-        "precedence_level": 3,
+        "precedence_level": 4,
         "operands": [
           {
             "name": "url",
@@ -4100,7 +4079,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "url params object",
           "functional": "params(url, object)"
         },
-        "precedence_level": 3,
+        "precedence_level": 4,
         "operands": [
           {
             "name": "url",
@@ -4152,7 +4131,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "url appendParams object",
           "functional": "appendParams(url, object)"
         },
-        "precedence_level": 3,
+        "precedence_level": 4,
         "operands": [
           {
             "name": "url",
@@ -4201,7 +4180,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "url fragment string",
           "functional": "fragment(url, string)"
         },
-        "precedence_level": 3,
+        "precedence_level": 4,
         "operands": [
           {
             "name": "url",
@@ -4250,7 +4229,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "date format string",
           "functional": "format(date, string)"
         },
-        "precedence_level": 3,
+        "precedence_level": 4,
         "operands": [
           {
             "name": "date",
@@ -4293,7 +4272,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "image resizeImage number",
           "functional": "resizeImage(image, number)"
         },
-        "precedence_level": 3,
+        "precedence_level": 4,
         "operands": [
           {
             "name": "image",
@@ -4407,7 +4386,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "image sourceSet array[number]",
           "functional": "sourceSet(image, array[number])"
         },
-        "precedence_level": 3,
+        "precedence_level": 4,
         "operands": [
           {
             "name": "image",
@@ -4465,7 +4444,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "infix": "string snippet object",
           "functional": "snippet(string, object)"
         },
-        "precedence_level": 3,
+        "precedence_level": 4,
         "operands": [
           {
             "name": "text",
@@ -4505,12 +4484,14 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "grammar_aliases": [],
         "doc_aliases": []
       }
-    }
+    },
+    "version": "1.0.0"
   },
   "types": {
     "$schema": "./schemas/types.schema.json",
     "title": "Blogger Data Types & Modifiers Master Catalog",
     "description": "Canonical machine-readable ontology of primitive types, platform subtypes, skin variable types, collections, modifiers, and coercion rules in the Blogger Template Engine.",
+    "version": "1.0.0",
     "coercion_rules": {
       "string_concatenation": {
         "target_context": "text_addition",
@@ -5301,6 +5282,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "$schema": "./schemas/widgets.schema.json",
     "title": "Blogger Widget Data Dictionaries Master Catalog",
     "description": "Comprehensive, machine-readable catalog of local data properties exposed within <b:widget> containers for all 26 official widget types in Gadget Version 2 (Layouts v3), including nested structures and deprecated Version 1 properties.",
+    "version": "1.0.0",
     "widgets": {
       "AdSense": {
         "description": "Google AdSense ad slot configuration, publisher client ID, and slot dimension parameters.",
@@ -7766,6 +7748,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "$schema": "./schemas/settings.schema.json",
     "title": "Blogger Widget Settings Master Catalog",
     "description": "Exhaustive, machine-readable registry of valid <b:widget-setting name='...'> keys across all official Blogger gadget types in Gadget Version 2 (Layouts v3). Organizes settings into canonical (actively supported), patterns (zero-based dynamic indexed keys), nested structures, and deprecated (obsolete or inactive in Layouts v3).",
+    "version": "1.0.0",
     "widgets": {
       "AdSense": {
         "description": "Configuration settings for official Google AdSense banner ad units, governing ad format dimensions and responsive slots.",
@@ -8702,6 +8685,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "$schema": "./schemas/globals.schema.json",
     "title": "Blogger Global Data Objects Master Catalog",
     "description": "Comprehensive, machine-readable registry of universal and host-scoped data objects in Blogger Layouts v3, categorizing properties into canonical (modern), patterns (dynamic lookups), and deprecated (obsolete or non-functional).",
+    "version": "1.0.0",
     "objects": {
       "data:view": {
         "cardinality": "singleton",
@@ -10066,6 +10050,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "$schema": "./schemas/messages.schema.json",
     "title": "Blogger System Messages Master Catalog",
     "description": "Canonical registry of localized UI message tokens available globally via data:messages.<token> in the Blogger Template Engine.",
+    "version": "1.0.0",
     "patterns": [
       {
         "template": "data:messages.{key}",
@@ -10556,6 +10541,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "$schema": "./schemas/scopes.schema.json",
     "title": "Blogger Scope & Resolution Model Catalog",
     "description": "Machine-readable contract defining variable introduction, visibility boundaries, inheritance, and shadowing rules across Blogger XML execution scopes.",
+    "version": "1.0.0",
     "resolution_precedence": [
       "lambda",
       "loop",
@@ -11075,6 +11061,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "$schema": "./schemas/inclusions.schema.json",
     "title": "Blogger System & Platform Inclusions Master Catalog",
     "description": "Canonical registry of platform-level subroutines and system includables resolved by Google Blogger's backend rendering engine.",
+    "version": "1.0.0",
     "super_prefix_rule": {
       "prefix": "super.",
       "description": "Prefixing an inclusion identifier with super. (e.g. <b:include name='super.main'/>) instructs the Blogger engine to execute the default platform or theme implementation of that subroutine, bypassing template-level overrides.",
@@ -11692,6 +11679,158 @@ export const embeddedCatalogs: BloggerCatalogMap = {
 } as unknown as BloggerCatalogMap;
 
 export const embeddedSchemas: Record<string, any> = {
+  "common.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "common.schema.json",
+    "title": "Blogger Common Shared Definitions Schema",
+    "description": "Shared canonical JSON Schema definitions and reusable sub-schemas across Blogger catalogs.",
+    "$defs": {
+      "evidenceLevel": {
+        "type": "string",
+        "enum": [
+          "official",
+          "observed",
+          "approximate",
+          "unknown"
+        ],
+        "description": "Standard empirical evidence classification level for Blogger specifications."
+      },
+      "verifiedAt": {
+        "type": "string",
+        "format": "date",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "description": "ISO 8601 calendar date (YYYY-MM-DD) indicating the empirical verification milestone."
+      },
+      "diagnosticCode": {
+        "type": "string",
+        "pattern": "^BX[0-9]{4}$",
+        "description": "Canonical Blogger specification diagnostic rule identifier (e.g. BX1001)."
+      },
+      "deprecatedEntry": {
+        "type": "object",
+        "required": [
+          "status",
+          "action",
+          "type",
+          "replacement",
+          "reason"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "deprecated_in_widget_v2",
+              "deprecated_in_layout_v3",
+              "ignored_in_layout_v3",
+              "obsolete",
+              "legacy"
+            ]
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "migrate",
+              "remove"
+            ]
+          },
+          "type": {
+            "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+          },
+          "replacement": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "canonicalProperty": {
+        "type": "object",
+        "required": [
+          "type",
+          "description"
+        ],
+        "properties": {
+          "type": {
+            "$ref": "types.schema.json#/$defs/canonicalPropertyType"
+          },
+          "description": {
+            "type": "string"
+          },
+          "item_type": {
+            "type": "string"
+          },
+          "allowed_values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/canonicalProperty"
+            }
+          },
+          "item_properties": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/canonicalProperty"
+            }
+          },
+          "deprecated": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/deprecatedEntry"
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      "patternDefinition": {
+        "type": "object",
+        "required": [
+          "template",
+          "type",
+          "description"
+        ],
+        "properties": {
+          "template": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "supported_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "index_start": {
+            "type": "integer"
+          },
+          "index_end": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "paired_with": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
   "diagnostics.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "diagnostics.schema.json",
@@ -11740,8 +11879,7 @@ export const embeddedSchemas: Record<string, any> = {
         ],
         "properties": {
           "code": {
-            "type": "string",
-            "pattern": "^BX[0-9]{4}$"
+            "$ref": "common.schema.json#/$defs/diagnosticCode"
           },
           "name": {
             "type": "string"
@@ -11773,17 +11911,10 @@ export const embeddedSchemas: Record<string, any> = {
             "type": "string"
           },
           "evidence": {
-            "type": "string",
-            "enum": [
-              "official",
-              "observed",
-              "approximate",
-              "unknown"
-            ]
+            "$ref": "common.schema.json#/$defs/evidenceLevel"
           },
           "verifiedAt": {
-            "type": "string",
-            "format": "date"
+            "$ref": "common.schema.json#/$defs/verifiedAt"
           }
         },
         "additionalProperties": false
@@ -11800,6 +11931,7 @@ export const embeddedSchemas: Record<string, any> = {
       "$schema",
       "title",
       "description",
+      "version",
       "directives",
       "domain_metadata"
     ],
@@ -11842,8 +11974,7 @@ export const embeddedSchemas: Record<string, any> = {
             "type": "object",
             "description": "Prohibited or hallucinated directives mapped to their canonical diagnostic code.",
             "additionalProperties": {
-              "type": "string",
-              "pattern": "^BX[0-9]{4}$"
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             }
           },
           "standard_diagnostics": {
@@ -11861,36 +11992,28 @@ export const embeddedSchemas: Record<string, any> = {
             ],
             "properties": {
               "missing_required_attribute": {
-                "type": "string",
-                "pattern": "^BX[0-9]{4}$"
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "deprecated_attribute": {
-                "type": "string",
-                "pattern": "^BX[0-9]{4}$"
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "empty_required_attribute": {
-                "type": "string",
-                "pattern": "^BX[0-9]{4}$"
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "disallowed_expression_attribute": {
-                "type": "string",
-                "pattern": "^BX[0-9]{4}$"
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "duplicate_element_id": {
-                "type": "string",
-                "pattern": "^BX[0-9]{4}$"
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "duplicate_includable_id": {
-                "type": "string",
-                "pattern": "^BX[0-9]{4}$"
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "invalid_variable_type_attribute": {
-                "type": "string",
-                "pattern": "^BX[0-9]{4}$"
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "prohibited_nesting": {
-                "type": "string",
-                "pattern": "^BX[0-9]{4}$"
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
               }
             },
             "additionalProperties": false
@@ -11984,6 +12107,9 @@ export const embeddedSchemas: Record<string, any> = {
           }
         },
         "additionalProperties": false
+      },
+      "version": {
+        "type": "string"
       }
     },
     "additionalProperties": false,
@@ -12023,10 +12149,6 @@ export const embeddedSchemas: Record<string, any> = {
             ],
             "description": "Syntactic closure model: 'self_closing' (must self-close with />), 'container' (requires paired closing tag </...>), or 'dual' (self-closing when unparameterized, container when nesting child tags, e.g. b:message)."
           },
-          "self_closing": {
-            "type": "boolean",
-            "default": false
-          },
           "grammar": {
             "$ref": "#/$defs/grammarDefinition"
           },
@@ -12040,21 +12162,7 @@ export const embeddedSchemas: Record<string, any> = {
             "type": "object",
             "description": "Commonly inverted attribute mistakes mapped to their expected attribute name and diagnostic code.",
             "additionalProperties": {
-              "type": "object",
-              "required": [
-                "expected",
-                "diagnostic"
-              ],
-              "properties": {
-                "expected": {
-                  "type": "string"
-                },
-                "diagnostic": {
-                  "type": "string",
-                  "pattern": "^BX[0-9]{4}$"
-                }
-              },
-              "additionalProperties": false
+              "$ref": "#/$defs/directiveAttributeInversion"
             }
           },
           "constraints": {
@@ -12167,25 +12275,7 @@ export const embeddedSchemas: Record<string, any> = {
             "type": "object",
             "description": "Allowed and mandatory attributes mapped per subtype (e.g. for <Variable>).",
             "additionalProperties": {
-              "type": "object",
-              "required": [
-                "allowed"
-              ],
-              "properties": {
-                "allowed": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "required": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              },
-              "additionalProperties": false
+              "$ref": "#/$defs/directiveTypeAttributeDefinition"
             }
           }
         },
@@ -12220,77 +12310,7 @@ export const embeddedSchemas: Record<string, any> = {
             }
           },
           "invalid_nesting_policy": {
-            "type": "object",
-            "description": "Declarative runtime action and diagnostic code mapped when nesting constraints are violated.",
-            "properties": {
-              "on_invalid_parent": {
-                "type": "object",
-                "required": [
-                  "diagnostic",
-                  "action"
-                ],
-                "properties": {
-                  "diagnostic": {
-                    "type": "string"
-                  },
-                  "action": {
-                    "type": "string",
-                    "enum": [
-                      "reject",
-                      "strip",
-                      "ignore"
-                    ]
-                  }
-                },
-                "additionalProperties": false
-              },
-              "on_invalid_child": {
-                "type": "object",
-                "required": [
-                  "diagnostic",
-                  "action"
-                ],
-                "properties": {
-                  "diagnostic": {
-                    "type": "string"
-                  },
-                  "action": {
-                    "type": "string",
-                    "enum": [
-                      "reject",
-                      "strip",
-                      "ignore"
-                    ]
-                  },
-                  "exceptions": {
-                    "type": "object",
-                    "additionalProperties": {
-                      "type": "object",
-                      "required": [
-                        "diagnostic",
-                        "action"
-                      ],
-                      "properties": {
-                        "diagnostic": {
-                          "type": "string"
-                        },
-                        "action": {
-                          "type": "string",
-                          "enum": [
-                            "reject",
-                            "strip",
-                            "ignore"
-                          ]
-                        }
-                      },
-                      "additionalProperties": false
-                    }
-                  }
-                },
-                "additionalProperties": false
-              }
-            },
-            "additionalProperties": false
+            "$ref": "#/$defs/invalidNestingPolicy"
           }
         },
         "additionalProperties": false
@@ -12396,6 +12416,214 @@ export const embeddedSchemas: Record<string, any> = {
           }
         },
         "additionalProperties": false
+      },
+      "invalidNestingPolicyAction": {
+        "type": "object",
+        "description": "Nesting policy enforcement action and associated diagnostic code.",
+        "required": [
+          "diagnostic",
+          "action"
+        ],
+        "properties": {
+          "diagnostic": {
+            "$ref": "common.schema.json#/$defs/diagnosticCode"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "reject",
+              "strip",
+              "ignore"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "invalidNestingPolicy": {
+        "type": "object",
+        "description": "Declarative runtime action and diagnostic code mapped when nesting constraints are violated.",
+        "properties": {
+          "on_invalid_parent": {
+            "$ref": "#/$defs/invalidNestingPolicyAction"
+          },
+          "on_invalid_child": {
+            "type": "object",
+            "required": [
+              "diagnostic",
+              "action"
+            ],
+            "properties": {
+              "diagnostic": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
+              },
+              "action": {
+                "type": "string",
+                "enum": [
+                  "reject",
+                  "strip",
+                  "ignore"
+                ]
+              },
+              "exceptions": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/$defs/invalidNestingPolicyAction"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "directiveAttributeInversion": {
+        "type": "object",
+        "description": "Commonly inverted attribute mistakes mapped to their expected attribute name and diagnostic code.",
+        "required": [
+          "expected",
+          "diagnostic"
+        ],
+        "properties": {
+          "expected": {
+            "type": "string"
+          },
+          "diagnostic": {
+            "$ref": "common.schema.json#/$defs/diagnosticCode"
+          }
+        },
+        "additionalProperties": false
+      },
+      "directiveTypeAttributeDefinition": {
+        "type": "object",
+        "description": "Allowed and mandatory attributes mapped per subtype (e.g. for <Variable>).",
+        "required": [
+          "allowed"
+        ],
+        "properties": {
+          "allowed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "required": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "fixture.schema.json": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "fixture.schema.json",
+    "title": "Blogger Conformance Fixture Schema",
+    "description": "JSON Schema specification for individual Blogger conformance test fixtures and test manifests.",
+    "$defs": {
+      "fixture": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "evidence",
+          "verifiedAt",
+          "covers",
+          "input",
+          "expected"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "evidence": {
+            "$ref": "common.schema.json#/$defs/evidenceLevel"
+          },
+          "verifiedAt": {
+            "$ref": "common.schema.json#/$defs/verifiedAt"
+          },
+          "covers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "input": {
+            "type": "object",
+            "required": [
+              "kind",
+              "source"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "expression",
+                  "template"
+                ]
+              },
+              "source": {
+                "type": "string"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "fragment",
+                  "full_document"
+                ]
+              },
+              "context": {
+                "type": "object"
+              }
+            },
+            "additionalProperties": false
+          },
+          "expected": {
+            "type": "object",
+            "required": [
+              "outcome"
+            ],
+            "properties": {
+              "outcome": {
+                "type": "string",
+                "enum": [
+                  "value",
+                  "html",
+                  "rejected"
+                ]
+              },
+              "value": {},
+              "html": {
+                "type": "string"
+              },
+              "canonicalDom": {
+                "type": "boolean"
+              },
+              "diagnosticCodes": {
+                "type": "array",
+                "items": {
+                  "$ref": "common.schema.json#/$defs/diagnosticCode"
+                }
+              },
+              "stage": {
+                "type": "string",
+                "enum": [
+                  "parser",
+                  "compiler",
+                  "quota",
+                  "linter"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
       }
     }
   },
@@ -12409,6 +12637,7 @@ export const embeddedSchemas: Record<string, any> = {
       "$schema",
       "title",
       "description",
+      "version",
       "objects"
     ],
     "properties": {
@@ -12419,6 +12648,9 @@ export const embeddedSchemas: Record<string, any> = {
         "type": "string"
       },
       "description": {
+        "type": "string"
+      },
+      "version": {
         "type": "string"
       },
       "objects": {
@@ -12451,7 +12683,7 @@ export const embeddedSchemas: Record<string, any> = {
           "item_properties": {
             "type": "object",
             "additionalProperties": {
-              "$ref": "#/$defs/canonicalProperty"
+              "$ref": "common.schema.json#/$defs/canonicalProperty"
             }
           },
           "description": {
@@ -12464,131 +12696,20 @@ export const embeddedSchemas: Record<string, any> = {
           "canonical": {
             "type": "object",
             "additionalProperties": {
-              "$ref": "#/$defs/canonicalProperty"
+              "$ref": "common.schema.json#/$defs/canonicalProperty"
             }
           },
           "patterns": {
             "type": "array",
             "items": {
-              "$ref": "#/$defs/patternDefinition"
+              "$ref": "common.schema.json#/$defs/patternDefinition"
             }
           },
           "deprecated": {
             "type": "object",
             "additionalProperties": {
-              "$ref": "#/$defs/deprecatedEntry"
+              "$ref": "common.schema.json#/$defs/deprecatedEntry"
             }
-          }
-        },
-        "additionalProperties": false
-      },
-      "canonicalProperty": {
-        "type": "object",
-        "required": [
-          "type",
-          "description"
-        ],
-        "properties": {
-          "type": {
-            "$ref": "types.schema.json#/$defs/canonicalPropertyType"
-          },
-          "item_type": {
-            "type": "string"
-          },
-          "allowed_values": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "description": {
-            "type": "string"
-          },
-          "properties": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/$defs/canonicalProperty"
-            }
-          },
-          "item_properties": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/$defs/canonicalProperty"
-            }
-          },
-          "deprecated": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/$defs/deprecatedEntry"
-            }
-          }
-        },
-        "additionalProperties": false
-      },
-      "patternDefinition": {
-        "type": "object",
-        "required": [
-          "template",
-          "type",
-          "description"
-        ],
-        "properties": {
-          "template": {
-            "type": "string"
-          },
-          "type": {
-            "$ref": "types.schema.json#/$defs/canonicalPropertyType"
-          },
-          "supported_types": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "description": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
-      },
-      "deprecatedEntry": {
-        "type": "object",
-        "required": [
-          "status",
-          "action",
-          "type",
-          "replacement",
-          "reason"
-        ],
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": [
-              "deprecated_in_widget_v2",
-              "deprecated_in_layout_v3",
-              "ignored_in_layout_v3",
-              "obsolete",
-              "legacy"
-            ]
-          },
-          "action": {
-            "type": "string",
-            "enum": [
-              "migrate",
-              "remove"
-            ]
-          },
-          "type": {
-            "$ref": "types.schema.json#/$defs/canonicalPropertyType"
-          },
-          "replacement": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "reason": {
-            "type": "string"
           }
         },
         "additionalProperties": false
@@ -12605,6 +12726,7 @@ export const embeddedSchemas: Record<string, any> = {
       "$schema",
       "title",
       "description",
+      "version",
       "super_prefix_rule",
       "inclusions"
     ],
@@ -12616,6 +12738,9 @@ export const embeddedSchemas: Record<string, any> = {
         "type": "string"
       },
       "description": {
+        "type": "string"
+      },
+      "version": {
         "type": "string"
       },
       "super_prefix_rule": {
@@ -12675,17 +12800,10 @@ export const embeddedSchemas: Record<string, any> = {
             "type": "string"
           },
           "evidence": {
-            "type": "string",
-            "enum": [
-              "official",
-              "observed",
-              "approximate",
-              "unknown"
-            ]
+            "$ref": "common.schema.json#/$defs/evidenceLevel"
           },
           "verifiedAt": {
-            "type": "string",
-            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            "$ref": "common.schema.json#/$defs/verifiedAt"
           },
           "deprecated": {
             "type": "boolean"
@@ -12730,6 +12848,7 @@ export const embeddedSchemas: Record<string, any> = {
       "$schema",
       "title",
       "description",
+      "version",
       "messages"
     ],
     "properties": {
@@ -12742,6 +12861,9 @@ export const embeddedSchemas: Record<string, any> = {
       "description": {
         "type": "string"
       },
+      "version": {
+        "type": "string"
+      },
       "messages": {
         "type": "object",
         "additionalProperties": {
@@ -12751,7 +12873,7 @@ export const embeddedSchemas: Record<string, any> = {
       "patterns": {
         "type": "array",
         "items": {
-          "$ref": "#/$defs/patternDefinition"
+          "$ref": "common.schema.json#/$defs/patternDefinition"
         }
       }
     },
@@ -12807,26 +12929,6 @@ export const embeddedSchemas: Record<string, any> = {
           }
         },
         "additionalProperties": false
-      },
-      "patternDefinition": {
-        "type": "object",
-        "required": [
-          "template",
-          "type",
-          "description"
-        ],
-        "properties": {
-          "template": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
       }
     }
   },
@@ -12840,6 +12942,7 @@ export const embeddedSchemas: Record<string, any> = {
       "$schema",
       "title",
       "description",
+      "version",
       "precedence_hierarchy",
       "evaluation_contexts",
       "families",
@@ -12932,6 +13035,9 @@ export const embeddedSchemas: Record<string, any> = {
         "additionalProperties": {
           "$ref": "#/$defs/operatorDefinition"
         }
+      },
+      "version": {
+        "type": "string"
       }
     },
     "additionalProperties": false,
@@ -12948,7 +13054,7 @@ export const embeddedSchemas: Record<string, any> = {
           "level": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 10
+            "maximum": 15
           },
           "category": {
             "type": "string"
@@ -13040,7 +13146,7 @@ export const embeddedSchemas: Record<string, any> = {
           "precedence_level": {
             "type": "integer",
             "minimum": 1,
-            "maximum": 10
+            "maximum": 15
           },
           "associativity": {
             "type": "string",
@@ -13124,6 +13230,13 @@ export const embeddedSchemas: Record<string, any> = {
             "items": {
               "$ref": "#/$defs/operatorExample"
             }
+          },
+          "secondary_families": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Secondary or intersecting semantic families this operator participates in."
           }
         },
         "additionalProperties": false
@@ -13264,6 +13377,7 @@ export const embeddedSchemas: Record<string, any> = {
       "$schema",
       "title",
       "description",
+      "version",
       "scopes",
       "resolution_precedence"
     ],
@@ -13275,6 +13389,9 @@ export const embeddedSchemas: Record<string, any> = {
         "type": "string"
       },
       "description": {
+        "type": "string"
+      },
+      "version": {
         "type": "string"
       },
       "resolution_precedence": {
@@ -13351,14 +13468,7 @@ export const embeddedSchemas: Record<string, any> = {
             ]
           },
           "evidence": {
-            "type": "string",
-            "enum": [
-              "official",
-              "observed",
-              "documented-project",
-              "approximate",
-              "unknown"
-            ]
+            "$ref": "common.schema.json#/$defs/evidenceLevel"
           },
           "notes": {
             "type": "string"
@@ -13378,6 +13488,7 @@ export const embeddedSchemas: Record<string, any> = {
       "$schema",
       "title",
       "description",
+      "version",
       "widgets"
     ],
     "properties": {
@@ -13388,6 +13499,9 @@ export const embeddedSchemas: Record<string, any> = {
         "type": "string"
       },
       "description": {
+        "type": "string"
+      },
+      "version": {
         "type": "string"
       },
       "widgets": {
@@ -13418,13 +13532,13 @@ export const embeddedSchemas: Record<string, any> = {
           "patterns": {
             "type": "array",
             "items": {
-              "$ref": "#/$defs/patternDefinition"
+              "$ref": "common.schema.json#/$defs/patternDefinition"
             }
           },
           "deprecated": {
             "type": "object",
             "additionalProperties": {
-              "$ref": "#/$defs/deprecatedEntry"
+              "$ref": "common.schema.json#/$defs/deprecatedEntry"
             }
           }
         },
@@ -13484,87 +13598,6 @@ export const embeddedSchemas: Record<string, any> = {
           }
         },
         "additionalProperties": false
-      },
-      "patternDefinition": {
-        "type": "object",
-        "required": [
-          "template",
-          "type",
-          "index_start",
-          "description"
-        ],
-        "properties": {
-          "template": {
-            "type": "string"
-          },
-          "type": {
-            "$ref": "types.schema.json#/$defs/widgetSettingType"
-          },
-          "index_start": {
-            "type": "integer"
-          },
-          "index_end": {
-            "type": [
-              "integer",
-              "null"
-            ]
-          },
-          "paired_with": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "supported_types": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "additionalProperties": false
-      },
-      "deprecatedEntry": {
-        "type": "object",
-        "required": [
-          "status",
-          "action",
-          "type",
-          "replacement",
-          "reason"
-        ],
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": [
-              "deprecated_in_widget_v2",
-              "deprecated_in_layout_v3",
-              "ignored_in_layout_v3",
-              "obsolete",
-              "legacy"
-            ]
-          },
-          "action": {
-            "type": "string",
-            "enum": [
-              "migrate",
-              "remove"
-            ]
-          },
-          "type": {
-            "$ref": "types.schema.json#/$defs/widgetSettingType"
-          },
-          "replacement": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "reason": {
-            "type": "string"
-          }
-        },
-        "additionalProperties": false
       }
     }
   },
@@ -13578,6 +13611,7 @@ export const embeddedSchemas: Record<string, any> = {
       "$schema",
       "title",
       "description",
+      "version",
       "types"
     ],
     "properties": {
@@ -13647,6 +13681,9 @@ export const embeddedSchemas: Record<string, any> = {
           "type": "string"
         },
         "description": "Canonical primitive data types composing the scalar category (string, number, boolean)."
+      },
+      "version": {
+        "type": "string"
       }
     },
     "additionalProperties": false,
@@ -13871,11 +13908,18 @@ export const embeddedSchemas: Record<string, any> = {
           "locale",
           "message",
           "skin_variable",
+          "skin:color",
+          "skin:font",
+          "skin:background",
           "skin:length",
+          "skin:automatic",
+          "skin:string",
+          "skin:url",
           "scalar",
           "expression",
           "predicate",
-          "any"
+          "any",
+          "child_item"
         ],
         "description": "Blogger Expression Engine operator and operand data type defined in types.json."
       }
@@ -13891,6 +13935,7 @@ export const embeddedSchemas: Record<string, any> = {
       "$schema",
       "title",
       "description",
+      "version",
       "widgets"
     ],
     "properties": {
@@ -13901,6 +13946,9 @@ export const embeddedSchemas: Record<string, any> = {
         "type": "string"
       },
       "description": {
+        "type": "string"
+      },
+      "version": {
         "type": "string"
       },
       "widgets": {
@@ -13925,96 +13973,14 @@ export const embeddedSchemas: Record<string, any> = {
           "canonical": {
             "type": "object",
             "additionalProperties": {
-              "$ref": "#/$defs/canonicalProperty"
+              "$ref": "common.schema.json#/$defs/canonicalProperty"
             }
           },
           "deprecated": {
             "type": "object",
             "additionalProperties": {
-              "$ref": "#/$defs/deprecatedEntry"
+              "$ref": "common.schema.json#/$defs/deprecatedEntry"
             }
-          }
-        },
-        "additionalProperties": false
-      },
-      "canonicalProperty": {
-        "type": "object",
-        "required": [
-          "type",
-          "description"
-        ],
-        "properties": {
-          "type": {
-            "$ref": "types.schema.json#/$defs/canonicalPropertyType"
-          },
-          "description": {
-            "type": "string"
-          },
-          "allowed_values": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "properties": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/$defs/canonicalProperty"
-            }
-          },
-          "item_properties": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/$defs/canonicalProperty"
-            }
-          },
-          "deprecated": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/$defs/deprecatedEntry"
-            }
-          }
-        },
-        "additionalProperties": false
-      },
-      "deprecatedEntry": {
-        "type": "object",
-        "required": [
-          "status",
-          "action",
-          "type",
-          "replacement",
-          "reason"
-        ],
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": [
-              "deprecated_in_widget_v2",
-              "deprecated_in_layout_v3",
-              "ignored_in_layout_v3",
-              "obsolete",
-              "legacy"
-            ]
-          },
-          "action": {
-            "type": "string",
-            "enum": [
-              "migrate",
-              "remove"
-            ]
-          },
-          "type": {
-            "$ref": "types.schema.json#/$defs/canonicalPropertyType"
-          },
-          "replacement": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "reason": {
-            "type": "string"
           }
         },
         "additionalProperties": false

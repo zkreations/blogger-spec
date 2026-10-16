@@ -307,9 +307,9 @@ describe('catalogs and store formal verification suite', () => {
         expect(getOperator('plus')).toEqual(plusDef)
         expect(getOperator('WHERE')?.syntax.infix).toContain('filter')
 
-        expect(getOperatorPrecedence('+')).toBe(3)
+        expect(getOperatorPrecedence('+')).toBe(4)
         expect(getOperatorPrecedence('plus')).toBeUndefined() // Precedence is strict to grammar operators
-        expect(getOperatorPrecedence('eq')).toBe(4)
+        expect(getOperatorPrecedence('eq')).toBe(5)
 
         const allOps = getAllOperators()
         expect(allOps['+']).toBeDefined()
@@ -462,7 +462,7 @@ describe('catalogs and store formal verification suite', () => {
         expect(getGlobal('blog', customCatalog)?.canonical).toBeDefined()
         expect(getType('image', customCatalog)?.parent_type).toBe('string')
         expect(getDirective('b:if', customCatalog)?.category).toBe('Logic')
-        expect(getOperator('+', customCatalog)?.precedence_level).toBe(3)
+        expect(getOperator('+', customCatalog)?.precedence_level).toBe(4)
         expect(getScope('loop', customCatalog)?.name).toBe('Loop Block Scope')
         expect(getMessage('archive', customCatalog)?.type).toBe('message')
         expect(getInclusion('all-head-content', customCatalog)?.category).toBe('universal')
@@ -651,7 +651,7 @@ describe('catalogs and store formal verification suite', () => {
         const catalogs = createClonedMasterCatalogs()
         catalogs.directives.directives['b:synthetic'] = {
           description: 'Synthetic self-closing directive',
-          self_closing: true,
+          closure_mode: 'self_closing',
           attributes: {},
         }
         const customSpec = new SpecCatalog(new MemoryCatalogStore(catalogs))

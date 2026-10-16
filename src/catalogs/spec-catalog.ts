@@ -247,10 +247,7 @@ export class SpecCatalog {
 
       const level = def.precedence_level
       if (level !== undefined) {
-        let bp = this.levelBindingPowerMap.get(level) ?? (maxLevel + 1 - level) * 10
-        if (def.family === 'elvis' || op === '?:') {
-          bp += 5
-        }
+        const bp = this.levelBindingPowerMap.get(level) ?? (maxLevel + 1 - level) * 10
         this.operatorBindingPowerMap.set(op, bp)
         this.operatorBindingPowerMap.set(op.toLowerCase(), bp)
 
@@ -401,7 +398,7 @@ export class SpecCatalog {
 
   isSelfClosingDirective(tagName: string): boolean {
     const def = this.getDirective(tagName)
-    return Boolean(def?.self_closing || def?.closure_mode === 'self_closing')
+    return Boolean(def?.closure_mode === 'self_closing' || (def as any)?.self_closing === true)
   }
 
   canNest(parentTag: string, childTag: string): boolean {

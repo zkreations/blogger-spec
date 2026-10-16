@@ -20,7 +20,7 @@ function getCanonicalSelfClosingTags(catalog: SpecCatalog = getSpecCatalog()): S
   const result = new Set<string>()
   const directives = catalog.getAllDirectives()
   for (const [name, def] of Object.entries(directives)) {
-    if (def.self_closing || def.closure_mode === 'self_closing' || (def as any).grammar?.self_closing) {
+    if (def.closure_mode === 'self_closing' || (def as any).self_closing === true) {
       if (name !== 'data:*') {
         result.add(name)
       }
