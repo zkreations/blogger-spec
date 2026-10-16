@@ -10,7 +10,7 @@
         "id",
         "title",
         "evidence",
-        "verifiedAt",
+        "verified_at",
         "covers",
         "input",
         "expected"
@@ -24,9 +24,6 @@
         },
         "evidence": {
           "$ref": "common.schema.json#/$defs/evidenceLevel"
-        },
-        "verifiedAt": {
-          "$ref": "common.schema.json#/$defs/verifiedAt"
         },
         "covers": {
           "type": "array",
@@ -102,6 +99,9 @@
             }
           },
           "additionalProperties": false
+        },
+        "verified_at": {
+          "$ref": "common.schema.json#/$defs/verified_at"
         }
       },
       "additionalProperties": false
