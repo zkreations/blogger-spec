@@ -106,13 +106,6 @@
           },
           "description": "Standard HTML void elements that do not require closing tags in template markup."
         },
-        "theme_designer_descriptions": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
-        },
         "grammar_groups": {
           "type": "object",
           "description": "Symbolic token groupings for template content models and directive hierarchy validation.",
