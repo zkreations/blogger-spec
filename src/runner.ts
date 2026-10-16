@@ -15,12 +15,7 @@ function resolveDefaultManifest(): BloggerFixturesManifest {
   if (existsSync(paths.fixturesManifest)) {
     return JSON.parse(readFileSync(paths.fixturesManifest, 'utf-8'))
   }
-  return {
-    version: '1.0.0',
-    generatedAt: new Date().toISOString(),
-    metrics: { totalFixtures: 0, positiveFixtures: 0, negativeFixtures: 0, coveredSpecEntities: 0 },
-    fixtures: [],
-  }
+  throw new Error(`Fixtures manifest not found: ${paths.fixturesManifest}`)
 }
 
 function normalizeHtmlString(html?: string): string {
@@ -66,6 +61,13 @@ export function runConformance(
   }
 
   const normalizeHtml = options?.normalizeHtml || normalizeHtmlString
+
+  for (const fixture of fixtures) {
+    if (fixture.expected.outcome === 'rejected'
+      && (!fixture.expected.diagnosticCodes || fixture.expected.diagnosticCodes.length === 0)) {
+      throw new Error(`Rejected fixture '${fixture.id}' must define at least one expected diagnostic code.`)
+    }
+  }
 
   const report: ConformanceReport = {
     total: fixtures.length,
