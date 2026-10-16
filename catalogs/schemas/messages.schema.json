@@ -9,6 +9,7 @@
     "title",
     "description",
     "version",
+    "domain_metadata",
     "messages"
   ],
   "properties": {
@@ -24,16 +25,25 @@
     "version": {
       "type": "string"
     },
+    "domain_metadata": {
+      "type": "object",
+      "required": [
+        "patterns"
+      ],
+      "properties": {
+        "patterns": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/patternDefinition"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "messages": {
       "type": "object",
       "additionalProperties": {
         "$ref": "#/$defs/messageDefinition"
-      }
-    },
-    "patterns": {
-      "type": "array",
-      "items": {
-        "$ref": "common.schema.json#/$defs/patternDefinition"
       }
     }
   },
