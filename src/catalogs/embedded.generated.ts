@@ -3461,6 +3461,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           }
         ],
         "return_type": "array",
+        "return_type_rule": "self_or_array",
         "aliases": [
           "limit"
         ],
@@ -3515,6 +3516,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           }
         ],
         "return_type": "array",
+        "return_type_rule": "self_or_array",
         "aliases": [
           "offset"
         ],
@@ -3970,6 +3972,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           "functional": null
         },
         "precedence_level": 9,
+        "associativity": "right-to-left",
         "token_cost": 2,
         "operands": [
           {

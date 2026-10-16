@@ -35,11 +35,14 @@ import {
   getInclusion,
   getInclusions,
   getLambdaKeywords,
+  getLevelBindingPower,
   getMessage,
   getMessages,
   getOperator,
+  getOperatorBindingPower,
   getOperatorPrecedence,
   getOperators,
+  getPrecedenceHierarchy,
   getScalarTypes,
   getSchema,
   getScope,
@@ -63,8 +66,10 @@ import {
   isGlobal,
   isGrammarOperator,
   isHallucinatedDirective,
+  isLogicalOperator,
   isMessage,
   isOperator,
+  isRightAssociativeOperator,
   isScope,
   isSelfClosingDirective,
   isServerInclusion,
@@ -673,6 +678,95 @@ describe('catalogs and store formal verification suite', () => {
         expect(astCustom.attributes.find(a => a.name === 'custom_data')?.isExpression).toBe(true)
         expect(astDefault.attributes.find(a => a.name === 'custom_data')?.isExpression).toBe(false)
       })
+
+      it('propagates dynamic operator precedence and associativity to ExpressionParser', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.operators.operators['+']!.precedence_level = 2
+        catalogs.operators.operators['*']!.precedence_level = 3
+
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        const stdAst = RootExports.parseExpression('2 + 3 * 4') as any
+        expect(stdAst.operator).toBe('+')
+        expect(stdAst.right.operator).toBe('*')
+
+        const customAst = RootExports.parseExpression('2 + 3 * 4', customSpec) as any
+        expect(customAst.operator).toBe('*')
+        expect(customAst.left.operator).toBe('+')
+      })
+
+      it('propagates dynamic allowed_contexts for loop-only operators', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.operators.operators.rangeTo = {
+          family: 'collection',
+          description: 'Custom range',
+          syntax: {
+            supports_infix: true,
+            supports_functional: false,
+            functional_identifier: null,
+            variadic: false,
+            infix: 'start rangeTo end',
+            functional: null,
+          },
+          precedence_level: 4,
+          allowed_contexts: ['values'],
+          operands: [
+            { name: 'start', types: ['number'], required: true },
+            { name: 'end', types: ['number'], required: true },
+          ],
+          return_type: 'array[number]',
+        } as any
+
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        expect(RootExports.getCompatibleOperatorNames('number', false, customSpec)).not.toContain('rangeTo')
+        expect(RootExports.getCompatibleOperatorNames('number', true, customSpec)).toContain('rangeTo')
+      })
+
+      it('propagates dynamic return_type_rule to resolveOperatorReturnType', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.operators.operators.head = {
+          family: 'collection',
+          description: 'Extracts head element',
+          syntax: {
+            supports_infix: true,
+            supports_functional: false,
+            functional_identifier: null,
+            variadic: false,
+            infix: 'array head',
+            functional: null,
+          },
+          precedence_level: 4,
+          return_type_rule: 'element_type',
+          operands: [{ name: 'array', types: ['array'], required: true }],
+          return_type: 'unknown',
+        } as any
+
+        catalogs.operators.operators.sample = {
+          family: 'collection',
+          description: 'Samples subcollection',
+          syntax: {
+            supports_infix: true,
+            supports_functional: false,
+            functional_identifier: null,
+            variadic: false,
+            infix: 'array sample number',
+            functional: null,
+          },
+          precedence_level: 4,
+          return_type_rule: 'self_or_array',
+          operands: [{ name: 'array', types: ['array'], required: true }],
+          return_type: 'array',
+        } as any
+
+        const customStore = new MemoryCatalogStore(catalogs)
+        const customSpec = new SpecCatalog(customStore)
+
+        expect(RootExports.resolveOperatorReturnType('head', 'array[string]', undefined, customSpec)).toBe('string')
+        expect(RootExports.resolveOperatorReturnType('sample', 'array[image]', undefined, customSpec)).toBe('array[image]')
+      })
     })
   })
 
@@ -707,6 +801,11 @@ describe('catalogs and store formal verification suite', () => {
       expect(RootExports.getStandardDiagnostics).toBe(getStandardDiagnostics)
       expect(RootExports.getStandardDiagnostic).toBe(getStandardDiagnostic)
       expect(RootExports.isDirectiveExpressionAttribute).toBe(isDirectiveExpressionAttribute)
+      expect(RootExports.getPrecedenceHierarchy).toBe(getPrecedenceHierarchy)
+      expect(RootExports.getLevelBindingPower).toBe(getLevelBindingPower)
+      expect(RootExports.getOperatorBindingPower).toBe(getOperatorBindingPower)
+      expect(RootExports.isLogicalOperator).toBe(isLogicalOperator)
+      expect(RootExports.isRightAssociativeOperator).toBe(isRightAssociativeOperator)
     })
   })
 

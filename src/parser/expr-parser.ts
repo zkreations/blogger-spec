@@ -34,18 +34,6 @@ interface InfixOpInfo {
   isMemberBracket?: boolean
 }
 
-const LEVEL_TO_BINDING_POWER: Record<number, number> = {
-  2: 90, // Null Coalescence & Multiplicative: ?:, *, /, % (Elvis ?: binds at 95 within Level 2 for primary fallback over arithmetic)
-  3: 80, // Additive & Transforms: +, -, format, params, etc.
-  4: 70, // Relational, Comparisons & Slices: ==, !=, <, >, eq, neq, take, skip, to, etc.
-  5: 60, // Membership: in, contains
-  6: 50, // Logical NOT: !, not
-  7: 40, // Logical AND: &&, and
-  8: 30, // Logical OR: ||, or
-  9: 20, // Ternary conditional: cond ? a : b (catalog key: '? :')
-  10: 10, // Collection lambdas: filter, map, any, count, etc.
-}
-
 const INFIX_TOKEN_SYMBOLS: Partial<Record<TokenType, string>> = {
   STAR: '*',
   SLASH: '/',
@@ -230,7 +218,8 @@ export class ExpressionParser {
           this.current = savedPos
         }
 
-        const argument = this.parseExpression(85)
+        const unaryMinusBp = (this.catalog.getLevelBindingPower(3) ?? 80) + 5
+        const argument = this.parseExpression(unaryMinusBp)
         const node: BloggerUnaryExpressionNode = {
           type: 'UnaryExpression',
           operator: '-',
@@ -243,7 +232,8 @@ export class ExpressionParser {
 
       case 'BANG': {
         this.advance()
-        const argument = this.parseExpression(LEVEL_TO_BINDING_POWER[6]!)
+        const notBp = this.catalog.getOperatorBindingPower('!') ?? this.catalog.getLevelBindingPower(6) ?? 50
+        const argument = this.parseExpression(notBp)
         const node: BloggerUnaryExpressionNode = {
           type: 'UnaryExpression',
           operator: '!',
@@ -263,7 +253,8 @@ export class ExpressionParser {
         const idLower = idToken.value.toLowerCase()
 
         if (idLower === 'not') {
-          const argument = this.parseExpression(LEVEL_TO_BINDING_POWER[6]!)
+          const notBp = this.catalog.getOperatorBindingPower('not') ?? this.catalog.getLevelBindingPower(6) ?? 50
+          const argument = this.parseExpression(notBp)
           const node: BloggerUnaryExpressionNode = {
             type: 'UnaryExpression',
             operator: 'not',
@@ -601,31 +592,38 @@ export class ExpressionParser {
 
   private getInfixOpInfo(token: Token): InfixOpInfo | null {
     if (token.type === 'DOT') {
-      return { name: '.', bindingPower: 100, catalogLevel: 1, isMemberDot: true }
+      const bp = this.catalog.getLevelBindingPower(1) ?? 100
+      return { name: '.', bindingPower: bp, catalogLevel: 1, isMemberDot: true }
     }
 
     if (token.type === 'LBRACKET') {
-      return { name: '[', bindingPower: 100, catalogLevel: 1, isMemberBracket: true }
+      const bp = this.catalog.getLevelBindingPower(1) ?? 100
+      return { name: '[', bindingPower: bp, catalogLevel: 1, isMemberBracket: true }
     }
 
     if (token.type === 'ELVIS') {
-      return { name: '?:', bindingPower: 95, catalogLevel: 2, isElvis: true, isRightAssociative: true }
+      const bp = this.catalog.getOperatorBindingPower('?:') ?? 95
+      const isRightAssociative = this.catalog.isRightAssociativeOperator('?:')
+      return { name: '?:', bindingPower: bp, catalogLevel: 2, isElvis: true, isRightAssociative }
     }
 
     if (token.type === 'QUESTION') {
-      return { name: '?', bindingPower: LEVEL_TO_BINDING_POWER[9]!, catalogLevel: 9, isTernary: true, isRightAssociative: true }
+      const bp = this.catalog.getOperatorBindingPower('? :') ?? this.catalog.getLevelBindingPower(9) ?? 20
+      const isRightAssociative = this.catalog.isRightAssociativeOperator('? :')
+      return { name: '?', bindingPower: bp, catalogLevel: 9, isTernary: true, isRightAssociative }
     }
 
     const symbol = INFIX_TOKEN_SYMBOLS[token.type]
     if (symbol) {
-      const opQuery = symbol === '&&' ? 'and' : (symbol === '||' ? 'or' : symbol)
-      const precLevel = this.catalog.getOperatorPrecedence(opQuery)
-      if (precLevel !== undefined && precLevel in LEVEL_TO_BINDING_POWER) {
+      const precLevel = this.catalog.getOperatorPrecedence(symbol)
+      const bindingPower = this.catalog.getOperatorBindingPower(symbol)
+      if (precLevel !== undefined && bindingPower !== undefined) {
         return {
           name: symbol,
-          bindingPower: LEVEL_TO_BINDING_POWER[precLevel]!,
+          bindingPower,
           catalogLevel: precLevel,
-          isLogical: precLevel === 7 || precLevel === 8,
+          isLogical: this.catalog.isLogicalOperator(symbol),
+          isRightAssociative: this.catalog.isRightAssociativeOperator(symbol),
         }
       }
     }
@@ -634,16 +632,19 @@ export class ExpressionParser {
       const lower = token.value.toLowerCase()
 
       if (this.catalog.getLambdaKeywords().has(lower)) {
-        return { name: token.value, bindingPower: LEVEL_TO_BINDING_POWER[10]!, catalogLevel: 10, isLambda: true }
+        const bp = this.catalog.getOperatorBindingPower(lower) ?? this.catalog.getLevelBindingPower(10) ?? 10
+        return { name: token.value, bindingPower: bp, catalogLevel: 10, isLambda: true }
       }
 
       const precLevel = this.catalog.getOperatorPrecedence(token.value) ?? this.catalog.getOperatorPrecedence(lower)
-      if (precLevel !== undefined && precLevel in LEVEL_TO_BINDING_POWER) {
+      const bindingPower = this.catalog.getOperatorBindingPower(token.value) ?? this.catalog.getOperatorBindingPower(lower)
+      if (precLevel !== undefined && bindingPower !== undefined) {
         return {
           name: token.value,
-          bindingPower: LEVEL_TO_BINDING_POWER[precLevel]!,
+          bindingPower,
           catalogLevel: precLevel,
-          isLogical: precLevel === 7 || precLevel === 8,
+          isLogical: this.catalog.isLogicalOperator(token.value) || this.catalog.isLogicalOperator(lower),
+          isRightAssociative: this.catalog.isRightAssociativeOperator(token.value) || this.catalog.isRightAssociativeOperator(lower),
         }
       }
     }

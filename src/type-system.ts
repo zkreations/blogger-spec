@@ -105,9 +105,20 @@ export function getCompatibleOperators(
   const compatible: BloggerOperatorDefinition[] = []
 
   for (const [opName, opDef] of Object.entries(operatorsCatalog)) {
-    if (opName === 'to') {
-      if (isLoopContext && isTypeAssignable(typeName, 'number', catalog)) {
-        compatible.push({ name: opName, ...opDef })
+    const allowedContexts = opDef.allowed_contexts
+    const isLoopOnly = Array.isArray(allowedContexts)
+      && allowedContexts.includes('values')
+      && !allowedContexts.includes('expr')
+
+    if (isLoopOnly) {
+      if (isLoopContext) {
+        const firstOperand = opDef.operands?.[0]
+        if (firstOperand && Array.isArray(firstOperand.types)) {
+          const isMatch = firstOperand.types.some(t => isTypeAssignable(typeName, t, catalog))
+          if (isMatch) {
+            compatible.push({ name: opName, ...opDef })
+          }
+        }
       }
       continue
     }
@@ -189,15 +200,14 @@ export function resolveOperatorReturnType(
     return leftType !== 'unknown' ? leftType : (rightType ?? 'unknown')
   }
 
-  const canonicalName = opDef.syntax?.functional_identifier || operatorName.toLowerCase()
-  if (opDef.return_type_rule === 'element_type' || canonicalName === 'first') {
+  if (opDef.return_type_rule === 'element_type') {
     if (leftType.startsWith('array[') && leftType.endsWith(']')) {
       return leftType.slice(6, -1)
     }
     return 'unknown'
   }
 
-  if (opDef.return_type_rule === 'self_or_array' || (opDef.return_type === 'array' && canonicalName !== 'map')) {
+  if (opDef.return_type_rule === 'self_or_array') {
     return leftType.startsWith('array[') ? leftType : (leftType === 'unknown' ? 'array' : leftType)
   }
 

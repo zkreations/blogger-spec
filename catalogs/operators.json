@@ -1337,6 +1337,7 @@
         }
       ],
       "return_type": "array",
+      "return_type_rule": "self_or_array",
       "aliases": [
         "limit"
       ],
@@ -1391,6 +1392,7 @@
         }
       ],
       "return_type": "array",
+      "return_type_rule": "self_or_array",
       "aliases": [
         "offset"
       ],
@@ -1846,6 +1848,7 @@
         "functional": null
       },
       "precedence_level": 9,
+      "associativity": "right-to-left",
       "token_cost": 2,
       "operands": [
         {

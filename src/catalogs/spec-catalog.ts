@@ -18,6 +18,7 @@ import type {
   BloggerOperatorDefinition,
   BloggerOperatorName,
   BloggerOperatorsCatalog,
+  BloggerPrecedenceHierarchyLevel,
   BloggerScopeDefinition,
   BloggerScopesCatalog,
   BloggerSettingsCatalog,
@@ -97,6 +98,10 @@ export class SpecCatalog {
   private readonly operatorMap = new Map<string, BloggerOperatorDefinition>()
   private readonly grammarOperatorMap = new Map<string, BloggerOperatorDefinition>()
   private readonly docAliasMap = new Map<string, BloggerOperatorDefinition>()
+  private precedenceHierarchy: BloggerPrecedenceHierarchyLevel[] = []
+  private readonly levelBindingPowerMap = new Map<number, number>()
+  private readonly operatorBindingPowerMap = new Map<string, number>()
+  private readonly operatorAssociativityMap = new Map<string, 'left-to-right' | 'right-to-left' | 'inner-to-outer' | 'non-associative'>()
   private readonly diagnosticMap = new Map<string, BloggerDiagnosticRule>()
   private readonly grammarGroupMap = new Map<string, string[]>()
   private readonly expandedValidChildrenMap = new Map<string, Set<string>>()
@@ -208,16 +213,70 @@ export class SpecCatalog {
   }
 
   private indexOperators(): void {
-    const operators = (this.store.getCatalog('operators') as BloggerOperatorsCatalog).operators || {}
+    const operatorsCatalog = this.store.getCatalog('operators') as BloggerOperatorsCatalog
+    const hierarchy = operatorsCatalog.precedence_hierarchy || []
+    this.precedenceHierarchy = hierarchy
+
+    const maxLevel = hierarchy.length > 0 ? Math.max(...hierarchy.map(h => h.level)) : 10
+
+    for (const item of hierarchy) {
+      const bp = (maxLevel + 1 - item.level) * 10
+      this.levelBindingPowerMap.set(item.level, bp)
+
+      if (Array.isArray(item.operators)) {
+        for (const op of item.operators) {
+          if (item.associativity) {
+            this.operatorAssociativityMap.set(op, item.associativity as any)
+            this.operatorAssociativityMap.set(op.toLowerCase(), item.associativity as any)
+          }
+        }
+      }
+    }
+
+    const operators = operatorsCatalog.operators || {}
     for (const [op, def] of Object.entries(operators)) {
       this.operatorMap.set(op, def)
       this.grammarOperatorMap.set(op, def)
       this.grammarOperatorMap.set(op.toLowerCase(), def)
 
+      const level = def.precedence_level
+      if (level !== undefined) {
+        let bp = this.levelBindingPowerMap.get(level) ?? (maxLevel + 1 - level) * 10
+        if (def.family === 'elvis' || op === '?:') {
+          bp += 5
+        }
+        this.operatorBindingPowerMap.set(op, bp)
+        this.operatorBindingPowerMap.set(op.toLowerCase(), bp)
+
+        if (op === '? :') {
+          this.operatorBindingPowerMap.set('?', bp)
+        }
+      }
+
+      if (def.associativity) {
+        this.operatorAssociativityMap.set(op, def.associativity as any)
+        this.operatorAssociativityMap.set(op.toLowerCase(), def.associativity as any)
+        if (op === '? :') {
+          this.operatorAssociativityMap.set('?', def.associativity as any)
+        }
+      }
+
       if (Array.isArray(def.grammar_aliases)) {
         for (const alias of def.grammar_aliases) {
           this.grammarOperatorMap.set(alias, def)
           this.grammarOperatorMap.set(alias.toLowerCase(), def)
+
+          const bp = this.operatorBindingPowerMap.get(op)
+          if (bp !== undefined) {
+            this.operatorBindingPowerMap.set(alias, bp)
+            this.operatorBindingPowerMap.set(alias.toLowerCase(), bp)
+          }
+
+          const assoc = this.operatorAssociativityMap.get(op)
+          if (assoc) {
+            this.operatorAssociativityMap.set(alias, assoc)
+            this.operatorAssociativityMap.set(alias.toLowerCase(), assoc)
+          }
         }
       }
 
@@ -623,6 +682,39 @@ export class SpecCatalog {
     return grammarDef?.precedence_level
   }
 
+  getPrecedenceHierarchy(): readonly BloggerPrecedenceHierarchyLevel[] {
+    return this.precedenceHierarchy
+  }
+
+  getLevelBindingPower(level: number): number | undefined {
+    return this.levelBindingPowerMap.get(level)
+  }
+
+  getOperatorBindingPower(op: string): number | undefined {
+    return this.operatorBindingPowerMap.get(op) ?? this.operatorBindingPowerMap.get(op.toLowerCase())
+  }
+
+  isLogicalOperator(op: string): boolean {
+    const def = this.getOperator(op)
+    return def?.family === 'logical'
+  }
+
+  isRightAssociativeOperator(op: string): boolean {
+    const assoc = this.operatorAssociativityMap.get(op) ?? this.operatorAssociativityMap.get(op.toLowerCase())
+    if (assoc) {
+      return assoc === 'right-to-left'
+    }
+    const def = this.getOperator(op)
+    if (def?.associativity) {
+      return def.associativity === 'right-to-left'
+    }
+    if (def?.precedence_level !== undefined) {
+      const levelItem = this.precedenceHierarchy.find(h => h.level === def.precedence_level)
+      return levelItem?.associativity === 'right-to-left'
+    }
+    return false
+  }
+
   isDiagnosticCode(code: string): code is BloggerDiagnosticCode {
     return this.diagnosticMap.has(code)
   }
@@ -948,6 +1040,26 @@ export function getAllOperators(catalog: SpecCatalog = getSpecCatalog()): Record
 
 export function getGrammarOperators(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerOperatorDefinition> {
   return catalog.getGrammarOperators()
+}
+
+export function getPrecedenceHierarchy(catalog: SpecCatalog = getSpecCatalog()): readonly BloggerPrecedenceHierarchyLevel[] {
+  return catalog.getPrecedenceHierarchy()
+}
+
+export function getLevelBindingPower(level: number, catalog: SpecCatalog = getSpecCatalog()): number | undefined {
+  return catalog.getLevelBindingPower(level)
+}
+
+export function getOperatorBindingPower(op: string, catalog: SpecCatalog = getSpecCatalog()): number | undefined {
+  return catalog.getOperatorBindingPower(op)
+}
+
+export function isLogicalOperator(op: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isLogicalOperator(op)
+}
+
+export function isRightAssociativeOperator(op: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isRightAssociativeOperator(op)
 }
 
 export function isDiagnosticCode(code: string, catalog: SpecCatalog = getSpecCatalog()): code is BloggerDiagnosticCode {
