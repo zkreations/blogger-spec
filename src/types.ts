@@ -167,7 +167,7 @@ export interface BloggerDirectiveDefinition {
   deprecated_attributes?: Record<string, any>
   constraints?: Record<string, any>
   type_attributes?: Record<string, { allowed: string[], required?: string[] }>
-  attribute_inversions?: Record<string, { expected: string, diagnostic: string }>
+  attribute_inversions?: Record<string, { expected: string, diagnostic: BloggerDiagnosticCode }>
 }
 
 export interface BloggerDirectiveAttributeToken {
@@ -255,6 +255,16 @@ export interface TemplateVersionResult {
   summary: string
 }
 
+export interface BloggerCompilerLimits {
+  max_directive_nesting_depth: number
+}
+
+export interface BloggerCompilerQuotas {
+  max_expression_tokens: number
+  warning_expression_tokens: number
+  token_cost_rules?: string
+}
+
 export interface BloggerDirectivesCatalog {
   $schema?: string
   version?: string
@@ -264,10 +274,8 @@ export interface BloggerDirectivesCatalog {
   domain_metadata?: {
     theme_designer_descriptions?: string[]
     layout_versions?: BloggerLayoutVersionsCatalog
-    compiler_limits?: {
-      max_directive_nesting_depth: number
-    }
-    hallucinated_directives?: Record<string, string>
+    compiler_limits?: BloggerCompilerLimits
+    hallucinated_directives?: Record<string, BloggerDiagnosticCode>
     [key: string]: any
   }
   [key: string]: any
@@ -288,7 +296,10 @@ export interface BloggerOperatorsCatalog {
   precedence_hierarchy?: BloggerPrecedenceHierarchyLevel[]
   operators: Record<string, BloggerOperatorDefinition>
   families?: Record<string, any>
-  evaluation_contexts?: Record<string, any>
+  evaluation_contexts?: {
+    compiler_quotas?: BloggerCompilerQuotas
+    [key: string]: any
+  }
   [key: string]: any
 }
 

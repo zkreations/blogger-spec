@@ -15,17 +15,25 @@ import {
   getAllWidgets,
   getAllWidgetSettings,
   getCatalog,
+  getCompilerLimits,
+  getCompilerQuotas,
   getDefaultCatalogStore,
   getDiagnostic,
   getDiagnostics,
   getDirective,
   getDirectiveAttributes,
+  getDirectiveNestingLimit,
   getDirectives,
+  getExpressionQuotaLimit,
+  getExpressionQuotaWarning,
   getGlobal,
   getGlobals,
   getGrammarOperators,
+  getHallucinatedDirectiveDiagnostic,
+  getHallucinatedDirectives,
   getInclusion,
   getInclusions,
+  getLambdaKeywords,
   getMessage,
   getMessages,
   getOperator,
@@ -37,6 +45,7 @@ import {
   getScopes,
   getSettings,
   getSpecCatalog,
+  getSuperPrefix,
   getType,
   getTypes,
   getWidget,
@@ -47,16 +56,19 @@ import {
   isDocAlias,
   isGlobal,
   isGrammarOperator,
+  isHallucinatedDirective,
   isMessage,
   isOperator,
   isScope,
   isSelfClosingDirective,
+  isServerInclusion,
   isType,
   isWidget,
   MemoryCatalogStore,
   registerCacheResetListener,
   setDefaultCatalogStore,
   SpecCatalog,
+  validateDirectiveAttributes,
   validateNesting,
 } from '../src/catalogs/index.js'
 import * as RootExports from '../src/index.js'
@@ -402,6 +414,99 @@ describe('catalogs and store formal verification suite', () => {
         expect(getWidgetSettings('Followers', customCatalog)?.canonical).toBeDefined()
       })
     })
+
+    describe('compiler limits, quotas, and canonical accessors (SSoT phase 3)', () => {
+      it('retrieves compiler limits and directive nesting limit from canonical directives catalog', () => {
+        const limits = getCompilerLimits()
+        expect(limits).toBeDefined()
+        expect(limits?.max_directive_nesting_depth).toBe(50)
+        expect(getDirectiveNestingLimit()).toBe(50)
+
+        const customSpec = new SpecCatalog()
+        expect(customSpec.getCompilerLimits()?.max_directive_nesting_depth).toBe(50)
+        expect(customSpec.getDirectiveNestingLimit()).toBe(50)
+      })
+
+      it('retrieves compiler quotas and expression limits from canonical operators catalog', () => {
+        const quotas = getCompilerQuotas()
+        expect(quotas).toBeDefined()
+        expect(quotas?.max_expression_tokens).toBe(40)
+        expect(quotas?.warning_expression_tokens).toBe(36)
+        expect(getExpressionQuotaLimit()).toBe(40)
+        expect(getExpressionQuotaWarning()).toBe(36)
+
+        const customSpec = new SpecCatalog()
+        expect(customSpec.getExpressionQuotaLimit()).toBe(40)
+        expect(customSpec.getExpressionQuotaWarning()).toBe(36)
+      })
+
+      it('extracts lambda operator keywords and grammar aliases dynamically', () => {
+        const lambdas = getLambdaKeywords()
+        expect(lambdas.has('filter')).toBe(true)
+        expect(lambdas.has('where')).toBe(true)
+        expect(lambdas.has('map')).toBe(true)
+        expect(lambdas.has('select')).toBe(true)
+        expect(lambdas.has('first')).toBe(true)
+        expect(lambdas.has('count')).toBe(true)
+        expect(lambdas.has('any')).toBe(true)
+        expect(lambdas.has('all')).toBe(true)
+        expect(lambdas.has('none')).toBe(true)
+        expect(lambdas.has('+')).toBe(false)
+        expect(lambdas.has('and')).toBe(false)
+      })
+
+      it('detects hallucinated directives and maps them to canonical diagnostics', () => {
+        const hallucinated = getHallucinatedDirectives()
+        expect(hallucinated['b:for']).toBe('BX1001')
+        expect(hallucinated['b:each']).toBe('BX1002')
+        expect(hallucinated['b:set']).toBe('BX1003')
+        expect(hallucinated['b:var']).toBe('BX1004')
+        expect(hallucinated['b:let']).toBe('BX1005')
+        expect(hallucinated['b:else-if']).toBe('BX1006')
+
+        expect(isHallucinatedDirective('b:for')).toBe(true)
+        expect(isHallucinatedDirective('b:FOR')).toBe(true)
+        expect(isHallucinatedDirective('b:if')).toBe(false)
+
+        expect(getHallucinatedDirectiveDiagnostic('b:for')).toBe('BX1001')
+        expect(getHallucinatedDirectiveDiagnostic('b:ELSE-IF')).toBe('BX1006')
+        expect(getHallucinatedDirectiveDiagnostic('b:if')).toBeUndefined()
+      })
+
+      it('reads super inclusion prefix from canonical inclusions catalog', () => {
+        expect(getSuperPrefix()).toBe('super.')
+        expect(isServerInclusion('super.main')).toBe(true)
+        expect(isServerInclusion('super.customWidgetSection')).toBe(true)
+
+        const customSpec = new SpecCatalog()
+        expect(customSpec.getSuperPrefix()).toBe('super.')
+        expect(customSpec.isServerInclusion('super.test')).toBe(true)
+      })
+
+      it('validates directive attribute inversions declaratively from catalog', () => {
+        const includableRes = validateDirectiveAttributes('b:includable', ['name'])
+        expect(includableRes.inverted).toEqual([
+          { code: 'BX1015', attribute: 'name', expected: 'id' },
+        ])
+        expect(includableRes.unknown).not.toContain('name')
+
+        const includeRes = validateDirectiveAttributes('b:include', ['id'])
+        expect(includeRes.inverted).toEqual([
+          { code: 'BX1016', attribute: 'id', expected: 'name' },
+        ])
+        expect(includeRes.unknown).not.toContain('id')
+
+        const switchRes = validateDirectiveAttributes('b:switch', ['expr'])
+        expect(switchRes.inverted).toEqual([
+          { code: 'BX1014', attribute: 'expr', expected: 'var' },
+        ])
+        expect(switchRes.unknown).not.toContain('expr')
+
+        const validSwitch = validateDirectiveAttributes('b:switch', ['var'])
+        expect(validSwitch.inverted).toHaveLength(0)
+        expect(validSwitch.unknown).toHaveLength(0)
+      })
+    })
   })
 
   describe('rootExports parity', () => {
@@ -418,6 +523,17 @@ describe('catalogs and store formal verification suite', () => {
       expect(RootExports.getScopes).toBe(getScopes)
       expect(RootExports.getDiagnostics).toBe(getDiagnostics)
       expect(RootExports.getInclusions).toBe(getInclusions)
+      expect(RootExports.getCompilerLimits).toBe(getCompilerLimits)
+      expect(RootExports.getDirectiveNestingLimit).toBe(getDirectiveNestingLimit)
+      expect(RootExports.getCompilerQuotas).toBe(getCompilerQuotas)
+      expect(RootExports.getExpressionQuotaLimit).toBe(getExpressionQuotaLimit)
+      expect(RootExports.getExpressionQuotaWarning).toBe(getExpressionQuotaWarning)
+      expect(RootExports.getLambdaKeywords).toBe(getLambdaKeywords)
+      expect(RootExports.getHallucinatedDirectives).toBe(getHallucinatedDirectives)
+      expect(RootExports.isHallucinatedDirective).toBe(isHallucinatedDirective)
+      expect(RootExports.getHallucinatedDirectiveDiagnostic).toBe(getHallucinatedDirectiveDiagnostic)
+      expect(RootExports.getSuperPrefix).toBe(getSuperPrefix)
+      expect(RootExports.validateDirectiveAttributes).toBe(validateDirectiveAttributes)
     })
   })
 })

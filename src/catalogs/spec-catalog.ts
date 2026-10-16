@@ -1,4 +1,6 @@
 import type {
+  BloggerCompilerLimits,
+  BloggerCompilerQuotas,
   BloggerDiagnosticCode,
   BloggerDiagnosticRule,
   BloggerDiagnosticsCatalog,
@@ -106,6 +108,8 @@ export class SpecCatalog {
   private readonly typeMap = new Map<string, BloggerTypeDefinition>()
   private readonly coercionRules: Record<string, any> = {}
   private readonly inclusionMap = new Map<string, BloggerInclusionDefinition>()
+  private readonly hallucinatedDirectives: Record<string, BloggerDiagnosticCode> = {}
+  private superPrefix = 'super.'
 
   constructor(store: CatalogStore = getDefaultCatalogStore()) {
     this.store = store
@@ -129,6 +133,11 @@ export class SpecCatalog {
       if (Array.isArray(members)) {
         this.grammarGroupMap.set(groupName, members)
       }
+    }
+
+    const hallucinated = dirCatalog.domain_metadata?.hallucinated_directives || {}
+    for (const [tag, code] of Object.entries(hallucinated)) {
+      this.hallucinatedDirectives[tag.toLowerCase()] = code as BloggerDiagnosticCode
     }
 
     for (const [name, def] of Object.entries(directives)) {
@@ -274,6 +283,7 @@ export class SpecCatalog {
   private indexInclusions(): void {
     try {
       const inclusionsData = this.store.getCatalog('inclusions') as BloggerInclusionsCatalog
+      this.superPrefix = inclusionsData?.super_prefix_rule?.prefix || 'super.'
       const inclusions = inclusionsData?.inclusions || {}
       for (const [name, def] of Object.entries(inclusions)) {
         this.inclusionMap.set(name, def)
@@ -414,14 +424,18 @@ export class SpecCatalog {
     const invalidExpressions: string[] = []
     const inverted: DirectiveAttributesValidationResult['inverted'] = []
 
-    if (tagName === 'b:includable' && presentAttributes.includes('name') && !presentAttributes.includes('id')) {
-      inverted.push({ code: 'BX1015', attribute: 'name', expected: 'id' })
-    }
-    else if (tagName === 'b:include' && presentAttributes.includes('id') && !(presentAttributes.includes('name') || presentAttributes.includes('expr:name'))) {
-      inverted.push({ code: 'BX1016', attribute: 'id', expected: 'name' })
-    }
-    else if (tagName === 'b:switch' && presentAttributes.includes('expr') && !presentAttributes.includes('var')) {
-      inverted.push({ code: 'BX1014', attribute: 'expr', expected: 'var' })
+    const inversions = directive.attribute_inversions || {}
+    for (const [invAttr, invDef] of Object.entries(inversions)) {
+      const expectedAttr = invDef.expected
+      const hasInv = presentAttributes.includes(invAttr)
+      const hasExpected = presentAttributes.includes(expectedAttr) || presentAttributes.includes(`expr:${expectedAttr}`)
+      if (hasInv && !hasExpected) {
+        inverted.push({
+          code: invDef.diagnostic as BloggerDiagnosticCode,
+          attribute: invAttr,
+          expected: expectedAttr,
+        })
+      }
     }
 
     for (const attr of presentAttributes) {
@@ -698,10 +712,61 @@ export class SpecCatalog {
     if (!name) {
       return false
     }
-    if (name.startsWith('super.')) {
+    if (name.startsWith(this.superPrefix)) {
       return true
     }
     return this.inclusionMap.has(name)
+  }
+
+  getSuperPrefix(): string {
+    return this.superPrefix
+  }
+
+  getCompilerLimits(): BloggerCompilerLimits | undefined {
+    const dirCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
+    return dirCatalog.domain_metadata?.compiler_limits
+  }
+
+  getDirectiveNestingLimit(): number {
+    return this.getCompilerLimits()?.max_directive_nesting_depth ?? 50
+  }
+
+  getCompilerQuotas(): BloggerCompilerQuotas | undefined {
+    const opCatalog = this.store.getCatalog('operators') as BloggerOperatorsCatalog
+    return opCatalog.evaluation_contexts?.compiler_quotas
+  }
+
+  getExpressionQuotaLimit(): number {
+    return this.getCompilerQuotas()?.max_expression_tokens ?? 40
+  }
+
+  getExpressionQuotaWarning(): number {
+    return this.getCompilerQuotas()?.warning_expression_tokens ?? 36
+  }
+
+  getLambdaKeywords(): ReadonlySet<string> {
+    const result = new Set<string>()
+    for (const [opKey, opDef] of this.operatorMap.entries()) {
+      if (opDef.family === 'lambda') {
+        result.add(opKey)
+        for (const alias of opDef.grammar_aliases || []) {
+          result.add(alias)
+        }
+      }
+    }
+    return result
+  }
+
+  getHallucinatedDirectives(): Readonly<Record<string, BloggerDiagnosticCode>> {
+    return { ...this.hallucinatedDirectives }
+  }
+
+  isHallucinatedDirective(tagName: string): boolean {
+    return Boolean(this.hallucinatedDirectives[tagName.toLowerCase()])
+  }
+
+  getHallucinatedDirectiveDiagnostic(tagName: string): BloggerDiagnosticCode | undefined {
+    return this.hallucinatedDirectives[tagName.toLowerCase()]
   }
 
   getInclusion(name: string): BloggerInclusionDefinition | undefined {
@@ -887,4 +952,44 @@ export const getAllServerInclusions = getAllInclusions
 
 export function isUniversalInclusion(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
   return catalog.isUniversalInclusion(name)
+}
+
+export function getSuperPrefix(catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.getSuperPrefix()
+}
+
+export function getCompilerLimits(catalog: SpecCatalog = getSpecCatalog()): BloggerCompilerLimits | undefined {
+  return catalog.getCompilerLimits()
+}
+
+export function getDirectiveNestingLimit(catalog: SpecCatalog = getSpecCatalog()): number {
+  return catalog.getDirectiveNestingLimit()
+}
+
+export function getCompilerQuotas(catalog: SpecCatalog = getSpecCatalog()): BloggerCompilerQuotas | undefined {
+  return catalog.getCompilerQuotas()
+}
+
+export function getExpressionQuotaLimit(catalog: SpecCatalog = getSpecCatalog()): number {
+  return catalog.getExpressionQuotaLimit()
+}
+
+export function getExpressionQuotaWarning(catalog: SpecCatalog = getSpecCatalog()): number {
+  return catalog.getExpressionQuotaWarning()
+}
+
+export function getLambdaKeywords(catalog: SpecCatalog = getSpecCatalog()): ReadonlySet<string> {
+  return catalog.getLambdaKeywords()
+}
+
+export function getHallucinatedDirectives(catalog: SpecCatalog = getSpecCatalog()): Readonly<Record<string, BloggerDiagnosticCode>> {
+  return catalog.getHallucinatedDirectives()
+}
+
+export function isHallucinatedDirective(tagName: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isHallucinatedDirective(tagName)
+}
+
+export function getHallucinatedDirectiveDiagnostic(tagName: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticCode | undefined {
+  return catalog.getHallucinatedDirectiveDiagnostic(tagName)
 }
