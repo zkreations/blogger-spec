@@ -302,6 +302,19 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diag?.message).toContain('values')
     })
 
+    it('detects mismatched closing tags (BX1041)', () => {
+      const diags = validateTemplateStructure('<b:section id="main"><b:widget id="Blog1"/></b:section>')
+      expect(diags.some(d => d.code === 'BX1041')).toBe(false)
+
+      const malformed = validateTemplateStructure('<b:section id="main"><b:widget id="Blog1"></b:section>')
+      expect(malformed.some(d => d.code === 'BX1041')).toBe(true)
+    })
+
+    it('detects unclosed tags at the end of a document (BX1041)', () => {
+      const diags = validateTemplateStructure('<b:section id="main"><b:widget id="Blog1"/>')
+      expect(diags.some(d => d.code === 'BX1041')).toBe(true)
+    })
+
     it('detects inverted <b:includable> and <b:include> attributes (BX1015 / BX1016)', () => {
       const xml = `
         <b:section id='main'>

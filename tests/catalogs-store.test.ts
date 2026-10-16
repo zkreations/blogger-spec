@@ -606,6 +606,19 @@ describe('catalogs and store formal verification suite', () => {
         expect(diags.some(d => d.code === 'BX1001')).toBe(true)
       })
 
+      it('uses the custom catalog while scanning XML structure', () => {
+        const catalogs = createClonedMasterCatalogs()
+        catalogs.directives.directives['b:synthetic'] = {
+          description: 'Synthetic self-closing directive',
+          self_closing: true,
+          attributes: {},
+        }
+        const customSpec = new SpecCatalog(new MemoryCatalogStore(catalogs))
+        const xml = '<b:synthetic><b:section id="main"/>'
+
+        expect(RootExports.validateTemplateStructure(xml, customSpec)).toEqual([])
+      })
+
       it('propagates dynamic attribute inversions to validateDirectiveAttributes', () => {
         const catalogs = createClonedMasterCatalogs()
         catalogs.directives.directives['b:section'].attribute_inversions = {

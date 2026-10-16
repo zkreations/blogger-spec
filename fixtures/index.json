@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-16",
   "metrics": {
-    "totalFixtures": 186,
+    "totalFixtures": 187,
     "positiveFixtures": 146,
-    "negativeFixtures": 40,
-    "coveredSpecEntities": 129
+    "negativeFixtures": 41,
+    "coveredSpecEntities": 130
   },
   "fixtures": [
     {
@@ -4222,6 +4222,27 @@
           "BX1040"
         ],
         "stage": "compiler"
+      }
+    },
+    {
+      "id": "diagnostics/negative_syntax/mismatched-or-unclosed-tag",
+      "title": "Mismatched or Unclosed XML Tag",
+      "evidence": "observed",
+      "verifiedAt": "2026-10-16",
+      "covers": [
+        "rule:BX1041"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:widget id='Blog1'></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1041"
+        ],
+        "stage": "linter"
       }
     }
   ]

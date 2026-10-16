@@ -168,6 +168,28 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       expect(report.passed).toBe(1)
     })
 
+    it('rejects a rejected fixture without expected diagnostic codes', () => {
+      const invalidFixture = {
+        ...mockFixtures[2]!,
+        expected: { outcome: 'rejected' as const },
+      }
+
+      expect(() => runConformance(
+        { analyze: () => [] },
+        { fixtures: [invalidFixture] },
+      )).toThrow(`Rejected fixture 'mock-diag-1' must define at least one expected diagnostic code.`)
+    })
+
+    it('fails clearly when the default manifest is missing', () => {
+      try {
+        setCustomWorkspaceRoot('C:\\missing-blogger-spec-fixtures')
+        expect(() => runConformance({})).toThrow('Fixtures manifest not found:')
+      }
+      finally {
+        setCustomWorkspaceRoot(null)
+      }
+    })
+
     it('captures expression evaluation mismatch and thrown exceptions', () => {
       const mismatchReport = runConformance(
         { evaluateExpression: () => 999 },

@@ -11059,6 +11059,15 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "message": "Attribute is not supported for the declared <Variable> type.",
         "evidence": "official",
         "verifiedAt": "2026-10-15"
+      },
+      "BX1041": {
+        "code": "BX1041",
+        "name": "MISMATCHED_OR_UNCLOSED_TAG",
+        "category": "structure",
+        "severity": "error",
+        "message": "XML tag is mismatched or remains unclosed in the template structure.",
+        "evidence": "observed",
+        "verifiedAt": "2026-10-16"
       }
     }
   },
