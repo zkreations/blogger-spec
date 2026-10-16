@@ -1,3 +1,4 @@
+/* eslint-disable import/no-mutable-exports */
 import type { BloggerAttributeNode, BloggerDirectiveNode } from '../ast.js'
 import type { SpecCatalog } from '../catalogs/index.js'
 import type {
@@ -7,7 +8,7 @@ import type {
   ScanDirectiveOptions,
 } from '../types.js'
 
-import { getSpecCatalog } from '../catalogs/index.js'
+import { getSpecCatalog, registerCacheResetListener } from '../catalogs/index.js'
 
 export type {
   BloggerDirectiveAttributeToken,
@@ -15,11 +16,11 @@ export type {
   ScanDirectiveOptions,
 }
 
-function getCanonicalSelfClosingTags(): Set<string> {
+function getCanonicalSelfClosingTags(catalog: SpecCatalog = getSpecCatalog()): Set<string> {
   const result = new Set<string>()
-  const directives = getSpecCatalog().getAllDirectives()
+  const directives = catalog.getAllDirectives()
   for (const [name, def] of Object.entries(directives)) {
-    if (def.self_closing || def.closure_mode === 'self_closing') {
+    if (def.self_closing || def.closure_mode === 'self_closing' || (def as any).grammar?.self_closing) {
       if (name !== 'data:*') {
         result.add(name)
       }
@@ -28,34 +29,40 @@ function getCanonicalSelfClosingTags(): Set<string> {
   return result
 }
 
-export const BLOGGER_STRICTLY_SELF_CLOSING_TAGS: ReadonlySet<string> = getCanonicalSelfClosingTags()
+function getCanonicalHtmlVoidElements(catalog: SpecCatalog = getSpecCatalog()): ReadonlySet<string> {
+  return catalog.getHtmlVoidElements()
+}
 
-export const STRICTLY_SELF_CLOSING_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS
-export const STRICTLY_SELF_CLOSING_BLOGGER_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS
+export let BLOGGER_STRICTLY_SELF_CLOSING_TAGS: ReadonlySet<string> = getCanonicalSelfClosingTags()
 
-export const HTML_VOID_ELEMENTS: ReadonlySet<string> = new Set([
-  'area',
-  'base',
-  'br',
-  'col',
-  'embed',
-  'hr',
-  'img',
-  'input',
-  'link',
-  'meta',
-  'param',
-  'source',
-  'track',
-  'wbr',
-])
+export let STRICTLY_SELF_CLOSING_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS
+export let STRICTLY_SELF_CLOSING_BLOGGER_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS
 
-export function isStrictlySelfClosingTag(tagName: string, catalog?: SpecCatalog): boolean {
+export let HTML_VOID_ELEMENTS: ReadonlySet<string> = getCanonicalHtmlVoidElements()
+
+registerCacheResetListener(() => {
+  try {
+    const spec = getSpecCatalog()
+    BLOGGER_STRICTLY_SELF_CLOSING_TAGS = getCanonicalSelfClosingTags(spec)
+    STRICTLY_SELF_CLOSING_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS
+    STRICTLY_SELF_CLOSING_BLOGGER_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS
+    HTML_VOID_ELEMENTS = getCanonicalHtmlVoidElements(spec)
+  }
+  catch {
+    // Retain defaults if the active store does not have directives
+  }
+})
+
+export function isStrictlySelfClosingTag(tagName: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
   const lower = tagName.toLowerCase()
   if (lower === 'data:' || lower.startsWith('data:')) {
     return true
   }
-  if (catalog?.isSelfClosingDirective(tagName)) {
+  if (catalog.isSelfClosingDirective(tagName) || catalog.isSelfClosingDirective(lower)) {
+    return true
+  }
+  const voidElements = catalog.getHtmlVoidElements()
+  if (voidElements.has(lower)) {
     return true
   }
   return BLOGGER_STRICTLY_SELF_CLOSING_TAGS.has(tagName)
@@ -63,8 +70,10 @@ export function isStrictlySelfClosingTag(tagName: string, catalog?: SpecCatalog)
     || HTML_VOID_ELEMENTS.has(lower)
 }
 
-export function maskCdataBlock(match: string): string {
-  if (!match.includes('<Variable') && !match.includes('<Group') && !match.includes('</Group')) {
+export function maskCdataBlock(match: string, catalog: SpecCatalog = getSpecCatalog()): string {
+  const cdataTags = catalog.getCdataDirectives()
+  const hasTag = cdataTags.some(tag => match.includes(`<${tag}`) || match.includes(`</${tag}`))
+  if (!hasTag) {
     return match.replace(/[^\r\n]/g, ' ')
   }
 
@@ -75,7 +84,8 @@ export function maskCdataBlock(match: string): string {
   const prefixSpaces = ' '.repeat(prefixLen)
   const suffixSpaces = ' '.repeat(suffixLen)
 
-  const tagRegex = /<\/?(?:Variable|Group)\b(?:"[^"]*"|'[^']*'|[^"'/>])*\/?>/gi
+  const pattern = cdataTags.join('|')
+  const tagRegex = new RegExp(`<\\/?(?:${pattern})\\b(?:"[^"]*"|'[^']*'|[^"'/>])*\\/?>`, 'gi')
   let maskedInner = ''
   let lastIndex = 0
 
@@ -93,7 +103,7 @@ export function maskCdataBlock(match: string): string {
   return prefixSpaces + maskedInner + suffixSpaces
 }
 
-export function maskXmlCommentsAndCdata(text: string): string {
+export function maskXmlCommentsAndCdata(text: string, catalog: SpecCatalog = getSpecCatalog()): string {
   let masked = text
 
   if (masked.includes('<!--')) {
@@ -101,7 +111,7 @@ export function maskXmlCommentsAndCdata(text: string): string {
   }
 
   if (masked.includes('<![CDATA[')) {
-    masked = masked.replace(/<!\[CDATA\[[\s\S]*?\]\]>/g, match => maskCdataBlock(match))
+    masked = masked.replace(/<!\[CDATA\[[\s\S]*?\]\]>/g, match => maskCdataBlock(match, catalog))
   }
 
   if (masked.includes('<b:comment')) {
@@ -177,7 +187,8 @@ export function scanDirectiveTokens(
   options?: ScanDirectiveOptions,
 ): readonly BloggerDirectiveToken[] {
   const maxOffset = options?.stopAtOffset ?? text.length
-  const maskedText = maskXmlCommentsAndCdata(text)
+  const catalog = options?.catalog ?? getSpecCatalog()
+  const maskedText = maskXmlCommentsAndCdata(text, catalog)
   const tokens: BloggerDirectiveToken[] = []
   const len = Math.min(maskedText.length, maxOffset)
 
@@ -243,7 +254,7 @@ export function scanDirectiveTokens(
 
     const rawContent = maskedText.slice(attributesOffset, tagEnd)
     const hasSelfClosingSlash = rawContent.trimEnd().endsWith('/')
-    const isSelfClosing = !isClosing && (hasSelfClosingSlash || isStrictlySelfClosingTag(tagName))
+    const isSelfClosing = !isClosing && (hasSelfClosingSlash || isStrictlySelfClosingTag(tagName, catalog))
 
     const cleanAttrsText = hasSelfClosingSlash
       ? rawContent.slice(0, rawContent.lastIndexOf('/'))

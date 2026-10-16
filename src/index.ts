@@ -1,3 +1,4 @@
+/* eslint-disable import/no-mutable-exports */
 import {
   getAllCatalogs,
   getCatalog,
@@ -11,18 +12,62 @@ import {
   getSettings,
   getTypes,
   getWidgets,
+  registerCacheResetListener,
 } from './catalogs/index.js'
 
-export const directives = getDirectives()
-export const operators = getOperators()
-export const types = getTypes()
-export const widgets = getWidgets()
-export const settings = getSettings()
-export const globals = getGlobals()
-export const messages = getMessages()
-export const scopes = getScopes()
-export const diagnostics = getDiagnostics()
-export const inclusions = getInclusions()
+export let directives = getDirectives()
+export let operators = getOperators()
+export let types = getTypes()
+export let widgets = getWidgets()
+export let settings = getSettings()
+export let globals = getGlobals()
+export let messages = getMessages()
+export let scopes = getScopes()
+export let diagnostics = getDiagnostics()
+export let inclusions = getInclusions()
+
+registerCacheResetListener(() => {
+  try {
+    directives = getDirectives()
+  }
+  catch {}
+  try {
+    operators = getOperators()
+  }
+  catch {}
+  try {
+    types = getTypes()
+  }
+  catch {}
+  try {
+    widgets = getWidgets()
+  }
+  catch {}
+  try {
+    settings = getSettings()
+  }
+  catch {}
+  try {
+    globals = getGlobals()
+  }
+  catch {}
+  try {
+    messages = getMessages()
+  }
+  catch {}
+  try {
+    scopes = getScopes()
+  }
+  catch {}
+  try {
+    diagnostics = getDiagnostics()
+  }
+  catch {}
+  try {
+    inclusions = getInclusions()
+  }
+  catch {}
+})
 
 export {
   getAllCatalogs,

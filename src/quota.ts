@@ -1,3 +1,4 @@
+/* eslint-disable import/no-mutable-exports */
 import type { BloggerExpressionNode } from './ast.js'
 import type { SpecCatalog } from './catalogs/index.js'
 import type {
@@ -6,16 +7,28 @@ import type {
   BloggerExpressionToken,
   BloggerExpressionTokenInfo,
 } from './types.js'
-import { getSpecCatalog } from './catalogs/index.js'
+import { getSpecCatalog, registerCacheResetListener } from './catalogs/index.js'
 import {
   flattenMultilineExpression,
   Lexer,
   unescapeXmlEntities,
 } from './parser/lexer.js'
 
-export const COMPILER_QUOTA_LIMIT = getSpecCatalog().getExpressionQuotaLimit()
-export const COMPILER_QUOTA_WARNING = getSpecCatalog().getExpressionQuotaWarning()
-export const COMPILER_NESTING_LIMIT = getSpecCatalog().getDirectiveNestingLimit()
+export let COMPILER_QUOTA_LIMIT = getSpecCatalog().getExpressionQuotaLimit()
+export let COMPILER_QUOTA_WARNING = getSpecCatalog().getExpressionQuotaWarning()
+export let COMPILER_NESTING_LIMIT = getSpecCatalog().getDirectiveNestingLimit()
+
+registerCacheResetListener(() => {
+  try {
+    const spec = getSpecCatalog()
+    COMPILER_QUOTA_LIMIT = spec.getExpressionQuotaLimit()
+    COMPILER_QUOTA_WARNING = spec.getExpressionQuotaWarning()
+    COMPILER_NESTING_LIMIT = spec.getDirectiveNestingLimit()
+  }
+  catch {
+    // Retain defaults if the active store does not have operators/directives
+  }
+})
 
 export {
   flattenMultilineExpression,
@@ -95,7 +108,7 @@ export function tokenizeExpression(
       tokens.push({
         value: '-',
         tokenType: 'OPERATOR_ARITHMETIC',
-        tokensConsumed: 1,
+        tokensConsumed: catalog.getOperator('-')?.token_cost ?? 1,
         pos: token.start.offset,
       })
       i++
@@ -106,7 +119,7 @@ export function tokenizeExpression(
       tokens.push({
         value: token.value,
         tokenType: 'OPERATOR_ARITHMETIC',
-        tokensConsumed: 1,
+        tokensConsumed: catalog.getOperator(token.value)?.token_cost ?? 1,
         pos: token.start.offset,
       })
       i++
@@ -117,7 +130,7 @@ export function tokenizeExpression(
       tokens.push({
         value: token.value,
         tokenType: 'OPERATOR_RELATIONAL',
-        tokensConsumed: 1,
+        tokensConsumed: catalog.getOperator(token.value)?.token_cost ?? 1,
         pos: token.start.offset,
       })
       i++
@@ -128,7 +141,7 @@ export function tokenizeExpression(
       tokens.push({
         value: '?:',
         tokenType: 'OPERATOR_ELVIS',
-        tokensConsumed: 1,
+        tokensConsumed: catalog.getOperator('?:')?.token_cost ?? 1,
         pos: token.start.offset,
       })
       i++
@@ -139,7 +152,7 @@ export function tokenizeExpression(
       tokens.push({
         value: '=>',
         tokenType: 'OPERATOR_LAMBDA',
-        tokensConsumed: 1,
+        tokensConsumed: catalog.getOperator('=>')?.token_cost ?? 1,
         pos: token.start.offset,
       })
       i++
@@ -150,7 +163,7 @@ export function tokenizeExpression(
       tokens.push({
         value: token.value,
         tokenType: 'OPERATOR_LOGICAL_JS',
-        tokensConsumed: 1,
+        tokensConsumed: catalog.getOperator(token.value)?.token_cost ?? 1,
         pos: token.start.offset,
       })
       i++
@@ -161,7 +174,7 @@ export function tokenizeExpression(
       tokens.push({
         value: '!',
         tokenType: 'OPERATOR_LOGICAL',
-        tokensConsumed: 1,
+        tokensConsumed: catalog.getOperator('!')?.token_cost ?? 1,
         pos: token.start.offset,
       })
       i++
@@ -428,7 +441,7 @@ export function tokenizeExpression(
         tokens.push({
           value: token.value,
           tokenType: 'NATIVE_FUNCTION',
-          tokensConsumed: 1,
+          tokensConsumed: opDef?.token_cost ?? 1,
           pos: token.start.offset,
         })
       }
@@ -436,7 +449,7 @@ export function tokenizeExpression(
         tokens.push({
           value: token.value,
           tokenType: 'OPERATOR_RELATIONAL',
-          tokensConsumed: 1,
+          tokensConsumed: opDef?.token_cost ?? 1,
           pos: token.start.offset,
         })
       }
@@ -444,7 +457,7 @@ export function tokenizeExpression(
         tokens.push({
           value: token.value,
           tokenType: 'OPERATOR_LOGICAL',
-          tokensConsumed: 1,
+          tokensConsumed: opDef?.token_cost ?? 1,
           pos: token.start.offset,
         })
       }
@@ -452,7 +465,7 @@ export function tokenizeExpression(
         tokens.push({
           value: token.value,
           tokenType: 'OPERATOR_MEMBERSHIP',
-          tokensConsumed: 1,
+          tokensConsumed: opDef?.token_cost ?? 1,
           pos: token.start.offset,
         })
       }
@@ -460,7 +473,7 @@ export function tokenizeExpression(
         tokens.push({
           value: token.value,
           tokenType: 'OPERATOR_LAMBDA',
-          tokensConsumed: 1,
+          tokensConsumed: opDef?.token_cost ?? 1,
           pos: token.start.offset,
         })
       }
@@ -468,7 +481,7 @@ export function tokenizeExpression(
         tokens.push({
           value: token.value,
           tokenType: 'OPERATOR_COLLECTION',
-          tokensConsumed: 1,
+          tokensConsumed: opDef?.token_cost ?? 1,
           pos: token.start.offset,
         })
       }

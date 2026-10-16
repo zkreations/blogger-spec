@@ -15,6 +15,7 @@ import {
   getAllWidgets,
   getAllWidgetSettings,
   getCatalog,
+  getCdataDirectives,
   getCompilerLimits,
   getCompilerQuotas,
   getDefaultCatalogStore,
@@ -32,6 +33,7 @@ import {
   getGrammarOperators,
   getHallucinatedDirectiveDiagnostic,
   getHallucinatedDirectives,
+  getHtmlVoidElements,
   getInclusion,
   getInclusions,
   getLambdaKeywords,
@@ -768,6 +770,72 @@ describe('catalogs and store formal verification suite', () => {
         expect(RootExports.resolveOperatorReturnType('sample', 'array[image]', undefined, customSpec)).toBe('array[image]')
       })
     })
+
+    describe('store reactivity, module constants, and canonical void elements (Phase 4)', () => {
+      it('retrieves html void elements and cdata directives from canonical directives catalog', () => {
+        const voidElements = getHtmlVoidElements()
+        expect(voidElements).toBeInstanceOf(Set)
+        expect(voidElements.has('br')).toBe(true)
+        expect(voidElements.has('img')).toBe(true)
+        expect(voidElements.has('input')).toBe(true)
+        expect(voidElements.has('meta')).toBe(true)
+        expect(voidElements.has('div')).toBe(false)
+
+        const cdataDirs = getCdataDirectives()
+        expect(cdataDirs).toContain('Variable')
+        expect(cdataDirs).toContain('Group')
+      })
+
+      it('reactively updates exported module constants and catalog objects when default store is swapped', () => {
+        const originalStore = getDefaultCatalogStore()
+        const catalogs = JSON.parse(JSON.stringify(getAllCatalogs()))
+
+        catalogs.operators.evaluation_contexts.compiler_quotas.max_expression_tokens = 99
+        catalogs.directives.domain_metadata.compiler_limits.max_directive_nesting_depth = 88
+        catalogs.directives.domain_metadata.html_void_elements.push('custom-void')
+        catalogs.directives.directives['b:custom-self'] = {
+          category: 'Logic',
+          description: 'Custom self closing directive',
+          closure_mode: 'self_closing',
+          self_closing: true,
+          grammar: {
+            self_closing: true,
+          },
+          attributes: {},
+        }
+
+        const customStore = new MemoryCatalogStore(catalogs)
+
+        try {
+          setDefaultCatalogStore(customStore)
+
+          // Module-level quota and limit constants update dynamically
+          expect(RootExports.COMPILER_QUOTA_LIMIT).toBe(99)
+          expect(RootExports.COMPILER_NESTING_LIMIT).toBe(88)
+
+          // Module-level sets update dynamically
+          expect(RootExports.HTML_VOID_ELEMENTS.has('custom-void')).toBe(true)
+          expect(RootExports.BLOGGER_STRICTLY_SELF_CLOSING_TAGS.has('b:custom-self')).toBe(true)
+
+          // Top-level exported catalog instances update dynamically
+          expect(RootExports.operators.evaluation_contexts?.compiler_quotas?.max_expression_tokens).toBe(99)
+          expect(RootExports.directives.domain_metadata?.compiler_limits?.max_directive_nesting_depth).toBe(88)
+          expect(RootExports.directives.directives['b:custom-self']).toBeDefined()
+        }
+        finally {
+          setDefaultCatalogStore(originalStore)
+        }
+
+        // Restored to defaults
+        expect(RootExports.COMPILER_QUOTA_LIMIT).toBe(40)
+        expect(RootExports.COMPILER_NESTING_LIMIT).toBe(50)
+        expect(RootExports.HTML_VOID_ELEMENTS.has('custom-void')).toBe(false)
+        expect(RootExports.BLOGGER_STRICTLY_SELF_CLOSING_TAGS.has('b:custom-self')).toBe(false)
+        expect(RootExports.operators.evaluation_contexts?.compiler_quotas?.max_expression_tokens).toBe(40)
+        expect(RootExports.directives.domain_metadata?.compiler_limits?.max_directive_nesting_depth).toBe(50)
+        expect(RootExports.directives.directives['b:custom-self']).toBeUndefined()
+      })
+    })
   })
 
   describe('rootExports parity', () => {
@@ -806,6 +874,8 @@ describe('catalogs and store formal verification suite', () => {
       expect(RootExports.getOperatorBindingPower).toBe(getOperatorBindingPower)
       expect(RootExports.isLogicalOperator).toBe(isLogicalOperator)
       expect(RootExports.isRightAssociativeOperator).toBe(isRightAssociativeOperator)
+      expect(RootExports.getHtmlVoidElements).toBe(getHtmlVoidElements)
+      expect(RootExports.getCdataDirectives).toBe(getCdataDirectives)
     })
   })
 

@@ -103,6 +103,13 @@
           },
           "additionalProperties": false
         },
+        "html_void_elements": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Standard HTML void elements that do not require closing tags in template markup."
+        },
         "theme_designer_descriptions": {
           "type": "array",
           "items": {

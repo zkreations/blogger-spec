@@ -287,6 +287,22 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "Visited Link Color",
         "Widths"
       ],
+      "html_void_elements": [
+        "area",
+        "base",
+        "br",
+        "col",
+        "embed",
+        "hr",
+        "img",
+        "input",
+        "link",
+        "meta",
+        "param",
+        "source",
+        "track",
+        "wbr"
+      ],
       "layout_versions": {
         "supported_versions": [
           1,
@@ -11868,6 +11884,13 @@ export const embeddedSchemas: Record<string, any> = {
               }
             },
             "additionalProperties": false
+          },
+          "html_void_elements": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Standard HTML void elements that do not require closing tags in template markup."
           },
           "theme_designer_descriptions": {
             "type": "array",

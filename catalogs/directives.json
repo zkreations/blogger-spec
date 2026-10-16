@@ -278,6 +278,22 @@
       "Visited Link Color",
       "Widths"
     ],
+    "html_void_elements": [
+      "area",
+      "base",
+      "br",
+      "col",
+      "embed",
+      "hr",
+      "img",
+      "input",
+      "link",
+      "meta",
+      "param",
+      "source",
+      "track",
+      "wbr"
+    ],
     "layout_versions": {
       "supported_versions": [
         1,

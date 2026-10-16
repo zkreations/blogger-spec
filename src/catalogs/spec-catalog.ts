@@ -120,6 +120,7 @@ export class SpecCatalog {
   private readonly scalarTypes: string[] = []
   private readonly falsyStringLiterals = new Set<string>()
   private readonly truthyStringLiterals = new Set<string>()
+  private readonly htmlVoidElements = new Set<string>()
   private superPrefix = 'super.'
 
   constructor(store: CatalogStore = getDefaultCatalogStore()) {
@@ -154,6 +155,11 @@ export class SpecCatalog {
     const stdDiags = (dirCatalog.domain_metadata?.standard_diagnostics as Record<string, string>) || {}
     for (const [key, code] of Object.entries(stdDiags)) {
       this.standardDiagnostics.set(key as BloggerStandardDiagnosticKey, code as BloggerDiagnosticCode)
+    }
+
+    const voidElements = (dirCatalog.domain_metadata?.html_void_elements as string[]) || []
+    for (const el of voidElements) {
+      this.htmlVoidElements.add(el.toLowerCase())
     }
 
     for (const [name, def] of Object.entries(directives)) {
@@ -595,6 +601,16 @@ export class SpecCatalog {
   getLayoutVersions(): BloggerLayoutVersionsCatalog | undefined {
     const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
     return directivesCatalog.domain_metadata?.layout_versions
+  }
+
+  getHtmlVoidElements(): ReadonlySet<string> {
+    return this.htmlVoidElements
+  }
+
+  getCdataDirectives(): readonly string[] {
+    const skinDef = this.getDirective('b:skin')
+    const cdataChildren = skinDef?.grammar?.valid_children?.filter(c => c !== 'CDATA') ?? []
+    return cdataChildren.length > 0 ? cdataChildren : ['Variable', 'Group']
   }
 
   getVariableTypeAttributes(): Record<string, { allowed: string[], required?: string[] }> | undefined
@@ -1242,4 +1258,12 @@ export function isDirectiveExpressionAttribute(
   catalog: SpecCatalog = getSpecCatalog(),
 ): boolean {
   return catalog.isDirectiveExpressionAttribute(tagName, attrName)
+}
+
+export function getHtmlVoidElements(catalog: SpecCatalog = getSpecCatalog()): ReadonlySet<string> {
+  return catalog.getHtmlVoidElements()
+}
+
+export function getCdataDirectives(catalog: SpecCatalog = getSpecCatalog()): readonly string[] {
+  return catalog.getCdataDirectives()
 }

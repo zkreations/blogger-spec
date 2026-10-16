@@ -78,6 +78,7 @@ export interface BloggerDirectiveToken {
 
 export interface ScanDirectiveOptions {
   stopAtOffset?: number
+  catalog?: any
 }
 
 export interface BloggerFixture {
