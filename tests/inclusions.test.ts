@@ -55,7 +55,7 @@ describe('system inclusions catalog suite', () => {
     const headContent = getServerInclusion('all-head-content')
     expect(headContent).toBeDefined()
     expect(headContent?.category).toBe('universal')
-    expect(headContent?.layouts_versions).toContain(3)
+    expect(headContent?.layout_versions).toContain(3)
 
     const blogPost = getServerInclusion('postBody')
     expect(blogPost).toBeDefined()

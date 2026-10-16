@@ -35,260 +35,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "prohibited_nesting": "BX1023",
         "mismatched_or_unclosed_tag": "BX1041"
       },
-      "theme_designer_descriptions": [
-        "Accents",
-        "Action color",
-        "Action font",
-        "Action font (large)",
-        "Action font (small)",
-        "Alternate Color",
-        "Attribution",
-        "Attribution link color",
-        "Attribution text color",
-        "Attribution text font",
-        "Author color",
-        "Author font",
-        "Author profile",
-        "Background blur",
-        "Background Color",
-        "Background color (Bottom)",
-        "Background color (text-only post)",
-        "Background color (Top)",
-        "Background color (Top) - HD",
-        "Background height",
-        "Background icons color",
-        "Backgrounds",
-        "Bevel Color",
-        "Blockquote color",
-        "Blockquote font",
-        "Blockquote font (large)",
-        "Blockquote font (small)",
-        "Blockquotes",
-        "Blog Description",
-        "Blog Description Background Color",
-        "Blog Description Color",
-        "Blog Description Font",
-        "Blog Title",
-        "Blog Title Background Color",
-        "Blog Title Color",
-        "Blog Title Font",
-        "Body",
-        "Body background color",
-        "Border Color",
-        "Bottom Sidebar Background Color",
-        "Bottom Sidebar Link Color",
-        "Bottom Sidebar Text Color",
-        "Bottom Sidebar Title Color",
-        "Bottom Sidebar Visited Link Color",
-        "Button color",
-        "Button font",
-        "Caption color",
-        "Caption font",
-        "Caption Text Color",
-        "Collapsed title color",
-        "Collapsed title font",
-        "Color",
-        "Comments",
-        "Content color",
-        "Content font",
-        "Content margin",
-        "Content width",
-        "Date and Footer Color",
-        "Date Header",
-        "Date Header Color",
-        "Date Header Font",
-        "Date Ribbon",
-        "Description Background Color",
-        "Description Color",
-        "Description font",
-        "Dialog action color",
-        "Dialog action font",
-        "Dialog input color",
-        "Dialog input font",
-        "Dialog title color",
-        "Dialog title font",
-        "Dialogs",
-        "Featured post",
-        "Featured post background color (secondary)",
-        "Featured post buttons color (secondary)",
-        "Featured post drop cap color (secondary)",
-        "Featured post main background color",
-        "Featured post main buttons color",
-        "Featured post main link color",
-        "Featured post main text color",
-        "Featured post main title color",
-        "Featured post text color (secondary)",
-        "Feed",
-        "Feed Links",
-        "Filter background color",
-        "Filter keyword color",
-        "Filter keyword font (large)",
-        "Filter keyword font (small)",
-        "Filter link color",
-        "Filter link font (large)",
-        "Filter link font (small)",
-        "Filter text color",
-        "Filter text font",
-        "Filter text font (large)",
-        "Filter text font (small)",
-        "Font",
-        "Footer",
-        "Footer Background",
-        "Footer color",
-        "Footer color (text-only post)",
-        "Footer Links",
-        "Footer Text Color",
-        "Gadget Background",
-        "Gadget Links",
-        "Gadget Text",
-        "Gadget text color",
-        "Gadget text font",
-        "Gadget Title",
-        "Gadget Title Color",
-        "Gadget title font",
-        "Gadget title font (large)",
-        "Gadget title font (small)",
-        "Gadgets",
-        "Header",
-        "Header Background",
-        "Header Bar",
-        "Header bar color",
-        "Header color",
-        "Header color (text-only post)",
-        "Header font",
-        "Header icons color",
-        "Header separator color",
-        "Hover Color",
-        "Icon color",
-        "Images",
-        "Individual Post or Page",
-        "Input color",
-        "Input font",
-        "Label background color",
-        "Label font",
-        "Label font size",
-        "Label text color",
-        "Labels",
-        "Link Color",
-        "Link font",
-        "Link Hover Color",
-        "Link Text",
-        "Link Visited Color",
-        "Links",
-        "Main Background",
-        "Main Background Color",
-        "Mobile Button Color",
-        "Outer Background",
-        "Page",
-        "Page Background Color",
-        "Page Header Background Color",
-        "Page Header Color",
-        "Page Header Corners Color",
-        "Page Header Font",
-        "Page Header Text Color",
-        "Page list color",
-        "Page list color (selected page)",
-        "Page list font",
-        "Page list font (selected page)",
-        "Page Text",
-        "Pager",
-        "Pictures",
-        "Placeholder text color",
-        "Placeholder text font",
-        "Popular post background color",
-        "Popular post byline color",
-        "Popular post link color",
-        "Popular post text color",
-        "Popular post title color",
-        "Popular posts",
-        "Popup background color",
-        "Popup selected color",
-        "Popup text color",
-        "Post",
-        "Post Background",
-        "Post background color",
-        "Post Border Color",
-        "Post border radius",
-        "Post byline color",
-        "Post byline font",
-        "Post Footer",
-        "Post Footer Color",
-        "Post Footer Font",
-        "Post Footer Link Color",
-        "Post icons color",
-        "Post link color",
-        "Post navigation",
-        "Post navigation links color",
-        "Post navigation links visited color",
-        "Post navigations links hover color",
-        "Post snippet text font",
-        "Post snippet text line height",
-        "Post subtitle color",
-        "Post subtitle font",
-        "Post text color",
-        "Post text font",
-        "Post text line height",
-        "Post Title",
-        "Post Title Background Color",
-        "Post Title Color",
-        "Post Title Font",
-        "Post title stream font",
-        "Post width (stream)",
-        "Posts",
-        "Profile description color",
-        "Profile description font",
-        "Profile link color",
-        "Profile link font",
-        "Profile name color",
-        "Profile name font",
-        "Profile text color",
-        "Profile title color",
-        "Search",
-        "Search bar",
-        "Selected Color",
-        "Separator Color",
-        "Separator Line Color",
-        "Shadow Color",
-        "Sharing",
-        "Sharing background color",
-        "Sharing icons color",
-        "Sharing text color",
-        "Sharing text font",
-        "Sidebar",
-        "Sidebar Background",
-        "Sidebar Background Color",
-        "Sidebar icons color",
-        "Sidebar Link Color",
-        "Sidebar Text Color",
-        "Sidebar Title Background Color",
-        "Sidebar Title Color",
-        "Sidebar Title Font",
-        "Sidebar Title Text Color",
-        "Sidebar Visited Link Color",
-        "Sidebar width",
-        "Tabs",
-        "Tabs Background",
-        "Tabs background color",
-        "Tabs Border Color",
-        "Tabs Text",
-        "Text Color",
-        "Text Font",
-        "Text font (large)",
-        "Text font (small)",
-        "Title Color",
-        "Title color (text-only post)",
-        "Title Font",
-        "Title font (large)",
-        "Title font (small)",
-        "Top Sidebar Background Color",
-        "Top Sidebar Link Color",
-        "Top Sidebar Text Color",
-        "Top Sidebar Title Color",
-        "Top Sidebar Visited Link Color",
-        "Visited Color",
-        "Visited Link Color",
-        "Widths"
-      ],
       "html_void_elements": [
         "area",
         "base",
@@ -4544,6 +4290,260 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "string",
         "number",
         "boolean"
+      ],
+      "theme_designer_descriptions": [
+        "Accents",
+        "Action color",
+        "Action font",
+        "Action font (large)",
+        "Action font (small)",
+        "Alternate Color",
+        "Attribution",
+        "Attribution link color",
+        "Attribution text color",
+        "Attribution text font",
+        "Author color",
+        "Author font",
+        "Author profile",
+        "Background blur",
+        "Background Color",
+        "Background color (Bottom)",
+        "Background color (text-only post)",
+        "Background color (Top)",
+        "Background color (Top) - HD",
+        "Background height",
+        "Background icons color",
+        "Backgrounds",
+        "Bevel Color",
+        "Blockquote color",
+        "Blockquote font",
+        "Blockquote font (large)",
+        "Blockquote font (small)",
+        "Blockquotes",
+        "Blog Description",
+        "Blog Description Background Color",
+        "Blog Description Color",
+        "Blog Description Font",
+        "Blog Title",
+        "Blog Title Background Color",
+        "Blog Title Color",
+        "Blog Title Font",
+        "Body",
+        "Body background color",
+        "Border Color",
+        "Bottom Sidebar Background Color",
+        "Bottom Sidebar Link Color",
+        "Bottom Sidebar Text Color",
+        "Bottom Sidebar Title Color",
+        "Bottom Sidebar Visited Link Color",
+        "Button color",
+        "Button font",
+        "Caption color",
+        "Caption font",
+        "Caption Text Color",
+        "Collapsed title color",
+        "Collapsed title font",
+        "Color",
+        "Comments",
+        "Content color",
+        "Content font",
+        "Content margin",
+        "Content width",
+        "Date and Footer Color",
+        "Date Header",
+        "Date Header Color",
+        "Date Header Font",
+        "Date Ribbon",
+        "Description Background Color",
+        "Description Color",
+        "Description font",
+        "Dialog action color",
+        "Dialog action font",
+        "Dialog input color",
+        "Dialog input font",
+        "Dialog title color",
+        "Dialog title font",
+        "Dialogs",
+        "Featured post",
+        "Featured post background color (secondary)",
+        "Featured post buttons color (secondary)",
+        "Featured post drop cap color (secondary)",
+        "Featured post main background color",
+        "Featured post main buttons color",
+        "Featured post main link color",
+        "Featured post main text color",
+        "Featured post main title color",
+        "Featured post text color (secondary)",
+        "Feed",
+        "Feed Links",
+        "Filter background color",
+        "Filter keyword color",
+        "Filter keyword font (large)",
+        "Filter keyword font (small)",
+        "Filter link color",
+        "Filter link font (large)",
+        "Filter link font (small)",
+        "Filter text color",
+        "Filter text font",
+        "Filter text font (large)",
+        "Filter text font (small)",
+        "Font",
+        "Footer",
+        "Footer Background",
+        "Footer color",
+        "Footer color (text-only post)",
+        "Footer Links",
+        "Footer Text Color",
+        "Gadget Background",
+        "Gadget Links",
+        "Gadget Text",
+        "Gadget text color",
+        "Gadget text font",
+        "Gadget Title",
+        "Gadget Title Color",
+        "Gadget title font",
+        "Gadget title font (large)",
+        "Gadget title font (small)",
+        "Gadgets",
+        "Header",
+        "Header Background",
+        "Header Bar",
+        "Header bar color",
+        "Header color",
+        "Header color (text-only post)",
+        "Header font",
+        "Header icons color",
+        "Header separator color",
+        "Hover Color",
+        "Icon color",
+        "Images",
+        "Individual Post or Page",
+        "Input color",
+        "Input font",
+        "Label background color",
+        "Label font",
+        "Label font size",
+        "Label text color",
+        "Labels",
+        "Link Color",
+        "Link font",
+        "Link Hover Color",
+        "Link Text",
+        "Link Visited Color",
+        "Links",
+        "Main Background",
+        "Main Background Color",
+        "Mobile Button Color",
+        "Outer Background",
+        "Page",
+        "Page Background Color",
+        "Page Header Background Color",
+        "Page Header Color",
+        "Page Header Corners Color",
+        "Page Header Font",
+        "Page Header Text Color",
+        "Page list color",
+        "Page list color (selected page)",
+        "Page list font",
+        "Page list font (selected page)",
+        "Page Text",
+        "Pager",
+        "Pictures",
+        "Placeholder text color",
+        "Placeholder text font",
+        "Popular post background color",
+        "Popular post byline color",
+        "Popular post link color",
+        "Popular post text color",
+        "Popular post title color",
+        "Popular posts",
+        "Popup background color",
+        "Popup selected color",
+        "Popup text color",
+        "Post",
+        "Post Background",
+        "Post background color",
+        "Post Border Color",
+        "Post border radius",
+        "Post byline color",
+        "Post byline font",
+        "Post Footer",
+        "Post Footer Color",
+        "Post Footer Font",
+        "Post Footer Link Color",
+        "Post icons color",
+        "Post link color",
+        "Post navigation",
+        "Post navigation links color",
+        "Post navigation links visited color",
+        "Post navigations links hover color",
+        "Post snippet text font",
+        "Post snippet text line height",
+        "Post subtitle color",
+        "Post subtitle font",
+        "Post text color",
+        "Post text font",
+        "Post text line height",
+        "Post Title",
+        "Post Title Background Color",
+        "Post Title Color",
+        "Post Title Font",
+        "Post title stream font",
+        "Post width (stream)",
+        "Posts",
+        "Profile description color",
+        "Profile description font",
+        "Profile link color",
+        "Profile link font",
+        "Profile name color",
+        "Profile name font",
+        "Profile text color",
+        "Profile title color",
+        "Search",
+        "Search bar",
+        "Selected Color",
+        "Separator Color",
+        "Separator Line Color",
+        "Shadow Color",
+        "Sharing",
+        "Sharing background color",
+        "Sharing icons color",
+        "Sharing text color",
+        "Sharing text font",
+        "Sidebar",
+        "Sidebar Background",
+        "Sidebar Background Color",
+        "Sidebar icons color",
+        "Sidebar Link Color",
+        "Sidebar Text Color",
+        "Sidebar Title Background Color",
+        "Sidebar Title Color",
+        "Sidebar Title Font",
+        "Sidebar Title Text Color",
+        "Sidebar Visited Link Color",
+        "Sidebar width",
+        "Tabs",
+        "Tabs Background",
+        "Tabs background color",
+        "Tabs Border Color",
+        "Tabs Text",
+        "Text Color",
+        "Text Font",
+        "Text font (large)",
+        "Text font (small)",
+        "Title Color",
+        "Title color (text-only post)",
+        "Title Font",
+        "Title font (large)",
+        "Title font (small)",
+        "Top Sidebar Background Color",
+        "Top Sidebar Link Color",
+        "Top Sidebar Text Color",
+        "Top Sidebar Title Color",
+        "Top Sidebar Visited Link Color",
+        "Visited Color",
+        "Visited Link Color",
+        "Widths"
       ]
     },
     "types": {
@@ -4634,16 +4634,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "parent_type": null,
         "user_constructible": true,
         "ts_type": "any[]",
-        "parameterized_forms": [
-          "array[string]",
-          "array[number]",
-          "array[boolean]",
-          "array[object]",
-          "array[array]",
-          "array[image]",
-          "array[url]",
-          "array[date]"
-        ],
+        "generic": true,
         "modifiers": {
           "size": {
             "description": "Returns total item count within the collection.",
@@ -4719,65 +4710,19 @@ export const embeddedCatalogs: BloggerCatalogMap = {
           }
         }
       },
-      "array[string]": {
-        "category": "collection",
-        "description": "Ordered collection composed exclusively of string values.",
-        "item_type": "string",
-        "parent_type": "array",
-        "user_constructible": true,
-        "ts_type": "string[]",
-        "modifiers": {}
-      },
-      "array[number]": {
-        "category": "collection",
-        "description": "Ordered collection composed exclusively of number values.",
-        "item_type": "number",
-        "parent_type": "array",
-        "user_constructible": true,
-        "ts_type": "number[]",
-        "modifiers": {}
-      },
-      "array[boolean]": {
-        "category": "collection",
-        "description": "Ordered collection composed exclusively of boolean values.",
-        "item_type": "boolean",
-        "parent_type": "array",
-        "user_constructible": true,
-        "ts_type": "boolean[]",
-        "modifiers": {}
-      },
-      "array[object]": {
-        "category": "collection",
-        "description": "Ordered collection of structured objects with heterogeneous member properties.",
-        "item_type": "object",
-        "parent_type": "array",
-        "user_constructible": true,
-        "ts_type": "Record<string, any>[]",
-        "modifiers": {}
-      },
-      "array[array]": {
-        "category": "collection",
-        "description": "Nested array containing sub-arrays of homogeneous types.",
-        "item_type": "array",
-        "parent_type": "array",
-        "user_constructible": true,
-        "ts_type": "any[][]",
-        "modifiers": {}
-      },
-      "array[image]": {
-        "category": "collection",
-        "description": "Ordered collection composed exclusively of image instances.",
-        "item_type": "image",
-        "parent_type": "array",
+      "image_variant": {
+        "category": "subtype",
+        "description": "Image variant descriptor generated by resizeImage multi-dimension operations.",
+        "parent_type": "object",
         "user_constructible": false,
-        "ts_type": "BloggerImage[]",
+        "ts_type": "BloggerImageVariant",
         "modifiers": {
           "size": {
             "description": "Dimension descriptor (width in pixels) of the resized image variant in dynamic pipeline collections.",
             "output_type": "number",
             "syntax": ".size",
             "direct_syntax": "<data:variant.size/>",
-            "expr_syntax": "([imageResizeArray]).first.size",
+            "expr_syntax": "([expr]).size",
             "example": "(data:post.featuredImage resizeImage [320, 640]).first.size"
           },
           "url": {
@@ -4785,28 +4730,10 @@ export const embeddedCatalogs: BloggerCatalogMap = {
             "output_type": "image",
             "syntax": ".url",
             "direct_syntax": "<data:variant.url/>",
-            "expr_syntax": "([imageResizeArray]).first.url",
+            "expr_syntax": "([expr]).url",
             "example": "(data:post.featuredImage resizeImage [320, 640]).first.url"
           }
         }
-      },
-      "array[url]": {
-        "category": "collection",
-        "description": "Ordered collection composed exclusively of URL strings.",
-        "item_type": "url",
-        "parent_type": "array",
-        "user_constructible": true,
-        "ts_type": "BloggerUrl[]",
-        "modifiers": {}
-      },
-      "array[date]": {
-        "category": "collection",
-        "description": "Ordered collection composed exclusively of date timestamp instances.",
-        "item_type": "date",
-        "parent_type": "array",
-        "user_constructible": false,
-        "ts_type": "BloggerDate[]",
-        "modifiers": {}
       },
       "url": {
         "category": "subtype",
@@ -5285,3404 +5212,3422 @@ export const embeddedCatalogs: BloggerCatalogMap = {
   },
   "widgets": {
     "$schema": "./schemas/widgets.schema.json",
-    "title": "Blogger Widget Data Dictionaries Master Catalog",
-    "description": "Comprehensive, machine-readable catalog of local data properties exposed within <b:widget> containers for all 26 official widget types in Gadget Version 2 (Layouts v3), including nested structures and deprecated Version 1 properties.",
+    "title": "Blogger Gadgets & Widgets Unified Master Catalog",
+    "description": "Canonical unified catalog of Blogger official gadgets, defining runtime data dictionaries (data.*) and layout configuration settings (<b:widget-setting name=\"...\">).",
     "version": "1.0.0",
     "widgets": {
       "AdSense": {
         "description": "Google AdSense ad slot configuration, publisher client ID, and slot dimension parameters.",
-        "canonical": {
-          "adClientId": {
-            "type": "string",
-            "description": "AdSense publisher ID (`ca-pub-XXXXXXXXXXXXXXXX`). Gadget v2 only."
+        "data": {
+          "canonical": {
+            "adClientId": {
+              "type": "string",
+              "description": "AdSense publisher ID (`ca-pub-XXXXXXXXXXXXXXXX`). Gadget v2 only."
+            },
+            "adCode": {
+              "type": "string",
+              "description": "Raw HTML/JavaScript snippet for the AdSense ad unit."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {
+            "style.layout": {
+              "type": "string",
+              "description": "Target ad format dimensions or responsive flag ('1x1'). Governs the ad unit geometry.",
+              "default": "1x1",
+              "allowed_values": [
+                "1x1",
+                "300x250",
+                "336x280",
+                "728x90",
+                "160x600",
+                "970x250",
+                "970x90",
+                "468x60",
+                "234x60",
+                "120x600",
+                "120x240",
+                "300x600",
+                "300x1050",
+                "250x250",
+                "200x200",
+                "180x150",
+                "125x125"
+              ],
+              "bound_runtime_data": null
+            }
           },
-          "adCode": {
-            "type": "string",
-            "description": "Raw HTML/JavaScript snippet for the AdSense ad unit."
+          "deprecated": {
+            "style.bgcolor": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "Text ad color styling moved to the Google AdSense management dashboard."
+            },
+            "style.bordercolor": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "Text ad color styling moved to the Google AdSense management dashboard."
+            },
+            "style.linkcolor": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "Text ad color styling moved to the Google AdSense management dashboard."
+            },
+            "style.textcolor": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "Text ad color styling moved to the Google AdSense management dashboard."
+            },
+            "style.unittype": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "number",
+              "replacement": null,
+              "reason": "Ad unit format configuration managed inside Google AdSense."
+            },
+            "style.urlcolor": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "Text ad color styling moved to the Google AdSense management dashboard."
+            }
           }
         }
       },
       "Attribution": {
         "description": "Theme author credits, copyright notices, and platform attribution markup.",
-        "canonical": {
-          "bloggerUrl": {
-            "type": "url",
-            "description": "Blogger platform URL (`https://www.blogger.com`)."
-          },
-          "copyright": {
-            "type": "string",
-            "description": "Custom copyright notice entered in Layout UI."
-          },
-          "imageAuthor": {
-            "type": "object",
-            "description": "Credit details for template background image designer.",
-            "properties": {
-              "name": {
-                "type": "string",
-                "description": "Name of the theme background image creator/photographer."
-              },
-              "url": {
-                "type": "url",
-                "description": "Portfolio or source link for the background image creator."
+        "data": {
+          "canonical": {
+            "bloggerUrl": {
+              "type": "url",
+              "description": "Blogger platform URL (`https://www.blogger.com`)."
+            },
+            "copyright": {
+              "type": "string",
+              "description": "Custom copyright notice entered in Layout UI."
+            },
+            "imageAuthor": {
+              "type": "object",
+              "description": "Credit details for template background image designer.",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the theme background image creator/photographer."
+                },
+                "url": {
+                  "type": "url",
+                  "description": "Portfolio or source link for the background image creator."
+                }
               }
+            }
+          },
+          "deprecated": {
+            "attribution": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "replacement": "copyright",
+              "reason": "Legacy monolithic HTML string with copyright and links. Gadget v1 only.",
+              "action": "migrate"
             }
           }
         },
-        "deprecated": {
-          "attribution": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "replacement": "copyright",
-            "reason": "Legacy monolithic HTML string with copyright and links. Gadget v1 only.",
-            "action": "migrate"
-          }
-        }
-      },
-      "BlogArchive": {
-        "description": "Hierarchical date archives, monthly/yearly post trees, and flat count lists.",
-        "canonical": {
-          "data": {
-            "type": "array[object]",
-            "description": "Recursive collection of archive interval nodes.",
-            "item_properties": {
-              "data": {
-                "type": "array[object]",
-                "description": "Nested child intervals (empty at leaf level).",
-                "item_properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Localized month or day label string."
-                  },
-                  "url": {
-                    "type": "url",
-                    "description": "Permalink to archive interval view."
-                  },
-                  "post-count": {
-                    "type": "number",
-                    "description": "Number of posts published in this sub-interval."
-                  },
-                  "expclass": {
-                    "type": "string",
-                    "allowed_values": [
-                      "expanded",
-                      "collapsed"
-                    ],
-                    "description": "Collapsible CSS state class ('expanded' or 'collapsed')."
-                  },
-                  "toggleId": {
-                    "type": "string",
-                    "description": "Unique toggle ID string for expanding archive branch."
-                  },
-                  "posts": {
-                    "type": "array[object]",
-                    "description": "Articles published within this archive date interval node.",
-                    "item_properties": {
-                      "title": {
-                        "type": "string",
-                        "description": "Post title string."
-                      },
-                      "url": {
-                        "type": "url",
-                        "description": "Canonical permalink URL of the post."
-                      }
-                    }
-                  }
-                }
-              },
-              "expclass": {
-                "type": "string",
-                "description": "Collapsible CSS state class ('expanded' or 'collapsed').",
-                "allowed_values": [
-                  "expanded",
-                  "collapsed"
-                ]
-              },
-              "name": {
-                "type": "string",
-                "description": "Formatted interval date label."
-              },
-              "post-count": {
-                "type": "number",
-                "description": "Number of posts published within this interval."
-              },
-              "posts": {
-                "type": "array[object]",
-                "description": "Child post entry inside leaf interval nodes.",
-                "item_properties": {
-                  "title": {
-                    "type": "string",
-                    "description": "Published post headline title."
-                  },
-                  "url": {
-                    "type": "url",
-                    "description": "Post canonical permalink URL."
-                  }
-                }
-              },
-              "toggleId": {
-                "type": "string",
-                "description": "Unique DOM ID for collapsible JS toggle script."
-              },
-              "url": {
-                "type": "url",
-                "description": "Archive filter URL for this interval."
-              }
+        "settings": {
+          "canonical": {
+            "copyright": {
+              "type": "string",
+              "description": "Custom copyright or attribution notice text payload.",
+              "default": null,
+              "bound_runtime_data": "data:copyright"
             }
-          },
-          "expclass": {
-            "type": "string",
-            "description": "Collapsible CSS class (`'expanded'` / `'collapsed'`) for all-time interval.",
-            "allowed_values": [
-              "expanded",
-              "collapsed"
-            ]
-          },
-          "name": {
-            "type": "string",
-            "description": "Formatted date string for root all-time period."
-          },
-          "post-count": {
-            "type": "number",
-            "description": "Total published post count across all-time period."
-          },
-          "style": {
-            "type": "string",
-            "description": "Display style configured in UI: `'HIERARCHY'`, `'FLAT'`, or `'MENU'`.",
-            "allowed_values": [
-              "HIERARCHY",
-              "FLAT",
-              "MENU"
-            ]
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (max 100 chars)."
-          },
-          "toggleId": {
-            "type": "string",
-            "description": "DOM ID string for hierarchy toggle button."
-          },
-          "toggleopen": {
-            "type": "string",
-            "description": "Toggle state indicator string (`'toggleopen'` or empty)."
-          },
-          "url": {
-            "type": "url",
-            "description": "Archive landing URL for root all-time period."
-          }
-        }
-      },
-      "BlogList": {
-        "description": "Curated blogroll showing recent updates, snippet excerpts, and author avatars.",
-        "canonical": {
-          "items": {
-            "type": "array[object]",
-            "description": "Collection of syndicated blog entries in the blogroll.",
-            "item_properties": {
-              "blogIconUrl": {
-                "type": "string",
-                "description": "URL to the blog's favicon or icon image."
-              },
-              "blogTitle": {
-                "type": "string",
-                "description": "Title of the external blog."
-              },
-              "blogUrl": {
-                "type": "url",
-                "description": "Homepage URL of the external blog."
-              },
-              "displayStyle": {
-                "type": "string",
-                "description": "Display style configured in UI ('list' or 'icon').",
-                "allowed_values": [
-                  "list",
-                  "icon"
-                ]
-              },
-              "itemSnippet": {
-                "type": "string",
-                "description": "Short summary excerpt of the latest published post."
-              },
-              "itemThumbnail": {
-                "type": "object",
-                "description": "Thumbnail image dimensions and URL for latest post.",
-                "properties": {
-                  "height": {
-                    "type": "number",
-                    "description": "Native height of the thumbnail image in pixels."
-                  },
-                  "url": {
-                    "type": "url",
-                    "description": "Direct image source URL of the thumbnail."
-                  },
-                  "width": {
-                    "type": "number",
-                    "description": "Native width of the thumbnail image in pixels."
-                  }
-                }
-              },
-              "itemTitle": {
-                "type": "string",
-                "description": "Headline/title of the latest published post."
-              },
-              "itemUrl": {
-                "type": "url",
-                "description": "Direct permalink URL to the latest published post."
-              },
-              "timePeriodSinceLastUpdate": {
-                "type": "string",
-                "description": "Localized human-readable elapsed duration (e.g. '2 hours ago')."
-              }
-            }
-          },
-          "linkColor": {
-            "type": "string",
-            "description": "Link color hexadecimal code from widget styling settings."
-          },
-          "numItemsToShow": {
-            "type": "number",
-            "description": "Max number of blogs displayed before truncation."
-          },
-          "showAllText": {
-            "type": "string",
-            "description": "Localized label to reveal all blogs (e.g. 'Show all')."
-          },
-          "showIcon": {
-            "type": "boolean",
-            "description": "UI toggle for rendering each blog's favicon."
-          },
-          "showItemSnippet": {
-            "type": "boolean",
-            "description": "UI toggle for rendering the latest post summary."
-          },
-          "showItemThumbnail": {
-            "type": "boolean",
-            "description": "UI toggle for rendering the latest post thumbnail."
-          },
-          "showItemTitle": {
-            "type": "boolean",
-            "description": "UI toggle for rendering the latest post title."
-          },
-          "showNText": {
-            "type": "string",
-            "description": "Localized label for displaying limited count (e.g. 'Show %d')."
-          },
-          "showTimePeriodSinceLastUpdate": {
-            "type": "boolean",
-            "description": "UI toggle for rendering elapsed time since last post."
-          },
-          "sortType": {
-            "type": "string",
-            "description": "Sorting order (`'ALPHABETICAL'`, `'LAST_UPDATE_DESCENDING'`).",
-            "allowed_values": [
-              "ALPHABETICAL",
-              "LAST_UPDATE_DESCENDING"
-            ]
-          },
-          "textColor": {
-            "type": "string",
-            "description": "Text color hexadecimal code from widget styling settings."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (max 100 chars)."
-          },
-          "totalItems": {
-            "type": "number",
-            "description": "Total count of blogs registered in this gadget."
-          }
-        }
-      },
-      "BlogSearch": {
-        "description": "Internal site search form header and configuration.",
-        "canonical": {
-          "title": {
-            "type": "string",
-            "description": "Widget header title (max 100 chars)."
           }
         }
       },
       "Blog": {
         "description": "Canonical post model, comments, author data, pagination, labels, and feed links.",
-        "canonical": {
-          "adClientId": {
-            "type": "string",
-            "description": "AdSense publisher ID (`ca-pub-XXXXXXXXXXXXXXXX`) for inline ads."
-          },
-          "adCode": {
-            "type": "string",
-            "description": "Raw HTML/JavaScript snippet for inline post advertisements."
-          },
-          "allBylineItems": {
-            "type": "array[object]",
-            "description": "Flat list of active byline items configured for the Blog widget.",
-            "item_properties": {
-              "name": {
-                "type": "string",
-                "description": "Byline item identifier (e.g. 'author', 'comments', 'timestamp', 'labels', 'location', 'share')."
-              },
-              "label": {
-                "type": "string",
-                "description": "Localized label text for the byline item."
-              }
-            }
-          },
-          "backgroundColor": {
-            "type": "string",
-            "description": "Background color hexadecimal code from theme settings."
-          },
-          "cmtIframeInitialHeight": {
-            "type": "string",
-            "description": "Initial pixel height string for comment iframe."
-          },
-          "description": {
-            "type": "string",
-            "description": "Blog description text associated with main widget header."
-          },
-          "feedLinks": {
-            "type": "array[object]",
-            "description": "Collection of global RSS/Atom feed links for the blog.",
-            "item_properties": {
-              "feedType": {
-                "type": "string",
-                "description": "Feed protocol standard ('atom' or 'rss').",
-                "allowed_values": [
-                  "atom",
-                  "rss"
-                ]
-              },
-              "mimeType": {
-                "type": "string",
-                "description": "MIME type string ('application/atom+xml' or 'application/rss+xml').",
-                "allowed_values": [
-                  "application/atom+xml",
-                  "application/rss+xml"
-                ]
-              },
-              "name": {
-                "type": "string",
-                "description": "Localized feed title or descriptor."
-              },
-              "url": {
-                "type": "url",
-                "description": "Public URL for syndicated feed."
-              }
-            }
-          },
-          "languageCode": {
-            "type": "string",
-            "description": "Current blog language ISO code (e.g., `'en'`, `'fr'`)."
-          },
-          "linkColor": {
-            "type": "string",
-            "description": "Link color hexadecimal code from theme settings."
-          },
-          "navMessage": {
-            "type": "string",
-            "description": "Status banner message displayed on search/archive views."
-          },
-          "newerPageUrl": {
-            "type": "url",
-            "description": "Target URL for newer posts page in multi-item views."
-          },
-          "olderPageUrl": {
-            "type": "url",
-            "description": "Target URL for older posts page in multi-item views."
-          },
-          "numPosts": {
-            "type": "number",
-            "description": "Maximum post count per page configured in settings."
-          },
-          "posts": {
-            "type": "array[object]",
-            "description": "Primary collection of blog posts/articles rendered in current view.",
-            "item_properties": {
-              "absoluteUrl": {
-                "type": "url",
-                "description": "Full canonical permalink URL including protocol and hostname."
-              },
-              "adNumber": {
-                "type": "number",
-                "description": "Sequential index integer of inline ad following this post."
-              },
-              "adminClass": {
-                "type": "string",
-                "description": "CSS class string for administrative author controls ('admin-line')."
-              },
-              "allowComments": {
-                "type": "boolean",
-                "description": "Post-level toggle indicating whether comments are accepted."
-              },
-              "allowNewComments": {
-                "type": "boolean",
-                "description": "Flag indicating whether comment submission form remains open."
-              },
-              "appRpcRelayPath": {
-                "type": "string",
-                "description": "RPC communication path for legacy Google Friend Connect and comments."
-              },
-              "author": {
-                "type": "object",
-                "description": "Author profile information and avatar details for the post.",
-                "properties": {
-                  "aboutMe": {
-                    "type": "string",
-                    "description": "Biographical summary text from author's profile."
-                  },
-                  "authorPhoto": {
-                    "type": "object",
-                    "description": "Author avatar photo details.",
-                    "properties": {
-                      "alt": {
-                        "type": "string",
-                        "description": "Accessible alternate text for author avatar."
-                      },
-                      "height": {
-                        "type": "number",
-                        "description": "Pixel height of author avatar image."
-                      },
-                      "image": {
-                        "type": "image",
-                        "description": "Native image resource of author avatar."
-                      },
-                      "width": {
-                        "type": "number",
-                        "description": "Pixel width of author avatar image."
-                      }
-                    }
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Display name of post author."
-                  },
-                  "profileUrl": {
-                    "type": "string",
-                    "description": "URL to author's public profile page."
-                  }
-                }
-              },
-              "avatarIndentClass": {
-                "type": "string",
-                "description": "CSS class indentation identifier for threaded comment replies."
-              },
-              "body": {
-                "type": "string",
-                "description": "Full compiled HTML content of the post."
-              },
-              "cmtfpIframe": {
-                "type": "string",
-                "description": "Security iframe markup for threaded comment submission form."
-              },
-              "commentConfig": {
-                "type": "string",
-                "description": "JSON string containing Blogger comment system configuration."
-              },
-              "commentFormIframeSrc": {
-                "type": "string",
-                "description": "Source URL for embedded comment submission form iframe."
-              },
-              "commentHtml": {
-                "type": "string",
-                "description": "Compiled HTML block containing legacy comments markup."
-              },
-              "commentJso": {
-                "type": "string",
-                "description": "JavaScript object configuration payload for comments."
-              },
-              "commentMsgs": {
-                "type": "string",
-                "description": "Localized error and status strings for comment JavaScript."
-              },
-              "commentPagingRequired": {
-                "type": "boolean",
-                "description": "Flag indicating if comment count exceeds single-page pagination limit."
-              },
-              "commentRangeText": {
-                "type": "string",
-                "description": "Localized comment pagination range summary text (e.g. '1-200')."
-              },
-              "commentSource": {
-                "type": "number",
-                "description": "Comment backend identifier integer (0 = Blogger native, 1 = Google+)."
-              },
-              "commentSrc": {
-                "type": "string",
-                "description": "Script URL for comments loader engine."
-              },
-              "comments": {
-                "type": "array[object]",
-                "description": "Comment entries associated with the post.",
-                "item_properties": {
-                  "adminClass": {
-                    "type": "string",
-                    "description": "CSS class indicating comment author is blog administrator."
-                  },
-                  "anchorName": {
-                    "type": "string",
-                    "description": "DOM anchor identifier string (e.g. 'c123456789')."
-                  },
-                  "author": {
-                    "type": "string",
-                    "description": "Display name of commenter."
-                  },
-                  "authorAvatarImage": {
-                    "type": "string",
-                    "description": "Pre-formatted HTML img markup of commenter avatar."
-                  },
-                  "authorAvatarSrc": {
-                    "type": "string",
-                    "description": "Image URL string of commenter avatar."
-                  },
-                  "authorPhoto": {
-                    "type": "object",
-                    "description": "Avatar photo dimension model (url, width, height).",
-                    "properties": {
-                      "height": {
-                        "type": "number",
-                        "description": "Pixel height of commenter avatar."
-                      },
-                      "thumbHeight": {
-                        "type": "number",
-                        "description": "Pixel height of thumbnail avatar."
-                      },
-                      "thumbUrl": {
-                        "type": "string",
-                        "description": "Thumbnail avatar image URL."
-                      },
-                      "thumbWidth": {
-                        "type": "number",
-                        "description": "Pixel width of thumbnail avatar."
-                      },
-                      "url": {
-                        "type": "string",
-                        "description": "Full-size avatar image URL."
-                      },
-                      "width": {
-                        "type": "number",
-                        "description": "Pixel width of commenter avatar."
-                      }
-                    }
-                  },
-                  "authorUrl": {
-                    "type": "string",
-                    "description": "Website or profile URL provided by commenter."
-                  },
-                  "authorUserType": {
-                    "type": "string",
-                    "description": "Classification type string ('BLOGGER', 'ANONYMOUS', 'OPENID').",
-                    "allowed_values": [
-                      "BLOGGER",
-                      "ANONYMOUS",
-                      "OPENID"
-                    ]
-                  },
-                  "body": {
-                    "type": "string",
-                    "description": "Comment message body HTML string."
-                  },
-                  "cmtBodyIdPostfix": {
-                    "type": "string",
-                    "description": "DOM ID postfix integer for comment body container."
-                  },
-                  "deleteUrl": {
-                    "type": "string",
-                    "description": "Moderation URL to remove or reject comment."
-                  },
-                  "extraIconClass": {
-                    "type": "string",
-                    "description": "CSS icon badge class string for registered author comments."
-                  },
-                  "id": {
-                    "type": "string",
-                    "description": "Unique numerical comment ID string."
-                  },
-                  "inReplyTo": {
-                    "type": "string",
-                    "description": "Parent comment ID for second-level replies (empty on root comments)."
-                  },
-                  "isDeleted": {
-                    "type": "boolean",
-                    "description": "Flag indicating comment was deleted by admin or author."
-                  },
-                  "timestamp": {
-                    "type": "string",
-                    "description": "Localized formatted timestamp string."
-                  },
-                  "timestampAbs": {
-                    "type": "number",
-                    "description": "Absolute timestamp integer value."
-                  },
-                  "timestampValue": {
-                    "type": "number",
-                    "description": "Unix epoch timestamp in milliseconds."
-                  },
-                  "url": {
-                    "type": "string",
-                    "description": "Direct permalink anchor URL to comment."
-                  }
+        "data": {
+          "canonical": {
+            "adClientId": {
+              "type": "string",
+              "description": "AdSense publisher ID (`ca-pub-XXXXXXXXXXXXXXXX`) for inline ads."
+            },
+            "adCode": {
+              "type": "string",
+              "description": "Raw HTML/JavaScript snippet for inline post advertisements."
+            },
+            "allBylineItems": {
+              "type": "array[object]",
+              "description": "Flat list of active byline items configured for the Blog widget.",
+              "item_properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Byline item identifier (e.g. 'author', 'comments', 'timestamp', 'labels', 'location', 'share')."
                 },
-                "deprecated": {
-                  "authorClass": {
-                    "status": "deprecated_in_widget_v2",
-                    "type": "string",
-                    "action": "migrate",
-                    "replacement": "adminClass",
-                    "reason": "Handled via adminClass or authorUserType."
-                  },
-                  "favicon": {
-                    "status": "obsolete",
-                    "type": "string",
-                    "action": "remove",
-                    "replacement": null,
-                    "reason": "Obsolete OpenID/external commenter avatar icon removed without replacement."
-                  }
+                "label": {
+                  "type": "string",
+                  "description": "Localized label text for the byline item."
                 }
-              },
-              "commentsUrl": {
-                "type": "url",
-                "description": "Target anchor link URL navigating to the comments section."
-              },
-              "commentsUrlOnclick": {
-                "type": "string",
-                "description": "JavaScript onclick handler string to toggle comments form."
-              },
-              "date": {
-                "type": "date",
-                "description": "Post publication date object supporting ICU date formatting."
-              },
-              "emailPostUrl": {
-                "type": "string",
-                "description": "Mailto URL string configured for post sharing."
-              },
-              "embedCommentForm": {
-                "type": "boolean",
-                "description": "Flag indicating whether comment form embeds directly under post."
-              },
-              "enclosures": {
-                "type": "array[object]",
-                "description": "Attached podcast or multimedia RSS enclosure items.",
-                "item_properties": {
-                  "mimeType": {
-                    "type": "string",
-                    "description": "MIME type string of enclosure asset."
-                  },
-                  "url": {
-                    "type": "string",
-                    "description": "Direct link URL to media enclosure."
-                  }
-                }
-              },
-              "featuredImage": {
-                "type": "image",
-                "description": "Hero post image resource object with dynamic resizing support."
-              },
-              "feedLinks": {
-                "type": "array[object]",
-                "description": "Comment feed links specific to this post.",
-                "item_properties": {
-                  "feedType": {
-                    "type": "string",
-                    "description": "Feed protocol standard ('atom' or 'rss').",
-                    "allowed_values": [
-                      "atom",
-                      "rss"
-                    ]
-                  },
-                  "mimeType": {
-                    "type": "string",
-                    "description": "MIME type string ('application/atom+xml' or 'application/rss+xml').",
-                    "allowed_values": [
-                      "application/atom+xml",
-                      "application/rss+xml"
-                    ]
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Localized feed title or descriptor."
-                  },
-                  "url": {
-                    "type": "url",
-                    "description": "Public URL for syndicated feed."
-                  }
-                }
-              },
-              "hasJumpLink": {
-                "type": "boolean",
-                "description": "True if the post content contains a jump break (<!--more-->)."
-              },
-              "hasNewerLinks": {
-                "type": "boolean",
-                "description": "Flag indicating newer comment pagination page exists."
-              },
-              "hasOlderLinks": {
-                "type": "boolean",
-                "description": "Flag indicating older comment pagination page exists."
-              },
-              "id": {
-                "type": "string",
-                "description": "Unique numerical post identifier string."
-              },
-              "includeAd": {
-                "type": "boolean",
-                "description": "Flag indicating whether an inline AdSense ad unit should render after this post."
-              },
-              "isDateStart": {
-                "type": "boolean",
-                "description": "True for the first post published under a specific calendar day header."
-              },
-              "isFirstPost": {
-                "type": "boolean",
-                "description": "True for the first post rendered in the current stream loop iteration."
-              },
-              "labels": {
-                "type": "array[object]",
-                "description": "Category tags assigned to the post.",
-                "item_properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Category/label name."
-                  },
-                  "url": {
-                    "type": "url",
-                    "description": "Category archive URL for this label."
-                  }
-                },
-                "deprecated": {
-                  "isLast": {
-                    "status": "deprecated_in_widget_v2",
-                    "type": "boolean",
-                    "action": "migrate",
-                    "replacement": "index",
-                    "reason": "Replaced by CSS :last-child or iteration index checking in b:loop."
-                  }
-                }
-              },
-              "lastUpdated": {
-                "type": "date",
-                "description": "Post last modification timestamp date object."
-              },
-              "link": {
-                "type": "string",
-                "description": "External target URL for link-format posts."
-              },
-              "location": {
-                "type": "object",
-                "description": "Geotag location information for the post.",
-                "properties": {
-                  "mapsUrl": {
-                    "type": "string",
-                    "description": "Google Maps web link for geotagged location."
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Place name string for geotagged location."
-                  }
-                }
-              },
-              "newLinkClass": {
-                "type": "string",
-                "description": "CSS class string for newer comment page link."
-              },
-              "newerLinkUrl": {
-                "type": "string",
-                "description": "URL to the newer page of comments."
-              },
-              "newestLinkUrl": {
-                "type": "string",
-                "description": "URL to the newest page of comments."
-              },
-              "noNewCommentsText": {
-                "type": "string",
-                "description": "Localized notice displayed when comment period has closed."
-              },
-              "numberOfComments": {
-                "type": "number",
-                "description": "Count of approved comments published on this post."
-              },
-              "oldLinkClass": {
-                "type": "string",
-                "description": "CSS class string for older comment page link."
-              },
-              "olderLinkUrl": {
-                "type": "string",
-                "description": "URL to the older page of comments."
-              },
-              "oldestLinkUrl": {
-                "type": "string",
-                "description": "URL to the oldest page of comments."
-              },
-              "postAuthorClass": {
-                "type": "string",
-                "description": "CSS class distinguishing author account roles ('author-self')."
-              },
-              "shareUrl": {
-                "type": "string",
-                "description": "Blogger sharing dialog popup URL."
-              },
-              "showThreadedComments": {
-                "type": "boolean",
-                "description": "Flag indicating if 2-level threaded comments are enabled."
-              },
-              "snippets": {
-                "type": "object",
-                "description": "Short and long plain-text snippets for the post.",
-                "properties": {
-                  "long": {
-                    "type": "string",
-                    "description": "Extended plain-text post summary excerpt."
-                  },
-                  "short": {
-                    "type": "string",
-                    "description": "Short plain-text post summary excerpt."
-                  }
-                }
-              },
-              "thumbnailUrl": {
-                "type": "string",
-                "description": "Square 72px default thumbnail image URL."
-              },
-              "title": {
-                "type": "string",
-                "description": "Post headline title string."
-              },
-              "url": {
-                "type": "url",
-                "description": "Relative or canonical permalink URL of the post."
               }
             },
-            "deprecated": {
-              "addCommentOnclick": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "commentsUrlOnclick",
-                "reason": "Replaced by commentsUrlOnclick or managed comment form logic."
-              },
-              "addCommentUrl": {
-                "status": "deprecated_in_widget_v2",
-                "type": "url",
-                "action": "migrate",
-                "replacement": "commentsUrl",
-                "reason": "Replaced by commentsUrl."
-              },
-              "author": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "author.name",
-                "reason": "Replaced by structured object author.name."
-              },
-              "authorAboutMe": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "author.aboutMe",
-                "reason": "Replaced by structured property author.aboutMe."
-              },
-              "authorPhoto": {
-                "status": "deprecated_in_widget_v2",
-                "type": "object",
-                "action": "migrate",
-                "replacement": "author.authorPhoto",
-                "reason": "Replaced by structured model author.authorPhoto."
-              },
-              "authorProfileUrl": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "author.profileUrl",
-                "reason": "Replaced by structured property author.profileUrl."
-              },
-              "canonicalUrl": {
-                "status": "deprecated_in_widget_v2",
-                "type": "url",
-                "action": "migrate",
-                "replacement": "url",
-                "reason": "Replaced by url or absoluteUrl."
-              },
-              "commentLabelFull": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "data:messages.comments",
-                "reason": "Replaced by localized string data:messages.comments."
-              },
-              "dateHeader": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "date",
-                "reason": "Date grouping header removed; use native date formatting on date."
-              },
-              "dummyTag": {
-                "status": "obsolete",
-                "type": "string",
-                "action": "remove",
-                "replacement": null,
-                "reason": "Obsolete internal markup placeholder removed without replacement."
-              },
-              "editUrl": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "remove",
-                "replacement": null,
-                "reason": "Managed via Blogger dashboard quickedit controls."
-              },
-              "firstImageUrl": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "featuredImage",
-                "reason": "Replaced by featuredImage (native image resource)."
-              },
-              "googlePlusShareTag": {
-                "status": "obsolete",
-                "type": "string",
-                "action": "remove",
-                "replacement": null,
-                "reason": "Google+ service was shut down in 2019."
-              },
-              "jumpText": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "data:messages.readMore",
-                "reason": "Replaced by localized string data:messages.readMore."
-              },
-              "lastUpdatedISO8601": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "lastUpdated",
-                "reason": "Replaced by native date object lastUpdated."
-              },
-              "longSnippet": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "snippets.long",
-                "reason": "Replaced by structured object snippets.long."
-              },
-              "newerLinkText": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "data:messages.newer",
-                "reason": "Replaced by localized string in data:messages."
-              },
-              "newestLinkText": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "data:messages.newer",
-                "reason": "Replaced by localized string in data:messages."
-              },
-              "numComments": {
-                "status": "deprecated_in_widget_v2",
-                "type": "number",
-                "action": "migrate",
-                "replacement": "numberOfComments",
-                "reason": "Replaced by numberOfComments."
-              },
-              "olderLinkText": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "data:messages.older",
-                "reason": "Replaced by localized string in data:messages."
-              },
-              "oldestLinkText": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "data:messages.older",
-                "reason": "Replaced by localized string in data:messages."
-              },
-              "sharePostUrl": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "shareUrl",
-                "reason": "Replaced by shareUrl."
-              },
-              "snippet": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "snippets.short",
-                "reason": "Replaced by structured object snippets.short."
-              },
-              "timestamp": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "date",
-                "reason": "Replaced by native date formatting on date."
-              },
-              "timestampISO8601": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "date",
-                "reason": "Replaced by native date object date."
+            "backgroundColor": {
+              "type": "string",
+              "description": "Background color hexadecimal code from theme settings."
+            },
+            "cmtIframeInitialHeight": {
+              "type": "string",
+              "description": "Initial pixel height string for comment iframe."
+            },
+            "description": {
+              "type": "string",
+              "description": "Blog description text associated with main widget header."
+            },
+            "feedLinks": {
+              "type": "array[object]",
+              "description": "Collection of global RSS/Atom feed links for the blog.",
+              "item_properties": {
+                "feedType": {
+                  "type": "string",
+                  "description": "Feed protocol standard ('atom' or 'rss').",
+                  "allowed_values": [
+                    "atom",
+                    "rss"
+                  ]
+                },
+                "mimeType": {
+                  "type": "string",
+                  "description": "MIME type string ('application/atom+xml' or 'application/rss+xml').",
+                  "allowed_values": [
+                    "application/atom+xml",
+                    "application/rss+xml"
+                  ]
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Localized feed title or descriptor."
+                },
+                "url": {
+                  "type": "url",
+                  "description": "Public URL for syndicated feed."
+                }
               }
+            },
+            "languageCode": {
+              "type": "string",
+              "description": "Current blog language ISO code (e.g., `'en'`, `'fr'`)."
+            },
+            "linkColor": {
+              "type": "string",
+              "description": "Link color hexadecimal code from theme settings."
+            },
+            "navMessage": {
+              "type": "string",
+              "description": "Status banner message displayed on search/archive views."
+            },
+            "newerPageUrl": {
+              "type": "url",
+              "description": "Target URL for newer posts page in multi-item views."
+            },
+            "olderPageUrl": {
+              "type": "url",
+              "description": "Target URL for older posts page in multi-item views."
+            },
+            "numPosts": {
+              "type": "number",
+              "description": "Maximum post count per page configured in settings."
+            },
+            "posts": {
+              "type": "array[object]",
+              "description": "Primary collection of blog posts/articles rendered in current view.",
+              "item_properties": {
+                "absoluteUrl": {
+                  "type": "url",
+                  "description": "Full canonical permalink URL including protocol and hostname."
+                },
+                "adNumber": {
+                  "type": "number",
+                  "description": "Sequential index integer of inline ad following this post."
+                },
+                "adminClass": {
+                  "type": "string",
+                  "description": "CSS class string for administrative author controls ('admin-line')."
+                },
+                "allowComments": {
+                  "type": "boolean",
+                  "description": "Post-level toggle indicating whether comments are accepted."
+                },
+                "allowNewComments": {
+                  "type": "boolean",
+                  "description": "Flag indicating whether comment submission form remains open."
+                },
+                "appRpcRelayPath": {
+                  "type": "string",
+                  "description": "RPC communication path for legacy Google Friend Connect and comments."
+                },
+                "author": {
+                  "type": "object",
+                  "description": "Author profile information and avatar details for the post.",
+                  "properties": {
+                    "aboutMe": {
+                      "type": "string",
+                      "description": "Biographical summary text from author's profile."
+                    },
+                    "authorPhoto": {
+                      "type": "object",
+                      "description": "Author avatar photo details.",
+                      "properties": {
+                        "alt": {
+                          "type": "string",
+                          "description": "Accessible alternate text for author avatar."
+                        },
+                        "height": {
+                          "type": "number",
+                          "description": "Pixel height of author avatar image."
+                        },
+                        "image": {
+                          "type": "image",
+                          "description": "Native image resource of author avatar."
+                        },
+                        "width": {
+                          "type": "number",
+                          "description": "Pixel width of author avatar image."
+                        }
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of post author."
+                    },
+                    "profileUrl": {
+                      "type": "string",
+                      "description": "URL to author's public profile page."
+                    }
+                  }
+                },
+                "avatarIndentClass": {
+                  "type": "string",
+                  "description": "CSS class indentation identifier for threaded comment replies."
+                },
+                "body": {
+                  "type": "string",
+                  "description": "Full compiled HTML content of the post."
+                },
+                "cmtfpIframe": {
+                  "type": "string",
+                  "description": "Security iframe markup for threaded comment submission form."
+                },
+                "commentConfig": {
+                  "type": "string",
+                  "description": "JSON string containing Blogger comment system configuration."
+                },
+                "commentFormIframeSrc": {
+                  "type": "string",
+                  "description": "Source URL for embedded comment submission form iframe."
+                },
+                "commentHtml": {
+                  "type": "string",
+                  "description": "Compiled HTML block containing legacy comments markup."
+                },
+                "commentJso": {
+                  "type": "string",
+                  "description": "JavaScript object configuration payload for comments."
+                },
+                "commentMsgs": {
+                  "type": "string",
+                  "description": "Localized error and status strings for comment JavaScript."
+                },
+                "commentPagingRequired": {
+                  "type": "boolean",
+                  "description": "Flag indicating if comment count exceeds single-page pagination limit."
+                },
+                "commentRangeText": {
+                  "type": "string",
+                  "description": "Localized comment pagination range summary text (e.g. '1-200')."
+                },
+                "commentSource": {
+                  "type": "number",
+                  "description": "Comment backend identifier integer (0 = Blogger native, 1 = Google+)."
+                },
+                "commentSrc": {
+                  "type": "string",
+                  "description": "Script URL for comments loader engine."
+                },
+                "comments": {
+                  "type": "array[object]",
+                  "description": "Comment entries associated with the post.",
+                  "item_properties": {
+                    "adminClass": {
+                      "type": "string",
+                      "description": "CSS class indicating comment author is blog administrator."
+                    },
+                    "anchorName": {
+                      "type": "string",
+                      "description": "DOM anchor identifier string (e.g. 'c123456789')."
+                    },
+                    "author": {
+                      "type": "string",
+                      "description": "Display name of commenter."
+                    },
+                    "authorAvatarImage": {
+                      "type": "string",
+                      "description": "Pre-formatted HTML img markup of commenter avatar."
+                    },
+                    "authorAvatarSrc": {
+                      "type": "string",
+                      "description": "Image URL string of commenter avatar."
+                    },
+                    "authorPhoto": {
+                      "type": "object",
+                      "description": "Avatar photo dimension model (url, width, height).",
+                      "properties": {
+                        "height": {
+                          "type": "number",
+                          "description": "Pixel height of commenter avatar."
+                        },
+                        "thumbHeight": {
+                          "type": "number",
+                          "description": "Pixel height of thumbnail avatar."
+                        },
+                        "thumbUrl": {
+                          "type": "string",
+                          "description": "Thumbnail avatar image URL."
+                        },
+                        "thumbWidth": {
+                          "type": "number",
+                          "description": "Pixel width of thumbnail avatar."
+                        },
+                        "url": {
+                          "type": "string",
+                          "description": "Full-size avatar image URL."
+                        },
+                        "width": {
+                          "type": "number",
+                          "description": "Pixel width of commenter avatar."
+                        }
+                      }
+                    },
+                    "authorUrl": {
+                      "type": "string",
+                      "description": "Website or profile URL provided by commenter."
+                    },
+                    "authorUserType": {
+                      "type": "string",
+                      "description": "Classification type string ('BLOGGER', 'ANONYMOUS', 'OPENID').",
+                      "allowed_values": [
+                        "BLOGGER",
+                        "ANONYMOUS",
+                        "OPENID"
+                      ]
+                    },
+                    "body": {
+                      "type": "string",
+                      "description": "Comment message body HTML string."
+                    },
+                    "cmtBodyIdPostfix": {
+                      "type": "string",
+                      "description": "DOM ID postfix integer for comment body container."
+                    },
+                    "deleteUrl": {
+                      "type": "string",
+                      "description": "Moderation URL to remove or reject comment."
+                    },
+                    "extraIconClass": {
+                      "type": "string",
+                      "description": "CSS icon badge class string for registered author comments."
+                    },
+                    "id": {
+                      "type": "string",
+                      "description": "Unique numerical comment ID string."
+                    },
+                    "inReplyTo": {
+                      "type": "string",
+                      "description": "Parent comment ID for second-level replies (empty on root comments)."
+                    },
+                    "isDeleted": {
+                      "type": "boolean",
+                      "description": "Flag indicating comment was deleted by admin or author."
+                    },
+                    "timestamp": {
+                      "type": "string",
+                      "description": "Localized formatted timestamp string."
+                    },
+                    "timestampAbs": {
+                      "type": "number",
+                      "description": "Absolute timestamp integer value."
+                    },
+                    "timestampValue": {
+                      "type": "number",
+                      "description": "Unix epoch timestamp in milliseconds."
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "Direct permalink anchor URL to comment."
+                    }
+                  },
+                  "deprecated": {
+                    "authorClass": {
+                      "status": "deprecated_in_widget_v2",
+                      "type": "string",
+                      "action": "migrate",
+                      "replacement": "adminClass",
+                      "reason": "Handled via adminClass or authorUserType."
+                    },
+                    "favicon": {
+                      "status": "obsolete",
+                      "type": "string",
+                      "action": "remove",
+                      "replacement": null,
+                      "reason": "Obsolete OpenID/external commenter avatar icon removed without replacement."
+                    }
+                  }
+                },
+                "commentsUrl": {
+                  "type": "url",
+                  "description": "Target anchor link URL navigating to the comments section."
+                },
+                "commentsUrlOnclick": {
+                  "type": "string",
+                  "description": "JavaScript onclick handler string to toggle comments form."
+                },
+                "date": {
+                  "type": "date",
+                  "description": "Post publication date object supporting ICU date formatting."
+                },
+                "emailPostUrl": {
+                  "type": "string",
+                  "description": "Mailto URL string configured for post sharing."
+                },
+                "embedCommentForm": {
+                  "type": "boolean",
+                  "description": "Flag indicating whether comment form embeds directly under post."
+                },
+                "enclosures": {
+                  "type": "array[object]",
+                  "description": "Attached podcast or multimedia RSS enclosure items.",
+                  "item_properties": {
+                    "mimeType": {
+                      "type": "string",
+                      "description": "MIME type string of enclosure asset."
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "Direct link URL to media enclosure."
+                    }
+                  }
+                },
+                "featuredImage": {
+                  "type": "image",
+                  "description": "Hero post image resource object with dynamic resizing support."
+                },
+                "feedLinks": {
+                  "type": "array[object]",
+                  "description": "Comment feed links specific to this post.",
+                  "item_properties": {
+                    "feedType": {
+                      "type": "string",
+                      "description": "Feed protocol standard ('atom' or 'rss').",
+                      "allowed_values": [
+                        "atom",
+                        "rss"
+                      ]
+                    },
+                    "mimeType": {
+                      "type": "string",
+                      "description": "MIME type string ('application/atom+xml' or 'application/rss+xml').",
+                      "allowed_values": [
+                        "application/atom+xml",
+                        "application/rss+xml"
+                      ]
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Localized feed title or descriptor."
+                    },
+                    "url": {
+                      "type": "url",
+                      "description": "Public URL for syndicated feed."
+                    }
+                  }
+                },
+                "hasJumpLink": {
+                  "type": "boolean",
+                  "description": "True if the post content contains a jump break (<!--more-->)."
+                },
+                "hasNewerLinks": {
+                  "type": "boolean",
+                  "description": "Flag indicating newer comment pagination page exists."
+                },
+                "hasOlderLinks": {
+                  "type": "boolean",
+                  "description": "Flag indicating older comment pagination page exists."
+                },
+                "id": {
+                  "type": "string",
+                  "description": "Unique numerical post identifier string."
+                },
+                "includeAd": {
+                  "type": "boolean",
+                  "description": "Flag indicating whether an inline AdSense ad unit should render after this post."
+                },
+                "isDateStart": {
+                  "type": "boolean",
+                  "description": "True for the first post published under a specific calendar day header."
+                },
+                "isFirstPost": {
+                  "type": "boolean",
+                  "description": "True for the first post rendered in the current stream loop iteration."
+                },
+                "labels": {
+                  "type": "array[object]",
+                  "description": "Category tags assigned to the post.",
+                  "item_properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Category/label name."
+                    },
+                    "url": {
+                      "type": "url",
+                      "description": "Category archive URL for this label."
+                    }
+                  },
+                  "deprecated": {
+                    "isLast": {
+                      "status": "deprecated_in_widget_v2",
+                      "type": "boolean",
+                      "action": "migrate",
+                      "replacement": "index",
+                      "reason": "Replaced by CSS :last-child or iteration index checking in b:loop."
+                    }
+                  }
+                },
+                "lastUpdated": {
+                  "type": "date",
+                  "description": "Post last modification timestamp date object."
+                },
+                "link": {
+                  "type": "string",
+                  "description": "External target URL for link-format posts."
+                },
+                "location": {
+                  "type": "object",
+                  "description": "Geotag location information for the post.",
+                  "properties": {
+                    "mapsUrl": {
+                      "type": "string",
+                      "description": "Google Maps web link for geotagged location."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Place name string for geotagged location."
+                    }
+                  }
+                },
+                "newLinkClass": {
+                  "type": "string",
+                  "description": "CSS class string for newer comment page link."
+                },
+                "newerLinkUrl": {
+                  "type": "string",
+                  "description": "URL to the newer page of comments."
+                },
+                "newestLinkUrl": {
+                  "type": "string",
+                  "description": "URL to the newest page of comments."
+                },
+                "noNewCommentsText": {
+                  "type": "string",
+                  "description": "Localized notice displayed when comment period has closed."
+                },
+                "numberOfComments": {
+                  "type": "number",
+                  "description": "Count of approved comments published on this post."
+                },
+                "oldLinkClass": {
+                  "type": "string",
+                  "description": "CSS class string for older comment page link."
+                },
+                "olderLinkUrl": {
+                  "type": "string",
+                  "description": "URL to the older page of comments."
+                },
+                "oldestLinkUrl": {
+                  "type": "string",
+                  "description": "URL to the oldest page of comments."
+                },
+                "postAuthorClass": {
+                  "type": "string",
+                  "description": "CSS class distinguishing author account roles ('author-self')."
+                },
+                "shareUrl": {
+                  "type": "string",
+                  "description": "Blogger sharing dialog popup URL."
+                },
+                "showThreadedComments": {
+                  "type": "boolean",
+                  "description": "Flag indicating if 2-level threaded comments are enabled."
+                },
+                "snippets": {
+                  "type": "object",
+                  "description": "Short and long plain-text snippets for the post.",
+                  "properties": {
+                    "long": {
+                      "type": "string",
+                      "description": "Extended plain-text post summary excerpt."
+                    },
+                    "short": {
+                      "type": "string",
+                      "description": "Short plain-text post summary excerpt."
+                    }
+                  }
+                },
+                "thumbnailUrl": {
+                  "type": "string",
+                  "description": "Square 72px default thumbnail image URL."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Post headline title string."
+                },
+                "url": {
+                  "type": "url",
+                  "description": "Relative or canonical permalink URL of the post."
+                }
+              },
+              "deprecated": {
+                "addCommentOnclick": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "commentsUrlOnclick",
+                  "reason": "Replaced by commentsUrlOnclick or managed comment form logic."
+                },
+                "addCommentUrl": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "url",
+                  "action": "migrate",
+                  "replacement": "commentsUrl",
+                  "reason": "Replaced by commentsUrl."
+                },
+                "author": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "author.name",
+                  "reason": "Replaced by structured object author.name."
+                },
+                "authorAboutMe": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "author.aboutMe",
+                  "reason": "Replaced by structured property author.aboutMe."
+                },
+                "authorPhoto": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "object",
+                  "action": "migrate",
+                  "replacement": "author.authorPhoto",
+                  "reason": "Replaced by structured model author.authorPhoto."
+                },
+                "authorProfileUrl": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "author.profileUrl",
+                  "reason": "Replaced by structured property author.profileUrl."
+                },
+                "canonicalUrl": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "url",
+                  "action": "migrate",
+                  "replacement": "url",
+                  "reason": "Replaced by url or absoluteUrl."
+                },
+                "commentLabelFull": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "data:messages.comments",
+                  "reason": "Replaced by localized string data:messages.comments."
+                },
+                "dateHeader": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "date",
+                  "reason": "Date grouping header removed; use native date formatting on date."
+                },
+                "dummyTag": {
+                  "status": "obsolete",
+                  "type": "string",
+                  "action": "remove",
+                  "replacement": null,
+                  "reason": "Obsolete internal markup placeholder removed without replacement."
+                },
+                "editUrl": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "remove",
+                  "replacement": null,
+                  "reason": "Managed via Blogger dashboard quickedit controls."
+                },
+                "firstImageUrl": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "featuredImage",
+                  "reason": "Replaced by featuredImage (native image resource)."
+                },
+                "googlePlusShareTag": {
+                  "status": "obsolete",
+                  "type": "string",
+                  "action": "remove",
+                  "replacement": null,
+                  "reason": "Google+ service was shut down in 2019."
+                },
+                "jumpText": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "data:messages.readMore",
+                  "reason": "Replaced by localized string data:messages.readMore."
+                },
+                "lastUpdatedISO8601": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "lastUpdated",
+                  "reason": "Replaced by native date object lastUpdated."
+                },
+                "longSnippet": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "snippets.long",
+                  "reason": "Replaced by structured object snippets.long."
+                },
+                "newerLinkText": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "data:messages.newer",
+                  "reason": "Replaced by localized string in data:messages."
+                },
+                "newestLinkText": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "data:messages.newer",
+                  "reason": "Replaced by localized string in data:messages."
+                },
+                "numComments": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "number",
+                  "action": "migrate",
+                  "replacement": "numberOfComments",
+                  "reason": "Replaced by numberOfComments."
+                },
+                "olderLinkText": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "data:messages.older",
+                  "reason": "Replaced by localized string in data:messages."
+                },
+                "oldestLinkText": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "data:messages.older",
+                  "reason": "Replaced by localized string in data:messages."
+                },
+                "sharePostUrl": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "shareUrl",
+                  "reason": "Replaced by shareUrl."
+                },
+                "snippet": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "snippets.short",
+                  "reason": "Replaced by structured object snippets.short."
+                },
+                "timestamp": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "date",
+                  "reason": "Replaced by native date formatting on date."
+                },
+                "timestampISO8601": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "date",
+                  "reason": "Replaced by native date object date."
+                }
+              }
+            },
+            "showCmtPopup": {
+              "type": "boolean",
+              "description": "Toggle indicating if comments open in popup window."
+            },
+            "textColor": {
+              "type": "string",
+              "description": "Text color hexadecimal code from theme settings."
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (often empty in modern layouts)."
             }
           },
-          "showCmtPopup": {
-            "type": "boolean",
-            "description": "Toggle indicating if comments open in popup window."
-          },
-          "textColor": {
-            "type": "string",
-            "description": "Text color hexadecimal code from theme settings."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (often empty in modern layouts)."
+          "deprecated": {
+            "authorLabel": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:allBylineItems.author.label",
+              "reason": "Replaced by localized byline item label data:allBylineItems.author.label or data:messages.by."
+            },
+            "blogCommentMessage": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.postAComment",
+              "reason": "Replaced by localized string data:messages.postAComment."
+            },
+            "blogTeamBlogMessage": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Legacy team blog message."
+            },
+            "blogThisMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Legacy 'BlogThis!' action message string."
+            },
+            "commentLabel": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.comments",
+              "reason": "Replaced by localized string data:messages.comments."
+            },
+            "commentLabelPlural": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:post.numberOfComments",
+              "reason": "Replaced by numerical count data:post.numberOfComments and localized messages."
+            },
+            "commentPostedByMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.by",
+              "reason": "Replaced by localized platform strings."
+            },
+            "deleteCommentMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.deleteComment",
+              "reason": "Replaced by localized string data:messages.deleteComment."
+            },
+            "desktopLinkMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Legacy desktop switcher message."
+            },
+            "desktopLinkUrl": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Legacy desktop switcher URL."
+            },
+            "editPostMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.edit",
+              "reason": "Replaced by localized string data:messages.edit."
+            },
+            "emailPostMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.emailPost",
+              "reason": "Replaced by localized string data:messages.emailPost."
+            },
+            "emailThisMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.emailPost",
+              "reason": "Replaced by localized string data:messages.emailPost."
+            },
+            "feedLinksMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.subscribeTo",
+              "reason": "Replaced by localized string data:messages.subscribeTo."
+            },
+            "homeMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.home",
+              "reason": "Replaced by localized string data:messages.home."
+            },
+            "mobile": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "data:blog.isMobileRequest",
+              "reason": "Legacy mobile rendering flag. Replaced by CSS media queries or data:blog.isMobileRequest."
+            },
+            "mobileLinkMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Legacy mobile switcher message."
+            },
+            "mobileLinkUrl": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Legacy mobile switcher URL."
+            },
+            "newerPageTitle": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.newerPosts",
+              "reason": "Replaced by localized string data:messages.newerPosts."
+            },
+            "olderPageTitle": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.olderPosts",
+              "reason": "Replaced by localized string data:messages.olderPosts."
+            },
+            "postCommentMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.postAComment",
+              "reason": "Replaced by localized string data:messages.postAComment."
+            },
+            "postLabelsLabel": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:allBylineItems.labels.label",
+              "reason": "Replaced by localized byline item label data:allBylineItems.labels.label or data:messages.labels."
+            },
+            "postLocationLabel": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:allBylineItems.location.label",
+              "reason": "Replaced by localized byline item label data:allBylineItems.location.label."
+            },
+            "shareMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.share",
+              "reason": "Replaced by localized string data:messages.share."
+            },
+            "shareToFacebookMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:blog.sharing.platforms[...].shareMessage",
+              "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
+            },
+            "shareToPinterestMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:blog.sharing.platforms[...].shareMessage",
+              "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
+            },
+            "shareToTwitterMsg": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:blog.sharing.platforms[...].shareMessage",
+              "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
+            },
+            "showAuthor": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "CSS / includable params",
+              "reason": "Modern Gadget v2 handles byline visibility via CSS or includable parameters."
+            },
+            "showBlogThisButton": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Legacy BlogThis! button toggle."
+            },
+            "showDummy": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Legacy internal placeholder toggle."
+            },
+            "showEmailButton": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "Unified sharing includables",
+              "reason": "Modern Gadget v2 uses unified SVG sharing includables."
+            },
+            "showFacebookButton": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "Unified sharing includables",
+              "reason": "Modern Gadget v2 uses unified SVG sharing includables."
+            },
+            "showLocation": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "CSS / includable params",
+              "reason": "Modern Gadget v2 handles byline visibility via CSS or includable parameters."
+            },
+            "showMobileShare": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Legacy mobile sharing button toggle."
+            },
+            "showPinterestButton": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "Unified sharing includables",
+              "reason": "Modern Gadget v2 uses unified SVG sharing includables."
+            },
+            "showPlusOne": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Legacy Google+ +1 button toggle."
+            },
+            "showPostLabels": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "CSS / includable params",
+              "reason": "Modern Gadget v2 handles byline visibility via CSS or includable parameters."
+            },
+            "showTimestamp": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "CSS / includable params",
+              "reason": "Modern Gadget v2 handles byline visibility via CSS or includable parameters."
+            },
+            "showTwitterButton": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "Unified sharing includables",
+              "reason": "Modern Gadget v2 uses unified SVG sharing includables."
+            },
+            "timestampLabel": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:messages.*",
+              "reason": "Replaced by localized platform strings."
+            }
           }
         },
-        "deprecated": {
-          "authorLabel": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:allBylineItems.author.label",
-            "reason": "Replaced by localized byline item label data:allBylineItems.author.label or data:messages.by."
+        "settings": {
+          "canonical": {
+            "authorLabel": {
+              "type": "string",
+              "description": "Custom text prefix preceding post author name. In Layouts v3, modern themes resolve author prefixes via data:messages.by.",
+              "default": "By",
+              "bound_runtime_data": "data:widgets.Blog1.allBylineItems.author.label"
+            },
+            "commentLabel": {
+              "type": "string",
+              "description": "Custom label text for post comment link. In Layouts v3, modern themes resolve comment strings via data:allBylineItems.comments.label or data:messages.comments.",
+              "default": "Comments",
+              "bound_runtime_data": "data:widgets.Blog1.allBylineItems.comments.label"
+            },
+            "postLabelsLabel": {
+              "type": "string",
+              "description": "Custom prefix label preceding post tag/label links. In Layouts v3, modern themes resolve label strings via data:messages.labels.",
+              "default": "Labels:",
+              "bound_runtime_data": "data:widgets.Blog1.allBylineItems.labels.label"
+            },
+            "postLocationLabel": {
+              "type": "string",
+              "description": "Custom label text preceding post geo-location. In Layouts v3, modern themes resolve location strings via data:allBylineItems.location.label.",
+              "default": "Location:",
+              "bound_runtime_data": "data:widgets.Blog1.allBylineItems.location.label"
+            },
+            "postsPerAd": {
+              "type": "number",
+              "description": "Number of blog posts rendered between each inline AdSense ad unit.",
+              "default": 3,
+              "bound_runtime_data": "data:post.includeAd"
+            },
+            "showAuthor": {
+              "type": "boolean",
+              "description": "Toggle visibility of post author byline.",
+              "default": true,
+              "bound_runtime_data": "data:widgets.Blog1.allBylineItems.author"
+            },
+            "showAuthorProfile": {
+              "type": "boolean",
+              "description": "Toggle display of author profile information in post footer.",
+              "default": false,
+              "bound_runtime_data": null
+            },
+            "showCommentLink": {
+              "type": "boolean",
+              "description": "Toggle visibility of comment count and comment link.",
+              "default": true,
+              "bound_runtime_data": "data:widgets.Blog1.allBylineItems.comments"
+            },
+            "showDateHeader": {
+              "type": "boolean",
+              "description": "Toggle grouping and display of post date headers.",
+              "default": true,
+              "bound_runtime_data": null
+            },
+            "showInlineAds": {
+              "type": "boolean",
+              "description": "Toggle injection of inline AdSense ads between blog posts.",
+              "default": false,
+              "bound_runtime_data": null
+            },
+            "showLabels": {
+              "type": "boolean",
+              "description": "Toggle display of post tags/labels.",
+              "default": true,
+              "bound_runtime_data": "data:widgets.Blog1.allBylineItems.labels"
+            },
+            "showLocation": {
+              "type": "boolean",
+              "description": "Toggle display of post geo-location metadata.",
+              "default": true,
+              "bound_runtime_data": "data:widgets.Blog1.allBylineItems.location"
+            },
+            "showShareButtons": {
+              "type": "boolean",
+              "description": "Toggle display of social share buttons.",
+              "default": true,
+              "bound_runtime_data": "data:widgets.Blog1.allBylineItems.share"
+            },
+            "showTimestamp": {
+              "type": "boolean",
+              "description": "Toggle display of post publication time/timestamp.",
+              "default": true,
+              "bound_runtime_data": "data:widgets.Blog1.allBylineItems.timestamp"
+            },
+            "style.layout": {
+              "type": "string",
+              "description": "Ad format geometry for inline AdSense ads embedded within posts.",
+              "default": "1x1",
+              "bound_runtime_data": null
+            },
+            "timestampLabel": {
+              "type": "string",
+              "description": "Custom text prefix preceding post timestamp. In Layouts v3, modern themes format publication timestamps via date operators.",
+              "default": "at",
+              "bound_runtime_data": "data:widgets.Blog1.allBylineItems.timestamp.label"
+            }
           },
-          "blogCommentMessage": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.postAComment",
-            "reason": "Replaced by localized string data:messages.postAComment."
-          },
-          "blogTeamBlogMessage": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Legacy team blog message."
-          },
-          "blogThisMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Legacy 'BlogThis!' action message string."
-          },
-          "commentLabel": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.comments",
-            "reason": "Replaced by localized string data:messages.comments."
-          },
-          "commentLabelPlural": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:post.numberOfComments",
-            "reason": "Replaced by numerical count data:post.numberOfComments and localized messages."
-          },
-          "commentPostedByMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.by",
-            "reason": "Replaced by localized platform strings."
-          },
-          "deleteCommentMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.deleteComment",
-            "reason": "Replaced by localized string data:messages.deleteComment."
-          },
-          "desktopLinkMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Legacy desktop switcher message."
-          },
-          "desktopLinkUrl": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Legacy desktop switcher URL."
-          },
-          "editPostMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.edit",
-            "reason": "Replaced by localized string data:messages.edit."
-          },
-          "emailPostMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.emailPost",
-            "reason": "Replaced by localized string data:messages.emailPost."
-          },
-          "emailThisMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.emailPost",
-            "reason": "Replaced by localized string data:messages.emailPost."
-          },
-          "feedLinksMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.subscribeTo",
-            "reason": "Replaced by localized string data:messages.subscribeTo."
-          },
-          "homeMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.home",
-            "reason": "Replaced by localized string data:messages.home."
-          },
-          "mobile": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "data:blog.isMobileRequest",
-            "reason": "Legacy mobile rendering flag. Replaced by CSS media queries or data:blog.isMobileRequest."
-          },
-          "mobileLinkMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Legacy mobile switcher message."
-          },
-          "mobileLinkUrl": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Legacy mobile switcher URL."
-          },
-          "newerPageTitle": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.newerPosts",
-            "reason": "Replaced by localized string data:messages.newerPosts."
-          },
-          "olderPageTitle": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.olderPosts",
-            "reason": "Replaced by localized string data:messages.olderPosts."
-          },
-          "postCommentMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.postAComment",
-            "reason": "Replaced by localized string data:messages.postAComment."
-          },
-          "postLabelsLabel": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:allBylineItems.labels.label",
-            "reason": "Replaced by localized byline item label data:allBylineItems.labels.label or data:messages.labels."
-          },
-          "postLocationLabel": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:allBylineItems.location.label",
-            "reason": "Replaced by localized byline item label data:allBylineItems.location.label."
-          },
-          "shareMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.share",
-            "reason": "Replaced by localized string data:messages.share."
-          },
-          "shareToFacebookMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:blog.sharing.platforms[...].shareMessage",
-            "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
-          },
-          "shareToPinterestMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:blog.sharing.platforms[...].shareMessage",
-            "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
-          },
-          "shareToTwitterMsg": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:blog.sharing.platforms[...].shareMessage",
-            "reason": "Replaced by localized social action label in data:blog.sharing.platforms or data:messages.share."
-          },
-          "showAuthor": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "CSS / includable params",
-            "reason": "Modern Gadget v2 handles byline visibility via CSS or includable parameters."
-          },
-          "showBlogThisButton": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Legacy BlogThis! button toggle."
-          },
-          "showDummy": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Legacy internal placeholder toggle."
-          },
-          "showEmailButton": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "Unified sharing includables",
-            "reason": "Modern Gadget v2 uses unified SVG sharing includables."
-          },
-          "showFacebookButton": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "Unified sharing includables",
-            "reason": "Modern Gadget v2 uses unified SVG sharing includables."
-          },
-          "showLocation": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "CSS / includable params",
-            "reason": "Modern Gadget v2 handles byline visibility via CSS or includable parameters."
-          },
-          "showMobileShare": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Legacy mobile sharing button toggle."
-          },
-          "showPinterestButton": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "Unified sharing includables",
-            "reason": "Modern Gadget v2 uses unified SVG sharing includables."
-          },
-          "showPlusOne": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Legacy Google+ +1 button toggle."
-          },
-          "showPostLabels": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "CSS / includable params",
-            "reason": "Modern Gadget v2 handles byline visibility via CSS or includable parameters."
-          },
-          "showTimestamp": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "CSS / includable params",
-            "reason": "Modern Gadget v2 handles byline visibility via CSS or includable parameters."
-          },
-          "showTwitterButton": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "Unified sharing includables",
-            "reason": "Modern Gadget v2 uses unified SVG sharing includables."
-          },
-          "timestampLabel": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:messages.*",
-            "reason": "Replaced by localized platform strings."
+          "deprecated": {
+            "backlinksLabel": {
+              "status": "obsolete",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "External blog backlink tracking was retired."
+            },
+            "disableGooglePlusShare": {
+              "status": "obsolete",
+              "action": "remove",
+              "type": "boolean",
+              "replacement": null,
+              "reason": "Google+ shut down in 2019."
+            },
+            "reactionsLabel": {
+              "status": "ignored_in_layout_v3",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "Blogger reaction rating system was decommissioned in modern responsive themes."
+            },
+            "showBacklinks": {
+              "status": "obsolete",
+              "action": "remove",
+              "type": "boolean",
+              "replacement": null,
+              "reason": "External blog backlink tracking was retired."
+            },
+            "showReactions": {
+              "status": "ignored_in_layout_v3",
+              "action": "remove",
+              "type": "boolean",
+              "replacement": null,
+              "reason": "Blogger reaction rating system was decommissioned in modern responsive themes."
+            },
+            "style.bgcolor": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
+            },
+            "style.bordercolor": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
+            },
+            "style.linkcolor": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
+            },
+            "style.textcolor": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
+            },
+            "style.unittype": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "number",
+              "replacement": null,
+              "reason": "Ad unit format configuration managed inside Google AdSense."
+            },
+            "style.urlcolor": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "string",
+              "replacement": null,
+              "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
+            }
           }
+        }
+      },
+      "BlogArchive": {
+        "description": "Hierarchical date archives, monthly/yearly post trees, and flat count lists.",
+        "data": {
+          "canonical": {
+            "data": {
+              "type": "array[object]",
+              "description": "Recursive collection of archive interval nodes.",
+              "item_properties": {
+                "data": {
+                  "type": "array[object]",
+                  "description": "Nested child intervals (empty at leaf level).",
+                  "item_properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Localized month or day label string."
+                    },
+                    "url": {
+                      "type": "url",
+                      "description": "Permalink to archive interval view."
+                    },
+                    "post-count": {
+                      "type": "number",
+                      "description": "Number of posts published in this sub-interval."
+                    },
+                    "expclass": {
+                      "type": "string",
+                      "allowed_values": [
+                        "expanded",
+                        "collapsed"
+                      ],
+                      "description": "Collapsible CSS state class ('expanded' or 'collapsed')."
+                    },
+                    "toggleId": {
+                      "type": "string",
+                      "description": "Unique toggle ID string for expanding archive branch."
+                    },
+                    "posts": {
+                      "type": "array[object]",
+                      "description": "Articles published within this archive date interval node.",
+                      "item_properties": {
+                        "title": {
+                          "type": "string",
+                          "description": "Post title string."
+                        },
+                        "url": {
+                          "type": "url",
+                          "description": "Canonical permalink URL of the post."
+                        }
+                      }
+                    }
+                  }
+                },
+                "expclass": {
+                  "type": "string",
+                  "description": "Collapsible CSS state class ('expanded' or 'collapsed').",
+                  "allowed_values": [
+                    "expanded",
+                    "collapsed"
+                  ]
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Formatted interval date label."
+                },
+                "post-count": {
+                  "type": "number",
+                  "description": "Number of posts published within this interval."
+                },
+                "posts": {
+                  "type": "array[object]",
+                  "description": "Child post entry inside leaf interval nodes.",
+                  "item_properties": {
+                    "title": {
+                      "type": "string",
+                      "description": "Published post headline title."
+                    },
+                    "url": {
+                      "type": "url",
+                      "description": "Post canonical permalink URL."
+                    }
+                  }
+                },
+                "toggleId": {
+                  "type": "string",
+                  "description": "Unique DOM ID for collapsible JS toggle script."
+                },
+                "url": {
+                  "type": "url",
+                  "description": "Archive filter URL for this interval."
+                }
+              }
+            },
+            "expclass": {
+              "type": "string",
+              "description": "Collapsible CSS class (`'expanded'` / `'collapsed'`) for all-time interval.",
+              "allowed_values": [
+                "expanded",
+                "collapsed"
+              ]
+            },
+            "name": {
+              "type": "string",
+              "description": "Formatted date string for root all-time period."
+            },
+            "post-count": {
+              "type": "number",
+              "description": "Total published post count across all-time period."
+            },
+            "style": {
+              "type": "string",
+              "description": "Display style configured in UI: `'HIERARCHY'`, `'FLAT'`, or `'MENU'`.",
+              "allowed_values": [
+                "HIERARCHY",
+                "FLAT",
+                "MENU"
+              ]
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (max 100 chars)."
+            },
+            "toggleId": {
+              "type": "string",
+              "description": "DOM ID string for hierarchy toggle button."
+            },
+            "toggleopen": {
+              "type": "string",
+              "description": "Toggle state indicator string (`'toggleopen'` or empty)."
+            },
+            "url": {
+              "type": "url",
+              "description": "Archive landing URL for root all-time period."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {
+            "chronological": {
+              "type": "boolean",
+              "description": "Toggle chronological ordering of archive intervals (oldest first if true, newest first if false).",
+              "default": false,
+              "bound_runtime_data": null
+            },
+            "dayPattern": {
+              "type": "string",
+              "description": "SimpleDateFormat pattern for daily archive navigation links.",
+              "default": "dd",
+              "bound_runtime_data": null
+            },
+            "frequency": {
+              "type": "string",
+              "description": "Grouping interval frequency for archive links.",
+              "default": "MONTHLY",
+              "allowed_values": [
+                "DAILY",
+                "WEEKLY",
+                "MONTHLY",
+                "YEARLY"
+              ],
+              "bound_runtime_data": null
+            },
+            "monthPattern": {
+              "type": "string",
+              "description": "SimpleDateFormat pattern for monthly archive navigation links.",
+              "default": "MMMM yyyy",
+              "bound_runtime_data": null
+            },
+            "showPosts": {
+              "type": "boolean",
+              "description": "Toggle listing of individual post titles within archive time intervals.",
+              "default": true,
+              "bound_runtime_data": null
+            },
+            "showStyle": {
+              "type": "string",
+              "description": "Presentation format for archive links hierarchy.",
+              "default": "HIERARCHY",
+              "allowed_values": [
+                "HIERARCHY",
+                "FLAT",
+                "MENU"
+              ],
+              "bound_runtime_data": "data:style"
+            },
+            "showWeekEnd": {
+              "type": "boolean",
+              "description": "Toggle display of week end date in weekly archive links.",
+              "default": true,
+              "bound_runtime_data": null
+            },
+            "weekPattern": {
+              "type": "string",
+              "description": "SimpleDateFormat pattern for weekly archive navigation links.",
+              "default": "MM/dd",
+              "bound_runtime_data": null
+            },
+            "yearPattern": {
+              "type": "string",
+              "description": "SimpleDateFormat pattern for yearly archive navigation links.",
+              "default": "yyyy",
+              "bound_runtime_data": null
+            }
+          }
+        }
+      },
+      "BlogList": {
+        "description": "Curated blogroll showing recent updates, snippet excerpts, and author avatars.",
+        "data": {
+          "canonical": {
+            "items": {
+              "type": "array[object]",
+              "description": "Collection of syndicated blog entries in the blogroll.",
+              "item_properties": {
+                "blogIconUrl": {
+                  "type": "string",
+                  "description": "URL to the blog's favicon or icon image."
+                },
+                "blogTitle": {
+                  "type": "string",
+                  "description": "Title of the external blog."
+                },
+                "blogUrl": {
+                  "type": "url",
+                  "description": "Homepage URL of the external blog."
+                },
+                "displayStyle": {
+                  "type": "string",
+                  "description": "Display style configured in UI ('list' or 'icon').",
+                  "allowed_values": [
+                    "list",
+                    "icon"
+                  ]
+                },
+                "itemSnippet": {
+                  "type": "string",
+                  "description": "Short summary excerpt of the latest published post."
+                },
+                "itemThumbnail": {
+                  "type": "object",
+                  "description": "Thumbnail image dimensions and URL for latest post.",
+                  "properties": {
+                    "height": {
+                      "type": "number",
+                      "description": "Native height of the thumbnail image in pixels."
+                    },
+                    "url": {
+                      "type": "url",
+                      "description": "Direct image source URL of the thumbnail."
+                    },
+                    "width": {
+                      "type": "number",
+                      "description": "Native width of the thumbnail image in pixels."
+                    }
+                  }
+                },
+                "itemTitle": {
+                  "type": "string",
+                  "description": "Headline/title of the latest published post."
+                },
+                "itemUrl": {
+                  "type": "url",
+                  "description": "Direct permalink URL to the latest published post."
+                },
+                "timePeriodSinceLastUpdate": {
+                  "type": "string",
+                  "description": "Localized human-readable elapsed duration (e.g. '2 hours ago')."
+                }
+              }
+            },
+            "linkColor": {
+              "type": "string",
+              "description": "Link color hexadecimal code from widget styling settings."
+            },
+            "numItemsToShow": {
+              "type": "number",
+              "description": "Max number of blogs displayed before truncation."
+            },
+            "showAllText": {
+              "type": "string",
+              "description": "Localized label to reveal all blogs (e.g. 'Show all')."
+            },
+            "showIcon": {
+              "type": "boolean",
+              "description": "UI toggle for rendering each blog's favicon."
+            },
+            "showItemSnippet": {
+              "type": "boolean",
+              "description": "UI toggle for rendering the latest post summary."
+            },
+            "showItemThumbnail": {
+              "type": "boolean",
+              "description": "UI toggle for rendering the latest post thumbnail."
+            },
+            "showItemTitle": {
+              "type": "boolean",
+              "description": "UI toggle for rendering the latest post title."
+            },
+            "showNText": {
+              "type": "string",
+              "description": "Localized label for displaying limited count (e.g. 'Show %d')."
+            },
+            "showTimePeriodSinceLastUpdate": {
+              "type": "boolean",
+              "description": "UI toggle for rendering elapsed time since last post."
+            },
+            "sortType": {
+              "type": "string",
+              "description": "Sorting order (`'ALPHABETICAL'`, `'LAST_UPDATE_DESCENDING'`).",
+              "allowed_values": [
+                "ALPHABETICAL",
+                "LAST_UPDATE_DESCENDING"
+              ]
+            },
+            "textColor": {
+              "type": "string",
+              "description": "Text color hexadecimal code from widget styling settings."
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (max 100 chars)."
+            },
+            "totalItems": {
+              "type": "number",
+              "description": "Total count of blogs registered in this gadget."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {
+            "numItemsToShow": {
+              "type": "number",
+              "description": "Maximum number of external blogs displayed in the blogroll.",
+              "default": 5,
+              "bound_runtime_data": "data:numItemsToShow"
+            },
+            "showIcon": {
+              "type": "boolean",
+              "description": "Toggle display of blog favicon/icon.",
+              "default": true,
+              "bound_runtime_data": "data:showIcon"
+            },
+            "showItemSnippet": {
+              "type": "boolean",
+              "description": "Toggle display of recent post snippet text.",
+              "default": false,
+              "bound_runtime_data": "data:showItemSnippet"
+            },
+            "showItemThumbnail": {
+              "type": "boolean",
+              "description": "Toggle display of recent post thumbnail image.",
+              "default": true,
+              "bound_runtime_data": "data:showItemThumbnail"
+            },
+            "showItemTitle": {
+              "type": "boolean",
+              "description": "Toggle display of recent post title.",
+              "default": true,
+              "bound_runtime_data": "data:showItemTitle"
+            },
+            "showTimePeriodSinceLastUpdate": {
+              "type": "boolean",
+              "description": "Toggle display of relative time since blog last updated.",
+              "default": true,
+              "bound_runtime_data": "data:showTimePeriodSinceLastUpdate"
+            },
+            "sortType": {
+              "type": "string",
+              "description": "Sorting order for blogroll entries.",
+              "default": "LAST_UPDATE_DESCENDING",
+              "allowed_values": [
+                "LAST_UPDATE_DESCENDING",
+                "ALPHABETICAL"
+              ],
+              "bound_runtime_data": "data:sortType"
+            }
+          }
+        }
+      },
+      "BlogSearch": {
+        "description": "Internal site search form header and configuration.",
+        "data": {
+          "canonical": {
+            "title": {
+              "type": "string",
+              "description": "Widget header title (max 100 chars)."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {}
         }
       },
       "BloggerButton": {
         "description": "Official Powered by Blogger badge URLs and graphic assets.",
-        "canonical": {
-          "source": {
-            "type": "url",
-            "description": "Direct URL path to selected logo graphic. Gadget v2 only."
+        "data": {
+          "canonical": {
+            "source": {
+              "type": "url",
+              "description": "Direct URL path to selected logo graphic. Gadget v2 only."
+            },
+            "srcset": {
+              "type": "string",
+              "description": "Responsive `srcset` string containing `1x` and `2x` image source descriptors. Gadget v2 only."
+            }
           },
-          "srcset": {
-            "type": "string",
-            "description": "Responsive `srcset` string containing `1x` and `2x` image source descriptors. Gadget v2 only."
+          "deprecated": {
+            "fullButton": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:source / data:srcset",
+              "reason": "Precompiled monolithic HTML string (`<a href='...'><img .../></a>`). Gadget v1 only."
+            }
           }
         },
-        "deprecated": {
-          "fullButton": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:source / data:srcset",
-            "reason": "Precompiled monolithic HTML string (`<a href='...'><img .../></a>`). Gadget v1 only."
+        "settings": {
+          "canonical": {
+            "button": {
+              "type": "url",
+              "description": "Hosted asset URL for selected Blogger promotional badge graphic.",
+              "default": "//img1.blogblog.com/html/buttons/blogger-powerby-blue.gif",
+              "bound_runtime_data": "data:source"
+            }
           }
         }
       },
       "ContactForm": {
         "description": "Secure contact form endpoint identifiers and localized field labels.",
-        "canonical": {
-          "contactFormEmailMsg": {
-            "type": "string",
-            "description": "Label and placeholder text for email input field."
-          },
-          "contactFormEmptyMessageMsg": {
-            "type": "string",
-            "description": "Client/server validation warning for empty message textarea."
-          },
-          "contactFormInvalidEmailMsg": {
-            "type": "string",
-            "description": "Client/server validation warning for invalid email format."
-          },
-          "contactFormMessageMsg": {
-            "type": "string",
-            "description": "Label and placeholder text for message textarea."
-          },
-          "contactFormMessageNotSentMsg": {
-            "type": "string",
-            "description": "Status alert displayed when delivery encounters server error."
-          },
-          "contactFormMessageSendingMsg": {
-            "type": "string",
-            "description": "In-flight submission progress indicator text."
-          },
-          "contactFormMessageSentMsg": {
-            "type": "string",
-            "description": "Success confirmation notice displayed after dispatch."
-          },
-          "contactFormNameMsg": {
-            "type": "string",
-            "description": "Label and placeholder text for sender name input."
-          },
-          "contactFormSendMsg": {
-            "type": "string",
-            "description": "Action text displayed on form submit button."
-          },
-          "submitUrl": {
-            "type": "url",
-            "description": "Platform AJAX RPC endpoint URL for form submission."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (max 100 chars)."
+        "data": {
+          "canonical": {
+            "contactFormEmailMsg": {
+              "type": "string",
+              "description": "Label and placeholder text for email input field."
+            },
+            "contactFormEmptyMessageMsg": {
+              "type": "string",
+              "description": "Client/server validation warning for empty message textarea."
+            },
+            "contactFormInvalidEmailMsg": {
+              "type": "string",
+              "description": "Client/server validation warning for invalid email format."
+            },
+            "contactFormMessageMsg": {
+              "type": "string",
+              "description": "Label and placeholder text for message textarea."
+            },
+            "contactFormMessageNotSentMsg": {
+              "type": "string",
+              "description": "Status alert displayed when delivery encounters server error."
+            },
+            "contactFormMessageSendingMsg": {
+              "type": "string",
+              "description": "In-flight submission progress indicator text."
+            },
+            "contactFormMessageSentMsg": {
+              "type": "string",
+              "description": "Success confirmation notice displayed after dispatch."
+            },
+            "contactFormNameMsg": {
+              "type": "string",
+              "description": "Label and placeholder text for sender name input."
+            },
+            "contactFormSendMsg": {
+              "type": "string",
+              "description": "Action text displayed on form submit button."
+            },
+            "submitUrl": {
+              "type": "url",
+              "description": "Platform AJAX RPC endpoint URL for form submission."
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (max 100 chars)."
+            }
           }
+        },
+        "settings": {
+          "canonical": {}
         }
       },
       "FeaturedPost": {
         "description": "Pinned article showcase schema, post hero image, and formatted snippets.",
-        "canonical": {
-          "postDisplay": {
-            "type": "object",
-            "description": "Structured display preferences configured in UI.",
-            "properties": {
-              "showAuthor": {
-                "type": "boolean",
-                "description": "UI toggle for rendering author byline."
-              },
-              "showDate": {
-                "type": "boolean",
-                "description": "UI toggle for rendering publication timestamp."
-              },
-              "showFeaturedImage": {
-                "type": "boolean",
-                "description": "UI toggle for rendering primary hero image."
-              },
-              "showSnippet": {
-                "type": "boolean",
-                "description": "UI toggle for rendering post snippet summary."
-              },
-              "showTitle": {
-                "type": "boolean",
-                "description": "UI toggle for rendering post title."
+        "data": {
+          "canonical": {
+            "postDisplay": {
+              "type": "object",
+              "description": "Structured display preferences configured in UI.",
+              "properties": {
+                "showAuthor": {
+                  "type": "boolean",
+                  "description": "UI toggle for rendering author byline."
+                },
+                "showDate": {
+                  "type": "boolean",
+                  "description": "UI toggle for rendering publication timestamp."
+                },
+                "showFeaturedImage": {
+                  "type": "boolean",
+                  "description": "UI toggle for rendering primary hero image."
+                },
+                "showSnippet": {
+                  "type": "boolean",
+                  "description": "UI toggle for rendering post snippet summary."
+                },
+                "showTitle": {
+                  "type": "boolean",
+                  "description": "UI toggle for rendering post title."
+                }
               }
-            }
-          },
-          "posts": {
-            "type": "array[object]",
-            "description": "Single-element collection containing the pinned post model.",
-            "item_properties": {
-              "absoluteUrl": {
-                "type": "url",
-                "description": "Full canonical permalink URL including protocol and hostname."
-              },
-              "allowComments": {
-                "type": "boolean",
-                "description": "Post-level toggle indicating whether comments are accepted."
-              },
-              "author": {
-                "type": "object",
-                "description": "Author profile information and avatar details for the featured post.",
-                "properties": {
-                  "authorPhoto": {
-                    "type": "object",
-                    "description": "Author avatar photo details.",
-                    "properties": {
-                      "alt": {
-                        "type": "string",
-                        "description": "Accessible alternate text for author avatar."
-                      },
-                      "height": {
-                        "type": "number",
-                        "description": "Pixel height of author avatar image."
-                      },
-                      "image": {
-                        "type": "image",
-                        "description": "Native image resource of author avatar."
-                      },
-                      "width": {
-                        "type": "number",
-                        "description": "Pixel width of author avatar image."
+            },
+            "posts": {
+              "type": "array[object]",
+              "description": "Single-element collection containing the pinned post model.",
+              "item_properties": {
+                "absoluteUrl": {
+                  "type": "url",
+                  "description": "Full canonical permalink URL including protocol and hostname."
+                },
+                "allowComments": {
+                  "type": "boolean",
+                  "description": "Post-level toggle indicating whether comments are accepted."
+                },
+                "author": {
+                  "type": "object",
+                  "description": "Author profile information and avatar details for the featured post.",
+                  "properties": {
+                    "authorPhoto": {
+                      "type": "object",
+                      "description": "Author avatar photo details.",
+                      "properties": {
+                        "alt": {
+                          "type": "string",
+                          "description": "Accessible alternate text for author avatar."
+                        },
+                        "height": {
+                          "type": "number",
+                          "description": "Pixel height of author avatar image."
+                        },
+                        "image": {
+                          "type": "image",
+                          "description": "Native image resource of author avatar."
+                        },
+                        "width": {
+                          "type": "number",
+                          "description": "Pixel width of author avatar image."
+                        }
                       }
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of post author."
+                    },
+                    "profileUrl": {
+                      "type": "string",
+                      "description": "URL to author's public profile page."
                     }
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Display name of post author."
-                  },
-                  "profileUrl": {
-                    "type": "string",
-                    "description": "URL to author's public profile page."
                   }
-                }
-              },
-              "body": {
-                "type": "string",
-                "description": "Full compiled HTML content of the post."
-              },
-              "commentSource": {
-                "type": "number",
-                "description": "Comment backend identifier integer (0 = Blogger native, 1 = Google+)."
-              },
-              "commentsUrl": {
-                "type": "url",
-                "description": "Target anchor link URL navigating to comments section."
-              },
-              "commentsUrlOnclick": {
-                "type": "string",
-                "description": "JavaScript onclick handler string to toggle comments form."
-              },
-              "date": {
-                "type": "date",
-                "description": "Post publication date object supporting ICU date formatting."
-              },
-              "emailPostUrl": {
-                "type": "string",
-                "description": "Mailto URL string configured for post sharing."
-              },
-              "featuredImage": {
-                "type": "image",
-                "description": "Primary post hero image resource object with dynamic resizing support."
-              },
-              "hasJumpLink": {
-                "type": "boolean",
-                "description": "True if the post content contains a jump break (<!--more-->)."
-              },
-              "id": {
-                "type": "number",
-                "description": "Unique numerical post identifier."
-              },
-              "labels": {
-                "type": "array[object]",
-                "description": "Category tags assigned to the featured post.",
-                "item_properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Category/label name."
-                  },
-                  "url": {
-                    "type": "url",
-                    "description": "Category archive URL for this label."
+                },
+                "body": {
+                  "type": "string",
+                  "description": "Full compiled HTML content of the post."
+                },
+                "commentSource": {
+                  "type": "number",
+                  "description": "Comment backend identifier integer (0 = Blogger native, 1 = Google+)."
+                },
+                "commentsUrl": {
+                  "type": "url",
+                  "description": "Target anchor link URL navigating to comments section."
+                },
+                "commentsUrlOnclick": {
+                  "type": "string",
+                  "description": "JavaScript onclick handler string to toggle comments form."
+                },
+                "date": {
+                  "type": "date",
+                  "description": "Post publication date object supporting ICU date formatting."
+                },
+                "emailPostUrl": {
+                  "type": "string",
+                  "description": "Mailto URL string configured for post sharing."
+                },
+                "featuredImage": {
+                  "type": "image",
+                  "description": "Primary post hero image resource object with dynamic resizing support."
+                },
+                "hasJumpLink": {
+                  "type": "boolean",
+                  "description": "True if the post content contains a jump break (<!--more-->)."
+                },
+                "id": {
+                  "type": "number",
+                  "description": "Unique numerical post identifier."
+                },
+                "labels": {
+                  "type": "array[object]",
+                  "description": "Category tags assigned to the featured post.",
+                  "item_properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Category/label name."
+                    },
+                    "url": {
+                      "type": "url",
+                      "description": "Category archive URL for this label."
+                    }
                   }
-                }
-              },
-              "lastUpdated": {
-                "type": "date",
-                "description": "Post last modification timestamp date object."
-              },
-              "numberOfComments": {
-                "type": "number",
-                "description": "Count of approved comments published on this post."
-              },
-              "shareUrl": {
-                "type": "string",
-                "description": "Blogger sharing dialog popup URL."
-              },
-              "snippets": {
-                "type": "object",
-                "description": "Short and long plain-text snippets for the featured post.",
-                "properties": {
-                  "long": {
-                    "type": "string",
-                    "description": "Extended plain-text post summary excerpt."
-                  },
-                  "short": {
-                    "type": "string",
-                    "description": "Short plain-text post summary excerpt."
+                },
+                "lastUpdated": {
+                  "type": "date",
+                  "description": "Post last modification timestamp date object."
+                },
+                "numberOfComments": {
+                  "type": "number",
+                  "description": "Count of approved comments published on this post."
+                },
+                "shareUrl": {
+                  "type": "string",
+                  "description": "Blogger sharing dialog popup URL."
+                },
+                "snippets": {
+                  "type": "object",
+                  "description": "Short and long plain-text snippets for the featured post.",
+                  "properties": {
+                    "long": {
+                      "type": "string",
+                      "description": "Extended plain-text post summary excerpt."
+                    },
+                    "short": {
+                      "type": "string",
+                      "description": "Short plain-text post summary excerpt."
+                    }
                   }
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Post headline title string."
+                },
+                "url": {
+                  "type": "url",
+                  "description": "Relative or canonical permalink URL of the post."
                 }
-              },
-              "title": {
-                "type": "string",
-                "description": "Post headline title string."
-              },
-              "url": {
-                "type": "url",
-                "description": "Relative or canonical permalink URL of the post."
               }
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (max 100 chars)."
             }
           },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (max 100 chars)."
+          "deprecated": {
+            "postFirstImage": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:posts[0].featuredImage",
+              "reason": "Replaced by `data:posts[0].featuredImage`."
+            },
+            "postNumComments": {
+              "status": "deprecated_in_widget_v2",
+              "type": "number",
+              "action": "migrate",
+              "replacement": "data:posts[0].numberOfComments",
+              "reason": "Replaced by `data:posts[0].numberOfComments`."
+            },
+            "postSummary": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:posts[0].snippets.short",
+              "reason": "Replaced by data:posts[0].snippets.short."
+            },
+            "postSummaryLong": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:posts[0].snippets.long",
+              "reason": "Replaced by data:posts[0].snippets.long."
+            },
+            "postTitle": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:posts[0].title",
+              "reason": "Replaced by `data:posts[0].title`."
+            },
+            "postUrl": {
+              "status": "deprecated_in_widget_v2",
+              "type": "url",
+              "action": "migrate",
+              "replacement": "data:posts[0].url",
+              "reason": "Replaced by `data:posts[0].url`."
+            },
+            "sharePostUrl": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "migrate",
+              "replacement": "data:posts[0].shareUrl",
+              "reason": "Replaced by `data:posts[0].shareUrl`."
+            },
+            "showFirstImage": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "data:postDisplay.showFeaturedImage",
+              "reason": "Replaced by `data:postDisplay.showFeaturedImage`."
+            },
+            "showPostTitle": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "data:postDisplay.showTitle",
+              "reason": "Replaced by `data:postDisplay.showTitle`."
+            },
+            "showSnippet": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "data:postDisplay.showSnippet",
+              "reason": "Replaced by `data:postDisplay.showSnippet`."
+            }
           }
         },
-        "deprecated": {
-          "postFirstImage": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:posts[0].featuredImage",
-            "reason": "Replaced by `data:posts[0].featuredImage`."
-          },
-          "postNumComments": {
-            "status": "deprecated_in_widget_v2",
-            "type": "number",
-            "action": "migrate",
-            "replacement": "data:posts[0].numberOfComments",
-            "reason": "Replaced by `data:posts[0].numberOfComments`."
-          },
-          "postSummary": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:posts[0].snippets.short",
-            "reason": "Replaced by data:posts[0].snippets.short."
-          },
-          "postSummaryLong": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:posts[0].snippets.long",
-            "reason": "Replaced by data:posts[0].snippets.long."
-          },
-          "postTitle": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:posts[0].title",
-            "reason": "Replaced by `data:posts[0].title`."
-          },
-          "postUrl": {
-            "status": "deprecated_in_widget_v2",
-            "type": "url",
-            "action": "migrate",
-            "replacement": "data:posts[0].url",
-            "reason": "Replaced by `data:posts[0].url`."
-          },
-          "sharePostUrl": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "migrate",
-            "replacement": "data:posts[0].shareUrl",
-            "reason": "Replaced by `data:posts[0].shareUrl`."
-          },
-          "showFirstImage": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "data:postDisplay.showFeaturedImage",
-            "reason": "Replaced by `data:postDisplay.showFeaturedImage`."
-          },
-          "showPostTitle": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "data:postDisplay.showTitle",
-            "reason": "Replaced by `data:postDisplay.showTitle`."
-          },
-          "showSnippet": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "data:postDisplay.showSnippet",
-            "reason": "Replaced by `data:postDisplay.showSnippet`."
+        "settings": {
+          "canonical": {
+            "postId": {
+              "type": "number",
+              "description": "Numeric ID of post selected for pinned display (or 0 if using most recent post).",
+              "default": 0,
+              "bound_runtime_data": "data:posts.first.id"
+            },
+            "showFirstImage": {
+              "type": "boolean",
+              "description": "Toggle display of post lead/featured image hero thumbnail.",
+              "default": true,
+              "bound_runtime_data": "data:postDisplay.showFeaturedImage"
+            },
+            "showPostTitle": {
+              "type": "boolean",
+              "description": "Toggle display of featured post title.",
+              "default": true,
+              "bound_runtime_data": "data:postDisplay.showTitle"
+            },
+            "showSnippet": {
+              "type": "boolean",
+              "description": "Toggle display of post summary snippet text.",
+              "default": true,
+              "bound_runtime_data": "data:postDisplay.showSnippet"
+            },
+            "useMostRecentPost": {
+              "type": "boolean",
+              "description": "Toggle automatic selection of latest published blog post as featured item.",
+              "default": true,
+              "bound_runtime_data": null
+            }
           }
         }
       },
       "Feed": {
         "description": "External RSS/Atom syndication endpoint configuration, entry limits, and client hydration options.",
-        "canonical": {
-          "feedUrl": {
-            "type": "url",
-            "description": "Syndication feed endpoint URL (RSS 2.0 or Atom)."
-          },
-          "loadingMsg": {
-            "type": "string",
-            "description": "Localized placeholder text while fetching feed items (e.g. 'Loading...')."
-          },
-          "numItemsShow": {
-            "type": "number",
-            "description": "Maximum entries to display."
-          },
-          "openLinksInNewWindow": {
-            "type": "boolean",
-            "description": "UI toggle indicating whether feed links open in `target='_blank'`."
-          },
-          "showItemAuthor": {
-            "type": "boolean",
-            "description": "UI toggle indicating whether to display entry author."
-          },
-          "showItemDate": {
-            "type": "boolean",
-            "description": "UI toggle indicating whether to display entry publication date."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (defaults to feed title if omitted)."
+        "data": {
+          "canonical": {
+            "feedUrl": {
+              "type": "url",
+              "description": "Syndication feed endpoint URL (RSS 2.0 or Atom)."
+            },
+            "loadingMsg": {
+              "type": "string",
+              "description": "Localized placeholder text while fetching feed items (e.g. 'Loading...')."
+            },
+            "numItemsShow": {
+              "type": "number",
+              "description": "Maximum entries to display."
+            },
+            "openLinksInNewWindow": {
+              "type": "boolean",
+              "description": "UI toggle indicating whether feed links open in `target='_blank'`."
+            },
+            "showItemAuthor": {
+              "type": "boolean",
+              "description": "UI toggle indicating whether to display entry author."
+            },
+            "showItemDate": {
+              "type": "boolean",
+              "description": "UI toggle indicating whether to display entry publication date."
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (defaults to feed title if omitted)."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {
+            "feedUrl": {
+              "type": "url",
+              "description": "Source URL of external RSS or Atom feed.",
+              "default": "",
+              "bound_runtime_data": "data:feedUrl"
+            },
+            "numItemsShow": {
+              "type": "number",
+              "description": "Maximum number of syndicated feed entries to render.",
+              "default": 5,
+              "bound_runtime_data": "data:numItemsShow"
+            },
+            "openLinksInNewWindow": {
+              "type": "boolean",
+              "description": "Toggle opening feed item links in new browser tab/window.",
+              "default": false,
+              "bound_runtime_data": "data:openLinksInNewWindow"
+            },
+            "showItemAuthor": {
+              "type": "boolean",
+              "description": "Toggle display of syndicated feed item author.",
+              "default": false,
+              "bound_runtime_data": "data:showItemAuthor"
+            },
+            "showItemDate": {
+              "type": "boolean",
+              "description": "Toggle display of publication date for feed items.",
+              "default": true,
+              "bound_runtime_data": "data:showItemDate"
+            }
           }
         }
       },
       "Followers": {
         "description": "Sandboxed Google Friend Connect / Followers iframe embed snippet and header title.",
-        "canonical": {
-          "codeSnippet": {
-            "type": "string",
-            "description": "Raw HTML/JS snippet generating the sandboxed Google Friend Connect / Followers iframe."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (e.g. 'Followers' or localized equivalent)."
-          }
-        }
-      },
-      "Header": {
-        "description": "Blog title, header hero banner, description, and image placement flags.",
-        "canonical": {
-          "backgroundPositionStyleStr": {
-            "type": "string",
-            "description": "Inline CSS string for banner background positioning (e.g. 'background-position: center;')."
-          },
-          "description": {
-            "type": "string",
-            "description": "Blog tagline/description configured in blog settings."
-          },
-          "height": {
-            "type": "number",
-            "description": "Native banner image height in pixels."
-          },
-          "image": {
-            "type": "image",
-            "description": "Native Blogger image resource; supports `resizeImage()` expressions."
-          },
-          "imagePlacement": {
-            "type": "string",
-            "description": "Banner placement mode: `'BEHIND'`, `'REPLACE'`, or `'BEFORE_DESCRIPTION'`.",
-            "allowed_values": [
-              "BEHIND",
-              "REPLACE",
-              "BEFORE_DESCRIPTION"
-            ]
-          },
-          "shrinkToFit": {
-            "type": "boolean",
-            "description": "UI toggle indicating whether banner scales down to fit container width."
-          },
-          "sourceUrl": {
-            "type": "url",
-            "description": "Direct CDN URL of the uploaded banner image."
-          },
-          "title": {
-            "type": "string",
-            "description": "Blog title text (or custom header title)."
-          },
-          "useImage": {
-            "type": "boolean",
-            "description": "True when an uploaded banner image is active."
-          },
-          "width": {
-            "type": "number",
-            "description": "Native banner image width in pixels."
-          }
-        },
-        "deprecated": {
-          "mobile": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "data:blog.isMobileRequest",
-            "reason": "Legacy mobile rendering flag. Replaced by `data:blog.isMobileRequest` or CSS media queries."
-          },
-          "sectionWidth": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "number",
-            "replacement": null,
-            "reason": "Fluid CSS layout replaces fixed sectionWidth dimension constraints."
-          },
-          "widthStyleStr": {
-            "status": "deprecated_in_widget_v2",
-            "type": "string",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Inline CSS string for image width constraint. Deprecated in v2 in favor of CSS."
-          }
-        }
-      },
-      "Image": {
-        "description": "Standalone image banner, caption, destination link, responsive srcset, and dimensions.",
-        "canonical": {
-          "caption": {
-            "type": "string",
-            "description": "Caption or descriptive text displayed with the image."
-          },
-          "height": {
-            "type": "number",
-            "description": "Native height of the image in pixels."
-          },
-          "link": {
-            "type": "url",
-            "description": "Target destination URL activated when clicking the image."
-          },
-          "shrinkToFit": {
-            "type": "boolean",
-            "description": "UI toggle indicating whether the image scales down to container width."
-          },
-          "sourceSet": {
-            "type": "string",
-            "description": "Comma-separated responsive image candidates (`srcset`)."
-          },
-          "sourceUrl": {
-            "type": "url",
-            "description": "Direct CDN or external source URL of the image."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title configured in UI."
-          },
-          "width": {
-            "type": "number",
-            "description": "Native width of the image in pixels."
-          }
-        },
-        "deprecated": {
-          "sectionWidth": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "number",
-            "replacement": null,
-            "reason": "Fluid CSS layout replaces fixed sectionWidth dimension constraints."
-          }
-        }
-      },
-      "Label": {
-        "description": "Category taxonomy, post counts per label, and cloud vs. list display modes.",
-        "canonical": {
-          "display": {
-            "type": "string",
-            "description": "Presentation format chosen in UI: `'list'` or `'cloud'`.",
-            "allowed_values": [
-              "list",
-              "cloud"
-            ]
-          },
-          "labels": {
-            "type": "array[object]",
-            "description": "Collection of label models configured for display in this gadget.",
-            "item_properties": {
-              "count": {
-                "type": "number",
-                "description": "Total published posts assigned to this label."
-              },
-              "cssSize": {
-                "type": "number",
-                "description": "Relative frequency rank/weight (1–5) used for font scaling in cloud mode."
-              },
-              "name": {
-                "type": "string",
-                "description": "Display name of the label category."
-              },
-              "url": {
-                "type": "url",
-                "description": "Target search URL for posts tagged with this label."
-              }
-            }
-          },
-          "showFreqNumbers": {
-            "type": "boolean",
-            "description": "UI toggle indicating whether to display post count per label."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (defaults to 'Labels' if omitted)."
-          }
-        }
-      },
-      "LinkList": {
-        "description": "Ordered list of custom hyperlinks (`links[i].name`, `links[i].target`).",
-        "canonical": {
-          "links": {
-            "type": "array[object]",
-            "description": "Collection of user-configured hyperlink items.",
-            "item_properties": {
-              "name": {
-                "type": "string",
-                "description": "Anchor label or link text."
-              },
-              "target": {
-                "type": "url",
-                "description": "Destination hyperlink URL."
-              }
-            }
-          },
-          "shownum": {
-            "type": "number",
-            "description": "Maximum links to display (0 or negative indicates no limit / show all)."
-          },
-          "sorting": {
-            "type": "string",
-            "description": "Ordering mode set in UI (`'none'`, `'alpha'`, `'reverse-alpha'`).",
-            "allowed_values": [
-              "none",
-              "alpha",
-              "reverse-alpha"
-            ]
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (defaults to 'Links' if omitted)."
-          }
-        }
-      },
-      "PageList": {
-        "description": "Static standalone page navigation links, home link, and active selection state.",
-        "canonical": {
-          "links": {
-            "type": "array[object]",
-            "description": "Collection of standalone page and custom navigation links.",
-            "item_properties": {
-              "href": {
-                "type": "url",
-                "description": "Destination page or external link URL."
-              },
-              "id": {
-                "type": "string",
-                "description": "Unique page identifier (numeric ID string or 'c0' for Home)."
-              },
-              "isCurrentPage": {
-                "type": "boolean",
-                "description": "True if the link matches the current view URL request."
-              },
-              "title": {
-                "type": "string",
-                "description": "Visible navigation label or page title."
-              }
-            }
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (defaults to 'Pages' if omitted)."
-          }
-        },
-        "deprecated": {
-          "mobile": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "data:blog.isMobileRequest",
-            "reason": "Legacy mobile rendering flag. Replaced by `data:blog.isMobileRequest` or CSS media queries."
-          }
-        }
-      },
-      "PopularPosts": {
-        "description": "Ranked trending posts collection, thumbnail images, and comment counts.",
-        "canonical": {
-          "postDisplay": {
-            "type": "object",
-            "description": "Structured display preferences configured in UI.",
-            "properties": {
-              "showAuthor": {
-                "type": "boolean",
-                "description": "UI toggle indicating whether post author is shown."
-              },
-              "showDate": {
-                "type": "boolean",
-                "description": "UI toggle indicating whether publication date is shown."
-              },
-              "showFeaturedImage": {
-                "type": "boolean",
-                "description": "UI toggle indicating whether hero/featured thumbnail is displayed."
-              },
-              "showSnippet": {
-                "type": "boolean",
-                "description": "UI toggle indicating whether post excerpt/snippet is shown."
-              },
-              "showTitle": {
-                "type": "boolean",
-                "description": "UI toggle indicating whether post title headline is shown."
-              }
-            }
-          },
-          "posts": {
-            "type": "array[object]",
-            "description": "Collection of popular post models (canonical `Blog` post schema).",
-            "item_properties": {
-              "absoluteUrl": {
-                "type": "url",
-                "description": "Fully qualified absolute URL of the post."
-              },
-              "allowComments": {
-                "type": "boolean",
-                "description": "True if comments are enabled on this post."
-              },
-              "author": {
-                "type": "object",
-                "description": "Author profile information and avatar details for the post.",
-                "properties": {
-                  "authorPhoto": {
-                    "type": "object",
-                    "description": "Author avatar photo details.",
-                    "properties": {
-                      "alt": {
-                        "type": "string",
-                        "description": "Accessible alternate text for author avatar."
-                      },
-                      "height": {
-                        "type": "number",
-                        "description": "Pixel height of author avatar image."
-                      },
-                      "image": {
-                        "type": "image",
-                        "description": "Native image resource of author avatar."
-                      },
-                      "width": {
-                        "type": "number",
-                        "description": "Pixel width of author avatar image."
-                      }
-                    }
-                  },
-                  "name": {
-                    "type": "string",
-                    "description": "Display name of post author."
-                  },
-                  "profileUrl": {
-                    "type": "string",
-                    "description": "URL to author's public profile page."
-                  }
-                }
-              },
-              "body": {
-                "type": "string",
-                "description": "Full HTML content body of the post."
-              },
-              "commentSource": {
-                "type": "number",
-                "description": "Comment backend provider (0 = Blogger native, 1 = Google+)."
-              },
-              "commentsUrl": {
-                "type": "url",
-                "description": "URL endpoint for viewing or adding comments."
-              },
-              "commentsUrlOnclick": {
-                "type": "string",
-                "description": "Legacy onclick handler for popup comment windows."
-              },
-              "date": {
-                "type": "date",
-                "description": "Publication timestamp of the post."
-              },
-              "emailPostUrl": {
-                "type": "string",
-                "description": "Direct URL for emailing post."
-              },
-              "featuredImage": {
-                "type": "image",
-                "description": "Hero/featured image resource of the post."
-              },
-              "hasJumpLink": {
-                "type": "boolean",
-                "description": "True if the post content contains a 'Read more' jump break."
-              },
-              "id": {
-                "type": "number",
-                "description": "Unique numeric identifier of the post."
-              },
-              "labels": {
-                "type": "array[object]",
-                "description": "Category tags assigned to the post.",
-                "item_properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Category/label name."
-                  },
-                  "url": {
-                    "type": "url",
-                    "description": "Category archive URL for this label."
-                  }
-                }
-              },
-              "lastUpdated": {
-                "type": "date",
-                "description": "Timestamp of most recent post update."
-              },
-              "numberOfComments": {
-                "type": "number",
-                "description": "Total comment count for this post."
-              },
-              "shareUrl": {
-                "type": "string",
-                "description": "Sharing URL endpoint for social dialogs."
-              },
-              "snippets": {
-                "type": "object",
-                "description": "Short and long plain-text snippets for the post.",
-                "properties": {
-                  "long": {
-                    "type": "string",
-                    "description": "Extended plain-text post summary excerpt."
-                  },
-                  "short": {
-                    "type": "string",
-                    "description": "Short plain-text post summary excerpt."
-                  }
-                }
-              },
-              "title": {
-                "type": "string",
-                "description": "Post headline title string."
-              },
-              "url": {
-                "type": "url",
-                "description": "Relative or canonical permalink URL of the post."
-              }
+        "data": {
+          "canonical": {
+            "codeSnippet": {
+              "type": "string",
+              "description": "Raw HTML/JS snippet generating the sandboxed Google Friend Connect / Followers iframe."
             },
-            "deprecated": {
-              "href": {
-                "status": "deprecated_in_widget_v2",
-                "type": "url",
-                "action": "migrate",
-                "replacement": "post.url",
-                "reason": "Replaced by canonical permalink `post.url` in Gadget v2."
-              },
-              "snippet": {
-                "status": "deprecated_in_widget_v2",
-                "type": "string",
-                "action": "migrate",
-                "replacement": "post.snippets.short",
-                "reason": "Flat summary string replaced by structured object `post.snippets`."
-              },
-              "thumbnail": {
-                "status": "deprecated_in_widget_v2",
-                "type": "image",
-                "action": "migrate",
-                "replacement": "post.featuredImage",
-                "reason": "Legacy thumbnail property replaced by native hero image `post.featuredImage`."
-              }
+            "title": {
+              "type": "string",
+              "description": "Widget header title (e.g. 'Followers' or localized equivalent)."
             }
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (defaults to 'Popular Posts' if omitted)."
           }
         },
-        "deprecated": {
-          "showSnippets": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "data:postDisplay.showSnippet",
-            "reason": "Replaced by `data:postDisplay.showSnippet`."
-          },
-          "showThumbnails": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "migrate",
-            "replacement": "data:postDisplay.showFeaturedImage",
-            "reason": "Replaced by `data:postDisplay.showFeaturedImage`."
-          },
-          "thumbnailSize": {
-            "status": "deprecated_in_widget_v2",
-            "type": "number",
-            "action": "migrate",
-            "replacement": "resizeImage()",
-            "reason": "Thumbnail dimension in pixels. Deprecated in v2 in favor of `resizeImage()`."
-          }
-        }
-      },
-      "Profile": {
-        "description": "Author biographical details, profile avatar, location, team contributors, and social links.",
-        "canonical": {
-          "aboutme": {
-            "type": "string",
-            "description": "Author biography or introduction text."
-          },
-          "authorPhoto": {
-            "type": "object",
-            "description": "Structured avatar object with native `image` type.",
-            "properties": {
-              "alt": {
-                "type": "string",
-                "description": "Accessible alternate text for author avatar."
-              },
-              "height": {
-                "type": "number",
-                "description": "Pixel height of author avatar image."
-              },
-              "image": {
-                "type": "image",
-                "description": "Native image resource of author avatar; supports `resizeImage()`."
-              },
-              "width": {
-                "type": "number",
-                "description": "Pixel width of author avatar image."
-              }
+        "settings": {
+          "canonical": {
+            "borderColorTransparent": {
+              "type": "boolean",
+              "description": "Toggle transparent border styling on the Followers iframe.",
+              "default": true,
+              "bound_runtime_data": null
+            },
+            "contentHeadlineColor": {
+              "type": "string",
+              "description": "Hex color code for headline text within the Followers gadget.",
+              "default": "#000000",
+              "bound_runtime_data": null
+            },
+            "contentLinkColor": {
+              "type": "string",
+              "description": "Hex color code for primary hyperlinks within the Followers gadget.",
+              "default": "#000000",
+              "bound_runtime_data": null
+            },
+            "contentSecondaryLinkColor": {
+              "type": "string",
+              "description": "Hex color code for secondary hyperlinks within the Followers gadget.",
+              "default": "#FFFFFF",
+              "bound_runtime_data": null
+            },
+            "contentSecondaryTextColor": {
+              "type": "string",
+              "description": "Hex color code for secondary/subdued text within the Followers gadget.",
+              "default": "#000000",
+              "bound_runtime_data": null
+            },
+            "contentTextColor": {
+              "type": "string",
+              "description": "Hex color code for body text within the Followers gadget.",
+              "default": "#000000",
+              "bound_runtime_data": null
+            },
+            "endcapLinkColor": {
+              "type": "string",
+              "description": "Hex color code for endcap/footer hyperlinks within the Followers gadget.",
+              "default": "#000000",
+              "bound_runtime_data": null
+            },
+            "endcapTextColor": {
+              "type": "string",
+              "description": "Hex color code for endcap/footer text within the Followers gadget.",
+              "default": "#000000",
+              "bound_runtime_data": null
+            },
+            "useTemplateDefaultStyles": {
+              "type": "boolean",
+              "description": "Flag indicating whether default theme typography and palette styles apply to the gadget.",
+              "default": true,
+              "bound_runtime_data": null
             }
-          },
-          "authors": {
-            "type": "array[object]",
-            "description": "Collection of contributors populated when `team == true`.",
-            "item_properties": {
-              "authorPhoto": {
-                "type": "object",
-                "description": "Structured contributor avatar with native image resource.",
-                "properties": {
-                  "alt": {
-                    "type": "string",
-                    "description": "Accessible alternate text for author avatar."
-                  },
-                  "height": {
-                    "type": "number",
-                    "description": "Pixel height of author avatar image."
-                  },
-                  "image": {
-                    "type": "image",
-                    "description": "Native image resource of author avatar; supports `resizeImage()`."
-                  },
-                  "width": {
-                    "type": "number",
-                    "description": "Pixel width of author avatar image."
-                  }
-                }
-              },
-              "display-name": {
-                "type": "string",
-                "description": "Display name of team contributor."
-              },
-              "profileLogo": {
-                "type": "string",
-                "description": "Platform badge/logo URL for contributor."
-              },
-              "userUrl": {
-                "type": "url",
-                "description": "URL linking to contributor's profile page."
-              }
-            }
-          },
-          "displayname": {
-            "type": "string",
-            "description": "Author display name."
-          },
-          "hasgoogleprofile": {
-            "type": "boolean",
-            "description": "True if linked to a Google account profile."
-          },
-          "location": {
-            "type": "string",
-            "description": "Geographic location configured in author profile."
-          },
-          "profileLogo": {
-            "type": "string",
-            "description": "Small platform profile badge/logo URL."
-          },
-          "showaboutme": {
-            "type": "boolean",
-            "description": "UI toggle for rendering the biography text."
-          },
-          "showlocation": {
-            "type": "boolean",
-            "description": "UI toggle for rendering the location string."
-          },
-          "team": {
-            "type": "boolean",
-            "description": "True if the blog has multiple authors and is configured as a team blog."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (defaults to 'About Me' or 'Contributors' if omitted)."
-          },
-          "userUrl": {
-            "type": "url",
-            "description": "URL linking to the author's public profile page."
-          },
-          "viewProfileMsg": {
-            "type": "string",
-            "description": "Localized string (e.g. 'View my complete profile')."
-          }
-        },
-        "deprecated": {
-          "photo": {
-            "status": "deprecated_in_widget_v2",
-            "type": "object",
-            "action": "migrate",
-            "replacement": "data:authorPhoto",
-            "reason": "Legacy photo model (`.url`, `.width`, `.height`, `.alt`). Replaced by `authorPhoto` in v2."
-          }
-        }
-      },
-      "ReportAbuse": {
-        "description": "System abuse reporting link gadget (DSA compliance, replaces legacy Navbar reporting channel).",
-        "canonical": {}
-      },
-      "Stats": {
-        "description": "Historical pageview counter, sparkline trend display flags, and stats endpoint URL.",
-        "canonical": {
-          "showAnimatedCounter": {
-            "type": "boolean",
-            "description": "UI toggle indicating whether digits animate dynamically on increment."
-          },
-          "showGraphicalCounter": {
-            "type": "boolean",
-            "description": "UI toggle indicating whether to render stylized graphical digit tiles."
-          },
-          "showSparkline": {
-            "type": "boolean",
-            "description": "UI toggle indicating whether to display the miniature traffic trend chart."
-          },
-          "statsUrl": {
-            "type": "url",
-            "description": "Blogger endpoint URL used to retrieve traffic counts and sparkline graphics."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (defaults to 'Total Pageviews' if omitted)."
-          }
-        }
-      },
-      "Subscribe": {
-        "description": "Subscription feeds, aggregator reader targets, and platform feed icons.",
-        "canonical": {
-          "arrowDropdownImg": {
-            "type": "url",
-            "description": "Static platform image URL for the dropdown chevron arrow."
-          },
-          "atomFeedTxt": {
-            "type": "string",
-            "description": "Localized label for direct Atom feed subscription (e.g. 'Posts (Atom)')."
-          },
-          "feedIconImg": {
-            "type": "url",
-            "description": "Static platform image URL for the standard orange RSS feed icon."
-          },
-          "feeds": {
-            "type": "array[object]",
-            "description": "Collection of supported web feed reader targets.",
-            "item_properties": {
-              "encodedUrl": {
-                "type": "string",
-                "description": "URL-encoded feed endpoint used in reader query parameter strings."
-              },
-              "title": {
-                "type": "string",
-                "description": "Display name of the feed reader service (e.g. 'Google', 'Yahoo')."
-              },
-              "type": {
-                "type": "string",
-                "description": "Identifier code for the feed reader target (e.g. 'GOOGLE', 'YAHOO')."
-              },
-              "url": {
-                "type": "url",
-                "description": "Direct one-click subscription endpoint targeting that reader service."
-              }
-            }
-          },
-          "imagePathBase": {
-            "type": "url",
-            "description": "Base CDN directory URL containing feed reader brand logos."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (e.g. 'Subscribe To')."
-          },
-          "widgetId": {
-            "type": "string",
-            "description": "Canonical widget instance ID string."
-          }
-        },
-        "deprecated": {
-          "isPublic": {
-            "status": "deprecated_in_widget_v2",
-            "type": "boolean",
-            "action": "remove",
-            "replacement": null,
-            "reason": "Legacy visibility flag confirming public blog status. Gadget v1 only; omitted from v2."
           }
         }
       },
       "HTML": {
         "description": "Arbitrary user HTML/JS or plain formatted text blocks.",
-        "canonical": {
-          "content": {
-            "type": "string",
-            "description": "Raw HTML markup, JavaScript snippet, or formatted text payload."
-          },
-          "title": {
-            "type": "string",
-            "description": "Optional widget header title configured in UI."
-          }
-        }
-      },
-      "Text": {
-        "description": "Rich-text and formatted content gadget displaying user-authored text notes or HTML payload.",
-        "canonical": {
-          "content": {
-            "type": "string",
-            "description": "Raw HTML markup, JavaScript snippet, or formatted text payload."
-          },
-          "title": {
-            "type": "string",
-            "description": "Optional widget header title configured in UI."
-          }
-        }
-      },
-      "TextList": {
-        "description": "Ordered or bulleted plain text item collections.",
-        "canonical": {
-          "items": {
-            "type": "array[string]",
-            "description": "Collection of user-configured text strings."
-          },
-          "shownum": {
-            "type": "number",
-            "description": "Maximum items to display (0 or negative indicates no limit / show all)."
-          },
-          "sorting": {
-            "type": "string",
-            "description": "Ordering mode set in UI ('none', 'alpha', 'reverse-alpha').",
-            "allowed_values": [
-              "none",
-              "alpha",
-              "reverse-alpha"
-            ]
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (defaults to 'List' if omitted)."
-          }
-        }
-      },
-      "Translate": {
-        "description": "Google Translate drop-down or button integration.",
-        "canonical": {
-          "layout": {
-            "type": "string",
-            "description": "Presentation format chosen in UI: `'VERTICAL'`, `'HORIZONTAL'`, `'SIMPLE'`.",
-            "allowed_values": [
-              "VERTICAL",
-              "HORIZONTAL",
-              "SIMPLE"
-            ]
-          },
-          "pageLanguage": {
-            "type": "string",
-            "description": "Source language ISO code of the blog (e.g. 'en', 'es', 'fr')."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (e.g. 'Translate')."
-          }
-        }
-      },
-      "Wikipedia": {
-        "description": "Wikipedia search box interface messages and encyclopedic query tool.",
-        "canonical": {
-          "enterTextMsg": {
-            "type": "string",
-            "description": "Localized placeholder/prompt (e.g. 'Enter search terms')."
-          },
-          "fetchingErrorMsg": {
-            "type": "string",
-            "description": "Localized error message displayed when Wikipedia API query fails."
-          },
-          "moreMsg": {
-            "type": "string",
-            "description": "Localized string for expansion/read more link (e.g. 'More')."
-          },
-          "noResultsFoundMsg": {
-            "type": "string",
-            "description": "Localized message when query yields zero results (e.g. 'No results found')."
-          },
-          "searchResultsMsg": {
-            "type": "string",
-            "description": "Localized header for results list (e.g. 'Search Results')."
-          },
-          "title": {
-            "type": "string",
-            "description": "Widget header title (defaults to 'Wikipedia' if omitted)."
-          }
-        }
-      }
-    }
-  },
-  "settings": {
-    "$schema": "./schemas/settings.schema.json",
-    "title": "Blogger Widget Settings Master Catalog",
-    "description": "Exhaustive, machine-readable registry of valid <b:widget-setting name='...'> keys across all official Blogger gadget types in Gadget Version 2 (Layouts v3). Organizes settings into canonical (actively supported), patterns (zero-based dynamic indexed keys), nested structures, and deprecated (obsolete or inactive in Layouts v3).",
-    "version": "1.0.0",
-    "widgets": {
-      "AdSense": {
-        "description": "Configuration settings for official Google AdSense banner ad units, governing ad format dimensions and responsive slots.",
-        "canonical": {
-          "style.layout": {
-            "type": "string",
-            "description": "Target ad format dimensions or responsive flag ('1x1'). Governs the ad unit geometry.",
-            "default": "1x1",
-            "allowed_values": [
-              "1x1",
-              "300x250",
-              "336x280",
-              "728x90",
-              "160x600",
-              "970x250",
-              "970x90",
-              "468x60",
-              "234x60",
-              "120x600",
-              "120x240",
-              "300x600",
-              "300x1050",
-              "250x250",
-              "200x200",
-              "180x150",
-              "125x125"
-            ],
-            "bound_runtime_data": null
+        "data": {
+          "canonical": {
+            "content": {
+              "type": "string",
+              "description": "Raw HTML markup, JavaScript snippet, or formatted text payload."
+            },
+            "title": {
+              "type": "string",
+              "description": "Optional widget header title configured in UI."
+            }
           }
         },
-        "deprecated": {
-          "style.bgcolor": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "Text ad color styling moved to the Google AdSense management dashboard."
-          },
-          "style.bordercolor": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "Text ad color styling moved to the Google AdSense management dashboard."
-          },
-          "style.linkcolor": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "Text ad color styling moved to the Google AdSense management dashboard."
-          },
-          "style.textcolor": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "Text ad color styling moved to the Google AdSense management dashboard."
-          },
-          "style.unittype": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "number",
-            "replacement": null,
-            "reason": "Ad unit format configuration managed inside Google AdSense."
-          },
-          "style.urlcolor": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "Text ad color styling moved to the Google AdSense management dashboard."
-          }
-        }
-      },
-      "Attribution": {
-        "description": "Configuration settings for blog attribution and copyright notices.",
-        "canonical": {
-          "copyright": {
-            "type": "string",
-            "description": "Custom copyright or attribution notice text payload.",
-            "default": null,
-            "bound_runtime_data": "data:copyright"
-          }
-        }
-      },
-      "Blog": {
-        "description": "Core blog post feed settings, controlling post display counts, author/date labels, inline AdSense ads, and social sharing toggles.",
-        "canonical": {
-          "authorLabel": {
-            "type": "string",
-            "description": "Custom text prefix preceding post author name. In Layouts v3, modern themes resolve author prefixes via data:messages.by.",
-            "default": "By",
-            "bound_runtime_data": "data:widgets.Blog1.allBylineItems.author.label"
-          },
-          "commentLabel": {
-            "type": "string",
-            "description": "Custom label text for post comment link. In Layouts v3, modern themes resolve comment strings via data:allBylineItems.comments.label or data:messages.comments.",
-            "default": "Comments",
-            "bound_runtime_data": "data:widgets.Blog1.allBylineItems.comments.label"
-          },
-          "postLabelsLabel": {
-            "type": "string",
-            "description": "Custom prefix label preceding post tag/label links. In Layouts v3, modern themes resolve label strings via data:messages.labels.",
-            "default": "Labels:",
-            "bound_runtime_data": "data:widgets.Blog1.allBylineItems.labels.label"
-          },
-          "postLocationLabel": {
-            "type": "string",
-            "description": "Custom label text preceding post geo-location. In Layouts v3, modern themes resolve location strings via data:allBylineItems.location.label.",
-            "default": "Location:",
-            "bound_runtime_data": "data:widgets.Blog1.allBylineItems.location.label"
-          },
-          "postsPerAd": {
-            "type": "number",
-            "description": "Number of blog posts rendered between each inline AdSense ad unit.",
-            "default": 3,
-            "bound_runtime_data": "data:post.includeAd"
-          },
-          "showAuthor": {
-            "type": "boolean",
-            "description": "Toggle visibility of post author byline.",
-            "default": true,
-            "bound_runtime_data": "data:widgets.Blog1.allBylineItems.author"
-          },
-          "showAuthorProfile": {
-            "type": "boolean",
-            "description": "Toggle display of author profile information in post footer.",
-            "default": false,
-            "bound_runtime_data": null
-          },
-          "showCommentLink": {
-            "type": "boolean",
-            "description": "Toggle visibility of comment count and comment link.",
-            "default": true,
-            "bound_runtime_data": "data:widgets.Blog1.allBylineItems.comments"
-          },
-          "showDateHeader": {
-            "type": "boolean",
-            "description": "Toggle grouping and display of post date headers.",
-            "default": true,
-            "bound_runtime_data": null
-          },
-          "showInlineAds": {
-            "type": "boolean",
-            "description": "Toggle injection of inline AdSense ads between blog posts.",
-            "default": false,
-            "bound_runtime_data": null
-          },
-          "showLabels": {
-            "type": "boolean",
-            "description": "Toggle display of post tags/labels.",
-            "default": true,
-            "bound_runtime_data": "data:widgets.Blog1.allBylineItems.labels"
-          },
-          "showLocation": {
-            "type": "boolean",
-            "description": "Toggle display of post geo-location metadata.",
-            "default": true,
-            "bound_runtime_data": "data:widgets.Blog1.allBylineItems.location"
-          },
-          "showShareButtons": {
-            "type": "boolean",
-            "description": "Toggle display of social share buttons.",
-            "default": true,
-            "bound_runtime_data": "data:widgets.Blog1.allBylineItems.share"
-          },
-          "showTimestamp": {
-            "type": "boolean",
-            "description": "Toggle display of post publication time/timestamp.",
-            "default": true,
-            "bound_runtime_data": "data:widgets.Blog1.allBylineItems.timestamp"
-          },
-          "style.layout": {
-            "type": "string",
-            "description": "Ad format geometry for inline AdSense ads embedded within posts.",
-            "default": "1x1",
-            "bound_runtime_data": null
-          },
-          "timestampLabel": {
-            "type": "string",
-            "description": "Custom text prefix preceding post timestamp. In Layouts v3, modern themes format publication timestamps via date operators.",
-            "default": "at",
-            "bound_runtime_data": "data:widgets.Blog1.allBylineItems.timestamp.label"
-          }
-        },
-        "deprecated": {
-          "backlinksLabel": {
-            "status": "obsolete",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "External blog backlink tracking was retired."
-          },
-          "disableGooglePlusShare": {
-            "status": "obsolete",
-            "action": "remove",
-            "type": "boolean",
-            "replacement": null,
-            "reason": "Google+ shut down in 2019."
-          },
-          "reactionsLabel": {
-            "status": "ignored_in_layout_v3",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "Blogger reaction rating system was decommissioned in modern responsive themes."
-          },
-          "showBacklinks": {
-            "status": "obsolete",
-            "action": "remove",
-            "type": "boolean",
-            "replacement": null,
-            "reason": "External blog backlink tracking was retired."
-          },
-          "showReactions": {
-            "status": "ignored_in_layout_v3",
-            "action": "remove",
-            "type": "boolean",
-            "replacement": null,
-            "reason": "Blogger reaction rating system was decommissioned in modern responsive themes."
-          },
-          "style.bgcolor": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
-          },
-          "style.bordercolor": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
-          },
-          "style.linkcolor": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
-          },
-          "style.textcolor": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
-          },
-          "style.unittype": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "number",
-            "replacement": null,
-            "reason": "Ad unit format configuration managed inside Google AdSense."
-          },
-          "style.urlcolor": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "string",
-            "replacement": null,
-            "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
-          }
-        }
-      },
-      "BlogArchive": {
-        "description": "Configuration settings for chronological blog post archives, hierarchy display, and date formatting patterns.",
-        "canonical": {
-          "chronological": {
-            "type": "boolean",
-            "description": "Toggle chronological ordering of archive intervals (oldest first if true, newest first if false).",
-            "default": false,
-            "bound_runtime_data": null
-          },
-          "dayPattern": {
-            "type": "string",
-            "description": "SimpleDateFormat pattern for daily archive navigation links.",
-            "default": "dd",
-            "bound_runtime_data": null
-          },
-          "frequency": {
-            "type": "string",
-            "description": "Grouping interval frequency for archive links.",
-            "default": "MONTHLY",
-            "allowed_values": [
-              "DAILY",
-              "WEEKLY",
-              "MONTHLY",
-              "YEARLY"
-            ],
-            "bound_runtime_data": null
-          },
-          "monthPattern": {
-            "type": "string",
-            "description": "SimpleDateFormat pattern for monthly archive navigation links.",
-            "default": "MMMM yyyy",
-            "bound_runtime_data": null
-          },
-          "showPosts": {
-            "type": "boolean",
-            "description": "Toggle listing of individual post titles within archive time intervals.",
-            "default": true,
-            "bound_runtime_data": null
-          },
-          "showStyle": {
-            "type": "string",
-            "description": "Presentation format for archive links hierarchy.",
-            "default": "HIERARCHY",
-            "allowed_values": [
-              "HIERARCHY",
-              "FLAT",
-              "MENU"
-            ],
-            "bound_runtime_data": "data:style"
-          },
-          "showWeekEnd": {
-            "type": "boolean",
-            "description": "Toggle display of week end date in weekly archive links.",
-            "default": true,
-            "bound_runtime_data": null
-          },
-          "weekPattern": {
-            "type": "string",
-            "description": "SimpleDateFormat pattern for weekly archive navigation links.",
-            "default": "MM/dd",
-            "bound_runtime_data": null
-          },
-          "yearPattern": {
-            "type": "string",
-            "description": "SimpleDateFormat pattern for yearly archive navigation links.",
-            "default": "yyyy",
-            "bound_runtime_data": null
-          }
-        }
-      },
-      "BloggerButton": {
-        "description": "Settings for Blogger promotional badge graphics and logos.",
-        "canonical": {
-          "button": {
-            "type": "url",
-            "description": "Hosted asset URL for selected Blogger promotional badge graphic.",
-            "default": "//img1.blogblog.com/html/buttons/blogger-powerby-blue.gif",
-            "bound_runtime_data": "data:source"
-          }
-        }
-      },
-      "BlogList": {
-        "description": "Configuration settings for blogroll lists of external blogs, tracking update times, snippets, and favicons.",
-        "canonical": {
-          "numItemsToShow": {
-            "type": "number",
-            "description": "Maximum number of external blogs displayed in the blogroll.",
-            "default": 5,
-            "bound_runtime_data": "data:numItemsToShow"
-          },
-          "showIcon": {
-            "type": "boolean",
-            "description": "Toggle display of blog favicon/icon.",
-            "default": true,
-            "bound_runtime_data": "data:showIcon"
-          },
-          "showItemSnippet": {
-            "type": "boolean",
-            "description": "Toggle display of recent post snippet text.",
-            "default": false,
-            "bound_runtime_data": "data:showItemSnippet"
-          },
-          "showItemThumbnail": {
-            "type": "boolean",
-            "description": "Toggle display of recent post thumbnail image.",
-            "default": true,
-            "bound_runtime_data": "data:showItemThumbnail"
-          },
-          "showItemTitle": {
-            "type": "boolean",
-            "description": "Toggle display of recent post title.",
-            "default": true,
-            "bound_runtime_data": "data:showItemTitle"
-          },
-          "showTimePeriodSinceLastUpdate": {
-            "type": "boolean",
-            "description": "Toggle display of relative time since blog last updated.",
-            "default": true,
-            "bound_runtime_data": "data:showTimePeriodSinceLastUpdate"
-          },
-          "sortType": {
-            "type": "string",
-            "description": "Sorting order for blogroll entries.",
-            "default": "LAST_UPDATE_DESCENDING",
-            "allowed_values": [
-              "LAST_UPDATE_DESCENDING",
-              "ALPHABETICAL"
-            ],
-            "bound_runtime_data": "data:sortType"
-          }
-        }
-      },
-      "BlogSearch": {
-        "description": "Configuration settings for internal blog search gadget. Operates with standard widget title attribute and runtime form data without persistent <b:widget-setting> entries in Layouts v3.",
-        "canonical": {}
-      },
-      "ContactForm": {
-        "description": "Configuration settings for contact form gadget. Utilizes standard widget attributes and localized runtime messages without persistent <b:widget-setting> entries in Layouts v3.",
-        "canonical": {}
-      },
-      "FeaturedPost": {
-        "description": "Configuration settings for pinned/featured posts, controlling post selection and preview elements.",
-        "canonical": {
-          "postId": {
-            "type": "number",
-            "description": "Numeric ID of post selected for pinned display (or 0 if using most recent post).",
-            "default": 0,
-            "bound_runtime_data": "data:posts.first.id"
-          },
-          "showFirstImage": {
-            "type": "boolean",
-            "description": "Toggle display of post lead/featured image hero thumbnail.",
-            "default": true,
-            "bound_runtime_data": "data:postDisplay.showFeaturedImage"
-          },
-          "showPostTitle": {
-            "type": "boolean",
-            "description": "Toggle display of featured post title.",
-            "default": true,
-            "bound_runtime_data": "data:postDisplay.showTitle"
-          },
-          "showSnippet": {
-            "type": "boolean",
-            "description": "Toggle display of post summary snippet text.",
-            "default": true,
-            "bound_runtime_data": "data:postDisplay.showSnippet"
-          },
-          "useMostRecentPost": {
-            "type": "boolean",
-            "description": "Toggle automatic selection of latest published blog post as featured item.",
-            "default": true,
-            "bound_runtime_data": null
-          }
-        }
-      },
-      "Feed": {
-        "description": "Settings for external RSS/Atom feed syndication widgets.",
-        "canonical": {
-          "feedUrl": {
-            "type": "url",
-            "description": "Source URL of external RSS or Atom feed.",
-            "default": "",
-            "bound_runtime_data": "data:feedUrl"
-          },
-          "numItemsShow": {
-            "type": "number",
-            "description": "Maximum number of syndicated feed entries to render.",
-            "default": 5,
-            "bound_runtime_data": "data:numItemsShow"
-          },
-          "openLinksInNewWindow": {
-            "type": "boolean",
-            "description": "Toggle opening feed item links in new browser tab/window.",
-            "default": false,
-            "bound_runtime_data": "data:openLinksInNewWindow"
-          },
-          "showItemAuthor": {
-            "type": "boolean",
-            "description": "Toggle display of syndicated feed item author.",
-            "default": false,
-            "bound_runtime_data": "data:showItemAuthor"
-          },
-          "showItemDate": {
-            "type": "boolean",
-            "description": "Toggle display of publication date for feed items.",
-            "default": true,
-            "bound_runtime_data": "data:showItemDate"
-          }
-        }
-      },
-      "Followers": {
-        "description": "Configuration settings for sandboxed Google Friend Connect / Followers gadget, governing iframe color schemes and borders.",
-        "canonical": {
-          "borderColorTransparent": {
-            "type": "boolean",
-            "description": "Toggle transparent border styling on the Followers iframe.",
-            "default": true,
-            "bound_runtime_data": null
-          },
-          "contentHeadlineColor": {
-            "type": "string",
-            "description": "Hex color code for headline text within the Followers gadget.",
-            "default": "#000000",
-            "bound_runtime_data": null
-          },
-          "contentLinkColor": {
-            "type": "string",
-            "description": "Hex color code for primary hyperlinks within the Followers gadget.",
-            "default": "#000000",
-            "bound_runtime_data": null
-          },
-          "contentSecondaryLinkColor": {
-            "type": "string",
-            "description": "Hex color code for secondary hyperlinks within the Followers gadget.",
-            "default": "#FFFFFF",
-            "bound_runtime_data": null
-          },
-          "contentSecondaryTextColor": {
-            "type": "string",
-            "description": "Hex color code for secondary/subdued text within the Followers gadget.",
-            "default": "#000000",
-            "bound_runtime_data": null
-          },
-          "contentTextColor": {
-            "type": "string",
-            "description": "Hex color code for body text within the Followers gadget.",
-            "default": "#000000",
-            "bound_runtime_data": null
-          },
-          "endcapLinkColor": {
-            "type": "string",
-            "description": "Hex color code for endcap/footer hyperlinks within the Followers gadget.",
-            "default": "#000000",
-            "bound_runtime_data": null
-          },
-          "endcapTextColor": {
-            "type": "string",
-            "description": "Hex color code for endcap/footer text within the Followers gadget.",
-            "default": "#000000",
-            "bound_runtime_data": null
-          },
-          "useTemplateDefaultStyles": {
-            "type": "boolean",
-            "description": "Flag indicating whether default theme typography and palette styles apply to the gadget.",
-            "default": true,
-            "bound_runtime_data": null
+        "settings": {
+          "canonical": {
+            "content": {
+              "type": "string",
+              "description": "Unescaped HTML, JavaScript, or plain text content wrapped in CDATA.",
+              "default": "",
+              "bound_runtime_data": "data:content"
+            }
           }
         }
       },
       "Header": {
-        "description": "Settings for blog title and header hero image placement and dimensions.",
-        "canonical": {
-          "displayHeight": {
-            "type": "number",
-            "description": "Rendered height dimension in pixels for header image.",
-            "default": 0,
-            "bound_runtime_data": "data:height"
+        "description": "Blog title, header hero banner, description, and image placement flags.",
+        "data": {
+          "canonical": {
+            "backgroundPositionStyleStr": {
+              "type": "string",
+              "description": "Inline CSS string for banner background positioning (e.g. 'background-position: center;')."
+            },
+            "description": {
+              "type": "string",
+              "description": "Blog tagline/description configured in blog settings."
+            },
+            "height": {
+              "type": "number",
+              "description": "Native banner image height in pixels."
+            },
+            "image": {
+              "type": "image",
+              "description": "Native Blogger image resource; supports `resizeImage()` expressions."
+            },
+            "imagePlacement": {
+              "type": "string",
+              "description": "Banner placement mode: `'BEHIND'`, `'REPLACE'`, or `'BEFORE_DESCRIPTION'`.",
+              "allowed_values": [
+                "BEHIND",
+                "REPLACE",
+                "BEFORE_DESCRIPTION"
+              ]
+            },
+            "shrinkToFit": {
+              "type": "boolean",
+              "description": "UI toggle indicating whether banner scales down to fit container width."
+            },
+            "sourceUrl": {
+              "type": "url",
+              "description": "Direct CDN URL of the uploaded banner image."
+            },
+            "title": {
+              "type": "string",
+              "description": "Blog title text (or custom header title)."
+            },
+            "useImage": {
+              "type": "boolean",
+              "description": "True when an uploaded banner image is active."
+            },
+            "width": {
+              "type": "number",
+              "description": "Native banner image width in pixels."
+            }
           },
-          "displayUrl": {
-            "type": "url",
-            "description": "Hosted image URL for blog header background or replacement graphic.",
-            "default": "",
-            "bound_runtime_data": "data:sourceUrl"
-          },
-          "displayWidth": {
-            "type": "number",
-            "description": "Rendered width dimension in pixels for header image.",
-            "default": 0,
-            "bound_runtime_data": "data:width"
-          },
-          "imagePlacement": {
-            "type": "string",
-            "description": "Layout placement strategy for header image relative to blog title and description.",
-            "default": "BEHIND",
-            "allowed_values": [
-              "BEHIND",
-              "REPLACE",
-              "BEFORE_DESCRIPTION"
-            ],
-            "bound_runtime_data": "data:imagePlacement"
-          },
-          "shrinkToFit": {
-            "type": "boolean",
-            "description": "Toggle automatic browser image scaling to container width.",
-            "default": false,
-            "bound_runtime_data": "data:shrinkToFit"
-          },
-          "useImage": {
-            "type": "boolean",
-            "description": "Toggle display of custom header image.",
-            "default": false,
-            "bound_runtime_data": "data:useImage"
+          "deprecated": {
+            "mobile": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "data:blog.isMobileRequest",
+              "reason": "Legacy mobile rendering flag. Replaced by `data:blog.isMobileRequest` or CSS media queries."
+            },
+            "sectionWidth": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "number",
+              "replacement": null,
+              "reason": "Fluid CSS layout replaces fixed sectionWidth dimension constraints."
+            },
+            "widthStyleStr": {
+              "status": "deprecated_in_widget_v2",
+              "type": "string",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Inline CSS string for image width constraint. Deprecated in v2 in favor of CSS."
+            }
           }
         },
-        "deprecated": {
-          "sectionWidth": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "number",
-            "replacement": null,
-            "reason": "Fluid CSS layout replaces fixed sectionWidth dimension constraints."
-          }
-        }
-      },
-      "HTML": {
-        "description": "Settings for custom arbitrary HTML/JavaScript content widgets.",
-        "canonical": {
-          "content": {
-            "type": "string",
-            "description": "Unescaped HTML, JavaScript, or plain text content wrapped in CDATA.",
-            "default": "",
-            "bound_runtime_data": "data:content"
+        "settings": {
+          "canonical": {
+            "displayHeight": {
+              "type": "number",
+              "description": "Rendered height dimension in pixels for header image.",
+              "default": 0,
+              "bound_runtime_data": "data:height"
+            },
+            "displayUrl": {
+              "type": "url",
+              "description": "Hosted image URL for blog header background or replacement graphic.",
+              "default": "",
+              "bound_runtime_data": "data:sourceUrl"
+            },
+            "displayWidth": {
+              "type": "number",
+              "description": "Rendered width dimension in pixels for header image.",
+              "default": 0,
+              "bound_runtime_data": "data:width"
+            },
+            "imagePlacement": {
+              "type": "string",
+              "description": "Layout placement strategy for header image relative to blog title and description.",
+              "default": "BEHIND",
+              "allowed_values": [
+                "BEHIND",
+                "REPLACE",
+                "BEFORE_DESCRIPTION"
+              ],
+              "bound_runtime_data": "data:imagePlacement"
+            },
+            "shrinkToFit": {
+              "type": "boolean",
+              "description": "Toggle automatic browser image scaling to container width.",
+              "default": false,
+              "bound_runtime_data": "data:shrinkToFit"
+            },
+            "useImage": {
+              "type": "boolean",
+              "description": "Toggle display of custom header image.",
+              "default": false,
+              "bound_runtime_data": "data:useImage"
+            }
+          },
+          "deprecated": {
+            "sectionWidth": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "number",
+              "replacement": null,
+              "reason": "Fluid CSS layout replaces fixed sectionWidth dimension constraints."
+            }
           }
         }
       },
       "Image": {
-        "description": "Settings for standalone image banner widgets, links, captions, and dimensions.",
-        "canonical": {
-          "caption": {
-            "type": "string",
-            "description": "Caption or descriptive text rendered beneath image.",
-            "default": "",
-            "bound_runtime_data": "data:caption"
+        "description": "Standalone image banner, caption, destination link, responsive srcset, and dimensions.",
+        "data": {
+          "canonical": {
+            "caption": {
+              "type": "string",
+              "description": "Caption or descriptive text displayed with the image."
+            },
+            "height": {
+              "type": "number",
+              "description": "Native height of the image in pixels."
+            },
+            "link": {
+              "type": "url",
+              "description": "Target destination URL activated when clicking the image."
+            },
+            "shrinkToFit": {
+              "type": "boolean",
+              "description": "UI toggle indicating whether the image scales down to container width."
+            },
+            "sourceSet": {
+              "type": "string",
+              "description": "Comma-separated responsive image candidates (`srcset`)."
+            },
+            "sourceUrl": {
+              "type": "url",
+              "description": "Direct CDN or external source URL of the image."
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title configured in UI."
+            },
+            "width": {
+              "type": "number",
+              "description": "Native width of the image in pixels."
+            }
           },
-          "displayHeight": {
-            "type": "number",
-            "description": "Rendered height dimension in pixels for image.",
-            "default": 0,
-            "bound_runtime_data": "data:height"
-          },
-          "displayUrl": {
-            "type": "url",
-            "description": "Hosted URL of image asset.",
-            "default": "",
-            "bound_runtime_data": "data:sourceUrl"
-          },
-          "displayWidth": {
-            "type": "number",
-            "description": "Rendered width dimension in pixels for image.",
-            "default": 0,
-            "bound_runtime_data": "data:width"
-          },
-          "link": {
-            "type": "url",
-            "description": "Destination hyperlink URL when clicking image.",
-            "default": "",
-            "bound_runtime_data": "data:link"
-          },
-          "shrinkToFit": {
-            "type": "boolean",
-            "description": "Toggle automatic image scaling to fit container width.",
-            "default": false,
-            "bound_runtime_data": "data:shrinkToFit"
+          "deprecated": {
+            "sectionWidth": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "number",
+              "replacement": null,
+              "reason": "Fluid CSS layout replaces fixed sectionWidth dimension constraints."
+            }
           }
         },
-        "deprecated": {
-          "sectionWidth": {
-            "status": "deprecated_in_layout_v3",
-            "action": "remove",
-            "type": "number",
-            "replacement": null,
-            "reason": "Fluid CSS layout replaces fixed sectionWidth dimension constraints."
+        "settings": {
+          "canonical": {
+            "caption": {
+              "type": "string",
+              "description": "Caption or descriptive text rendered beneath image.",
+              "default": "",
+              "bound_runtime_data": "data:caption"
+            },
+            "displayHeight": {
+              "type": "number",
+              "description": "Rendered height dimension in pixels for image.",
+              "default": 0,
+              "bound_runtime_data": "data:height"
+            },
+            "displayUrl": {
+              "type": "url",
+              "description": "Hosted URL of image asset.",
+              "default": "",
+              "bound_runtime_data": "data:sourceUrl"
+            },
+            "displayWidth": {
+              "type": "number",
+              "description": "Rendered width dimension in pixels for image.",
+              "default": 0,
+              "bound_runtime_data": "data:width"
+            },
+            "link": {
+              "type": "url",
+              "description": "Destination hyperlink URL when clicking image.",
+              "default": "",
+              "bound_runtime_data": "data:link"
+            },
+            "shrinkToFit": {
+              "type": "boolean",
+              "description": "Toggle automatic image scaling to fit container width.",
+              "default": false,
+              "bound_runtime_data": "data:shrinkToFit"
+            }
+          },
+          "deprecated": {
+            "sectionWidth": {
+              "status": "deprecated_in_layout_v3",
+              "action": "remove",
+              "type": "number",
+              "replacement": null,
+              "reason": "Fluid CSS layout replaces fixed sectionWidth dimension constraints."
+            }
           }
         }
       },
       "Label": {
-        "description": "Configuration settings for post label/category index, sorting, and frequency display.",
-        "canonical": {
-          "display": {
-            "type": "string",
-            "description": "Presentation format for labels display.",
-            "default": "LIST",
-            "allowed_values": [
-              "LIST",
-              "CLOUD"
-            ],
-            "bound_runtime_data": "data:display"
-          },
-          "selectedLabelsList": {
-            "type": "string",
-            "description": "Comma-separated list of label names filtered when showType is USER_SELECTED.",
-            "default": "",
-            "bound_runtime_data": null
-          },
-          "showFreqNumbers": {
-            "type": "boolean",
-            "description": "Toggle display of post count numbers beside each label.",
-            "default": false,
-            "bound_runtime_data": "data:showFreqNumbers"
-          },
-          "showType": {
-            "type": "string",
-            "description": "Label filtering mode (all labels vs user-selected labels).",
-            "default": "ALL",
-            "allowed_values": [
-              "ALL",
-              "USER_SELECTED"
-            ],
-            "bound_runtime_data": null
-          },
-          "sorting": {
-            "type": "string",
-            "description": "Sorting order for labels.",
-            "default": "ALPHA",
-            "allowed_values": [
-              "ALPHA",
-              "FREQUENCY"
-            ],
-            "bound_runtime_data": null
+        "description": "Category taxonomy, post counts per label, and cloud vs. list display modes.",
+        "data": {
+          "canonical": {
+            "display": {
+              "type": "string",
+              "description": "Presentation format chosen in UI: `'list'` or `'cloud'`.",
+              "allowed_values": [
+                "list",
+                "cloud"
+              ]
+            },
+            "labels": {
+              "type": "array[object]",
+              "description": "Collection of label models configured for display in this gadget.",
+              "item_properties": {
+                "count": {
+                  "type": "number",
+                  "description": "Total published posts assigned to this label."
+                },
+                "cssSize": {
+                  "type": "number",
+                  "description": "Relative frequency rank/weight (1–5) used for font scaling in cloud mode."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Display name of the label category."
+                },
+                "url": {
+                  "type": "url",
+                  "description": "Target search URL for posts tagged with this label."
+                }
+              }
+            },
+            "showFreqNumbers": {
+              "type": "boolean",
+              "description": "UI toggle indicating whether to display post count per label."
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (defaults to 'Labels' if omitted)."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {
+            "display": {
+              "type": "string",
+              "description": "Presentation format for labels display.",
+              "default": "LIST",
+              "allowed_values": [
+                "LIST",
+                "CLOUD"
+              ],
+              "bound_runtime_data": "data:display"
+            },
+            "selectedLabelsList": {
+              "type": "string",
+              "description": "Comma-separated list of label names filtered when showType is USER_SELECTED.",
+              "default": "",
+              "bound_runtime_data": null
+            },
+            "showFreqNumbers": {
+              "type": "boolean",
+              "description": "Toggle display of post count numbers beside each label.",
+              "default": false,
+              "bound_runtime_data": "data:showFreqNumbers"
+            },
+            "showType": {
+              "type": "string",
+              "description": "Label filtering mode (all labels vs user-selected labels).",
+              "default": "ALL",
+              "allowed_values": [
+                "ALL",
+                "USER_SELECTED"
+              ],
+              "bound_runtime_data": null
+            },
+            "sorting": {
+              "type": "string",
+              "description": "Sorting order for labels.",
+              "default": "ALPHA",
+              "allowed_values": [
+                "ALPHA",
+                "FREQUENCY"
+              ],
+              "bound_runtime_data": null
+            }
           }
         }
       },
       "LinkList": {
-        "description": "Configuration settings for custom navigation link lists and indexed URL/label pairs.",
-        "canonical": {
-          "shownum": {
-            "type": "number",
-            "description": "Maximum number of links to display (0 indicates display all).",
-            "default": 0,
-            "bound_runtime_data": "data:shownum"
-          },
-          "sorting": {
-            "type": "string",
-            "description": "Alphabetical sorting order for link items.",
-            "default": "none",
-            "allowed_values": [
-              "none",
-              "alpha",
-              "reversealpha"
-            ],
-            "bound_runtime_data": "data:sorting"
+        "description": "Ordered list of custom hyperlinks (`links[i].name`, `links[i].target`).",
+        "data": {
+          "canonical": {
+            "links": {
+              "type": "array[object]",
+              "description": "Collection of user-configured hyperlink items.",
+              "item_properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Anchor label or link text."
+                },
+                "target": {
+                  "type": "url",
+                  "description": "Destination hyperlink URL."
+                }
+              }
+            },
+            "shownum": {
+              "type": "number",
+              "description": "Maximum links to display (0 or negative indicates no limit / show all)."
+            },
+            "sorting": {
+              "type": "string",
+              "description": "Ordering mode set in UI (`'none'`, `'alpha'`, `'reverse-alpha'`).",
+              "allowed_values": [
+                "none",
+                "alpha",
+                "reverse-alpha"
+              ]
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (defaults to 'Links' if omitted)."
+            }
           }
         },
-        "patterns": [
-          {
-            "template": "link-{index}",
-            "type": "url",
-            "index_start": 0,
-            "paired_with": "text-{index}",
-            "description": "Destination URL for hyperlink entry at zero-based {index} (e.g. link-0, link-1, link-2). Deserialized into data:links[i].target within the data:links array."
+        "settings": {
+          "canonical": {
+            "shownum": {
+              "type": "number",
+              "description": "Maximum number of links to display (0 indicates display all).",
+              "default": 0,
+              "bound_runtime_data": "data:shownum"
+            },
+            "sorting": {
+              "type": "string",
+              "description": "Alphabetical sorting order for link items.",
+              "default": "none",
+              "allowed_values": [
+                "none",
+                "alpha",
+                "reversealpha"
+              ],
+              "bound_runtime_data": "data:sorting"
+            }
           },
-          {
-            "template": "text-{index}",
-            "type": "string",
-            "index_start": 0,
-            "paired_with": "link-{index}",
-            "description": "Visible text label for hyperlink entry at zero-based {index} (correlates with link-{index}). Deserialized into data:links[i].name within the data:links array."
-          }
-        ]
+          "patterns": [
+            {
+              "template": "link-{index}",
+              "type": "url",
+              "index_start": 0,
+              "paired_with": "text-{index}",
+              "description": "Destination URL for hyperlink entry at zero-based {index} (e.g. link-0, link-1, link-2). Deserialized into data:links[i].target within the data:links array."
+            },
+            {
+              "template": "text-{index}",
+              "type": "string",
+              "index_start": 0,
+              "paired_with": "link-{index}",
+              "description": "Visible text label for hyperlink entry at zero-based {index} (correlates with link-{index}). Deserialized into data:links[i].name within the data:links array."
+            }
+          ]
+        }
       },
       "PageList": {
-        "description": "Configuration settings for primary site navigation, static page links, and custom external links.",
-        "canonical": {
-          "homeTitle": {
-            "type": "string",
-            "description": "Custom label text override for the root/home page link.",
-            "default": "Home",
-            "bound_runtime_data": "data:links[0].title"
+        "description": "Static standalone page navigation links, home link, and active selection state.",
+        "data": {
+          "canonical": {
+            "links": {
+              "type": "array[object]",
+              "description": "Collection of standalone page and custom navigation links.",
+              "item_properties": {
+                "href": {
+                  "type": "url",
+                  "description": "Destination page or external link URL."
+                },
+                "id": {
+                  "type": "string",
+                  "description": "Unique page identifier (numeric ID string or 'c0' for Home)."
+                },
+                "isCurrentPage": {
+                  "type": "boolean",
+                  "description": "True if the link matches the current view URL request."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Visible navigation label or page title."
+                }
+              }
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (defaults to 'Pages' if omitted)."
+            }
           },
-          "pageListJson": {
-            "type": "string",
-            "serialization_format": "json",
-            "description": "Serialized JSON navigation map wrapped in CDATA, encoding numeric page IDs, external links (keyed sequentially as link0, link1, ...), titles, and sort positions.",
-            "default": "{}",
-            "bound_runtime_data": "data:links",
-            "item_properties": {
-              "href": {
-                "type": "url",
-                "description": "Target destination URL for page or external link."
-              },
-              "title": {
-                "type": "string",
-                "description": "Display title label for navigation item."
-              },
-              "position": {
-                "type": "number",
-                "description": "Zero-based sort order index within navigation bar."
+          "deprecated": {
+            "mobile": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "data:blog.isMobileRequest",
+              "reason": "Legacy mobile rendering flag. Replaced by `data:blog.isMobileRequest` or CSS media queries."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {
+            "homeTitle": {
+              "type": "string",
+              "description": "Custom label text override for the root/home page link.",
+              "default": "Home",
+              "bound_runtime_data": "data:links[0].title"
+            },
+            "pageListJson": {
+              "type": "string",
+              "serialization_format": "json",
+              "description": "Serialized JSON navigation map wrapped in CDATA, encoding numeric page IDs, external links (keyed sequentially as link0, link1, ...), titles, and sort positions.",
+              "default": "{}",
+              "bound_runtime_data": "data:links",
+              "item_properties": {
+                "href": {
+                  "type": "url",
+                  "description": "Target destination URL for page or external link."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Display title label for navigation item."
+                },
+                "position": {
+                  "type": "number",
+                  "description": "Zero-based sort order index within navigation bar."
+                }
               }
             }
           }
         }
       },
       "PopularPosts": {
-        "description": "Settings for trending/most-viewed posts list, time window selection, and post element toggles.",
-        "canonical": {
-          "numItemsToShow": {
-            "type": "number",
-            "description": "Maximum number of popular posts displayed.",
-            "default": 10,
-            "bound_runtime_data": null
+        "description": "Ranked trending posts collection, thumbnail images, and comment counts.",
+        "data": {
+          "canonical": {
+            "postDisplay": {
+              "type": "object",
+              "description": "Structured display preferences configured in UI.",
+              "properties": {
+                "showAuthor": {
+                  "type": "boolean",
+                  "description": "UI toggle indicating whether post author is shown."
+                },
+                "showDate": {
+                  "type": "boolean",
+                  "description": "UI toggle indicating whether publication date is shown."
+                },
+                "showFeaturedImage": {
+                  "type": "boolean",
+                  "description": "UI toggle indicating whether hero/featured thumbnail is displayed."
+                },
+                "showSnippet": {
+                  "type": "boolean",
+                  "description": "UI toggle indicating whether post excerpt/snippet is shown."
+                },
+                "showTitle": {
+                  "type": "boolean",
+                  "description": "UI toggle indicating whether post title headline is shown."
+                }
+              }
+            },
+            "posts": {
+              "type": "array[object]",
+              "description": "Collection of popular post models (canonical `Blog` post schema).",
+              "item_properties": {
+                "absoluteUrl": {
+                  "type": "url",
+                  "description": "Fully qualified absolute URL of the post."
+                },
+                "allowComments": {
+                  "type": "boolean",
+                  "description": "True if comments are enabled on this post."
+                },
+                "author": {
+                  "type": "object",
+                  "description": "Author profile information and avatar details for the post.",
+                  "properties": {
+                    "authorPhoto": {
+                      "type": "object",
+                      "description": "Author avatar photo details.",
+                      "properties": {
+                        "alt": {
+                          "type": "string",
+                          "description": "Accessible alternate text for author avatar."
+                        },
+                        "height": {
+                          "type": "number",
+                          "description": "Pixel height of author avatar image."
+                        },
+                        "image": {
+                          "type": "image",
+                          "description": "Native image resource of author avatar."
+                        },
+                        "width": {
+                          "type": "number",
+                          "description": "Pixel width of author avatar image."
+                        }
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Display name of post author."
+                    },
+                    "profileUrl": {
+                      "type": "string",
+                      "description": "URL to author's public profile page."
+                    }
+                  }
+                },
+                "body": {
+                  "type": "string",
+                  "description": "Full HTML content body of the post."
+                },
+                "commentSource": {
+                  "type": "number",
+                  "description": "Comment backend provider (0 = Blogger native, 1 = Google+)."
+                },
+                "commentsUrl": {
+                  "type": "url",
+                  "description": "URL endpoint for viewing or adding comments."
+                },
+                "commentsUrlOnclick": {
+                  "type": "string",
+                  "description": "Legacy onclick handler for popup comment windows."
+                },
+                "date": {
+                  "type": "date",
+                  "description": "Publication timestamp of the post."
+                },
+                "emailPostUrl": {
+                  "type": "string",
+                  "description": "Direct URL for emailing post."
+                },
+                "featuredImage": {
+                  "type": "image",
+                  "description": "Hero/featured image resource of the post."
+                },
+                "hasJumpLink": {
+                  "type": "boolean",
+                  "description": "True if the post content contains a 'Read more' jump break."
+                },
+                "id": {
+                  "type": "number",
+                  "description": "Unique numeric identifier of the post."
+                },
+                "labels": {
+                  "type": "array[object]",
+                  "description": "Category tags assigned to the post.",
+                  "item_properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Category/label name."
+                    },
+                    "url": {
+                      "type": "url",
+                      "description": "Category archive URL for this label."
+                    }
+                  }
+                },
+                "lastUpdated": {
+                  "type": "date",
+                  "description": "Timestamp of most recent post update."
+                },
+                "numberOfComments": {
+                  "type": "number",
+                  "description": "Total comment count for this post."
+                },
+                "shareUrl": {
+                  "type": "string",
+                  "description": "Sharing URL endpoint for social dialogs."
+                },
+                "snippets": {
+                  "type": "object",
+                  "description": "Short and long plain-text snippets for the post.",
+                  "properties": {
+                    "long": {
+                      "type": "string",
+                      "description": "Extended plain-text post summary excerpt."
+                    },
+                    "short": {
+                      "type": "string",
+                      "description": "Short plain-text post summary excerpt."
+                    }
+                  }
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Post headline title string."
+                },
+                "url": {
+                  "type": "url",
+                  "description": "Relative or canonical permalink URL of the post."
+                }
+              },
+              "deprecated": {
+                "href": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "url",
+                  "action": "migrate",
+                  "replacement": "post.url",
+                  "reason": "Replaced by canonical permalink `post.url` in Gadget v2."
+                },
+                "snippet": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "string",
+                  "action": "migrate",
+                  "replacement": "post.snippets.short",
+                  "reason": "Flat summary string replaced by structured object `post.snippets`."
+                },
+                "thumbnail": {
+                  "status": "deprecated_in_widget_v2",
+                  "type": "image",
+                  "action": "migrate",
+                  "replacement": "post.featuredImage",
+                  "reason": "Legacy thumbnail property replaced by native hero image `post.featuredImage`."
+                }
+              }
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (defaults to 'Popular Posts' if omitted)."
+            }
           },
-          "showSnippets": {
-            "type": "boolean",
-            "description": "Toggle display of post excerpt snippets.",
-            "default": true,
-            "bound_runtime_data": "data:postDisplay.showSnippet"
-          },
-          "showThumbnails": {
-            "type": "boolean",
-            "description": "Toggle display of post thumbnail images.",
-            "default": true,
-            "bound_runtime_data": "data:postDisplay.showFeaturedImage"
-          },
-          "timeRange": {
-            "type": "string",
-            "description": "Time window calculation period for popular post metrics.",
-            "default": "ALL_TIME",
-            "allowed_values": [
-              "ALL_TIME",
-              "LAST_YEAR",
-              "LAST_MONTH",
-              "LAST_WEEK"
-            ],
-            "bound_runtime_data": null
+          "deprecated": {
+            "showSnippets": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "data:postDisplay.showSnippet",
+              "reason": "Replaced by `data:postDisplay.showSnippet`."
+            },
+            "showThumbnails": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "migrate",
+              "replacement": "data:postDisplay.showFeaturedImage",
+              "reason": "Replaced by `data:postDisplay.showFeaturedImage`."
+            },
+            "thumbnailSize": {
+              "status": "deprecated_in_widget_v2",
+              "type": "number",
+              "action": "migrate",
+              "replacement": "resizeImage()",
+              "reason": "Thumbnail dimension in pixels. Deprecated in v2 in favor of `resizeImage()`."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {
+            "numItemsToShow": {
+              "type": "number",
+              "description": "Maximum number of popular posts displayed.",
+              "default": 10,
+              "bound_runtime_data": null
+            },
+            "showSnippets": {
+              "type": "boolean",
+              "description": "Toggle display of post excerpt snippets.",
+              "default": true,
+              "bound_runtime_data": "data:postDisplay.showSnippet"
+            },
+            "showThumbnails": {
+              "type": "boolean",
+              "description": "Toggle display of post thumbnail images.",
+              "default": true,
+              "bound_runtime_data": "data:postDisplay.showFeaturedImage"
+            },
+            "timeRange": {
+              "type": "string",
+              "description": "Time window calculation period for popular post metrics.",
+              "default": "ALL_TIME",
+              "allowed_values": [
+                "ALL_TIME",
+                "LAST_YEAR",
+                "LAST_MONTH",
+                "LAST_WEEK"
+              ],
+              "bound_runtime_data": null
+            }
           }
         }
       },
       "Profile": {
-        "description": "Settings for author/user profile gadgets, author biography, and location toggles.",
-        "canonical": {
-          "showaboutme": {
-            "type": "boolean",
-            "description": "Toggle display of author 'About Me' biographical snippet.",
-            "default": true,
-            "bound_runtime_data": "data:showaboutme"
+        "description": "Author biographical details, profile avatar, location, team contributors, and social links.",
+        "data": {
+          "canonical": {
+            "aboutme": {
+              "type": "string",
+              "description": "Author biography or introduction text."
+            },
+            "authorPhoto": {
+              "type": "object",
+              "description": "Structured avatar object with native `image` type.",
+              "properties": {
+                "alt": {
+                  "type": "string",
+                  "description": "Accessible alternate text for author avatar."
+                },
+                "height": {
+                  "type": "number",
+                  "description": "Pixel height of author avatar image."
+                },
+                "image": {
+                  "type": "image",
+                  "description": "Native image resource of author avatar; supports `resizeImage()`."
+                },
+                "width": {
+                  "type": "number",
+                  "description": "Pixel width of author avatar image."
+                }
+              }
+            },
+            "authors": {
+              "type": "array[object]",
+              "description": "Collection of contributors populated when `team == true`.",
+              "item_properties": {
+                "authorPhoto": {
+                  "type": "object",
+                  "description": "Structured contributor avatar with native image resource.",
+                  "properties": {
+                    "alt": {
+                      "type": "string",
+                      "description": "Accessible alternate text for author avatar."
+                    },
+                    "height": {
+                      "type": "number",
+                      "description": "Pixel height of author avatar image."
+                    },
+                    "image": {
+                      "type": "image",
+                      "description": "Native image resource of author avatar; supports `resizeImage()`."
+                    },
+                    "width": {
+                      "type": "number",
+                      "description": "Pixel width of author avatar image."
+                    }
+                  }
+                },
+                "display-name": {
+                  "type": "string",
+                  "description": "Display name of team contributor."
+                },
+                "profileLogo": {
+                  "type": "string",
+                  "description": "Platform badge/logo URL for contributor."
+                },
+                "userUrl": {
+                  "type": "url",
+                  "description": "URL linking to contributor's profile page."
+                }
+              }
+            },
+            "displayname": {
+              "type": "string",
+              "description": "Author display name."
+            },
+            "hasgoogleprofile": {
+              "type": "boolean",
+              "description": "True if linked to a Google account profile."
+            },
+            "location": {
+              "type": "string",
+              "description": "Geographic location configured in author profile."
+            },
+            "profileLogo": {
+              "type": "string",
+              "description": "Small platform profile badge/logo URL."
+            },
+            "showaboutme": {
+              "type": "boolean",
+              "description": "UI toggle for rendering the biography text."
+            },
+            "showlocation": {
+              "type": "boolean",
+              "description": "UI toggle for rendering the location string."
+            },
+            "team": {
+              "type": "boolean",
+              "description": "True if the blog has multiple authors and is configured as a team blog."
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (defaults to 'About Me' or 'Contributors' if omitted)."
+            },
+            "userUrl": {
+              "type": "url",
+              "description": "URL linking to the author's public profile page."
+            },
+            "viewProfileMsg": {
+              "type": "string",
+              "description": "Localized string (e.g. 'View my complete profile')."
+            }
           },
-          "showlocation": {
-            "type": "boolean",
-            "description": "Toggle display of author geographical location.",
-            "default": true,
-            "bound_runtime_data": "data:showlocation"
+          "deprecated": {
+            "photo": {
+              "status": "deprecated_in_widget_v2",
+              "type": "object",
+              "action": "migrate",
+              "replacement": "data:authorPhoto",
+              "reason": "Legacy photo model (`.url`, `.width`, `.height`, `.alt`). Replaced by `authorPhoto` in v2."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {
+            "showaboutme": {
+              "type": "boolean",
+              "description": "Toggle display of author 'About Me' biographical snippet.",
+              "default": true,
+              "bound_runtime_data": "data:showaboutme"
+            },
+            "showlocation": {
+              "type": "boolean",
+              "description": "Toggle display of author geographical location.",
+              "default": true,
+              "bound_runtime_data": "data:showlocation"
+            }
           }
         }
       },
       "ReportAbuse": {
-        "description": "Configuration settings for DSA compliance abuse reporting gadget. Operates with zero persistent <b:widget-setting> entries.",
-        "canonical": {}
+        "description": "System abuse reporting link gadget (DSA compliance, replaces legacy Navbar reporting channel).",
+        "data": {
+          "canonical": {}
+        },
+        "settings": {
+          "canonical": {}
+        }
       },
       "Stats": {
-        "description": "Configuration settings for blog visitor counters, sparklines, and graphical view meters.",
-        "canonical": {
-          "showAnimatedCounter": {
-            "type": "boolean",
-            "description": "Toggle animated scrolling number transition for pageview count.",
-            "default": true,
-            "bound_runtime_data": "data:showAnimatedCounter"
-          },
-          "showGraphicalCounter": {
-            "type": "boolean",
-            "description": "Toggle graphical counter graphic presentation.",
-            "default": false,
-            "bound_runtime_data": "data:showGraphicalCounter"
-          },
-          "showSparkline": {
-            "type": "boolean",
-            "description": "Toggle display of historical pageview trend sparkline chart.",
-            "default": true,
-            "bound_runtime_data": "data:showSparkline"
-          },
-          "sparklineStyle": {
-            "type": "string",
-            "description": "Visual styling palette and appearance parameters for sparkline chart. Encoded as style query parameter in data:statsUrl.",
-            "default": "BLACK_TRANSPARENT",
-            "bound_runtime_data": "data:statsUrl"
-          },
-          "timeRange": {
-            "type": "string",
-            "description": "Time window for visitor count aggregation. Encoded as timeRange query parameter in data:statsUrl.",
-            "default": "ALL_TIME",
-            "allowed_values": [
-              "ALL_TIME",
-              "LAST_YEAR",
-              "LAST_MONTH",
-              "LAST_WEEK"
-            ],
-            "bound_runtime_data": "data:statsUrl"
+        "description": "Historical pageview counter, sparkline trend display flags, and stats endpoint URL.",
+        "data": {
+          "canonical": {
+            "showAnimatedCounter": {
+              "type": "boolean",
+              "description": "UI toggle indicating whether digits animate dynamically on increment."
+            },
+            "showGraphicalCounter": {
+              "type": "boolean",
+              "description": "UI toggle indicating whether to render stylized graphical digit tiles."
+            },
+            "showSparkline": {
+              "type": "boolean",
+              "description": "UI toggle indicating whether to display the miniature traffic trend chart."
+            },
+            "statsUrl": {
+              "type": "url",
+              "description": "Blogger endpoint URL used to retrieve traffic counts and sparkline graphics."
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (defaults to 'Total Pageviews' if omitted)."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {
+            "showAnimatedCounter": {
+              "type": "boolean",
+              "description": "Toggle animated scrolling number transition for pageview count.",
+              "default": true,
+              "bound_runtime_data": "data:showAnimatedCounter"
+            },
+            "showGraphicalCounter": {
+              "type": "boolean",
+              "description": "Toggle graphical counter graphic presentation.",
+              "default": false,
+              "bound_runtime_data": "data:showGraphicalCounter"
+            },
+            "showSparkline": {
+              "type": "boolean",
+              "description": "Toggle display of historical pageview trend sparkline chart.",
+              "default": true,
+              "bound_runtime_data": "data:showSparkline"
+            },
+            "sparklineStyle": {
+              "type": "string",
+              "description": "Visual styling palette and appearance parameters for sparkline chart. Encoded as style query parameter in data:statsUrl.",
+              "default": "BLACK_TRANSPARENT",
+              "bound_runtime_data": "data:statsUrl"
+            },
+            "timeRange": {
+              "type": "string",
+              "description": "Time window for visitor count aggregation. Encoded as timeRange query parameter in data:statsUrl.",
+              "default": "ALL_TIME",
+              "allowed_values": [
+                "ALL_TIME",
+                "LAST_YEAR",
+                "LAST_MONTH",
+                "LAST_WEEK"
+              ],
+              "bound_runtime_data": "data:statsUrl"
+            }
           }
         }
       },
       "Subscribe": {
-        "description": "Configuration settings for web feed subscription links. Feeds and reader links are dynamically evaluated at runtime without persistent <b:widget-setting> entries.",
-        "canonical": {}
+        "description": "Subscription feeds, aggregator reader targets, and platform feed icons.",
+        "data": {
+          "canonical": {
+            "arrowDropdownImg": {
+              "type": "url",
+              "description": "Static platform image URL for the dropdown chevron arrow."
+            },
+            "atomFeedTxt": {
+              "type": "string",
+              "description": "Localized label for direct Atom feed subscription (e.g. 'Posts (Atom)')."
+            },
+            "feedIconImg": {
+              "type": "url",
+              "description": "Static platform image URL for the standard orange RSS feed icon."
+            },
+            "feeds": {
+              "type": "array[object]",
+              "description": "Collection of supported web feed reader targets.",
+              "item_properties": {
+                "encodedUrl": {
+                  "type": "string",
+                  "description": "URL-encoded feed endpoint used in reader query parameter strings."
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Display name of the feed reader service (e.g. 'Google', 'Yahoo')."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "Identifier code for the feed reader target (e.g. 'GOOGLE', 'YAHOO')."
+                },
+                "url": {
+                  "type": "url",
+                  "description": "Direct one-click subscription endpoint targeting that reader service."
+                }
+              }
+            },
+            "imagePathBase": {
+              "type": "url",
+              "description": "Base CDN directory URL containing feed reader brand logos."
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (e.g. 'Subscribe To')."
+            },
+            "widgetId": {
+              "type": "string",
+              "description": "Canonical widget instance ID string."
+            }
+          },
+          "deprecated": {
+            "isPublic": {
+              "status": "deprecated_in_widget_v2",
+              "type": "boolean",
+              "action": "remove",
+              "replacement": null,
+              "reason": "Legacy visibility flag confirming public blog status. Gadget v1 only; omitted from v2."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {}
+        }
       },
       "Text": {
-        "description": "Settings for plain or formatted text note gadgets.",
-        "canonical": {
-          "content": {
-            "type": "string",
-            "description": "Text content payload wrapped in CDATA.",
-            "default": "",
-            "bound_runtime_data": "data:content"
+        "description": "Rich-text and formatted content gadget displaying user-authored text notes or HTML payload.",
+        "data": {
+          "canonical": {
+            "content": {
+              "type": "string",
+              "description": "Raw HTML markup, JavaScript snippet, or formatted text payload."
+            },
+            "title": {
+              "type": "string",
+              "description": "Optional widget header title configured in UI."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {
+            "content": {
+              "type": "string",
+              "description": "Text content payload wrapped in CDATA.",
+              "default": "",
+              "bound_runtime_data": "data:content"
+            }
           }
         }
       },
       "TextList": {
-        "description": "Configuration settings for custom text bulleted lists with indexed items.",
-        "canonical": {
-          "shownum": {
-            "type": "number",
-            "description": "Maximum number of list items to render (0 indicates display all).",
-            "default": 0,
-            "bound_runtime_data": "data:shownum"
-          },
-          "sorting": {
-            "type": "string",
-            "description": "Alphabetical sorting order for list items.",
-            "default": "NONE",
-            "allowed_values": [
-              "NONE",
-              "ALPHABETICAL",
-              "REVERSE_ALPHABETICAL"
-            ],
-            "bound_runtime_data": "data:sorting"
+        "description": "Ordered or bulleted plain text item collections.",
+        "data": {
+          "canonical": {
+            "items": {
+              "type": "array[string]",
+              "description": "Collection of user-configured text strings."
+            },
+            "shownum": {
+              "type": "number",
+              "description": "Maximum items to display (0 or negative indicates no limit / show all)."
+            },
+            "sorting": {
+              "type": "string",
+              "description": "Ordering mode set in UI ('none', 'alpha', 'reverse-alpha').",
+              "allowed_values": [
+                "none",
+                "alpha",
+                "reverse-alpha"
+              ]
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (defaults to 'List' if omitted)."
+            }
           }
         },
-        "patterns": [
-          {
-            "template": "item-{index}",
-            "type": "string",
-            "index_start": 0,
-            "description": "Text entry for list item at zero-based {index} (e.g. item-0, item-1, item-2). Deserialized into the data:items array."
-          }
-        ]
+        "settings": {
+          "canonical": {
+            "shownum": {
+              "type": "number",
+              "description": "Maximum number of list items to render (0 indicates display all).",
+              "default": 0,
+              "bound_runtime_data": "data:shownum"
+            },
+            "sorting": {
+              "type": "string",
+              "description": "Alphabetical sorting order for list items.",
+              "default": "NONE",
+              "allowed_values": [
+                "NONE",
+                "ALPHABETICAL",
+                "REVERSE_ALPHABETICAL"
+              ],
+              "bound_runtime_data": "data:sorting"
+            }
+          },
+          "patterns": [
+            {
+              "template": "item-{index}",
+              "type": "string",
+              "index_start": 0,
+              "description": "Text entry for list item at zero-based {index} (e.g. item-0, item-1, item-2). Deserialized into the data:items array."
+            }
+          ]
+        }
       },
       "Translate": {
-        "description": "Configuration settings for Google Translate gadget layout and display mode.",
-        "canonical": {
-          "displayMode": {
-            "type": "string",
-            "description": "Visual presentation layout format for Google Translate widget. Mapped in runtime to data:layout.",
-            "default": "VERTICAL",
-            "allowed_values": [
-              "VERTICAL",
-              "HORIZONTAL",
-              "SIMPLE"
-            ],
-            "bound_runtime_data": "data:layout"
+        "description": "Google Translate drop-down or button integration.",
+        "data": {
+          "canonical": {
+            "layout": {
+              "type": "string",
+              "description": "Presentation format chosen in UI: `'VERTICAL'`, `'HORIZONTAL'`, `'SIMPLE'`.",
+              "allowed_values": [
+                "VERTICAL",
+                "HORIZONTAL",
+                "SIMPLE"
+              ]
+            },
+            "pageLanguage": {
+              "type": "string",
+              "description": "Source language ISO code of the blog (e.g. 'en', 'es', 'fr')."
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (e.g. 'Translate')."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {
+            "displayMode": {
+              "type": "string",
+              "description": "Visual presentation layout format for Google Translate widget. Mapped in runtime to data:layout.",
+              "default": "VERTICAL",
+              "allowed_values": [
+                "VERTICAL",
+                "HORIZONTAL",
+                "SIMPLE"
+              ],
+              "bound_runtime_data": "data:layout"
+            }
           }
         }
       },
       "Wikipedia": {
-        "description": "Configuration settings for Wikipedia reference search box. Uses standard gadget header title and localized messages without persistent <b:widget-setting> entries.",
-        "canonical": {}
+        "description": "Wikipedia search box interface messages and encyclopedic query tool.",
+        "data": {
+          "canonical": {
+            "enterTextMsg": {
+              "type": "string",
+              "description": "Localized placeholder/prompt (e.g. 'Enter search terms')."
+            },
+            "fetchingErrorMsg": {
+              "type": "string",
+              "description": "Localized error message displayed when Wikipedia API query fails."
+            },
+            "moreMsg": {
+              "type": "string",
+              "description": "Localized string for expansion/read more link (e.g. 'More')."
+            },
+            "noResultsFoundMsg": {
+              "type": "string",
+              "description": "Localized message when query yields zero results (e.g. 'No results found')."
+            },
+            "searchResultsMsg": {
+              "type": "string",
+              "description": "Localized header for results list (e.g. 'Search Results')."
+            },
+            "title": {
+              "type": "string",
+              "description": "Widget header title (defaults to 'Wikipedia' if omitted)."
+            }
+          }
+        },
+        "settings": {
+          "canonical": {}
+        }
       }
     }
   },
@@ -10067,19 +10012,15 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     },
     "messages": {
       "adsGoHere": {
-        "type": "message",
         "description": "Ad placeholder banner notice."
       },
       "archive": {
-        "type": "message",
         "description": "Blog archive label ('Archive')."
       },
       "at": {
-        "type": "message",
         "description": "Time preposition ('at')."
       },
       "authorSaid": {
-        "type": "message",
         "description": "Comment author attribution quote ('%1 said&hellip;'). Direct tag invocation prohibited; requires <b:message>.",
         "pattern": "%1 said&hellip;",
         "direct_invocation": false,
@@ -10091,7 +10032,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       "authorSaidWithLink": {
-        "type": "message",
         "description": "Comment author quote with HTML anchor markup ('<a href=\"%2\" rel=\"nofollow\">%1</a> said&hellip;'). Direct tag invocation prohibited; requires <b:message>.",
         "pattern": "<a href=\"%2\" rel=\"nofollow\">%1</a> said&hellip;",
         "direct_invocation": false,
@@ -10107,19 +10047,15 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       "blogArchive": {
-        "type": "message",
         "description": "BlogArchive widget title ('Blog Archive')."
       },
       "blogAuthors": {
-        "type": "message",
         "description": "Blog authors header label."
       },
       "by": {
-        "type": "message",
         "description": "Author preposition ('by')."
       },
       "byAuthor": {
-        "type": "message",
         "description": "Attribution phrase ('By %1'). Direct tag invocation prohibited; requires <b:message>.",
         "pattern": "By %1",
         "direct_invocation": false,
@@ -10131,7 +10067,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       "byAuthorLink": {
-        "type": "message",
         "description": "Attribution phrase with author profile anchor ('By <a href=\"%2\">%1</a>'). Direct tag invocation prohibited; requires <b:message>.",
         "pattern": "By <a href=\"%2\">%1</a>",
         "direct_invocation": false,
@@ -10147,159 +10082,120 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       "comments": {
-        "type": "message",
         "description": "Comments count or section title ('Comments')."
       },
       "configurationRequired": {
-        "type": "message",
         "description": "Widget setup requirement prompt."
       },
       "copy": {
-        "type": "message",
         "description": "Copy action button label."
       },
       "copyToClipboard": {
-        "type": "message",
         "description": "Copy to clipboard action label."
       },
       "deleteComment": {
-        "type": "message",
         "description": "Delete comment moderation button label."
       },
       "dynamicViewsNotAvailable": {
-        "type": "message",
         "description": "Dynamic Views unavailable warning text."
       },
       "edit": {
-        "type": "message",
         "description": "Quick-edit item action link."
       },
       "emailAddress": {
-        "type": "message",
         "description": "Email input field label / placeholder."
       },
       "emailPost": {
-        "type": "message",
         "description": "Share via email button label."
       },
       "euCookieNotice": {
-        "type": "message",
         "description": "European Union cookie consent banner text."
       },
       "euCookieNotice2018": {
-        "type": "message",
         "description": "Updated EU cookie notice text."
       },
       "euCookieNoticeCloseButton": {
-        "type": "message",
         "description": "Cookie consent banner close button label."
       },
       "euCookieResponsibility": {
-        "type": "message",
         "description": "Cookie compliance disclaimer statement."
       },
       "euCookieResponsibility2018": {
-        "type": "message",
         "description": "Updated cookie compliance disclaimer statement."
       },
       "featured": {
-        "type": "message",
         "description": "Featured post badge / header label."
       },
       "getEmailNotifications": {
-        "type": "message",
         "description": "Email subscription call to action."
       },
       "gotIt": {
-        "type": "message",
         "description": "Confirmation dismissal button ('Got it')."
       },
       "hidden": {
-        "type": "message",
         "description": "Hidden state label."
       },
       "home": {
-        "type": "message",
         "description": "Root homepage navigation label ('Home')."
       },
       "image": {
-        "type": "message",
         "description": "Generic image label / alt placeholder."
       },
       "joinTheConversation": {
-        "type": "message",
         "description": "Comment section header invitation."
       },
       "keepReading": {
-        "type": "message",
         "description": "Post continuation teaser link ('Keep reading')."
       },
       "labels": {
-        "type": "message",
         "description": "Post labels / tags header label."
       },
       "latestPosts": {
-        "type": "message",
         "description": "Latest posts widget heading."
       },
       "learnMore": {
-        "type": "message",
         "description": "Informational link label ('Learn more')."
       },
       "linkCopiedToClipboard": {
-        "type": "message",
         "description": "Copy confirmation toast notice."
       },
       "loadMorePosts": {
-        "type": "message",
         "description": "Infinite scroll / load more button label."
       },
       "loading": {
-        "type": "message",
         "description": "Asynchronous loading status text."
       },
       "moreEllipsis": {
-        "type": "message",
         "description": "Truncation ellipsis continuation ('...')."
       },
       "morePosts": {
-        "type": "message",
         "description": "Pagination action label ('More posts')."
       },
       "myBlogList": {
-        "type": "message",
         "description": "BlogList widget default title."
       },
       "myFavoriteSites": {
-        "type": "message",
         "description": "Favorite sites widget heading."
       },
       "myPhoto": {
-        "type": "message",
         "description": "Author profile avatar label."
       },
       "newer": {
-        "type": "message",
         "description": "Newer pagination link label ('Newer')."
       },
       "newerPosts": {
-        "type": "message",
         "description": "Newer posts pagination link ('Newer posts')."
       },
       "newest": {
-        "type": "message",
         "description": "Newest pagination link label ('Newest')."
       },
       "noResultsFound": {
-        "type": "message",
         "description": "Empty search results notice."
       },
       "noTitle": {
-        "type": "message",
         "description": "Fallback title for untitled posts ('No title')."
       },
       "numberOfComments": {
-        "type": "message",
         "description": "Comment counter display template ('{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}'). Direct tag invocation prohibited; requires <b:message>.",
         "pattern": "{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}",
         "direct_invocation": false,
@@ -10311,55 +10207,42 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       "ok": {
-        "type": "message",
         "description": "Confirmation button label ('OK')."
       },
       "older": {
-        "type": "message",
         "description": "Older pagination link label ('Older')."
       },
       "olderPosts": {
-        "type": "message",
         "description": "Older posts pagination link ('Older posts')."
       },
       "oldest": {
-        "type": "message",
         "description": "Oldest pagination link label ('Oldest')."
       },
       "on": {
-        "type": "message",
         "description": "Date preposition ('on')."
       },
       "onlyTeamMembersCanComment": {
-        "type": "message",
         "description": "Restricted commenting notice."
       },
       "photo": {
-        "type": "message",
         "description": "Generic photo label."
       },
       "popularPosts": {
-        "type": "message",
         "description": "PopularPosts widget header label."
       },
       "popularPostsFromThisBlog": {
-        "type": "message",
         "description": "Popular posts descriptive header."
       },
       "postAComment": {
-        "type": "message",
         "description": "Comment form submission header."
       },
       "postLink": {
-        "type": "message",
         "description": "Post permalink action link label."
       },
       "postedBy": {
-        "type": "message",
         "description": "Post author attribution prefix ('Posted by')."
       },
       "postedByAuthor": {
-        "type": "message",
         "description": "Author attribution display string ('Posted by %1'). Direct tag invocation prohibited; requires <b:message>.",
         "pattern": "Posted by %1",
         "direct_invocation": false,
@@ -10371,7 +10254,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       "postedByAuthorLink": {
-        "type": "message",
         "description": "Author attribution with HTML anchor ('Posted by <a href=\"%2\">%1</a>'). Direct tag invocation prohibited; requires <b:message>.",
         "pattern": "Posted by <a href=\"%2\">%1</a>",
         "direct_invocation": false,
@@ -10387,15 +10269,12 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       "posts": {
-        "type": "message",
         "description": "Generic posts label ('Posts')."
       },
       "poweredByBlogger": {
-        "type": "message",
         "description": "Platform attribution text ('Powered by Blogger')."
       },
       "poweredByBloggerLink": {
-        "type": "message",
         "description": "Platform attribution with Blogger anchor ('Powered by <a href='%1' target='_blank'>Blogger</a>'). Direct tag invocation prohibited; requires <b:message>.",
         "pattern": "Powered by <a href='%1' target='_blank'>Blogger</a>",
         "direct_invocation": false,
@@ -10407,75 +10286,57 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       "readMore": {
-        "type": "message",
         "description": "Post jump link action ('Read more')."
       },
       "recentPosts": {
-        "type": "message",
         "description": "Recent posts widget heading."
       },
       "reportAbuse": {
-        "type": "message",
         "description": "Abuse reporting action link."
       },
       "search": {
-        "type": "message",
         "description": "Search button / action label ('Search')."
       },
       "searchBlog": {
-        "type": "message",
         "description": "Search input placeholder ('Search blog')."
       },
       "searchThisBlog": {
-        "type": "message",
         "description": "SearchThisBlog widget header."
       },
       "share": {
-        "type": "message",
         "description": "Social sharing action button label."
       },
       "shareOtherApps": {
-        "type": "message",
         "description": "Share to external applications label."
       },
       "shareToOtherApps": {
-        "type": "message",
         "description": "Share to external apps button label."
       },
       "showAll": {
-        "type": "message",
         "description": "Expand all items button label."
       },
       "showLess": {
-        "type": "message",
         "description": "Collapse items button label."
       },
       "showMore": {
-        "type": "message",
         "description": "Show more items button label."
       },
       "skipToMainContent": {
-        "type": "message",
         "description": "Accessibility skip link navigation label."
       },
       "someOfMyFavoriteSites": {
-        "type": "message",
         "description": "Alternate favorite sites widget title."
       },
       "subscribe": {
-        "type": "message",
         "description": "Feed subscription action label."
       },
       "subscribeTo": {
-        "type": "message",
         "description": "Feed subscription prefix label."
       },
       "subscribeToThisBlog": {
-        "type": "message",
         "description": "Blog feed subscription title."
       },
       "templateImagesBy": {
-        "type": "message",
         "description": "Theme image designer attribution ('Theme images by %1'). Direct tag invocation prohibited; requires <b:message>.",
         "pattern": "Theme images by %1",
         "direct_invocation": false,
@@ -10487,7 +10348,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       "templateImagesByLink": {
-        "type": "message",
         "description": "Theme image designer attribution with link ('Theme images by <a href=\"%1\">%2</a>'). Direct tag invocation prohibited; requires <b:message>.",
         "pattern": "Theme images by <a href=\"%1\">%2</a>",
         "direct_invocation": false,
@@ -10503,43 +10363,33 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         ]
       },
       "theresNothingHere": {
-        "type": "message",
         "description": "Empty state message ('There's nothing here')."
       },
       "title": {
-        "type": "message",
         "description": "Generic title label."
       },
       "viewAll": {
-        "type": "message",
         "description": "View all items action link."
       },
       "viewMyCompleteProfile": {
-        "type": "message",
         "description": "Profile widget link to author details."
       },
       "visible": {
-        "type": "message",
         "description": "Visible state label."
       },
       "visitProfile": {
-        "type": "message",
         "description": "Author profile link label."
       },
       "visitSite": {
-        "type": "message",
         "description": "External website link label."
       },
       "widget": {
-        "type": "message",
         "description": "Generic widget indicator."
       },
       "widgetNotAvailableInPreview": {
-        "type": "message",
         "description": "Theme designer preview warning text."
       },
       "youMayLikeThesePosts": {
-        "type": "message",
         "description": "Related posts recommendation heading."
       }
     }
@@ -10672,406 +10522,364 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "version": "1.0.0",
     "rules": {
       "BX1001": {
-        "code": "BX1001",
         "name": "PROHIBITED_FOR_TAG",
         "category": "hallucination",
         "severity": "error",
         "message": "<b:for> is hallucinated; Blogger uses <b:loop values='...'>.",
         "replacement": "<b:loop values='...'>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1002": {
-        "code": "BX1002",
         "name": "PROHIBITED_EACH_TAG",
         "category": "hallucination",
         "severity": "error",
         "message": "<b:each> is hallucinated; Blogger uses <b:loop values='...'>.",
         "replacement": "<b:loop values='...'>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1003": {
-        "code": "BX1003",
         "name": "PROHIBITED_SET_TAG",
         "category": "hallucination",
         "severity": "error",
         "message": "<b:set> is hallucinated; Blogger uses <b:with value='...' var='...'>.",
         "replacement": "<b:with value='...' var='...'>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1004": {
-        "code": "BX1004",
         "name": "PROHIBITED_VAR_TAG",
         "category": "hallucination",
         "severity": "error",
         "message": "<b:var> is hallucinated; Blogger uses <b:with value='...' var='...'>.",
         "replacement": "<b:with value='...' var='...'>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1005": {
-        "code": "BX1005",
         "name": "PROHIBITED_LET_TAG",
         "category": "hallucination",
         "severity": "error",
         "message": "<b:let> is hallucinated; Blogger uses <b:with value='...' var='...'>.",
         "replacement": "<b:with value='...' var='...'>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1006": {
-        "code": "BX1006",
         "name": "PROHIBITED_HYPHEN_ELSEIF",
         "category": "syntax",
         "severity": "error",
         "message": "<b:else-if> is invalid; Blogger uses <b:elseif cond='...'>.",
         "replacement": "<b:elseif cond='...'>",
         "evidence": "official",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1007": {
-        "code": "BX1007",
         "name": "PROHIBITED_CHOOSE_TAG",
         "category": "hallucination",
         "severity": "error",
         "message": "<b:choose> is XSL/JSTL; Blogger uses <b:switch var='...'> or <b:if>.",
         "replacement": "<b:switch var='...'>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1008": {
-        "code": "BX1008",
         "name": "PROHIBITED_WHEN_TAG",
         "category": "hallucination",
         "severity": "error",
         "message": "<b:when> is XSL/JSTL; Blogger uses <b:case value='...'>.",
         "replacement": "<b:case value='...'>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1009": {
-        "code": "BX1009",
         "name": "PROHIBITED_OTHERWISE_TAG",
         "category": "hallucination",
         "severity": "error",
         "message": "<b:otherwise> is XSL/JSTL; Blogger uses <b:default/>.",
         "replacement": "<b:default/>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1010": {
-        "code": "BX1010",
         "name": "PROHIBITED_TEMPLATE_TAG",
         "category": "hallucination",
         "severity": "error",
         "message": "<b:template> is hallucinated; Blogger uses <b:includable id='...'>.",
         "replacement": "<b:includable id='...'>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1011": {
-        "code": "BX1011",
         "name": "PROHIBITED_MACRO_TAG",
         "category": "hallucination",
         "severity": "error",
         "message": "<b:macro> is hallucinated; Blogger uses <b:includable id='...'>.",
         "replacement": "<b:includable id='...'>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1012": {
-        "code": "BX1012",
         "name": "PROHIBITED_FUNCTION_TAG",
         "category": "hallucination",
         "severity": "error",
         "message": "<b:function> is hallucinated; Blogger uses <b:includable id='...'>.",
         "replacement": "<b:includable id='...'>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1013": {
-        "code": "BX1013",
         "name": "PROHIBITED_CLOSING_DELIMITER",
         "category": "syntax",
         "severity": "warning",
         "message": "<b:eval> is canonically self-closing (<b:eval/>). The Blogger compiler tolerates closing tags and ignores inner content, but non-self-closing tags violate template conventions.",
         "evidence": "observed",
-        "verifiedAt": "2026-10-11"
+        "verified_at": "2026-10-11"
       },
       "BX1014": {
-        "code": "BX1014",
         "name": "SWITCH_USES_VAR_NOT_EXPR",
         "category": "syntax",
         "severity": "error",
         "message": "<b:switch> requires the 'var' attribute (e.g. <b:switch var='...'>), not 'expr'.",
         "replacement": "var='...'",
         "evidence": "official",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1015": {
-        "code": "BX1015",
         "name": "INVERTED_INCLUDABLE_ATTR",
         "category": "syntax",
         "severity": "error",
         "message": "<b:includable> requires 'id' attribute, not 'name'.",
         "replacement": "id='...'",
         "evidence": "official",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1016": {
-        "code": "BX1016",
         "name": "INVERTED_INCLUDE_ATTR",
         "category": "syntax",
         "severity": "error",
         "message": "<b:include> requires 'name' attribute, not 'id'.",
         "replacement": "name='...'",
         "evidence": "official",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1017": {
-        "code": "BX1017",
         "name": "PROHIBITED_JS_METHOD",
         "category": "expressions",
         "severity": "error",
         "message": "JavaScript method calls are invalid in Blogger expressions. Use native operators and helpers.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1018": {
-        "code": "BX1018",
         "name": "PROHIBITED_JS_OPERATOR",
         "category": "expressions",
         "severity": "error",
         "message": "Strict equality (===, !==) is not supported in Blogger expressions; use == or !=.",
         "replacement": "==",
         "evidence": "official",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1019": {
-        "code": "BX1019",
         "name": "PROHIBITED_LAMBDA_DATA_PREFIX",
         "category": "expressions",
         "severity": "warning",
         "message": "Using 'data:' prefix on lambda iterator properties is redundant. The Blogger runtime tolerates it, but accessing iterator properties directly (p.prop) is the canonical practice.",
         "evidence": "observed",
-        "verifiedAt": "2026-10-11"
+        "verified_at": "2026-10-11"
       },
       "BX1020": {
-        "code": "BX1020",
         "name": "INVALID_NULL_LITERAL",
         "category": "expressions",
         "severity": "error",
         "message": "Literal 'null' does not exist in Blogger expressions and causes a fatal compilation abort.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1021": {
-        "code": "BX1021",
         "name": "EXPRESSION_TOKEN_QUOTA_EXCEEDED",
         "category": "quota",
         "severity": "warning",
         "message": "Expression exceeds the 40-token compiler ceiling and will abort evaluation in production.",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1022": {
-        "code": "BX1022",
         "name": "MANDATORY_ATTRIBUTE_MISSING",
         "category": "syntax",
         "severity": "error",
         "message": "Mandatory directive attribute is missing.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1023": {
-        "code": "BX1023",
         "name": "PROHIBITED_NESTING",
         "category": "structure",
         "severity": "error",
         "message": "Invalid parent-child nesting for directive in Blogger XML hierarchy.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1024": {
-        "code": "BX1024",
         "name": "DEPRECATED_ATTRIBUTE",
         "category": "deprecation",
         "severity": "warning",
         "message": "Directive attribute is deprecated in Layouts v3. Blogger ignores and strips this attribute upon saving without aborting template compilation.",
         "evidence": "observed",
-        "verifiedAt": "2026-10-14"
+        "verified_at": "2026-10-14"
       },
       "BX1025": {
-        "code": "BX1025",
         "name": "UNKNOWN_DIRECTIVE",
         "category": "syntax",
         "severity": "warning",
         "message": "Unknown directive in Blogger 'b:' XML namespace.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10"
+        "verified_at": "2026-10-10"
       },
       "BX1026": {
-        "code": "BX1026",
         "name": "PROHIBITED_DATE_RELATIONAL_COMPARISON",
         "category": "expressions",
         "severity": "error",
         "message": "Direct relational comparison (<, >, <=, >=) on Date objects is not supported in Blogger expressions. Format the date to string or use date.iso8601.",
         "replacement": "(data:date format 'yyyyMMdd') < '...'",
         "evidence": "observed",
-        "verifiedAt": "2026-10-12"
+        "verified_at": "2026-10-12"
       },
       "BX1027": {
-        "code": "BX1027",
         "name": "DIRECT_PARAMETERIZED_MESSAGE_INVOCATION",
         "category": "runtime",
         "severity": "warning",
         "message": "Parameterized message tokens cannot be evaluated via direct tag invocation (<data:messages.key/>) and output raw un-interpolated template strings. Use <b:message name='...'> with child <b:param> tags.",
         "replacement": "<b:message name='messages.key'><b:param .../></b:message>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-14"
+        "verified_at": "2026-10-14"
       },
       "BX1028": {
-        "code": "BX1028",
         "name": "PLURAL_MESSAGE_PARAM_MISSING_NAME",
         "category": "syntax",
         "severity": "error",
         "message": "Pluralized ICU messages require the 'name' attribute on child <b:param> tags matching the plural identifier (e.g. <b:param name='numComments' value='...'/>); omitting 'name' aborts template compilation.",
         "replacement": "<b:param name='...' value='...'/>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-14"
+        "verified_at": "2026-10-14"
       },
       "BX1029": {
-        "code": "BX1029",
         "name": "INLINE_CONCATENATED_MESSAGE_PARAMS",
         "category": "runtime",
         "severity": "error",
         "message": "Multiple <b:param> tags concatenated inline without intervening whitespace (<b:param .../><b:param .../>) cause Blogger runtime error 'Invalid parameters for message'. Sibling <b:param> tags must be separated by whitespace or placed on separate lines.",
         "replacement": "<b:param .../>\n  <b:param .../>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-14"
+        "verified_at": "2026-10-14"
       },
       "BX1030": {
-        "code": "BX1030",
         "name": "PROHIBITED_UNARY_EXPRESSION_NEGATION",
         "category": "expressions",
         "severity": "error",
         "message": "Unary negation '-' cannot be applied to parenthesized compound expressions (e.g. -(a - b)) and triggers 'Invalid expression' compiler error. Blogger expression engine only permits unary minus on immediate numeric literals (-5).",
         "replacement": "(0 - (a - b))",
         "evidence": "observed",
-        "verifiedAt": "2026-10-14"
+        "verified_at": "2026-10-14"
       },
       "BX1031": {
-        "code": "BX1031",
         "name": "NON_OBJECT_INCLUDE_DATA_PAYLOAD",
         "category": "runtime",
         "severity": "error",
         "message": "The 'data' attribute of <b:include> strictly requires an object reference or object literal { ... }; passing primitive scalars (string, number, boolean) aborts execution with runtime error 'Error during evaluation of <name>'.",
         "replacement": "{ value: ... }",
         "evidence": "observed",
-        "verifiedAt": "2026-10-14"
+        "verified_at": "2026-10-14"
       },
       "BX1032": {
-        "code": "BX1032",
         "name": "PROHIBITED_BRACKET_INDEXING_IN_DATA_TAG",
         "category": "syntax",
         "severity": "error",
         "message": "Direct bracket indexing (e.g. <data:items[0]/>) is forbidden in <data:...> tags and causes template compilation error. Use <b:eval expr='data:items[0]'/> to index collections.",
         "replacement": "<b:eval expr='data:items[0]'/>",
         "evidence": "observed",
-        "verifiedAt": "2026-10-14"
+        "verified_at": "2026-10-14"
       },
       "BX1033": {
-        "code": "BX1033",
         "name": "DUPLICATE_ELEMENT_ID",
         "category": "structure",
         "severity": "error",
         "message": "Duplicate element identifier detected. Blogger requires all <b:section> and <b:widget> elements to have unique 'id' attributes across the template.",
         "evidence": "official",
-        "verifiedAt": "2026-10-15"
+        "verified_at": "2026-10-15"
       },
       "BX1034": {
-        "code": "BX1034",
         "name": "WIDGET_OUTSIDE_SECTION",
         "category": "structure",
         "severity": "error",
         "message": "<b:widget> must be placed inside a <b:section>. Widgets placed directly under <body> or outside sections are rejected by Blogger.",
         "evidence": "official",
-        "verifiedAt": "2026-10-15"
+        "verified_at": "2026-10-15"
       },
       "BX1035": {
-        "code": "BX1035",
         "name": "NESTED_SECTION",
         "category": "structure",
         "severity": "error",
         "message": "Nested <b:section> detected. Blogger does not allow a <b:section> inside another <b:section>.",
         "evidence": "official",
-        "verifiedAt": "2026-10-15"
+        "verified_at": "2026-10-15"
       },
       "BX1036": {
-        "code": "BX1036",
         "name": "DUPLICATE_INCLUDABLE_ID",
         "category": "structure",
         "severity": "error",
         "message": "Duplicate includable identifier inside container. Includable 'id' attributes must be unique within their parent <b:widget> or <b:defaultmarkup> block.",
         "evidence": "official",
-        "verifiedAt": "2026-10-15"
+        "verified_at": "2026-10-15"
       },
       "BX1037": {
-        "code": "BX1037",
         "name": "UNRESOLVED_INCLUSION",
         "category": "runtime",
         "severity": "error",
         "message": "Unresolved inclusion: referenced includable does not exist in the current widget, defaultmarkups, or global server inclusions.",
         "evidence": "official",
-        "verifiedAt": "2026-10-15"
+        "verified_at": "2026-10-15"
       },
       "BX1038": {
-        "code": "BX1038",
         "name": "STRING_BOOLEAN_IN_EXPRESSION",
         "category": "expressions",
         "severity": "warning",
         "message": "Comparing against a quoted boolean string literal ('true' / 'false') in expression. Use boolean literals true or false directly.",
         "replacement": "true",
         "evidence": "observed",
-        "verifiedAt": "2026-10-15"
+        "verified_at": "2026-10-15"
       },
       "BX1039": {
-        "code": "BX1039",
         "name": "EMPTY_REQUIRED_ATTRIBUTE",
         "category": "syntax",
         "severity": "error",
         "message": "Required directive attribute value cannot be empty.",
         "evidence": "official",
-        "verifiedAt": "2026-10-15"
+        "verified_at": "2026-10-15"
       },
       "BX1040": {
-        "code": "BX1040",
         "name": "INVALID_VARIABLE_TYPE_ATTRIBUTE",
         "category": "syntax",
         "severity": "error",
         "message": "Attribute is not supported for the declared <Variable> type.",
         "evidence": "official",
-        "verifiedAt": "2026-10-15"
+        "verified_at": "2026-10-15"
       },
       "BX1041": {
-        "code": "BX1041",
         "name": "MISMATCHED_OR_UNCLOSED_TAG",
         "category": "structure",
         "severity": "error",
         "message": "XML tag is mismatched or remains unclosed in the template structure.",
         "evidence": "observed",
-        "verifiedAt": "2026-10-16"
+        "verified_at": "2026-10-16"
       },
       "BX1042": {
-        "code": "BX1042",
         "name": "DISALLOWED_EXPRESSION_ATTRIBUTE",
         "category": "syntax",
         "severity": "error",
         "message": "Directive attribute does not allow dynamic expressions ('expr:').",
         "evidence": "official",
-        "verifiedAt": "2026-10-16"
+        "verified_at": "2026-10-16"
       }
     }
   },
@@ -11089,610 +10897,562 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     },
     "inclusions": {
       "all-head-content": {
-        "name": "all-head-content",
         "category": "universal",
         "description": "Injects critical HTML document head elements, including OpenSearch link headers, feed discovery links, canonical link tags, generator meta tags, and platform core scripts.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           1,
           2,
           3
         ]
       },
       "google-analytics": {
-        "name": "google-analytics",
         "category": "universal",
         "description": "Injects Google Analytics tracking code configured in the blog administration settings.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           1,
           2,
           3
         ]
       },
       "urlParamsAsFormInput": {
-        "name": "urlParamsAsFormInput",
         "category": "universal",
         "description": "Preserves current URL query parameters as hidden form input fields when submitting search or filter forms.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           1,
           2,
           3
         ]
       },
       "quickedit": {
-        "name": "quickedit",
         "category": "universal",
         "description": "Renders the administrative wrench icon allowing authenticated blog owners to configure the current widget directly from the published page.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 1,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           1,
           2
-        ],
-        "widget_version": 1
+        ]
       },
       "googlePlusBootstrap": {
-        "name": "googlePlusBootstrap",
         "category": "universal",
         "description": "Legacy Google+ identity and sharing SDK bootstrap script.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
         "deprecated": true,
-        "deprecation_note": "Google+ integration has been sunset by Google."
+        "deprecation_note": "Google+ integration has been sunset by Google.",
+        "verified_at": "2026-10-10"
       },
       "openGraphMetaData": {
-        "name": "openGraphMetaData",
         "category": "common",
         "description": "Generates Open Graph protocol metadata tags (og:title, og:url, og:image, og:description) for enhanced social sharing.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           1,
           2,
           3
         ]
       },
       "reportAbuse": {
-        "name": "reportAbuse",
         "category": "common",
         "description": "Renders the Blogger platform abuse reporting link conforming to Google Terms of Service requirements.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           1,
           2,
           3
         ]
       },
       "responsiveImageStyle": {
-        "name": "responsiveImageStyle",
         "category": "common",
         "description": "Emits dynamic inline CSS styling for responsive aspect ratios and container dimensions.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "extendableItems": {
-        "name": "extendableItems",
         "category": "common",
         "description": "Renders expandable and collapsible list items for navigation menus and archive hierarchies.",
         "evidence": "observed",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "flatBloggerIcon": {
-        "name": "flatBloggerIcon",
         "category": "common",
         "description": "Renders the standard flat SVG Blogger B logo mark.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "footerBylinesOverride": {
-        "name": "footerBylinesOverride",
         "category": "common",
         "description": "Layout hook for overriding post footer metadata bylines.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          2,
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          2,
+          3
         ]
       },
       "headerBylineOverride": {
-        "name": "headerBylineOverride",
         "category": "common",
         "description": "Layout hook for overriding post header metadata bylines.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          2,
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          2,
+          3
         ]
       },
       "maybeAddShareButtons": {
-        "name": "maybeAddShareButtons",
         "category": "common",
         "description": "Evaluates widget configuration and renders social share buttons when enabled.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          2,
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          2,
+          3
         ]
       },
       "noContentPlaceholder": {
-        "name": "noContentPlaceholder",
         "category": "common",
         "description": "Displays empty state placeholder markup when a widget collection contains no entries.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "postMetadataJSON": {
-        "name": "postMetadataJSON",
         "category": "common",
         "description": "Injects structured schema.org JSON-LD metadata for search engine indexing.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          2,
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          2,
+          3
         ]
       },
       "postSnippet": {
-        "name": "postSnippet",
         "category": "common",
         "description": "Generates summary text excerpt with truncation from post content.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          2,
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          2,
+          3
         ]
       },
       "responsiveImage": {
-        "name": "responsiveImage",
         "category": "common",
         "description": "Renders responsive img markup with automatic srcset and size attributes computed via resizeImage.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "skipNavigation": {
-        "name": "skipNavigation",
         "category": "common",
         "description": "Renders accessibility skip-to-content navigation anchor link.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "widget-title": {
-        "name": "widget-title",
         "category": "common",
         "description": "Standard widget title heading markup rendered across all gadget types.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           1,
           2,
           3
         ]
       },
       "widgetNotAvailableInPreview": {
-        "name": "widgetNotAvailableInPreview",
         "category": "common",
         "description": "Banner shown in Theme Designer preview when a widget cannot be previewed live.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "backArrowIcon": {
-        "name": "backArrowIcon",
         "category": "icon",
         "description": "Left-pointing arrow SVG icon for pagination and previous post navigation.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "chevronDownIcon": {
-        "name": "chevronDownIcon",
         "category": "icon",
         "description": "Downward chevron SVG icon for dropdown menus and disclosure widgets.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "chevronUpIcon": {
-        "name": "chevronUpIcon",
         "category": "icon",
         "description": "Upward chevron SVG icon for accordion items and collapse toggles.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "commentIcon": {
-        "name": "commentIcon",
         "category": "icon",
         "description": "Speech bubble comment SVG icon for post discussion links.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "defaultAvatarIcon": {
-        "name": "defaultAvatarIcon",
         "category": "icon",
         "description": "Generic silhouette avatar SVG icon for anonymous or avatarless commenters.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "emailIcon": {
-        "name": "emailIcon",
         "category": "icon",
         "description": "Mail envelope SVG icon for email sharing action.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "facebookIcon": {
-        "name": "facebookIcon",
         "category": "icon",
         "description": "Facebook brand SVG icon for social sharing action.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "forwardArrowIcon": {
-        "name": "forwardArrowIcon",
         "category": "icon",
         "description": "Right-pointing arrow SVG icon for pagination and next post navigation.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "linkIcon": {
-        "name": "linkIcon",
         "category": "icon",
         "description": "Hyperlink chain SVG icon for permalinks and external links.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "menuIcon": {
-        "name": "menuIcon",
         "category": "icon",
         "description": "Hamburger menu SVG icon (three horizontal bars) for mobile navigation drawer.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "pinterestIcon": {
-        "name": "pinterestIcon",
         "category": "icon",
         "description": "Pinterest brand SVG icon for pin sharing action.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "searchIcon": {
-        "name": "searchIcon",
         "category": "icon",
         "description": "Magnifying glass SVG icon for search bars and search dialogs.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "shareIcon": {
-        "name": "shareIcon",
         "category": "icon",
         "description": "Share node/arrow SVG icon for opening social sharing dialogs.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "sharingOtherIcon": {
-        "name": "sharingOtherIcon",
         "category": "icon",
         "description": "More options / ellipsis SVG icon for additional sharing providers.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "svgIcon": {
-        "name": "svgIcon",
         "category": "icon",
         "description": "Universal system subroutine that resolves and renders named SVG icons.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "svgIconButton": {
-        "name": "svgIconButton",
         "category": "icon",
         "description": "Interactive button wrapper element enclosing a named SVG icon.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "twitterIcon": {
-        "name": "twitterIcon",
         "category": "icon",
         "description": "Twitter brand SVG icon for tweet sharing action.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "verticalMoreIcon": {
-        "name": "verticalMoreIcon",
         "category": "icon",
         "description": "Vertical ellipsis (kebab menu) SVG icon for contextual actions.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "widget_version": 2,
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           2,
           3
-        ],
-        "widget_version": 2
+        ]
       },
       "feedPostImage": {
-        "name": "feedPostImage",
         "category": "theme",
         "description": "Renders post thumbnail image card within dynamic feeds (Emporio theme).",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          3
         ]
       },
       "standardPostImageStyle": {
-        "name": "standardPostImageStyle",
         "category": "theme",
         "description": "Applies aspect-ratio and dimension rules for standard post imagery in themes.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          3
         ]
       },
       "heroPost": {
-        "name": "heroPost",
         "category": "theme",
         "description": "Renders featured hero post banner card (Notable theme).",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          3
         ]
       },
       "heroPostSnippet": {
-        "name": "heroPostSnippet",
         "category": "theme",
         "description": "Renders excerpt description for the featured hero post (Notable theme).",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          3
         ]
       },
       "normalPost": {
-        "name": "normalPost",
         "category": "theme",
         "description": "Renders standard post card within theme feed listings (Notable theme).",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          3
         ]
       },
       "normalPostBodySnippet": {
-        "name": "normalPostBodySnippet",
         "category": "theme",
         "description": "Renders body snippet text for normal post cards (Notable theme).",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          3
         ]
       },
       "postBody": {
-        "name": "postBody",
         "category": "theme",
         "description": "Main post content body block container.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "target_widgets": [
+          "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           1,
           2,
           3
-        ],
-        "target_widgets": [
-          "Blog"
         ]
       },
       "postBodySnippet": {
-        "name": "postBodySnippet",
         "category": "theme",
         "description": "Post body text snippet representation.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
-          2,
-          3
-        ],
         "widget_version": 2,
         "target_widgets": [
           "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
+          2,
+          3
         ]
       },
       "postTitle": {
-        "name": "postTitle",
         "category": "theme",
         "description": "Post title heading with permalink anchor.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
-        "layouts_versions": [
+        "target_widgets": [
+          "Blog"
+        ],
+        "verified_at": "2026-10-10",
+        "layout_versions": [
           1,
           2,
           3
-        ],
-        "target_widgets": [
-          "Blog"
         ]
       },
       "googlePlusIcon": {
-        "name": "googlePlusIcon",
         "category": "deprecated",
         "description": "Legacy Google+ brand SVG icon.",
         "evidence": "official",
-        "verifiedAt": "2026-10-10",
         "deprecated": true,
-        "deprecation_note": "Google+ integration has been sunset."
+        "deprecation_note": "Google+ integration has been sunset.",
+        "verified_at": "2026-10-10"
       }
     }
   }
@@ -11715,12 +11475,6 @@ export const embeddedSchemas: Record<string, any> = {
         ],
         "description": "Standard empirical evidence classification level for Blogger specifications."
       },
-      "verifiedAt": {
-        "type": "string",
-        "format": "date",
-        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-        "description": "ISO 8601 calendar date (YYYY-MM-DD) indicating the empirical verification milestone."
-      },
       "diagnosticCode": {
         "type": "string",
         "pattern": "^BX[0-9]{4}$",
@@ -11728,28 +11482,8 @@ export const embeddedSchemas: Record<string, any> = {
       },
       "canonicalPropertyType": {
         "type": "string",
-        "enum": [
-          "string",
-          "number",
-          "boolean",
-          "url",
-          "image",
-          "date",
-          "object",
-          "array",
-          "array[object]",
-          "array[string]",
-          "array[image]",
-          "array[url]",
-          "array[date]",
-          "array[number]",
-          "array[boolean]",
-          "array[array]",
-          "locale",
-          "message",
-          "skin_variable"
-        ],
-        "description": "Canonical Blogger runtime data property type defined in types.json."
+        "pattern": "^[a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?$",
+        "description": "Canonical Blogger runtime data property type, parameterized collection, or skin variable."
       },
       "deprecatedEntry": {
         "type": "object",
@@ -11873,6 +11607,12 @@ export const embeddedSchemas: Record<string, any> = {
           }
         },
         "additionalProperties": false
+      },
+      "verified_at": {
+        "type": "string",
+        "format": "date",
+        "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+        "description": "ISO 8601 calendar date (YYYY-MM-DD) indicating the empirical verification milestone."
       }
     }
   },
@@ -11914,13 +11654,12 @@ export const embeddedSchemas: Record<string, any> = {
       "diagnosticRule": {
         "type": "object",
         "required": [
-          "code",
           "name",
           "category",
           "severity",
           "message",
           "evidence",
-          "verifiedAt"
+          "verified_at"
         ],
         "properties": {
           "code": {
@@ -11958,8 +11697,8 @@ export const embeddedSchemas: Record<string, any> = {
           "evidence": {
             "$ref": "common.schema.json#/$defs/evidenceLevel"
           },
-          "verifiedAt": {
-            "$ref": "common.schema.json#/$defs/verifiedAt"
+          "verified_at": {
+            "$ref": "common.schema.json#/$defs/verified_at"
           }
         },
         "additionalProperties": false
@@ -12073,13 +11812,6 @@ export const embeddedSchemas: Record<string, any> = {
               "type": "string"
             },
             "description": "Standard HTML void elements that do not require closing tags in template markup."
-          },
-          "theme_designer_descriptions": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
           },
           "grammar_groups": {
             "type": "object",
@@ -12578,7 +12310,7 @@ export const embeddedSchemas: Record<string, any> = {
           "id",
           "title",
           "evidence",
-          "verifiedAt",
+          "verified_at",
           "covers",
           "input",
           "expected"
@@ -12592,9 +12324,6 @@ export const embeddedSchemas: Record<string, any> = {
           },
           "evidence": {
             "$ref": "common.schema.json#/$defs/evidenceLevel"
-          },
-          "verifiedAt": {
-            "$ref": "common.schema.json#/$defs/verifiedAt"
           },
           "covers": {
             "type": "array",
@@ -12670,6 +12399,9 @@ export const embeddedSchemas: Record<string, any> = {
               }
             },
             "additionalProperties": false
+          },
+          "verified_at": {
+            "$ref": "common.schema.json#/$defs/verified_at"
           }
         },
         "additionalProperties": false
@@ -12834,11 +12566,10 @@ export const embeddedSchemas: Record<string, any> = {
       "inclusionDefinition": {
         "type": "object",
         "required": [
-          "name",
           "category",
           "description",
           "evidence",
-          "verifiedAt"
+          "verified_at"
         ],
         "properties": {
           "name": {
@@ -12860,22 +12591,11 @@ export const embeddedSchemas: Record<string, any> = {
           "evidence": {
             "$ref": "common.schema.json#/$defs/evidenceLevel"
           },
-          "verifiedAt": {
-            "$ref": "common.schema.json#/$defs/verifiedAt"
-          },
           "deprecated": {
             "type": "boolean"
           },
           "deprecation_note": {
             "type": "string"
-          },
-          "layouts_versions": {
-            "type": "array",
-            "items": {
-              "type": "integer",
-              "minimum": 1
-            },
-            "description": "Blogger template engine architecture version(s) (b:layoutsVersion='1' | '2' | '3') where this inclusion is available."
           },
           "widget_version": {
             "type": "integer",
@@ -12890,6 +12610,17 @@ export const embeddedSchemas: Record<string, any> = {
             "items": {
               "type": "string"
             }
+          },
+          "verified_at": {
+            "$ref": "common.schema.json#/$defs/verified_at"
+          },
+          "layout_versions": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Blogger template engine architecture version(s) (b:layoutsVersion='1' | '2' | '3') where this inclusion is available."
           }
         },
         "additionalProperties": false
@@ -12950,7 +12681,6 @@ export const embeddedSchemas: Record<string, any> = {
       "messageDefinition": {
         "type": "object",
         "required": [
-          "type",
           "description"
         ],
         "properties": {
@@ -13564,129 +13294,6 @@ export const embeddedSchemas: Record<string, any> = {
       }
     }
   },
-  "settings.schema.json": {
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "$id": "settings.schema.json",
-    "title": "Blogger Widget Settings Master Catalog Schema",
-    "description": "JSON Schema specification for the Blogger widget settings and runtime mappings catalog.",
-    "type": "object",
-    "required": [
-      "$schema",
-      "title",
-      "description",
-      "version",
-      "widgets"
-    ],
-    "properties": {
-      "$schema": {
-        "type": "string"
-      },
-      "title": {
-        "type": "string"
-      },
-      "description": {
-        "type": "string"
-      },
-      "version": {
-        "type": "string"
-      },
-      "widgets": {
-        "type": "object",
-        "additionalProperties": {
-          "$ref": "#/$defs/widgetEntry"
-        }
-      }
-    },
-    "additionalProperties": false,
-    "$defs": {
-      "widgetEntry": {
-        "type": "object",
-        "required": [
-          "description",
-          "canonical"
-        ],
-        "properties": {
-          "description": {
-            "type": "string"
-          },
-          "canonical": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/$defs/canonicalSetting"
-            }
-          },
-          "patterns": {
-            "type": "array",
-            "items": {
-              "$ref": "common.schema.json#/$defs/patternDefinition"
-            }
-          },
-          "deprecated": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "common.schema.json#/$defs/deprecatedEntry"
-            }
-          }
-        },
-        "additionalProperties": false
-      },
-      "canonicalSetting": {
-        "type": "object",
-        "required": [
-          "type",
-          "description"
-        ],
-        "properties": {
-          "type": {
-            "$ref": "types.schema.json#/$defs/widgetSettingType"
-          },
-          "description": {
-            "type": "string"
-          },
-          "default": {
-            "type": [
-              "string",
-              "null",
-              "boolean",
-              "integer",
-              "number"
-            ]
-          },
-          "allowed_values": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "bound_runtime_data": {
-            "type": [
-              "string",
-              "null"
-            ]
-          },
-          "serialization_format": {
-            "type": "string",
-            "enum": [
-              "json"
-            ]
-          },
-          "properties": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/$defs/canonicalSetting"
-            }
-          },
-          "item_properties": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/$defs/canonicalSetting"
-            }
-          }
-        },
-        "additionalProperties": false
-      }
-    }
-  },
   "types.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "types.schema.json",
@@ -13772,6 +13379,13 @@ export const embeddedSchemas: Record<string, any> = {
               "type": "string"
             },
             "description": "Canonical primitive data types composing the scalar category (string, number, boolean)."
+          },
+          "theme_designer_descriptions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
           }
         },
         "additionalProperties": false
@@ -13828,12 +13442,9 @@ export const embeddedSchemas: Record<string, any> = {
             "type": "string",
             "description": "Underlying child element type for homogeneous collections (e.g. for array types)."
           },
-          "parameterized_forms": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Recognized parameterized collection variants (e.g. array[string], array[object])."
+          "generic": {
+            "type": "boolean",
+            "description": "True if the type represents an open generic/parameterized container."
           },
           "modifiers": {
             "type": "object",
@@ -13952,60 +13563,18 @@ export const embeddedSchemas: Record<string, any> = {
         ],
         "description": "Blogger XML directive attribute data type defined in types.json."
       },
-      "widgetSettingType": {
-        "type": "string",
-        "enum": [
-          "string",
-          "number",
-          "boolean",
-          "url"
-        ],
-        "description": "Blogger widget setting data type supported in <b:widget-setting>."
-      },
       "operatorDataType": {
         "type": "string",
-        "enum": [
-          "string",
-          "number",
-          "boolean",
-          "url",
-          "image",
-          "date",
-          "object",
-          "array",
-          "array[object]",
-          "array[string]",
-          "array[image]",
-          "array[url]",
-          "array[date]",
-          "array[number]",
-          "array[boolean]",
-          "array[array]",
-          "locale",
-          "message",
-          "skin_variable",
-          "skin:color",
-          "skin:font",
-          "skin:background",
-          "skin:length",
-          "skin:automatic",
-          "skin:string",
-          "skin:url",
-          "scalar",
-          "expression",
-          "predicate",
-          "any",
-          "child_item"
-        ],
-        "description": "Blogger Expression Engine operator and operand data type defined in types.json."
+        "pattern": "^[a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?$",
+        "description": "Allowed Blogger expression operator operand/return type identifier, generic collection, or primitive."
       }
     }
   },
   "widgets.schema.json": {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "widgets.schema.json",
-    "title": "Blogger Widget Data Dictionaries Master Catalog Schema",
-    "description": "JSON Schema specification for the Blogger widget data dictionary master catalog.",
+    "title": "Blogger Widget Unified Master Catalog Schema",
+    "description": "JSON Schema specification for the Blogger unified gadget catalog (runtime data and configuration settings).",
     "type": "object",
     "required": [
       "$schema",
@@ -14039,23 +13608,107 @@ export const embeddedSchemas: Record<string, any> = {
       "widgetEntry": {
         "type": "object",
         "required": [
-          "description",
-          "canonical"
+          "description"
         ],
         "properties": {
           "description": {
             "type": "string"
           },
-          "canonical": {
+          "data": {
             "type": "object",
-            "additionalProperties": {
-              "$ref": "common.schema.json#/$defs/canonicalProperty"
+            "properties": {
+              "canonical": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "common.schema.json#/$defs/canonicalProperty"
+                }
+              },
+              "deprecated": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "common.schema.json#/$defs/deprecatedEntry"
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "settings": {
+            "type": "object",
+            "properties": {
+              "canonical": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/$defs/canonicalSetting"
+                }
+              },
+              "patterns": {
+                "type": "array",
+                "items": {
+                  "$ref": "common.schema.json#/$defs/patternDefinition"
+                }
+              },
+              "deprecated": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "common.schema.json#/$defs/deprecatedEntry"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "canonicalSetting": {
+        "type": "object",
+        "required": [
+          "type",
+          "description"
+        ],
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "default": {
+            "type": [
+              "string",
+              "null",
+              "boolean",
+              "integer",
+              "number"
+            ]
+          },
+          "allowed_values": {
+            "type": "array",
+            "items": {
+              "type": "string"
             }
           },
-          "deprecated": {
+          "bound_runtime_data": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "serialization_format": {
+            "type": "string",
+            "enum": [
+              "json"
+            ]
+          },
+          "properties": {
             "type": "object",
             "additionalProperties": {
-              "$ref": "common.schema.json#/$defs/deprecatedEntry"
+              "$ref": "#/$defs/canonicalSetting"
+            }
+          },
+          "item_properties": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/$defs/canonicalSetting"
             }
           }
         },

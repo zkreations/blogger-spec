@@ -9,7 +9,6 @@ import {
   getMessages,
   getOperators,
   getScopes,
-  getSettings,
   getTypes,
   getWidgets,
   registerCacheResetListener,
@@ -19,7 +18,6 @@ export let directives = getDirectives()
 export let operators = getOperators()
 export let types = getTypes()
 export let widgets = getWidgets()
-export let settings = getSettings()
 export let globals = getGlobals()
 export let messages = getMessages()
 export let scopes = getScopes()
@@ -33,7 +31,6 @@ registerCacheResetListener(() => {
       operators: getOperators(),
       types: getTypes(),
       widgets: getWidgets(),
-      settings: getSettings(),
       globals: getGlobals(),
       messages: getMessages(),
       scopes: getScopes(),
@@ -45,7 +42,6 @@ registerCacheResetListener(() => {
     operators = next.operators
     types = next.types
     widgets = next.widgets
-    settings = next.settings
     globals = next.globals
     messages = next.messages
     scopes = next.scopes
@@ -67,7 +63,6 @@ export {
   getMessages,
   getOperators,
   getScopes,
-  getSettings,
   getTypes,
   getWidgets,
 }

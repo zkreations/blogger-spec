@@ -13,7 +13,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       const report = validateSpec()
       expect(report.valid).toBe(true)
       expect(report.errors).toEqual([])
-      expect(report.metrics.schemasChecked).toBe(10)
+      expect(report.metrics.schemasChecked).toBe(9)
       expect(report.metrics.fixturesChecked).toBeGreaterThanOrEqual(118)
     })
 
@@ -79,7 +79,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
         id: 'mock-expr-1',
         title: 'Mock addition',
         evidence: 'official',
-        verifiedAt: '2026-10-10',
+        verified_at: '2026-10-10',
         covers: ['operators:addition'],
         input: { kind: 'expression', source: '2 + 2', context: { multiplier: 2 } },
         expected: { outcome: 'value', value: 4 },
@@ -88,7 +88,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
         id: 'mock-tpl-1',
         title: 'Mock template',
         evidence: 'observed',
-        verifiedAt: '2026-10-10',
+        verified_at: '2026-10-10',
         covers: ['directives:eval'],
         input: { kind: 'template', source: '<b:eval expr="2 + 2"/>' },
         expected: { outcome: 'html', html: '<div>4</div>' },
@@ -97,7 +97,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
         id: 'mock-diag-1',
         title: 'Mock diagnostic rejection',
         evidence: 'official',
-        verifiedAt: '2026-10-10',
+        verified_at: '2026-10-10',
         covers: ['diagnostics:syntax'],
         input: { kind: 'template', source: '<b:unknown/>' },
         expected: { outcome: 'rejected', diagnosticCodes: ['BX9999'] },

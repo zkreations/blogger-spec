@@ -32,7 +32,7 @@ export type DirectiveNestingAction = 'reject' | 'strip' | 'ignore';
 
 export type BloggerInclusionCategory = 'universal' | 'common' | 'icon' | 'theme' | 'deprecated';
 
-export type BloggerCanonicalPropertyType = 'string' | 'number' | 'boolean' | 'url' | 'image' | 'date' | 'object' | 'array' | 'array[object]' | 'array[string]' | 'array[image]' | 'array[url]' | 'array[date]' | 'array[number]' | 'array[boolean]' | 'array[array]' | 'locale' | 'message' | 'skin_variable';
+export type BloggerCanonicalPropertyType = 'string' | 'number' | 'boolean' | 'url' | 'image' | 'date' | 'object' | 'array' | 'locale' | 'message' | 'skin_variable' | (string & {});
 
 export type BloggerStandardDiagnosticKey = 'deprecated_attribute' | 'disallowed_expression_attribute' | 'duplicate_element_id' | 'duplicate_includable_id' | 'empty_required_attribute' | 'invalid_variable_type_attribute' | 'mismatched_or_unclosed_tag' | 'missing_required_attribute' | 'prohibited_nesting';
 
@@ -82,7 +82,7 @@ export interface BloggerDiagnosticRule {
   message: string;
   replacement?: string;
   evidence: BloggerEvidenceLevel;
-  verifiedAt: any;
+  verified_at: string;
 }
 
 export interface BloggerDiagnosticsCatalog {
@@ -196,7 +196,6 @@ export interface BloggerDirectivesCatalog {
     compiler_limits: BloggerCompilerLimits;
     hallucinated_directives?: Record<string, BloggerDiagnosticCode>;
     standard_diagnostics?: BloggerStandardDiagnostics;
-    theme_designer_descriptions?: string[];
     html_void_elements?: string[];
     layout_versions?: BloggerLayoutVersionsCatalog;
     grammar_groups?: Record<string, string[]>;
@@ -349,8 +348,8 @@ export interface BloggerTypeDefinition {
   ts_type: string;
   /** Underlying child element type for homogeneous collections (e.g. for array types). */
   item_type?: string;
-  /** Recognized parameterized collection variants (e.g. array[string], array[object]). */
-  parameterized_forms?: string[];
+  /** True if the type represents an open generic/parameterized container. */
+  generic?: boolean;
   /** Native data modifiers / accessors directly defined on this type. */
   modifiers?: Record<string, BloggerTypeModifierDefinition>;
   skin_metadata?: BloggerSkinMetadata;
@@ -372,6 +371,7 @@ export interface BloggerTypesCatalog {
     coercion_rules: Record<string, BloggerCoercionRule>;
     truthiness_matrix: BloggerTruthinessMatrix;
     scalar_types: string[];
+    theme_designer_descriptions?: string[];
   };
   types: Record<string, BloggerTypeDefinition>;
   modifiers?: Record<string, any>;
@@ -401,24 +401,6 @@ export interface BloggerGlobalsCatalog {
   objects: Record<string, BloggerGlobalObjectDefinition>;
 }
 
-export interface BloggerWidgetDefinition {
-  description: string;
-  canonical: Record<string, BloggerCanonicalProperty>;
-  deprecated?: Record<string, BloggerDeprecatedEntry>;
-}
-
-export interface BloggerWidgetsCatalog {
-  $schema?: string;
-  version?: string;
-  title?: string;
-  description?: string;
-  widgets: Record<string, BloggerWidgetDefinition>;
-}
-
-// =========================================================================
-// Settings Catalog Models (SSoT: settings.schema.json)
-// =========================================================================
-
 export interface BloggerCanonicalSetting {
   type: string;
   description: string;
@@ -430,19 +412,20 @@ export interface BloggerCanonicalSetting {
   item_properties?: Record<string, BloggerCanonicalSetting>;
 }
 
-export interface BloggerWidgetSettingsDefinition {
+export interface BloggerWidgetDefinition {
   description: string;
-  canonical: Record<string, BloggerCanonicalSetting>;
-  patterns?: BloggerPatternDefinition[];
-  deprecated?: Record<string, BloggerDeprecatedEntry>;
+  data?: Record<string, any>;
+  settings?: Record<string, any>;
 }
 
-export interface BloggerSettingsCatalog {
+export type BloggerWidgetSettingsDefinition = NonNullable<BloggerWidgetDefinition['settings']>;
+
+export interface BloggerWidgetsCatalog {
   $schema?: string;
   version?: string;
   title?: string;
   description?: string;
-  widgets: Record<string, BloggerWidgetSettingsDefinition>;
+  widgets: Record<string, BloggerWidgetDefinition>;
 }
 
 // =========================================================================
@@ -457,7 +440,7 @@ export interface BloggerMessageParameterDefinition {
 }
 
 export interface BloggerMessageDefinition {
-  type: 'message';
+  type?: 'message';
   description: string;
   /** Canonical un-interpolated template token or ICU plural format string (e.g. 'By %1', '{numComments, plural, ...}'). */
   pattern?: string;
@@ -518,14 +501,14 @@ export interface BloggerInclusionDefinition {
   category: 'universal' | 'common' | 'icon' | 'theme' | 'deprecated';
   description: string;
   evidence: BloggerEvidenceLevel;
-  verifiedAt: any;
   deprecated?: boolean;
   deprecation_note?: string;
-  /** Blogger template engine architecture version(s) (b:layoutsVersion='1' | '2' | '3') where this inclusion is available. */
-  layouts_versions?: number[];
   /** Gadget engine version (<b:widget version='1' | '2'>) required when invoked inside a widget. */
   widget_version?: 1 | 2;
   target_widgets?: string[];
+  verified_at: string;
+  /** Blogger template engine architecture version(s) (b:layoutsVersion='1' | '2' | '3') where this inclusion is available. */
+  layout_versions?: number[];
 }
 
 export interface BloggerSuperPrefixRule {
@@ -608,6 +591,24 @@ export interface BloggerImageModifiers {
   cssEscaped?: string;
 }
 export type BloggerImage = string & BloggerImageModifiers;
+
+export interface BloggerImageVariantModifiers {
+  /** Dimension descriptor (width in pixels) of the resized image variant in dynamic pipeline collections. */
+  size?: number;
+  /** Asset URL of the specific resized image variant in dynamic pipeline collections. */
+  url?: BloggerImage;
+  /** Returns total character count of the string. */
+  length?: number;
+  /** HTML-escapes reserved entities (&, <, >, ", '). */
+  escaped?: string;
+  /** Escapes characters for safe inclusion within JavaScript string literals. */
+  jsEscaped?: string;
+  /** Escapes characters conforming to JSON serialization rules. */
+  jsonEscaped?: string;
+  /** Escapes characters for CSS identifier or string contexts. */
+  cssEscaped?: string;
+}
+export type BloggerImageVariant = string & BloggerImageVariantModifiers;
 
 export interface BloggerLocaleModifiers {
   /** Returns the localized language name (e.g. 'Catalan (Spain, Valencian)'). */
@@ -2118,7 +2119,6 @@ export type BloggerCatalogName
     | 'operators'
     | 'types'
     | 'widgets'
-    | 'settings'
     | 'globals'
     | 'messages'
     | 'scopes'
@@ -2130,7 +2130,6 @@ export interface BloggerCatalogMap {
   operators: BloggerOperatorsCatalog;
   types: BloggerTypesCatalog;
   widgets: BloggerWidgetsCatalog;
-  settings: BloggerSettingsCatalog;
   globals: BloggerGlobalsCatalog;
   messages: BloggerMessagesCatalog;
   scopes: BloggerScopesCatalog;

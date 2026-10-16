@@ -86,7 +86,7 @@ export interface BloggerFixture {
   id: string
   title: string
   evidence: BloggerEvidenceLevel
-  verifiedAt: string
+  verified_at: string
   covers: string[]
   input: {
     kind: 'expression' | 'template'

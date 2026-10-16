@@ -86,7 +86,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   log('-> 2. Validating catalogs referential integrity...')
   const diagnosticsCatalog = store.getCatalog('diagnostics')
   const knownDiagnosticCodes = new Set<string>(
-    Object.values(diagnosticsCatalog.rules || {}).map(rule => rule.code),
+    Object.entries(diagnosticsCatalog.rules || {}).map(([key, rule]) => (rule as any).code ?? key),
   )
   const knownCatalogReferences = new Set(catalogNames.map(name => `${name}.json`))
 
@@ -116,8 +116,8 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   }
 
   for (const [codeKey, rule] of Object.entries(diagnosticsCatalog.rules || {})) {
-    if (codeKey !== rule.code) {
-      errors.push(`Diagnostic rule key '${codeKey}' does not match rule.code '${rule.code}'.`)
+    if ((rule as any).code && codeKey !== (rule as any).code) {
+      errors.push(`Diagnostic rule key '${codeKey}' does not match rule.code '${(rule as any).code}'.`)
     }
   }
 
@@ -244,45 +244,38 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   const widgetsCatalog = store.getCatalog('widgets')
   const knownWidgets = new Set(Object.keys(widgetsCatalog.widgets || {}))
   for (const [widgetKey, widgetDef] of Object.entries(widgetsCatalog.widgets || {})) {
-    for (const [propKey, propDef] of Object.entries(widgetDef.canonical || {})) {
-      if (!isKnownType(propDef.type)) {
-        errors.push(`Widget property '${widgetKey}.${propKey}' specifies unknown type '${propDef.type}'.`)
+    const dataCanonical = widgetDef.data?.canonical || (widgetDef as any).canonical || {}
+    for (const [propKey, propDef] of Object.entries(dataCanonical)) {
+      if (!isKnownType((propDef as any).type)) {
+        errors.push(`Widget property '${widgetKey}.${propKey}' specifies unknown type '${(propDef as any).type}'.`)
       }
-      if (propDef.item_type && !isKnownType(propDef.item_type)) {
-        errors.push(`Widget property '${widgetKey}.${propKey}' specifies unknown item_type '${propDef.item_type}'.`)
+      if ((propDef as any).item_type && !isKnownType((propDef as any).item_type)) {
+        errors.push(`Widget property '${widgetKey}.${propKey}' specifies unknown item_type '${(propDef as any).item_type}'.`)
       }
     }
-  }
 
-  const settingsCatalog = store.getCatalog('settings')
-  for (const [widgetKey, widgetDef] of Object.entries(settingsCatalog.widgets || {})) {
-    if (!knownWidgets.has(widgetKey)) {
-      errors.push(`Settings catalog references unknown widget '${widgetKey}'.`)
-    }
-    const wProps = widgetsCatalog.widgets?.[widgetKey]?.canonical || {}
-    for (const [settingKey, settingDef] of Object.entries(widgetDef.canonical || {})) {
-      if (!isKnownType(settingDef.type)) {
-        errors.push(`Widget setting '${widgetKey}.${settingKey}' specifies unknown type '${settingDef.type}'.`)
+    const settingsCanonical = widgetDef.settings?.canonical || {}
+    for (const [settingKey, settingDef] of Object.entries(settingsCanonical)) {
+      if (!isKnownType((settingDef as any).type)) {
+        errors.push(`Widget setting '${widgetKey}.${settingKey}' specifies unknown type '${(settingDef as any).type}'.`)
       }
       const bound = (settingDef as any).bound_runtime_data
       if (bound && typeof bound === 'string') {
         const clean = bound.replace(/^data:/, '')
         const rootProp = clean.split('.')[0]!.replace(/\[\d+\]/, '')
-        const inWidget = Boolean(wProps[rootProp])
+        const inWidget = Boolean(
+          dataCanonical[rootProp]
+          || (rootProp === 'post' && dataCanonical.posts),
+        )
         const inGlobals = Boolean(
           globalsCatalog.objects?.[`data:${rootProp}`]
-          || globalsCatalog.objects?.[bound.split('.')[0]!]
-          || ['post', 'posts', 'widgets'].includes(rootProp),
+          || globalsCatalog.objects?.[rootProp]
+          || globalsCatalog.objects?.[bound.split('.')[0]!],
         )
         if (!inWidget && !inGlobals) {
           errors.push(`Widget setting '${widgetKey}.${settingKey}' declares unresolved bound_runtime_data '${bound}'.`)
         }
       }
-    }
-  }
-  for (const widgetKey of knownWidgets) {
-    if (!settingsCatalog.widgets || !settingsCatalog.widgets[widgetKey]) {
-      errors.push(`Widget '${widgetKey}' is defined in widgets.json but missing from settings.json.`)
     }
   }
 

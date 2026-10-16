@@ -51,7 +51,6 @@ import {
   getScope,
   getScopePrecedence,
   getScopes,
-  getSettings,
   getSpecCatalog,
   getStandardDiagnostic,
   getStandardDiagnostics,
@@ -130,7 +129,7 @@ describe('catalogs and store formal verification suite', () => {
   })
 
   describe('memoryCatalogStore & store life-cycle', () => {
-    it('retrieves all 10 canonical catalogs with pure in-memory access', () => {
+    it('retrieves all 9 canonical catalogs with pure in-memory access', () => {
       const all = getAllCatalogs()
       expect(Object.keys(all).sort()).toEqual([
         'diagnostics',
@@ -140,7 +139,6 @@ describe('catalogs and store formal verification suite', () => {
         'messages',
         'operators',
         'scopes',
-        'settings',
         'types',
         'widgets',
       ])
@@ -358,7 +356,7 @@ describe('catalogs and store formal verification suite', () => {
         const blogWidget = getWidget('Blog')
         expect(blogWidget).toBeDefined()
         expect(blogWidget?.description).toBeDefined()
-        expect(blogWidget?.canonical).toBeDefined()
+        expect(blogWidget?.data?.canonical).toBeDefined()
 
         const allWidgets = getAllWidgets()
         expect(Object.keys(allWidgets).length).toBe(26)
@@ -458,7 +456,7 @@ describe('catalogs and store formal verification suite', () => {
 
       it('respects injected custom SpecCatalog instance in query functions', () => {
         const customCatalog = getSpecCatalog()
-        expect(getWidget('Blog', customCatalog)?.canonical).toBeDefined()
+        expect(getWidget('Blog', customCatalog)?.data?.canonical).toBeDefined()
         expect(getGlobal('blog', customCatalog)?.canonical).toBeDefined()
         expect(getType('image', customCatalog)?.parent_type).toBe('string')
         expect(getDirective('b:if', customCatalog)?.category).toBe('Logic')
@@ -928,7 +926,6 @@ describe('catalogs and store formal verification suite', () => {
       expect(RootExports.getOperators).toBe(getOperators)
       expect(RootExports.getTypes).toBe(getTypes)
       expect(RootExports.getWidgets).toBe(getWidgets)
-      expect(RootExports.getSettings).toBe(getSettings)
       expect(RootExports.getGlobals).toBe(getGlobals)
       expect(RootExports.getMessages).toBe(getMessages)
       expect(RootExports.getScopes).toBe(getScopes)

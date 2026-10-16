@@ -21,7 +21,6 @@ import type {
   BloggerPrecedenceHierarchyLevel,
   BloggerScopeDefinition,
   BloggerScopesCatalog,
-  BloggerSettingsCatalog,
   BloggerStandardDiagnosticKey,
   BloggerStandardDiagnostics,
   BloggerTypeDefinition,
@@ -295,7 +294,7 @@ export class SpecCatalog {
   private indexDiagnostics(): void {
     const rules = (this.store.getCatalog('diagnostics') as BloggerDiagnosticsCatalog).rules || {}
     for (const [code, rule] of Object.entries(rules)) {
-      this.diagnosticMap.set(code, rule)
+      this.diagnosticMap.set(code, { ...rule, code: (rule.code ?? code) as BloggerDiagnosticCode })
     }
   }
 
@@ -307,10 +306,10 @@ export class SpecCatalog {
   }
 
   private indexSettings(): void {
-    const settingsCatalog = this.store.getCatalog('settings') as BloggerSettingsCatalog
-    const settings = settingsCatalog.widgets || {}
-    for (const [name, def] of Object.entries(settings)) {
-      this.settingMap.set(name, def)
+    for (const [name, def] of this.widgetMap.entries()) {
+      if (def.settings) {
+        this.settingMap.set(name, def.settings)
+      }
     }
   }
 
@@ -327,7 +326,7 @@ export class SpecCatalog {
   private indexMessages(): void {
     const messages = (this.store.getCatalog('messages') as BloggerMessagesCatalog).messages || {}
     for (const [key, def] of Object.entries(messages)) {
-      this.messageMap.set(key, def)
+      this.messageMap.set(key, { ...def, type: def.type ?? 'message' })
     }
   }
 
@@ -376,7 +375,7 @@ export class SpecCatalog {
     }
     this.superPrefix = prefix
     for (const [name, def] of Object.entries(inclusionsData.inclusions || {})) {
-      this.inclusionMap.set(name, def)
+      this.inclusionMap.set(name, { ...def, name: def.name ?? name })
     }
   }
 
@@ -478,7 +477,7 @@ export class SpecCatalog {
         severity: 'error',
         message: `Tag <${childTag}> is not permitted inside <${parentTag}>.`,
         evidence: 'unknown',
-        verifiedAt: '2026-01-01',
+        verified_at: '2026-01-01',
       }
 
     let message = rule.message
@@ -487,7 +486,7 @@ export class SpecCatalog {
     }
 
     return {
-      code: rule.code,
+      code: (rule.code ?? diagCode) as BloggerDiagnosticCode,
       rule,
       action,
       message,
@@ -593,8 +592,8 @@ export class SpecCatalog {
   }
 
   getThemeDesignerDescriptions(): readonly string[] {
-    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
-    return (directivesCatalog.domain_metadata?.theme_designer_descriptions as string[]) ?? []
+    const typesCatalog = this.store.getCatalog('types') as BloggerTypesCatalog
+    return (typesCatalog.domain_metadata?.theme_designer_descriptions as string[]) ?? []
   }
 
   getLayoutVersions(): BloggerLayoutVersionsCatalog | undefined {
@@ -758,6 +757,10 @@ export class SpecCatalog {
     return this.widgetMap.get(name)
   }
 
+  getWidgetData(name: string): BloggerWidgetDefinition['data'] | undefined {
+    return this.widgetMap.get(name)?.data
+  }
+
   getAllWidgets(): Record<string, BloggerWidgetDefinition> {
     const result: Record<string, BloggerWidgetDefinition> = {}
     for (const [k, v] of this.widgetMap.entries()) {
@@ -831,11 +834,35 @@ export class SpecCatalog {
   }
 
   isType(name: string): boolean {
-    return this.typeMap.has(name)
+    if (this.typeMap.has(name)) {
+      return true
+    }
+    if (name.startsWith('array[') && name.endsWith(']')) {
+      return this.isType(name.slice(6, -1))
+    }
+    return false
   }
 
   getType(name: string): BloggerTypeDefinition | undefined {
-    return this.typeMap.get(name)
+    const direct = this.typeMap.get(name)
+    if (direct) {
+      return direct
+    }
+    if (name.startsWith('array[') && name.endsWith(']')) {
+      const itemType = name.slice(6, -1)
+      if (this.isType(itemType)) {
+        return {
+          category: 'collection',
+          description: `Ordered collection composed of ${itemType} values.`,
+          item_type: itemType,
+          parent_type: 'array',
+          user_constructible: true,
+          ts_type: `${itemType}[]`,
+          modifiers: {},
+        }
+      }
+    }
+    return undefined
   }
 
   getAllTypes(): Record<string, BloggerTypeDefinition> {

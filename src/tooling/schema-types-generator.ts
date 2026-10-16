@@ -6,7 +6,6 @@ import {
   getGlobals,
   getMessages,
   getOperators,
-  getSettings,
   getTypes,
   getWidgets,
 } from '../catalogs/index.js'
@@ -64,7 +63,6 @@ export function generateCanonicalSchemaTypes(): string {
   const widgetsData = getWidgets()
   const messagesData = getMessages()
   const globalsData = getGlobals()
-  const settingsData = getSettings()
   const typesData = getTypes()
 
   const dirNames = Object.keys(directivesData.directives || {}).sort()
@@ -83,7 +81,6 @@ export function generateCanonicalSchemaTypes(): string {
   const typesSchema = readSchema('types')
   const globalsSchema = readSchema('globals')
   const widgetsSchema = readSchema('widgets')
-  const settingsSchema = readSchema('settings')
   const messagesSchema = readSchema('messages')
   const scopesSchema = readSchema('scopes')
 
@@ -138,7 +135,7 @@ export function generateCanonicalSchemaTypes(): string {
     '',
     `export type BloggerInclusionCategory = ${incCategoryEnum.map(c => `'${c}'`).join(' | ')};`,
     '',
-    `export type BloggerCanonicalPropertyType = ${canonicalPropTypeEnum.map(t => `'${t}'`).join(' | ')};`,
+    `export type BloggerCanonicalPropertyType = ${canonicalPropTypeEnum.length > 0 ? canonicalPropTypeEnum.map(t => `'${t}'`).join(' | ') : '\'string\' | \'number\' | \'boolean\' | \'url\' | \'image\' | \'date\' | \'object\' | \'array\' | \'locale\' | \'message\' | \'skin_variable\' | (string & {})'};`,
     '',
     `export type BloggerStandardDiagnosticKey = ${stdDiagKeys.map(k => `'${k}'`).join(' | ')};`,
     '',
@@ -150,6 +147,7 @@ export function generateCanonicalSchemaTypes(): string {
     const def = ref.includes('#/$defs/') ? ref.split('#/$defs/')[1] : ref
     switch (def) {
       case 'evidenceLevel': return 'BloggerEvidenceLevel'
+      case 'verified_at': return 'string'
       case 'diagnosticCode': return 'BloggerDiagnosticCode'
       case 'canonicalProperty': return 'BloggerCanonicalProperty'
       case 'deprecatedEntry': return 'BloggerDeprecatedEntry'
@@ -231,6 +229,12 @@ export function generateCanonicalSchemaTypes(): string {
     out.push(`export interface ${name} {`)
     const props = schema.properties || {}
     const required = new Set(schema.required || [])
+    if (name === 'BloggerDiagnosticRule') {
+      required.add('code')
+    }
+    if (name === 'BloggerInclusionDefinition') {
+      required.add('name')
+    }
 
     for (const [propName, propDef] of Object.entries(props)) {
       const pDef = propDef as any
@@ -324,7 +328,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('    compiler_limits: BloggerCompilerLimits;')
   lines.push('    hallucinated_directives?: Record<string, BloggerDiagnosticCode>;')
   lines.push('    standard_diagnostics?: BloggerStandardDiagnostics;')
-  lines.push('    theme_designer_descriptions?: string[];')
   lines.push('    html_void_elements?: string[];')
   lines.push('    layout_versions?: BloggerLayoutVersionsCatalog;')
   lines.push('    grammar_groups?: Record<string, string[]>;')
@@ -395,6 +398,7 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('    coercion_rules: Record<string, BloggerCoercionRule>;')
   lines.push('    truthiness_matrix: BloggerTruthinessMatrix;')
   lines.push('    scalar_types: string[];')
+  lines.push('    theme_designer_descriptions?: string[];')
   lines.push('  };')
   lines.push('  types: Record<string, BloggerTypeDefinition>;')
   lines.push('  modifiers?: Record<string, any>;')
@@ -415,29 +419,16 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('  objects: Record<string, BloggerGlobalObjectDefinition>;')
   lines.push('}')
   lines.push('')
+  lines.push(generateInterface('BloggerCanonicalSetting', widgetsSchema.$defs.canonicalSetting))
   lines.push(generateInterface('BloggerWidgetDefinition', widgetsSchema.$defs.widgetEntry))
+  lines.push('export type BloggerWidgetSettingsDefinition = NonNullable<BloggerWidgetDefinition[\'settings\']>;')
+  lines.push('')
   lines.push('export interface BloggerWidgetsCatalog {')
   lines.push('  $schema?: string;')
   lines.push('  version?: string;')
   lines.push('  title?: string;')
   lines.push('  description?: string;')
   lines.push('  widgets: Record<string, BloggerWidgetDefinition>;')
-  lines.push('}')
-  lines.push('')
-
-  // --- Settings Models ---
-  lines.push('// =========================================================================')
-  lines.push('// Settings Catalog Models (SSoT: settings.schema.json)')
-  lines.push('// =========================================================================')
-  lines.push('')
-  lines.push(generateInterface('BloggerCanonicalSetting', settingsSchema.$defs.canonicalSetting))
-  lines.push(generateInterface('BloggerWidgetSettingsDefinition', settingsSchema.$defs.widgetEntry))
-  lines.push('export interface BloggerSettingsCatalog {')
-  lines.push('  $schema?: string;')
-  lines.push('  version?: string;')
-  lines.push('  title?: string;')
-  lines.push('  description?: string;')
-  lines.push('  widgets: Record<string, BloggerWidgetSettingsDefinition>;')
   lines.push('}')
   lines.push('')
 
@@ -637,7 +628,7 @@ export function generateCanonicalSchemaTypes(): string {
     const pascal = toPascalCase(wName)
     lines.push(`/** Canonical data dictionary for widget \`${wName}\` */`)
     lines.push(`export interface Blogger${pascal}WidgetData {`)
-    const props = widgets[wName]?.canonical || {}
+    const props = widgets[wName]?.data?.canonical || {}
     for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
       const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
         ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
@@ -657,12 +648,11 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('// =========================================================================')
   lines.push('')
 
-  const settings = settingsData.widgets || {}
-  for (const wName of Object.keys(settings).sort()) {
+  for (const wName of Object.keys(widgets).sort()) {
     const pascal = toPascalCase(wName)
     lines.push(`/** Schema settings dictionary for widget \`${wName}\` */`)
     lines.push(`export interface Blogger${pascal}WidgetSettings {`)
-    const props = settings[wName]?.canonical || {}
+    const props = widgets[wName]?.settings?.canonical || {}
     for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
       const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
         ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
@@ -686,7 +676,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('    | \'operators\'')
   lines.push('    | \'types\'')
   lines.push('    | \'widgets\'')
-  lines.push('    | \'settings\'')
   lines.push('    | \'globals\'')
   lines.push('    | \'messages\'')
   lines.push('    | \'scopes\'')
@@ -698,7 +687,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('  operators: BloggerOperatorsCatalog;')
   lines.push('  types: BloggerTypesCatalog;')
   lines.push('  widgets: BloggerWidgetsCatalog;')
-  lines.push('  settings: BloggerSettingsCatalog;')
   lines.push('  globals: BloggerGlobalsCatalog;')
   lines.push('  messages: BloggerMessagesCatalog;')
   lines.push('  scopes: BloggerScopesCatalog;')

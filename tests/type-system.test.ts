@@ -293,7 +293,8 @@ describe('canonical type system & coercion engine', () => {
       expect(resolveModifierReturnType('date', 'year')).toBe('number')
       expect(resolveModifierReturnType('date', 'iso8601')).toBe('string')
       expect(resolveModifierReturnType('date', 'dayOfWeek')).toBe('number')
-      expect(resolveModifierReturnType('array[image]', 'url')).toBe('image')
+      expect(resolveModifierReturnType('image_variant', 'url')).toBe('image')
+      expect(resolveModifierReturnType('image_variant', 'size')).toBe('number')
       expect(resolveModifierReturnType('array[image]', 'size')).toBe('number')
     })
 

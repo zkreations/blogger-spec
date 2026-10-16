@@ -31,7 +31,7 @@ function pushDiagnostic(
       severity: 'error',
       message: options?.message ?? `Diagnostic ${code}`,
       evidence: 'unknown',
-      verifiedAt: '2026-01-01',
+      verified_at: '2026-01-01',
     },
     message: options?.message ?? rule?.message ?? `Diagnostic ${code}`,
     severity: rule?.severity ?? 'error',
