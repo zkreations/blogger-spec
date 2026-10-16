@@ -12697,11 +12697,7 @@ export const embeddedSchemas: Record<string, any> = {
             "type": "array",
             "items": {
               "type": "integer",
-              "enum": [
-                1,
-                2,
-                3
-              ]
+              "minimum": 1
             },
             "description": "Blogger template engine architecture version(s) (b:layoutsVersion='1' | '2' | '3') where this inclusion is available."
           },

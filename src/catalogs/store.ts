@@ -14,6 +14,19 @@ import type {
 } from '../types.js'
 import { embeddedCatalogs, embeddedSchemas } from './embedded.generated.js'
 
+export const CATALOG_NAMES = [
+  'directives',
+  'operators',
+  'types',
+  'widgets',
+  'settings',
+  'globals',
+  'messages',
+  'scopes',
+  'diagnostics',
+  'inclusions',
+] as const satisfies readonly BloggerCatalogName[]
+
 export interface CatalogStore {
   getCatalog: <K extends BloggerCatalogName>(name: K) => BloggerCatalogMap[K]
   getSchema: (name: string) => any
@@ -134,18 +147,7 @@ export function getInclusions(): BloggerInclusionsCatalog {
 }
 
 export function getAllCatalogs(): BloggerCatalogMap {
-  return {
-    directives: getDirectives(),
-    operators: getOperators(),
-    types: getTypes(),
-    widgets: getWidgets(),
-    settings: getSettings(),
-    globals: getGlobals(),
-    messages: getMessages(),
-    scopes: getScopes(),
-    diagnostics: getDiagnostics(),
-    inclusions: getInclusions(),
-  }
+  return Object.fromEntries(CATALOG_NAMES.map(name => [name, getCatalog(name)])) as unknown as BloggerCatalogMap
 }
 
 export function getSchema(name: string): any {

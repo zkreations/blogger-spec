@@ -28,6 +28,7 @@ export function generateCanonicalSchemaTypes(): string {
   const ruleCodes = Object.keys(diagnosticsData.rules || {}).sort()
   const opNames = Object.keys(operatorsData.operators || {}).sort()
   const msgKeys = Object.keys(messagesData.messages || {}).sort()
+  const layoutVersions = directivesData.domain_metadata?.layout_versions?.supported_versions || []
 
   // 2. Read Schemas for canonical enums & definitions
   const diagSchema = readSchema('diagnostics')
@@ -156,7 +157,7 @@ export function generateCanonicalSchemaTypes(): string {
     '  attribute_inversions?: Record<string, { expected: string, diagnostic: BloggerDiagnosticCode }>;',
     '}',
     '',
-    'export type BloggerLayoutVersion = 1 | 2 | 3;',
+    `export type BloggerLayoutVersion = ${layoutVersions.join(' | ') || 'never'};`,
     '',
     'export interface BloggerLayoutVersionDefinition {',
     '  version: BloggerLayoutVersion;',

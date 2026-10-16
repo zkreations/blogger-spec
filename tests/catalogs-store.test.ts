@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { embeddedCatalogs, embeddedSchemas } from '../src/catalogs/embedded.generated.js'
 import {
   canNest,
   clearCatalogCache,
@@ -86,8 +87,48 @@ import {
 } from '../src/catalogs/index.js'
 import * as RootExports from '../src/index.js'
 import { generateDomainTypes, generateDts } from '../src/tooling/compiler.js'
+import { validateSpec } from '../src/tooling/validator.js'
 
 describe('catalogs and store formal verification suite', () => {
+  describe('catalog evolution contracts', () => {
+    it('rejects unknown diagnostic references', () => {
+      const catalogs = structuredClone(embeddedCatalogs)
+      ;(catalogs.directives.domain_metadata!.standard_diagnostics as any).missing_required_attribute = 'BX9999'
+
+      const report = validateSpec({
+        store: new MemoryCatalogStore(catalogs, embeddedSchemas),
+        checkDtsFreshness: false,
+      })
+
+      expect(report.valid).toBe(false)
+      expect(report.errors).toContain(
+        'Reference \'directives.json.domain_metadata.standard_diagnostics.missing_required_attribute\' points to unknown diagnostic \'BX9999\'.',
+      )
+    })
+
+    it('rejects incoherent layout version declarations', () => {
+      const catalogs = structuredClone(embeddedCatalogs)
+      ;(catalogs.directives.domain_metadata!.layout_versions as any).default_version = 99
+
+      const report = validateSpec({
+        store: new MemoryCatalogStore(catalogs, embeddedSchemas),
+        checkDtsFreshness: false,
+      })
+
+      expect(report.valid).toBe(false)
+      expect(report.errors).toContain('Default layout version \'99\' is not supported.')
+    })
+
+    it('does not hide a missing required inclusions catalog', () => {
+      const catalogs = structuredClone(embeddedCatalogs)
+      delete (catalogs as any).inclusions
+
+      expect(() => new SpecCatalog(new MemoryCatalogStore(catalogs, embeddedSchemas))).toThrow(
+        'Catalog not found in memory store: inclusions',
+      )
+    })
+  })
+
   describe('memoryCatalogStore & store life-cycle', () => {
     it('retrieves all 10 canonical catalogs with pure in-memory access', () => {
       const all = getAllCatalogs()

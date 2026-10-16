@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs'
 import addFormats from 'ajv-formats'
 import Ajv2020 from 'ajv/dist/2020.js'
 import { FsCatalogStore } from '../catalogs/fs-store.js'
+import { CATALOG_NAMES } from '../catalogs/store.js'
 import { getWorkspacePaths } from '../paths.js'
 import { verifyArtifactsFreshness } from './compiler.js'
 
@@ -46,18 +47,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     ajv.addSchema(schema)
   }
 
-  const catalogNames: BloggerCatalogName[] = [
-    'directives',
-    'operators',
-    'types',
-    'widgets',
-    'settings',
-    'globals',
-    'messages',
-    'scopes',
-    'diagnostics',
-    'inclusions',
-  ]
+  const catalogNames: BloggerCatalogName[] = [...CATALOG_NAMES]
 
   for (const name of catalogNames) {
     const data = store.getCatalog(name)
@@ -80,7 +70,50 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     }
   }
 
+  const schemaNames = new Set(schemas.map(schema => schema.name))
+  for (const name of catalogNames) {
+    if (!schemaNames.has(name)) {
+      errors.push(`Catalog '${name}.json' has no matching schema.`)
+    }
+  }
+  for (const schema of schemas) {
+    if (!catalogNames.includes(schema.name as BloggerCatalogName)) {
+      errors.push(`Schema '${schema.name}.schema.json' has no matching canonical catalog.`)
+    }
+  }
+
   log('-> 2. Validating catalogs referential integrity...')
+  const diagnosticsCatalog = store.getCatalog('diagnostics')
+  const knownDiagnosticCodes = new Set<string>(
+    Object.values(diagnosticsCatalog.rules || {}).map(rule => rule.code),
+  )
+  const knownCatalogReferences = new Set(catalogNames.map(name => `${name}.json`))
+
+  function validateDeclarativeReferences(value: unknown, location: string): void {
+    if (Array.isArray(value)) {
+      value.forEach((item, index) => validateDeclarativeReferences(item, `${location}[${index}]`))
+      return
+    }
+    if (!value || typeof value !== 'object') {
+      return
+    }
+
+    for (const [key, child] of Object.entries(value)) {
+      const childLocation = `${location}.${key}`
+      if (key === 'catalog_ref' && typeof child === 'string' && !knownCatalogReferences.has(child)) {
+        errors.push(`Reference '${childLocation}' points to unknown catalog '${child}'.`)
+      }
+      if (typeof child === 'string' && /^BX\d{4}$/.test(child) && !knownDiagnosticCodes.has(child)) {
+        errors.push(`Reference '${childLocation}' points to unknown diagnostic '${child}'.`)
+      }
+      validateDeclarativeReferences(child, childLocation)
+    }
+  }
+
+  for (const name of catalogNames) {
+    validateDeclarativeReferences(store.getCatalog(name), `${name}.json`)
+  }
+
   const operatorsCatalog = store.getCatalog('operators')
   const operators = operatorsCatalog.operators || {}
   const hierarchy = operatorsCatalog.precedence_hierarchy || []
@@ -233,6 +266,28 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     for (const targetWidget of incDef.target_widgets || []) {
       if (!knownWidgets.has(targetWidget)) {
         errors.push(`Inclusion '${incKey}' references unknown target widget '${targetWidget}'.`)
+      }
+    }
+
+    const layoutVersions = directivesCatalog.domain_metadata?.layout_versions
+    if (layoutVersions) {
+      const supported = new Set(layoutVersions.supported_versions)
+      const declared = Object.entries(layoutVersions.versions || {})
+      for (const version of supported) {
+        if (!layoutVersions.versions?.[String(version)]) {
+          errors.push(`Layout version '${version}' is supported but has no definition.`)
+        }
+      }
+      if (!supported.has(layoutVersions.default_version)) {
+        errors.push(`Default layout version '${layoutVersions.default_version}' is not supported.`)
+      }
+      for (const [key, definition] of declared) {
+        if (!supported.has(definition.version)) {
+          errors.push(`Layout definition '${key}' declares unsupported version '${definition.version}'.`)
+        }
+        if (String(definition.version) !== key) {
+          errors.push(`Layout definition key '${key}' does not match version '${definition.version}'.`)
+        }
       }
     }
   }

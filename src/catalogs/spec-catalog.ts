@@ -370,15 +370,11 @@ export class SpecCatalog {
   }
 
   private indexInclusions(): void {
-    try {
-      const inclusionsData = this.store.getCatalog('inclusions') as BloggerInclusionsCatalog
-      this.superPrefix = inclusionsData?.super_prefix_rule?.prefix || 'super.'
-      const inclusions = inclusionsData?.inclusions || {}
-      for (const [name, def] of Object.entries(inclusions)) {
-        this.inclusionMap.set(name, def)
-      }
+    const inclusionsData = this.store.getCatalog('inclusions') as BloggerInclusionsCatalog
+    this.superPrefix = inclusionsData.super_prefix_rule.prefix
+    for (const [name, def] of Object.entries(inclusionsData.inclusions)) {
+      this.inclusionMap.set(name, def)
     }
-    catch {}
   }
 
   isDirective(tagName: string): tagName is BloggerDirectiveName {

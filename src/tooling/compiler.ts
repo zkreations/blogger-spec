@@ -4,6 +4,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { join } from 'node:path'
 import ts from 'typescript'
 import {
+  CATALOG_NAMES,
   getDirectives,
   getGlobals,
   getMessages,
@@ -44,12 +45,19 @@ function sanitizePropName(name: string): string {
   return JSON.stringify(name)
 }
 
-function mapPropertyTypeToTs(type: string): string {
+function mapPropertyTypeToTs(type: string, typeDefinitions?: Record<string, { ts_type?: string }>): string {
   if (!type) {
     return 'any'
   }
   if (type.includes('|')) {
-    return type.split('|').map(t => mapPropertyTypeToTs(t.trim())).join(' | ')
+    return type.split('|').map(t => mapPropertyTypeToTs(t.trim(), typeDefinitions)).join(' | ')
+  }
+  const definition = typeDefinitions?.[type]
+  if (definition?.ts_type) {
+    return definition.ts_type
+  }
+  if (typeDefinitions && !definition) {
+    throw new Error(`Unknown canonical type '${type}' while generating TypeScript declarations.`)
   }
   switch (type) {
     case 'string':
@@ -101,6 +109,7 @@ export function generateDts(): string {
   const settingsData = getSettings()
   const messagesData = getMessages()
   const typesData = getTypes()
+  const typeDefinitions = typesData.types || {}
 
   const lines: string[] = [
     '/**',
@@ -121,7 +130,10 @@ export function generateDts(): string {
   ]
 
   const stringModifiers = typesData.types?.string?.modifiers || {}
-  const platformSubtypes = ['url', 'image', 'date', 'locale'] as const
+  const platformSubtypes = Object.entries(typeDefinitions)
+    .filter(([, definition]) => definition.category === 'subtype')
+    .map(([name]) => name)
+    .sort()
 
   for (const st of platformSubtypes) {
     const pascal = toPascalCase(st)
@@ -136,7 +148,7 @@ export function generateDts(): string {
         propType = (mDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
       }
       else {
-        propType = mapPropertyTypeToTs((mDef as any).output_type)
+        propType = mapPropertyTypeToTs((mDef as any).output_type, typeDefinitions)
       }
       lines.push(`  ${sanitizePropName(mName)}?: ${propType};`)
     }
@@ -145,7 +157,7 @@ export function generateDts(): string {
         if ((sDef as any).description) {
           lines.push(`  /** ${(sDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
         }
-        const propType = (sDef as any).output_type === 'number' ? 'number' : 'string'
+        const propType = mapPropertyTypeToTs((sDef as any).output_type, typeDefinitions)
         lines.push(`  ${sanitizePropName(sName)}?: ${propType};`)
       }
     }
@@ -153,7 +165,6 @@ export function generateDts(): string {
     lines.push(`export type Blogger${pascal} = string & Blogger${pascal}Modifiers;`)
   }
 
-  lines.push('export type BloggerMessage = string;')
   lines.push('export type BloggerExpression = string;')
   lines.push('')
 
@@ -210,7 +221,7 @@ export function generateDts(): string {
     for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
       const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
         ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
-        : mapPropertyTypeToTs((pDef as any).type)
+        : mapPropertyTypeToTs((pDef as any).type, typeDefinitions)
       if ((pDef as any).description) {
         lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
       }
@@ -240,7 +251,7 @@ export function generateDts(): string {
     for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
       const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
         ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
-        : mapPropertyTypeToTs((pDef as any).type)
+        : mapPropertyTypeToTs((pDef as any).type, typeDefinitions)
       if ((pDef as any).description) {
         lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
       }
@@ -260,7 +271,7 @@ export function generateDts(): string {
     for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
       const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
         ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
-        : mapPropertyTypeToTs((pDef as any).type)
+        : mapPropertyTypeToTs((pDef as any).type, typeDefinitions)
       if ((pDef as any).description) {
         lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
       }
@@ -345,21 +356,8 @@ export function generateEmbeddedCatalogs(): string {
   const catalogsDir = paths.catalogs
   const schemasDir = paths.schemas
 
-  const catalogNames = [
-    'directives',
-    'operators',
-    'types',
-    'widgets',
-    'settings',
-    'globals',
-    'messages',
-    'scopes',
-    'diagnostics',
-    'inclusions',
-  ]
-
   const catalogs: Record<string, any> = {}
-  for (const name of catalogNames) {
+  for (const name of CATALOG_NAMES) {
     const filePath = join(catalogsDir, `${name}.json`)
     if (existsSync(filePath)) {
       catalogs[name] = JSON.parse(readFileSync(filePath, 'utf-8'))
@@ -396,20 +394,8 @@ export function buildEmbeddedCatalogs(): void {
   const content = generateEmbeddedCatalogs()
   writeFileSync(targetPath, content, 'utf-8')
 
-  const catalogNames = [
-    'directives',
-    'operators',
-    'types',
-    'widgets',
-    'settings',
-    'globals',
-    'messages',
-    'scopes',
-    'diagnostics',
-    'inclusions',
-  ]
   const catalogs: Record<string, any> = {}
-  for (const name of catalogNames) {
+  for (const name of CATALOG_NAMES) {
     const filePath = join(paths.catalogs, `${name}.json`)
     if (existsSync(filePath)) {
       catalogs[name] = JSON.parse(readFileSync(filePath, 'utf-8'))
