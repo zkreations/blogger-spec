@@ -509,8 +509,7 @@
           "reason": "Legacy horizontal/vertical layout hint in deprecated GUI."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:widget": {
       "category": "Structuring",
@@ -622,8 +621,7 @@
           "reason": "Legacy attribute used to control widget display on designated page types."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:includable": {
       "category": "Structuring",
@@ -680,14 +678,12 @@
           "description": "Direct child b:class and b:attr elements within id='main' directly mutate the widget's synthetic HTML root container element (<div class='widget [Type]' ...>)."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:include": {
       "category": "Structuring",
       "namespace": "b",
       "description": "Invokes a b:includable block and can pass a data alias or condition to the called inclusion.",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "@any_container"
@@ -777,8 +773,7 @@
           "reason": "b:defaultmarkups does not operate inside CDATA sections."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:defaultmarkup": {
       "category": "Structuring",
@@ -836,8 +831,7 @@
           }
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:widget-settings": {
       "category": "Structuring",
@@ -865,8 +859,7 @@
           "description": "The element is generated automatically and cannot be created, deleted, or moved manually."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:widget-setting": {
       "category": "Structuring",
@@ -902,8 +895,7 @@
           "description": "The element is generated automatically and cannot be created, deleted, or moved manually."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:loop": {
       "category": "Logic",
@@ -956,8 +948,7 @@
           "description": "b:loop elements can be nested."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:with": {
       "category": "Logic",
@@ -1000,8 +991,7 @@
           "description": "The alias is available through its variable name in child nodes."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:if": {
       "category": "Logic",
@@ -1043,14 +1033,12 @@
           "description": "A b:if container evaluates conditions sequentially with optional trailing b:elseif and b:else delimiters."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:elseif": {
       "category": "Logic",
       "namespace": "b",
       "description": "Conditional branch tag that evaluates an additional condition when the preceding b:if or b:elseif condition is false.",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "b:if"
@@ -1096,7 +1084,6 @@
       "category": "Logic",
       "namespace": "b",
       "description": "Fallback branch tag that executes when all preceding conditions in the enclosing b:if sequence are false.",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "b:if"
@@ -1178,14 +1165,12 @@
           "description": "A b:switch container requires at least one b:case child branch."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:case": {
       "category": "Logic",
       "namespace": "b",
       "description": "Switch branch that matches its value against the value evaluated by the enclosing b:switch.",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "b:switch"
@@ -1224,7 +1209,6 @@
       "category": "Logic",
       "namespace": "b",
       "description": "Fallback switch branch that executes when none of the preceding b:case branches match.",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "b:switch"
@@ -1301,14 +1285,12 @@
           "description": "Standard HTML attributes may be passed statically or dynamically via expr: (e.g., class, expr:href)."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:attr": {
       "category": "DOM Gen",
       "namespace": "b",
       "description": "Instruction tag that adds an attribute and its value to the parent element.",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "@any_container"
@@ -1369,7 +1351,6 @@
       "category": "DOM Gen",
       "namespace": "b",
       "description": "Instruction tag that adds a class value to the class attribute of the parent element.",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "@any_container"
@@ -1429,7 +1410,6 @@
       "category": "Output",
       "namespace": "b",
       "description": "Instruction tag that explicitly outputs the value resulting from a Blogger expression.",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "@any_container"
@@ -1474,7 +1454,6 @@
       "category": "Output",
       "namespace": "data",
       "description": "Self-closing output tag for scalar data properties (recognized in parsers/linters by namespace prefix 'data:' matching any <data:PROPERTY_PATH/>; 'data:*' is documentation wildcard notation).",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "@any_container"
@@ -1562,14 +1541,12 @@
           "description": "Sequential sibling b:param elements nested inside b:message must be separated by whitespace or newlines. Writing multiple b:param tags directly inline on the same line without whitespace (<b:param .../><b:param .../>) triggers an engine evaluation abort: 'Invalid parameters for message'."
         }
       },
-      "closure_mode": "dual",
-      "self_closing": false
+      "closure_mode": "dual"
     },
     "b:param": {
       "category": "Localization",
       "namespace": "b",
       "description": "Tag that supplies a parameter value to a parent b:message.",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "b:message"
@@ -1653,8 +1630,7 @@
           "description": "Exactly one b:skin element is permitted per theme."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:template-skin": {
       "category": "Styling",
@@ -1693,8 +1669,7 @@
           "description": "At most one b:template-skin element is permitted per theme."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "Group": {
       "category": "Styling",
@@ -1747,14 +1722,12 @@
           "description": "Group elements must reside inside a CDATA block within b:skin."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "Variable": {
       "category": "Styling",
       "namespace": "skin",
       "description": "Declaration of a skin variable whose value can be configured through the Blogger Theme Designer.",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "Group",
@@ -2026,14 +1999,12 @@
           "description": "Blogger expressions contained within the comment are evaluated before the resulting comment is generated."
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     },
     "b:template-script": {
       "category": "Utility",
       "namespace": "b",
       "description": "Instruction tag that loads a JavaScript file hosted by Blogger and associated with an official Blogger theme.",
-      "self_closing": true,
       "grammar": {
         "valid_parents": [
           "head",
@@ -2125,8 +2096,8 @@
           }
         }
       },
-      "closure_mode": "container",
-      "self_closing": false
+      "closure_mode": "container"
     }
-  }
+  },
+  "version": "1.0.0"
 }

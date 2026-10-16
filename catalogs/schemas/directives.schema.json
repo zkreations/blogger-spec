@@ -8,6 +8,7 @@
     "$schema",
     "title",
     "description",
+    "version",
     "directives",
     "domain_metadata"
   ],
@@ -50,8 +51,7 @@
           "type": "object",
           "description": "Prohibited or hallucinated directives mapped to their canonical diagnostic code.",
           "additionalProperties": {
-            "type": "string",
-            "pattern": "^BX[0-9]{4}$"
+            "$ref": "common.schema.json#/$defs/diagnosticCode"
           }
         },
         "standard_diagnostics": {
@@ -69,36 +69,28 @@
           ],
           "properties": {
             "missing_required_attribute": {
-              "type": "string",
-              "pattern": "^BX[0-9]{4}$"
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             },
             "deprecated_attribute": {
-              "type": "string",
-              "pattern": "^BX[0-9]{4}$"
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             },
             "empty_required_attribute": {
-              "type": "string",
-              "pattern": "^BX[0-9]{4}$"
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             },
             "disallowed_expression_attribute": {
-              "type": "string",
-              "pattern": "^BX[0-9]{4}$"
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             },
             "duplicate_element_id": {
-              "type": "string",
-              "pattern": "^BX[0-9]{4}$"
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             },
             "duplicate_includable_id": {
-              "type": "string",
-              "pattern": "^BX[0-9]{4}$"
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             },
             "invalid_variable_type_attribute": {
-              "type": "string",
-              "pattern": "^BX[0-9]{4}$"
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             },
             "prohibited_nesting": {
-              "type": "string",
-              "pattern": "^BX[0-9]{4}$"
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             }
           },
           "additionalProperties": false
@@ -192,6 +184,9 @@
         }
       },
       "additionalProperties": false
+    },
+    "version": {
+      "type": "string"
     }
   },
   "additionalProperties": false,
@@ -231,10 +226,6 @@
           ],
           "description": "Syntactic closure model: 'self_closing' (must self-close with />), 'container' (requires paired closing tag </...>), or 'dual' (self-closing when unparameterized, container when nesting child tags, e.g. b:message)."
         },
-        "self_closing": {
-          "type": "boolean",
-          "default": false
-        },
         "grammar": {
           "$ref": "#/$defs/grammarDefinition"
         },
@@ -248,21 +239,7 @@
           "type": "object",
           "description": "Commonly inverted attribute mistakes mapped to their expected attribute name and diagnostic code.",
           "additionalProperties": {
-            "type": "object",
-            "required": [
-              "expected",
-              "diagnostic"
-            ],
-            "properties": {
-              "expected": {
-                "type": "string"
-              },
-              "diagnostic": {
-                "type": "string",
-                "pattern": "^BX[0-9]{4}$"
-              }
-            },
-            "additionalProperties": false
+            "$ref": "#/$defs/directiveAttributeInversion"
           }
         },
         "constraints": {
@@ -375,25 +352,7 @@
           "type": "object",
           "description": "Allowed and mandatory attributes mapped per subtype (e.g. for <Variable>).",
           "additionalProperties": {
-            "type": "object",
-            "required": [
-              "allowed"
-            ],
-            "properties": {
-              "allowed": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "required": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "additionalProperties": false
+            "$ref": "#/$defs/directiveTypeAttributeDefinition"
           }
         }
       },
@@ -428,77 +387,7 @@
           }
         },
         "invalid_nesting_policy": {
-          "type": "object",
-          "description": "Declarative runtime action and diagnostic code mapped when nesting constraints are violated.",
-          "properties": {
-            "on_invalid_parent": {
-              "type": "object",
-              "required": [
-                "diagnostic",
-                "action"
-              ],
-              "properties": {
-                "diagnostic": {
-                  "type": "string"
-                },
-                "action": {
-                  "type": "string",
-                  "enum": [
-                    "reject",
-                    "strip",
-                    "ignore"
-                  ]
-                }
-              },
-              "additionalProperties": false
-            },
-            "on_invalid_child": {
-              "type": "object",
-              "required": [
-                "diagnostic",
-                "action"
-              ],
-              "properties": {
-                "diagnostic": {
-                  "type": "string"
-                },
-                "action": {
-                  "type": "string",
-                  "enum": [
-                    "reject",
-                    "strip",
-                    "ignore"
-                  ]
-                },
-                "exceptions": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "object",
-                    "required": [
-                      "diagnostic",
-                      "action"
-                    ],
-                    "properties": {
-                      "diagnostic": {
-                        "type": "string"
-                      },
-                      "action": {
-                        "type": "string",
-                        "enum": [
-                          "reject",
-                          "strip",
-                          "ignore"
-                        ]
-                      }
-                    },
-                    "additionalProperties": false
-                  }
-                }
-              },
-              "additionalProperties": false
-            }
-          },
-          "additionalProperties": false
+          "$ref": "#/$defs/invalidNestingPolicy"
         }
       },
       "additionalProperties": false
@@ -601,6 +490,104 @@
         },
         "reason": {
           "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "invalidNestingPolicyAction": {
+      "type": "object",
+      "description": "Nesting policy enforcement action and associated diagnostic code.",
+      "required": [
+        "diagnostic",
+        "action"
+      ],
+      "properties": {
+        "diagnostic": {
+          "$ref": "common.schema.json#/$defs/diagnosticCode"
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "reject",
+            "strip",
+            "ignore"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "invalidNestingPolicy": {
+      "type": "object",
+      "description": "Declarative runtime action and diagnostic code mapped when nesting constraints are violated.",
+      "properties": {
+        "on_invalid_parent": {
+          "$ref": "#/$defs/invalidNestingPolicyAction"
+        },
+        "on_invalid_child": {
+          "type": "object",
+          "required": [
+            "diagnostic",
+            "action"
+          ],
+          "properties": {
+            "diagnostic": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "reject",
+                "strip",
+                "ignore"
+              ]
+            },
+            "exceptions": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/invalidNestingPolicyAction"
+              }
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "directiveAttributeInversion": {
+      "type": "object",
+      "description": "Commonly inverted attribute mistakes mapped to their expected attribute name and diagnostic code.",
+      "required": [
+        "expected",
+        "diagnostic"
+      ],
+      "properties": {
+        "expected": {
+          "type": "string"
+        },
+        "diagnostic": {
+          "$ref": "common.schema.json#/$defs/diagnosticCode"
+        }
+      },
+      "additionalProperties": false
+    },
+    "directiveTypeAttributeDefinition": {
+      "type": "object",
+      "description": "Allowed and mandatory attributes mapped per subtype (e.g. for <Variable>).",
+      "required": [
+        "allowed"
+      ],
+      "properties": {
+        "allowed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       },
       "additionalProperties": false
