@@ -2,6 +2,7 @@
   "$schema": "./schemas/directives.schema.json",
   "title": "Blogger XML Directives & Tags Master Catalog",
   "description": "Registry of Blogger XML directives, syntax grammar constraints, styling components, and attribute migration paths.",
+  "version": "1.0.0",
   "domain_metadata": {
     "compiler_limits": {
       "max_directive_nesting_depth": 50
@@ -18,11 +19,12 @@
       "missing_required_attribute": "BX1022",
       "deprecated_attribute": "BX1024",
       "empty_required_attribute": "BX1039",
-      "disallowed_expression_attribute": "BX1022",
+      "disallowed_expression_attribute": "BX1042",
       "duplicate_element_id": "BX1033",
       "duplicate_includable_id": "BX1036",
       "invalid_variable_type_attribute": "BX1040",
-      "prohibited_nesting": "BX1023"
+      "prohibited_nesting": "BX1023",
+      "mismatched_or_unclosed_tag": "BX1041"
     },
     "theme_designer_descriptions": [
       "Accents",
@@ -368,7 +370,7 @@
       ],
       "@template_markup": [
         "html:*",
-        "#text",
+        "text",
         "CDATA"
       ],
       "@flow_content": [
@@ -870,7 +872,7 @@
           "b:widget-settings"
         ],
         "valid_children": [
-          "#text"
+          "text"
         ]
       },
       "attributes": {
@@ -2060,7 +2062,7 @@
           "b:template-skin"
         ],
         "valid_children": [
-          "#text"
+          "text"
         ]
       },
       "attributes": {},
@@ -2098,6 +2100,5 @@
       },
       "closure_mode": "container"
     }
-  },
-  "version": "1.0.0"
+  }
 }

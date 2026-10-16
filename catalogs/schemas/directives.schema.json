@@ -65,7 +65,8 @@
             "duplicate_element_id",
             "duplicate_includable_id",
             "invalid_variable_type_attribute",
-            "prohibited_nesting"
+            "prohibited_nesting",
+            "mismatched_or_unclosed_tag"
           ],
           "properties": {
             "missing_required_attribute": {
@@ -90,6 +91,9 @@
               "$ref": "common.schema.json#/$defs/diagnosticCode"
             },
             "prohibited_nesting": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "mismatched_or_unclosed_tag": {
               "$ref": "common.schema.json#/$defs/diagnosticCode"
             }
           },
