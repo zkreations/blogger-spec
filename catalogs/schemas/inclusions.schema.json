@@ -67,11 +67,10 @@
     "inclusionDefinition": {
       "type": "object",
       "required": [
-        "name",
         "category",
         "description",
         "evidence",
-        "verifiedAt"
+        "verified_at"
       ],
       "properties": {
         "name": {
@@ -93,26 +92,18 @@
         "evidence": {
           "$ref": "common.schema.json#/$defs/evidenceLevel"
         },
-        "verifiedAt": {
-          "$ref": "common.schema.json#/$defs/verifiedAt"
-        },
         "deprecated": {
           "type": "boolean"
         },
         "deprecation_note": {
           "type": "string"
         },
-        "layouts_versions": {
-          "type": "array",
-          "items": {
-            "type": "integer",
-            "minimum": 1
-          },
-          "description": "Blogger template engine architecture version(s) (b:layoutsVersion='1' | '2' | '3') where this inclusion is available."
-        },
         "widget_version": {
           "type": "integer",
-          "enum": [1, 2],
+          "enum": [
+            1,
+            2
+          ],
           "description": "Gadget engine version (<b:widget version='1' | '2'>) required when invoked inside a widget."
         },
         "target_widgets": {
@@ -120,6 +111,17 @@
           "items": {
             "type": "string"
           }
+        },
+        "verified_at": {
+          "$ref": "common.schema.json#/$defs/verified_at"
+        },
+        "layout_versions": {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": "Blogger template engine architecture version(s) (b:layoutsVersion='1' | '2' | '3') where this inclusion is available."
         }
       },
       "additionalProperties": false
