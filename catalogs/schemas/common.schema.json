@@ -48,8 +48,6 @@
       "required": [
         "status",
         "action",
-        "type",
-        "replacement",
         "reason"
       ],
       "properties": {
