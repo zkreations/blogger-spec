@@ -3,6 +3,23 @@
   "title": "Blogger Canonical Diagnostics Catalog",
   "description": "Standard catalogue of diagnostic codes, severities, and validation rules for Blogger template compilers and linters.",
   "version": "1.0.0",
+  "domain_metadata": {
+    "subsystems": [
+      "arithmetic",
+      "collections_and_lambdas",
+      "conditional_rendering",
+      "helpers_and_transforms",
+      "includable_inheritance",
+      "locale_modifiers",
+      "logical_and_comparisons",
+      "loop_rendering",
+      "loop_shadowing",
+      "message_rendering",
+      "subtype_modifiers",
+      "widget_rendering",
+      "with_nesting"
+    ]
+  },
   "rules": {
     "BX1001": {
       "name": "PROHIBITED_FOR_TAG",
