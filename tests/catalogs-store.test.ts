@@ -4,6 +4,7 @@ import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { embeddedCatalogs, embeddedSchemas } from '../src/catalogs/embedded.generated.js'
 import {
+  canBeAtRoot,
   canNest,
   clearCatalogCache,
   getAllCatalogs,
@@ -344,6 +345,13 @@ describe('catalogs and store formal verification suite', () => {
         expect(loopAttrs).toBeDefined()
         expect(loopAttrs?.values).toBeDefined()
         expect(getDirectiveAttributes('nonexistent_tag')).toBeUndefined()
+
+        expect(canBeAtRoot('b:section')).toBe(true)
+        expect(canBeAtRoot('b:if')).toBe(true)
+        expect(canBeAtRoot('b:widget')).toBe(false)
+        expect(canBeAtRoot('b:includable')).toBe(false)
+        expect(canBeAtRoot('b:case')).toBe(false)
+        expect(canBeAtRoot('Variable')).toBe(false)
       })
     })
 

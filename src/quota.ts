@@ -152,7 +152,7 @@ export function tokenizeExpression(
       tokens.push({
         value: '=>',
         tokenType: 'OPERATOR_LAMBDA',
-        tokensConsumed: catalog.getOperator('=>')?.token_cost ?? 1,
+        tokensConsumed: 1,
         pos: token.start.offset,
       })
       i++

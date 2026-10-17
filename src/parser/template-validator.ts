@@ -94,8 +94,10 @@ function validateNestingRules(
         message: violation.message,
       })
     }
+    return
   }
-  else if (parentToken) {
+
+  if (parentToken) {
     const violation = validateDirectiveNesting(parentToken.tagName, token.tagName, catalog)
     if (violation) {
       pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
@@ -104,23 +106,15 @@ function validateNestingRules(
       })
     }
   }
-  else if (token.tagName === 'b:widget' && !tagStack.some(t => t.tagName === 'b:section')) {
-    const violation = validateDirectiveNesting('body', 'b:widget', catalog)
-    if (violation) {
-      pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
-        rule: violation.rule,
-        message: violation.message,
-      })
-    }
-  }
-  else if (token.tagName === 'b:includable' && !tagStack.some(t => t.tagName === 'b:widget' || t.tagName === 'b:defaultmarkup')) {
-    const violation = validateDirectiveNesting('b:section', 'b:includable', catalog)
-    if (violation) {
-      pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
-        rule: violation.rule,
-        message: violation.message,
-      })
-    }
+  else if (!catalog.canBeAtRoot(token.tagName)) {
+    const directiveDef = catalog.getDirective(token.tagName)
+    const policyDiag = (directiveDef?.grammar?.invalid_nesting_policy?.on_invalid_parent?.diagnostic
+      ?? catalog.getStandardDiagnostic('prohibited_nesting')) as BloggerDiagnosticCode
+    const rule = catalog.getDiagnostic(policyDiag)
+    pushDiagnostic(diagnostics, catalog, policyDiag, token, {
+      rule,
+      message: rule?.message,
+    })
   }
 }
 

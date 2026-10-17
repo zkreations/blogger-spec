@@ -493,6 +493,18 @@ export class SpecCatalog {
     }
   }
 
+  canBeAtRoot(tagName: string): boolean {
+    const def = this.getDirective(tagName)
+    if (!def) {
+      return true
+    }
+    const validParents = def.grammar?.valid_parents
+    if (!validParents) {
+      return true
+    }
+    return validParents.some(p => p.startsWith('@') || p === 'body' || p === 'head' || p === 'html:*')
+  }
+
   getDirectiveAttributes(tagName: string): Record<string, BloggerDirectiveAttribute> | undefined {
     return this.getDirective(tagName)?.attributes
   }
@@ -1059,6 +1071,10 @@ export function canNest(parentTagName: string, childTagName: string, catalog: Sp
 
 export function validateNesting(parentTagName: string, childTagName: string, catalog: SpecCatalog = getSpecCatalog()): DirectiveNestingViolation | null {
   return catalog.validateNesting(parentTagName, childTagName)
+}
+
+export function canBeAtRoot(tagName: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.canBeAtRoot(tagName)
 }
 
 export function getDirectiveAttributes(tagName: string, catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerDirectiveAttribute> | undefined {

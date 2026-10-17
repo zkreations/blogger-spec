@@ -212,6 +212,24 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diags.some(d => d.code === 'BX1034')).toBe(true)
     })
 
+    it('detects top-level <b:widget> without enclosing <b:section> (BX1034)', () => {
+      const xml = `<b:widget id='Header1' type='Header'/>`
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1034')).toBe(true)
+    })
+
+    it('detects top-level <b:includable> without enclosing widget or defaultmarkup (BX1023)', () => {
+      const xml = `<b:includable id='main'/>`
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1023')).toBe(true)
+    })
+
+    it('detects top-level <b:case> without enclosing <b:switch> (BX1023)', () => {
+      const xml = `<b:case value='true'/>`
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1023')).toBe(true)
+    })
+
     it('detects hallucinated directives such as <b:for> in template structure (BX1001)', () => {
       const xml = `
         <b:section id='main'>
