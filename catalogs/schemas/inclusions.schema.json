@@ -66,6 +66,9 @@
   "$defs": {
     "inclusionDefinition": {
       "type": "object",
+      "x-generated-required": [
+        "name"
+      ],
       "required": [
         "category",
         "description",

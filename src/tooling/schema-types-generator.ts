@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import {
   getDiagnostics,
@@ -56,6 +56,7 @@ export function mapPropertyTypeToTs(type: string, typeDefinitions?: Record<strin
 }
 
 export function generateCanonicalSchemaTypes(): string {
+  const paths = getWorkspacePaths()
   // 1. Read Catalogs for dynamic domain union types and models
   const directivesData = getDirectives()
   const operatorsData = getOperators()
@@ -92,13 +93,16 @@ export function generateCanonicalSchemaTypes(): string {
 
   const nestingActionEnum = (dirSchema.$defs?.invalidNestingPolicyAction?.properties?.action?.enum as string[]) || ['reject', 'strip', 'ignore']
 
+  const deprecationStatusEnum = (commonSchema.$defs?.deprecationStatus?.enum as string[]) || ['deprecated_in_widget_v2', 'deprecated_in_layout_v3', 'ignored_in_layout_v3', 'obsolete', 'legacy']
+  const deprecationActionEnum = (commonSchema.$defs?.deprecationAction?.enum as string[]) || ['migrate', 'remove']
+
   const incDefProps = incSchema.$defs?.inclusionDefinition?.properties || {}
   const incCategoryEnum = (incDefProps.category?.enum as string[]) || ['universal', 'common', 'icon', 'theme', 'deprecated']
 
   const stdDiagProps = dirSchema.properties?.domain_metadata?.properties?.standard_diagnostics?.properties || {}
   const stdDiagKeys = Object.keys(stdDiagProps).sort()
 
-  const canonicalPropTypeEnum = (commonSchema.$defs?.canonicalPropertyType?.enum as string[]) || []
+  const propertyTypeNames = Object.keys(typesData.types || {}).sort()
 
   const lines: string[] = [
     '/**',
@@ -133,9 +137,13 @@ export function generateCanonicalSchemaTypes(): string {
     '',
     `export type DirectiveNestingAction = ${nestingActionEnum.map(a => `'${a}'`).join(' | ')};`,
     '',
+    `export type BloggerDeprecationStatus = ${deprecationStatusEnum.map(s => `'${s}'`).join(' | ')};`,
+    '',
+    `export type BloggerDeprecationAction = ${deprecationActionEnum.map(a => `'${a}'`).join(' | ')};`,
+    '',
     `export type BloggerInclusionCategory = ${incCategoryEnum.map(c => `'${c}'`).join(' | ')};`,
     '',
-    `export type BloggerCanonicalPropertyType = ${canonicalPropTypeEnum.length > 0 ? canonicalPropTypeEnum.map(t => `'${t}'`).join(' | ') : '\'string\' | \'number\' | \'boolean\' | \'url\' | \'image\' | \'date\' | \'object\' | \'array\' | \'locale\' | \'message\' | \'skin_variable\' | (string & {})'};`,
+    `export type BloggerCanonicalPropertyType = ${propertyTypeNames.map(t => `'${t}'`).join(' | ')} | (string & {});`,
     '',
     `export type BloggerStandardDiagnosticKey = ${stdDiagKeys.map(k => `'${k}'`).join(' | ')};`,
     '',
@@ -151,6 +159,8 @@ export function generateCanonicalSchemaTypes(): string {
       case 'diagnosticCode': return 'BloggerDiagnosticCode'
       case 'canonicalProperty': return 'BloggerCanonicalProperty'
       case 'deprecatedEntry': return 'BloggerDeprecatedEntry'
+      case 'deprecationStatus': return 'BloggerDeprecationStatus'
+      case 'deprecationAction': return 'BloggerDeprecationAction'
       case 'patternDefinition': return 'BloggerPatternDefinition'
       case 'canonicalPropertyType': return 'BloggerCanonicalPropertyType'
       case 'operatorDataType': return 'string'
@@ -229,11 +239,9 @@ export function generateCanonicalSchemaTypes(): string {
     out.push(`export interface ${name} {`)
     const props = schema.properties || {}
     const required = new Set(schema.required || [])
-    if (name === 'BloggerDiagnosticRule') {
-      required.add('code')
-    }
-    if (name === 'BloggerInclusionDefinition') {
-      required.add('name')
+    const extraRequired = (schema as any)['x-generated-required'] || []
+    for (const req of extraRequired) {
+      required.add(req)
     }
 
     for (const [propName, propDef] of Object.entries(props)) {
@@ -671,27 +679,19 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('// Aggregate Catalog Names & Maps')
   lines.push('// =========================================================================')
   lines.push('')
+
+  const catalogFiles = readdirSync(paths.catalogs)
+    .filter(f => f.endsWith('.json'))
+    .map(f => f.replace(/\.json$/, ''))
+    .sort()
+
   lines.push('export type BloggerCatalogName')
-  lines.push('  = | \'directives\'')
-  lines.push('    | \'operators\'')
-  lines.push('    | \'types\'')
-  lines.push('    | \'widgets\'')
-  lines.push('    | \'globals\'')
-  lines.push('    | \'messages\'')
-  lines.push('    | \'scopes\'')
-  lines.push('    | \'diagnostics\'')
-  lines.push('    | \'inclusions\';')
+  lines.push(`  = | ${catalogFiles.map(c => `'${c}'`).join('\n    | ')};`)
   lines.push('')
   lines.push('export interface BloggerCatalogMap {')
-  lines.push('  directives: BloggerDirectivesCatalog;')
-  lines.push('  operators: BloggerOperatorsCatalog;')
-  lines.push('  types: BloggerTypesCatalog;')
-  lines.push('  widgets: BloggerWidgetsCatalog;')
-  lines.push('  globals: BloggerGlobalsCatalog;')
-  lines.push('  messages: BloggerMessagesCatalog;')
-  lines.push('  scopes: BloggerScopesCatalog;')
-  lines.push('  diagnostics: BloggerDiagnosticsCatalog;')
-  lines.push('  inclusions: BloggerInclusionsCatalog;')
+  for (const c of catalogFiles) {
+    lines.push(`  ${c}: Blogger${toPascalCase(c)}Catalog;`)
+  }
   lines.push('}')
   lines.push('')
 

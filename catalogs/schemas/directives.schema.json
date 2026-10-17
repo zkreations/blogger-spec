@@ -460,21 +460,10 @@
       ],
       "properties": {
         "status": {
-          "type": "string",
-          "enum": [
-            "deprecated_in_widget_v2",
-            "deprecated_in_layout_v3",
-            "ignored_in_layout_v3",
-            "obsolete",
-            "legacy"
-          ]
+          "$ref": "common.schema.json#/$defs/deprecationStatus"
         },
         "action": {
-          "type": "string",
-          "enum": [
-            "migrate",
-            "remove"
-          ]
+          "$ref": "common.schema.json#/$defs/deprecationAction"
         },
         "type": {
           "$ref": "types.schema.json#/$defs/directiveAttributeType"

@@ -35,6 +35,9 @@
   "$defs": {
     "diagnosticRule": {
       "type": "object",
+      "x-generated-required": [
+        "code"
+      ],
       "required": [
         "name",
         "category",

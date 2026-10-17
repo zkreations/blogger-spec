@@ -30,9 +30,13 @@ export type BloggerDiagnosticSeverity = 'error' | 'warning' | 'info';
 
 export type DirectiveNestingAction = 'reject' | 'strip' | 'ignore';
 
+export type BloggerDeprecationStatus = 'deprecated_in_widget_v2' | 'deprecated_in_layout_v3' | 'ignored_in_layout_v3' | 'obsolete' | 'legacy';
+
+export type BloggerDeprecationAction = 'migrate' | 'remove';
+
 export type BloggerInclusionCategory = 'universal' | 'common' | 'icon' | 'theme' | 'deprecated';
 
-export type BloggerCanonicalPropertyType = 'string' | 'number' | 'boolean' | 'url' | 'image' | 'date' | 'object' | 'array' | 'locale' | 'message' | 'skin_variable' | (string & {});
+export type BloggerCanonicalPropertyType = 'any' | 'array' | 'boolean' | 'child_item' | 'date' | 'expression' | 'image' | 'image_variant' | 'locale' | 'message' | 'number' | 'object' | 'predicate' | 'scalar' | 'skin:automatic' | 'skin:background' | 'skin:color' | 'skin:font' | 'skin:length' | 'skin:string' | 'skin:url' | 'skin_variable' | 'string' | 'url' | (string & {});
 
 export type BloggerStandardDiagnosticKey = 'deprecated_attribute' | 'disallowed_expression_attribute' | 'duplicate_element_id' | 'duplicate_includable_id' | 'empty_required_attribute' | 'invalid_variable_type_attribute' | 'mismatched_or_unclosed_tag' | 'missing_required_attribute' | 'prohibited_nesting';
 
@@ -43,8 +47,8 @@ export type BloggerStandardDiagnostics = Record<BloggerStandardDiagnosticKey, Bl
 // =========================================================================
 
 export interface BloggerDeprecatedEntry {
-  status: 'deprecated_in_widget_v2' | 'deprecated_in_layout_v3' | 'ignored_in_layout_v3' | 'obsolete' | 'legacy';
-  action: 'migrate' | 'remove';
+  status: BloggerDeprecationStatus;
+  action: BloggerDeprecationAction;
   type: BloggerCanonicalPropertyType;
   replacement: string | null;
   reason: string;
@@ -2115,24 +2119,24 @@ export interface BloggerWikipediaWidgetSettings {
 // =========================================================================
 
 export type BloggerCatalogName
-  = | 'directives'
-    | 'operators'
-    | 'types'
-    | 'widgets'
+  = | 'diagnostics'
+    | 'directives'
     | 'globals'
+    | 'inclusions'
     | 'messages'
+    | 'operators'
     | 'scopes'
-    | 'diagnostics'
-    | 'inclusions';
+    | 'types'
+    | 'widgets';
 
 export interface BloggerCatalogMap {
+  diagnostics: BloggerDiagnosticsCatalog;
   directives: BloggerDirectivesCatalog;
+  globals: BloggerGlobalsCatalog;
+  inclusions: BloggerInclusionsCatalog;
+  messages: BloggerMessagesCatalog;
   operators: BloggerOperatorsCatalog;
+  scopes: BloggerScopesCatalog;
   types: BloggerTypesCatalog;
   widgets: BloggerWidgetsCatalog;
-  globals: BloggerGlobalsCatalog;
-  messages: BloggerMessagesCatalog;
-  scopes: BloggerScopesCatalog;
-  diagnostics: BloggerDiagnosticsCatalog;
-  inclusions: BloggerInclusionsCatalog;
 }

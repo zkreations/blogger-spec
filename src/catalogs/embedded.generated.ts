@@ -11485,6 +11485,25 @@ export const embeddedSchemas: Record<string, any> = {
         "pattern": "^[a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?$",
         "description": "Canonical Blogger runtime data property type, parameterized collection, or skin variable."
       },
+      "deprecationStatus": {
+        "type": "string",
+        "enum": [
+          "deprecated_in_widget_v2",
+          "deprecated_in_layout_v3",
+          "ignored_in_layout_v3",
+          "obsolete",
+          "legacy"
+        ],
+        "description": "Lifecycle deprecation status classification."
+      },
+      "deprecationAction": {
+        "type": "string",
+        "enum": [
+          "migrate",
+          "remove"
+        ],
+        "description": "Recommended developer action for deprecated entities."
+      },
       "deprecatedEntry": {
         "type": "object",
         "required": [
@@ -11496,21 +11515,10 @@ export const embeddedSchemas: Record<string, any> = {
         ],
         "properties": {
           "status": {
-            "type": "string",
-            "enum": [
-              "deprecated_in_widget_v2",
-              "deprecated_in_layout_v3",
-              "ignored_in_layout_v3",
-              "obsolete",
-              "legacy"
-            ]
+            "$ref": "#/$defs/deprecationStatus"
           },
           "action": {
-            "type": "string",
-            "enum": [
-              "migrate",
-              "remove"
-            ]
+            "$ref": "#/$defs/deprecationAction"
           },
           "type": {
             "$ref": "#/$defs/canonicalPropertyType"
@@ -11653,6 +11661,9 @@ export const embeddedSchemas: Record<string, any> = {
     "$defs": {
       "diagnosticRule": {
         "type": "object",
+        "x-generated-required": [
+          "code"
+        ],
         "required": [
           "name",
           "category",
@@ -12167,21 +12178,10 @@ export const embeddedSchemas: Record<string, any> = {
         ],
         "properties": {
           "status": {
-            "type": "string",
-            "enum": [
-              "deprecated_in_widget_v2",
-              "deprecated_in_layout_v3",
-              "ignored_in_layout_v3",
-              "obsolete",
-              "legacy"
-            ]
+            "$ref": "common.schema.json#/$defs/deprecationStatus"
           },
           "action": {
-            "type": "string",
-            "enum": [
-              "migrate",
-              "remove"
-            ]
+            "$ref": "common.schema.json#/$defs/deprecationAction"
           },
           "type": {
             "$ref": "types.schema.json#/$defs/directiveAttributeType"
@@ -12565,6 +12565,9 @@ export const embeddedSchemas: Record<string, any> = {
     "$defs": {
       "inclusionDefinition": {
         "type": "object",
+        "x-generated-required": [
+          "name"
+        ],
         "required": [
           "category",
           "description",
