@@ -30,7 +30,8 @@
       "required": [
         "coercion_rules",
         "truthiness_matrix",
-        "scalar_types"
+        "scalar_types",
+        "semantics"
       ],
       "properties": {
         "coercion_rules": {
@@ -90,6 +91,13 @@
             "type": "string"
           },
           "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
+        },
+        "semantics": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Standard coercion semantics identifiers validated by conformance fixtures."
         }
       },
       "additionalProperties": false
@@ -179,7 +187,8 @@
         },
         "output_type": {
           "type": "string",
-          "description": "Return type of the modifier, referencing a canonical Blogger type or 'child_item'."
+          "pattern": "^([a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?|child_item)( \\| ([a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?))*$",
+          "description": "Return type of the modifier, referencing a canonical Blogger type, parameterized collection, union, or 'child_item'."
         },
         "syntax": {
           "type": "string",

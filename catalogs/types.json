@@ -306,6 +306,16 @@
       "Visited Color",
       "Visited Link Color",
       "Widths"
+    ],
+    "semantics": [
+      "coercion-canonical-string",
+      "coercion-equality",
+      "coercion-literal",
+      "coercion-literal-dominance",
+      "coercion-nullish",
+      "coercion-runtime-fallback",
+      "coercion-runtime-numeric",
+      "coercion-strict-types"
     ]
   },
   "types": {
