@@ -60,7 +60,8 @@
         "introduces",
         "visibility",
         "shadowing",
-        "evidence"
+        "evidence",
+        "verified_at"
       ],
       "properties": {
         "name": {
@@ -109,6 +110,9 @@
         },
         "evidence": {
           "$ref": "common.schema.json#/$defs/evidenceLevel"
+        },
+        "verified_at": {
+          "$ref": "common.schema.json#/$defs/verified_at"
         },
         "notes": {
           "type": "string"

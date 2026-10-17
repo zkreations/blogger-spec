@@ -26,6 +26,7 @@
       "visibility": "local_only",
       "shadowing": "local-wins",
       "evidence": "official",
+      "verified_at": "2026-10-10",
       "notes": "Iterator member properties MUST be accessed directly without 'data:' prefix (e.g. p.title, NOT data:p.title)."
     },
     "loop": {
@@ -41,6 +42,7 @@
       "visibility": "descendants",
       "shadowing": "local-wins",
       "evidence": "official",
+      "verified_at": "2026-10-10",
       "notes": "Nested loops reusing the same 'var' identifier will shadow outer variables. 'index' counter always increments forward 0..N."
     },
     "with": {
@@ -55,6 +57,7 @@
       "visibility": "descendants",
       "shadowing": "local-wins",
       "evidence": "official",
+      "verified_at": "2026-10-10",
       "notes": "Used extensively for decomposing expressions and caching expensive collection operations."
     },
     "includable": {
@@ -69,6 +72,7 @@
       "visibility": "descendants",
       "shadowing": "local-wins",
       "evidence": "official",
+      "verified_at": "2026-10-10",
       "notes": "Standard entrypoint is id='main'. The 'var' attribute names the incoming data parameter (conventionally 'this' or custom name). Forwarding datasets via <b:include data='...'> strictly requires an object or object literal { ... } (or array wrapped in braces {[ ... ]}); passing raw scalar primitives is rejected. When <b:include> omits the 'data' attribute inside a widget, 'var' automatically binds to the host widget data dictionary. Calling an includable with 'var' from the global scope without 'data' aborts with 'Error during evaluation of <id>'."
     },
     "widget": {
@@ -84,6 +88,7 @@
       "visibility": "descendants",
       "shadowing": "none",
       "evidence": "official",
+      "verified_at": "2026-10-10",
       "notes": "Direct access to private widget data (e.g. data:posts, data:title) and common metadata data:widget (instanceId, sectionId, type, version) strictly within child nodes of <b:includable> inside <b:widget> or <b:defaultmarkup>. Inaccessible from sibling widgets or outside includables; data:widgets provides layout descriptors and specific summary models per data-widgets catalog, not full private widget dictionaries."
     },
     "section": {
@@ -96,6 +101,7 @@
       "visibility": "descendants",
       "shadowing": "none",
       "evidence": "official",
+      "verified_at": "2026-10-10",
       "notes": "Does not inject custom template variables into child gadgets, but controls section-level conditional rendering via 'cond'."
     },
     "global": {
@@ -115,6 +121,7 @@
       "visibility": "global",
       "shadowing": "none",
       "evidence": "official",
+      "verified_at": "2026-10-10",
       "notes": "Universal read-only datasets provided by the Blogger platform runtime. data:widgets provides layout descriptors and specific summary models per data-widgets catalog, not full private widget dictionaries."
     }
   }
