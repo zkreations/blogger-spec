@@ -255,14 +255,6 @@ export class SpecCatalog {
         }
       }
 
-      if (def.associativity) {
-        this.operatorAssociativityMap.set(op, def.associativity as any)
-        this.operatorAssociativityMap.set(op.toLowerCase(), def.associativity as any)
-        if (op === '? :') {
-          this.operatorAssociativityMap.set('?', def.associativity as any)
-        }
-      }
-
       if (Array.isArray(def.grammar_aliases)) {
         for (const alias of def.grammar_aliases) {
           this.grammarOperatorMap.set(alias, def)
@@ -306,10 +298,9 @@ export class SpecCatalog {
   }
 
   private indexSettings(): void {
-    for (const [name, def] of this.widgetMap.entries()) {
-      if (def.settings) {
-        this.settingMap.set(name, def.settings)
-      }
+    const settings = (this.store.getCatalog('settings') as any)?.widgets || {}
+    for (const [name, def] of Object.entries(settings)) {
+      this.settingMap.set(name, def as any)
     }
   }
 
@@ -731,9 +722,6 @@ export class SpecCatalog {
       return assoc === 'right-to-left'
     }
     const def = this.getOperator(op)
-    if (def?.associativity) {
-      return def.associativity === 'right-to-left'
-    }
     if (def?.precedence_level !== undefined) {
       const levelItem = this.precedenceHierarchy.find(h => h.level === def.precedence_level)
       return levelItem?.associativity === 'right-to-left'
@@ -769,8 +757,8 @@ export class SpecCatalog {
     return this.widgetMap.get(name)
   }
 
-  getWidgetData(name: string): BloggerWidgetDefinition['data'] | undefined {
-    return this.widgetMap.get(name)?.data
+  getWidgetData(name: string): BloggerWidgetDefinition['canonical'] | undefined {
+    return this.widgetMap.get(name)?.canonical
   }
 
   getAllWidgets(): Record<string, BloggerWidgetDefinition> {
@@ -871,6 +859,8 @@ export class SpecCatalog {
           user_constructible: true,
           ts_type: `${itemType}[]`,
           modifiers: {},
+          evidence: 'official',
+          verified_at: '2026-10-10',
         }
       }
     }

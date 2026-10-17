@@ -6,6 +6,7 @@ import {
   getGlobals,
   getMessages,
   getOperators,
+  getSettings,
   getTypes,
   getWidgets,
 } from '../catalogs/index.js'
@@ -62,6 +63,7 @@ export function generateCanonicalSchemaTypes(): string {
   const operatorsData = getOperators()
   const diagnosticsData = getDiagnostics()
   const widgetsData = getWidgets()
+  const settingsData = getSettings()
   const messagesData = getMessages()
   const globalsData = getGlobals()
   const typesData = getTypes()
@@ -82,6 +84,7 @@ export function generateCanonicalSchemaTypes(): string {
   const typesSchema = readSchema('types')
   const globalsSchema = readSchema('globals')
   const widgetsSchema = readSchema('widgets')
+  const settingsSchema = readSchema('settings')
   const messagesSchema = readSchema('messages')
   const scopesSchema = readSchema('scopes')
 
@@ -248,10 +251,6 @@ export function generateCanonicalSchemaTypes(): string {
     out.push(`export interface ${name} {`)
     const props = schema.properties || {}
     const required = new Set(schema.required || [])
-    const extraRequired = (schema as any)['x-generated-required'] || []
-    for (const req of extraRequired) {
-      required.add(req)
-    }
 
     for (const [propName, propDef] of Object.entries(props)) {
       const pDef = propDef as any
@@ -317,7 +316,7 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push(generateInterface('BloggerDirectiveAttributeInversion', dirSchema.$defs.directiveAttributeInversion))
   lines.push(generateInterface('BloggerDirectiveTypeAttributeDefinition', dirSchema.$defs.directiveTypeAttributeDefinition))
   lines.push(generateInterface('BloggerDirectiveAttribute', dirSchema.$defs.attributeDefinition))
-  lines.push(generateInterface('BloggerDeprecatedAttributeEntry', dirSchema.$defs.deprecatedAttributeEntry))
+  lines.push('export type BloggerDeprecatedAttributeEntry = BloggerDeprecatedEntry;')
   lines.push(generateInterface('BloggerDirectiveDefinition', dirSchema.$defs.directiveDefinition))
   lines.push(`export type BloggerLayoutVersion = ${layoutVersions.join(' | ') || 'never'};`)
   lines.push('')
@@ -446,9 +445,7 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('  objects: Record<string, BloggerGlobalObjectDefinition>;')
   lines.push('}')
   lines.push('')
-  lines.push(generateInterface('BloggerCanonicalSetting', widgetsSchema.$defs.canonicalSetting))
   lines.push(generateInterface('BloggerWidgetDefinition', widgetsSchema.$defs.widgetEntry))
-  lines.push('export type BloggerWidgetSettingsDefinition = NonNullable<BloggerWidgetDefinition[\'settings\']>;')
   lines.push('')
   lines.push('export interface BloggerWidgetsCatalog {')
   lines.push('  $schema?: string;')
@@ -459,6 +456,25 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('    layout_versions: number[];')
   lines.push('  };')
   lines.push('  widgets: Record<string, BloggerWidgetDefinition>;')
+  lines.push('}')
+  lines.push('')
+  lines.push('// =========================================================================')
+  lines.push('// Settings Catalog Models (SSoT: settings.schema.json)')
+  lines.push('// =========================================================================')
+  lines.push('')
+  lines.push(generateInterface('BloggerCanonicalSetting', settingsSchema.$defs.canonicalSetting))
+  lines.push(generateInterface('BloggerWidgetSettingEntry', settingsSchema.$defs.widgetSettingEntry))
+  lines.push('export type BloggerWidgetSettingsDefinition = BloggerWidgetSettingEntry;')
+  lines.push('')
+  lines.push('export interface BloggerSettingsCatalog {')
+  lines.push('  $schema?: string;')
+  lines.push('  version?: string;')
+  lines.push('  title?: string;')
+  lines.push('  description?: string;')
+  lines.push('  domain_metadata?: {')
+  lines.push('    layout_versions: number[];')
+  lines.push('  };')
+  lines.push('  widgets: Record<string, BloggerWidgetSettingEntry>;')
   lines.push('}')
   lines.push('')
 
@@ -627,6 +643,19 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('// =========================================================================')
   lines.push('')
 
+  lines.push('/** Universal widget descriptor metadata in Layouts v3 */')
+  lines.push('export interface BloggerWidgetDescriptor {')
+  lines.push('  /** Unique widget instance ID (e.g. \'Blog1\', \'Header1\'). */')
+  lines.push('  id?: string;')
+  lines.push('  /** Parent <b:section> identifier containing the widget. */')
+  lines.push('  sectionId?: string;')
+  lines.push('  /** Configured widget header title. */')
+  lines.push('  title?: string;')
+  lines.push('  /** Canonical widget type name (e.g. \'Blog\', \'AdSense\'). */')
+  lines.push('  type?: string;')
+  lines.push('}')
+  lines.push('')
+
   const messages = messagesData.messages || {}
   const globals = globalsData.objects || {}
   for (const gName of Object.keys(globals).sort()) {
@@ -643,6 +672,15 @@ export function generateCanonicalSchemaTypes(): string {
         lines.push(`  /** ${(pDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
       }
       lines.push(`  ${sanitizePropName(pName)}?: ${tsType};`)
+    }
+    if (cleanName === 'widgets') {
+      for (const wType of widgetTypes) {
+        if (!props[wType]) {
+          lines.push(`  /** Collection of visible ${wType} gadget descriptors. */`)
+          lines.push(`  ${sanitizePropName(wType)}?: BloggerWidgetDescriptor[];`)
+        }
+      }
+      lines.push('  [instanceId: string]: any;')
     }
     if (globals[gName]?.catalog_ref === 'messages.json') {
       for (const [mName, mDef] of Object.entries(messages).sort(([a], [b]) => a.localeCompare(b))) {
@@ -667,7 +705,7 @@ export function generateCanonicalSchemaTypes(): string {
     const pascal = toPascalCase(wName)
     lines.push(`/** Canonical data dictionary for widget \`${wName}\` */`)
     lines.push(`export interface Blogger${pascal}WidgetData {`)
-    const props = widgets[wName]?.data?.canonical || {}
+    const props = widgets[wName]?.canonical || {}
     for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
       const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
         ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')
@@ -687,11 +725,12 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('// =========================================================================')
   lines.push('')
 
-  for (const wName of Object.keys(widgets).sort()) {
+  const settings = settingsData.widgets || {}
+  for (const wName of Object.keys(settings).sort()) {
     const pascal = toPascalCase(wName)
     lines.push(`/** Schema settings dictionary for widget \`${wName}\` */`)
     lines.push(`export interface Blogger${pascal}WidgetSettings {`)
-    const props = widgets[wName]?.settings?.canonical || {}
+    const props = settings[wName]?.canonical || {}
     for (const [pName, pDef] of Object.entries(props).sort(([a], [b]) => a.localeCompare(b))) {
       const tsType = (Array.isArray((pDef as any).allowed_values) && (pDef as any).allowed_values.length > 0)
         ? (pDef as any).allowed_values.map((v: any) => `'${v}'`).join(' | ')

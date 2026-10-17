@@ -124,7 +124,7 @@ describe('catalogs and store formal verification suite', () => {
 
     it('rejects broken nested bound_runtime_data paths in widgets', () => {
       const catalogs = structuredClone(embeddedCatalogs)
-      catalogs.widgets.widgets.Blog.settings!.canonical!.authorLabel.bound_runtime_data = 'data:widgets.Blog1.allBylineItems.author.nonExistentField'
+      catalogs.settings.widgets.Blog.canonical!.authorLabel.bound_runtime_data = 'data:widgets.Blog1.allBylineItems.author.nonExistentField'
 
       const report = validateSpec({
         store: new MemoryCatalogStore(catalogs, embeddedSchemas),
@@ -228,7 +228,7 @@ describe('catalogs and store formal verification suite', () => {
       }
     })
 
-    it('ensures all 9 canonical catalogs declare domain_metadata', () => {
+    it('ensures all 10 canonical catalogs declare domain_metadata', () => {
       const all = getAllCatalogs()
       for (const [name, cat] of Object.entries(all)) {
         expect((cat as any).domain_metadata, `Catalog '${name}' must have domain_metadata`).toBeDefined()
@@ -245,7 +245,7 @@ describe('catalogs and store formal verification suite', () => {
   })
 
   describe('memoryCatalogStore & store life-cycle', () => {
-    it('retrieves all 9 canonical catalogs with pure in-memory access', () => {
+    it('retrieves all 10 canonical catalogs with pure in-memory access', () => {
       const all = getAllCatalogs()
       expect(Object.keys(all).sort()).toEqual([
         'diagnostics',
@@ -255,6 +255,7 @@ describe('catalogs and store formal verification suite', () => {
         'messages',
         'operators',
         'scopes',
+        'settings',
         'types',
         'widgets',
       ])
@@ -479,7 +480,7 @@ describe('catalogs and store formal verification suite', () => {
         const blogWidget = getWidget('Blog')
         expect(blogWidget).toBeDefined()
         expect(blogWidget?.description).toBeDefined()
-        expect(blogWidget?.data?.canonical).toBeDefined()
+        expect(blogWidget?.canonical).toBeDefined()
 
         const allWidgets = getAllWidgets()
         expect(Object.keys(allWidgets).length).toBe(26)
@@ -579,7 +580,7 @@ describe('catalogs and store formal verification suite', () => {
 
       it('respects injected custom SpecCatalog instance in query functions', () => {
         const customCatalog = getSpecCatalog()
-        expect(getWidget('Blog', customCatalog)?.data?.canonical).toBeDefined()
+        expect(getWidget('Blog', customCatalog)?.canonical).toBeDefined()
         expect(getGlobal('blog', customCatalog)?.canonical).toBeDefined()
         expect(getType('image', customCatalog)?.parent_type).toBe('string')
         expect(getDirective('b:if', customCatalog)?.category).toBe('Logic')

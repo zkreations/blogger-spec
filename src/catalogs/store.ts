@@ -8,6 +8,7 @@ import type {
   BloggerMessagesCatalog,
   BloggerOperatorsCatalog,
   BloggerScopesCatalog,
+  BloggerSettingsCatalog,
   BloggerTypesCatalog,
   BloggerWidgetsCatalog,
 } from '../types.js'
@@ -18,6 +19,7 @@ export const CATALOG_NAMES = [
   'operators',
   'types',
   'widgets',
+  'settings',
   'globals',
   'messages',
   'scopes',
@@ -126,6 +128,10 @@ export function getGlobals(): BloggerGlobalsCatalog {
 
 export function getWidgets(): BloggerWidgetsCatalog {
   return getCatalog('widgets')
+}
+
+export function getSettings(): BloggerSettingsCatalog {
+  return getCatalog('settings')
 }
 
 export function getMessages(): BloggerMessagesCatalog {

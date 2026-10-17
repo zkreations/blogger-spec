@@ -41,15 +41,14 @@ function resolveBoundRuntimeData(
   if (parts[0] === 'widgets') {
     const instanceId = parts[1] || ''
     const widgetType = instanceId.replace(/\d+$/, '')
-    const descriptor = globalsCatalog.objects?.['data:widgets']?.canonical?.[widgetType]
-    if (!descriptor) {
-      return false
-    }
+    const baseItemProps = globalsCatalog.objects?.['data:widgets']?.item_properties || {}
+    const specializedDescriptor = globalsCatalog.objects?.['data:widgets']?.canonical?.[widgetType]
+    const itemProperties = { ...baseItemProps, ...(specializedDescriptor?.item_properties || {}) }
     if (parts.length === 2) {
       return true
     }
     const prop = parts[2]
-    const itemProps = descriptor.item_properties?.[prop]
+    const itemProps = itemProperties[prop]
     if (!itemProps) {
       return false
     }
@@ -122,7 +121,6 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   log('-> 1. Validating catalogs against JSON Schemas (Draft 2020-12)...')
   const ajv = new (Ajv2020 as unknown as new (opts: any) => any)({ allErrors: true, strict: true, allowUnionTypes: true });
   (addFormats as unknown as (ajv: any) => void)(ajv)
-  ajv.addKeyword('x-generated-required')
 
   const schemas = store.getAllSchemas()
   for (const { schema } of schemas) {
@@ -172,9 +170,11 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   )
   const knownCatalogReferences = new Set(catalogNames.map(name => `${name}.json`))
 
-  function validateDeclarativeReferences(value: unknown, location: string): void {
+  const referencedDiagnosticCodes = new Set<string>()
+
+  function validateDeclarativeReferences(value: unknown, location: string, catalogName: string): void {
     if (Array.isArray(value)) {
-      value.forEach((item, index) => validateDeclarativeReferences(item, `${location}[${index}]`))
+      value.forEach((item, index) => validateDeclarativeReferences(item, `${location}[${index}]`, catalogName))
       return
     }
     if (!value || typeof value !== 'object') {
@@ -186,20 +186,31 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       if (key === 'catalog_ref' && typeof child === 'string' && !knownCatalogReferences.has(child)) {
         errors.push(`Reference '${childLocation}' points to unknown catalog '${child}'.`)
       }
-      if (typeof child === 'string' && /^BX\d{4}$/.test(child) && !knownDiagnosticCodes.has(child)) {
-        errors.push(`Reference '${childLocation}' points to unknown diagnostic '${child}'.`)
+      if (typeof child === 'string' && /^BX\d{4}$/.test(child)) {
+        if (!knownDiagnosticCodes.has(child)) {
+          errors.push(`Reference '${childLocation}' points to unknown diagnostic '${child}'.`)
+        }
+        else if (catalogName !== 'diagnostics') {
+          referencedDiagnosticCodes.add(child)
+        }
       }
-      validateDeclarativeReferences(child, childLocation)
+      validateDeclarativeReferences(child, childLocation, catalogName)
     }
   }
 
   for (const name of catalogNames) {
-    validateDeclarativeReferences(store.getCatalog(name), `${name}.json`)
+    validateDeclarativeReferences(store.getCatalog(name), `${name}.json`, name)
   }
 
   for (const [codeKey, rule] of Object.entries(diagnosticsCatalog.rules || {})) {
     if ((rule as any).code && codeKey !== (rule as any).code) {
       errors.push(`Diagnostic rule key '${codeKey}' does not match rule.code '${(rule as any).code}'.`)
+    }
+  }
+
+  for (const code of knownDiagnosticCodes) {
+    if (!referencedDiagnosticCodes.has(code)) {
+      errors.push(`Diagnostic code '${code}' in diagnostics.json is not declaratively referenced by any catalog.`)
     }
   }
 
@@ -212,9 +223,6 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     const lvl = hierarchy.find((h: any) => h.level === opDef.precedence_level)
     if (!lvl || !lvl.operators.includes(opKey)) {
       errors.push(`Operator '${opKey}' is defined with precedence_level ${opDef.precedence_level} but missing in precedence_hierarchy level ${opDef.precedence_level}.`)
-    }
-    if (lvl && opDef.associativity && lvl.associativity !== opDef.associativity) {
-      errors.push(`Operator '${opKey}' specifies associativity '${opDef.associativity}', but precedence level ${lvl.level} specifies '${lvl.associativity}'.`)
     }
   }
 
@@ -324,9 +332,10 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   }
 
   const widgetsCatalog = store.getCatalog('widgets')
+  const settingsCatalog = store.getCatalog('settings')
   const knownWidgets = new Set(Object.keys(widgetsCatalog.widgets || {}))
   for (const [widgetKey, widgetDef] of Object.entries(widgetsCatalog.widgets || {})) {
-    const dataCanonical = widgetDef.data?.canonical || (widgetDef as any).canonical || {}
+    const dataCanonical = widgetDef.canonical || {}
     for (const [propKey, propDef] of Object.entries(dataCanonical)) {
       if (!isKnownType((propDef as any).type)) {
         errors.push(`Widget property '${widgetKey}.${propKey}' specifies unknown type '${(propDef as any).type}'.`)
@@ -335,8 +344,11 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
         errors.push(`Widget property '${widgetKey}.${propKey}' specifies unknown item_type '${(propDef as any).item_type}'.`)
       }
     }
+  }
 
-    const settingsCanonical = widgetDef.settings?.canonical || {}
+  for (const [widgetKey, widgetDef] of Object.entries(settingsCatalog.widgets || {})) {
+    const settingsCanonical = (widgetDef as any).canonical || {}
+    const dataCanonical = widgetsCatalog.widgets?.[widgetKey]?.canonical || {}
     for (const [settingKey, settingDef] of Object.entries(settingsCanonical)) {
       if (!isKnownType((settingDef as any).type)) {
         errors.push(`Widget setting '${widgetKey}.${settingKey}' specifies unknown type '${(settingDef as any).type}'.`)
@@ -480,6 +492,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     }
   }
   checkMessageReplacements(widgetsCatalog.widgets, 'widgets')
+  checkMessageReplacements(settingsCatalog.widgets, 'settings')
 
   if (errors.length === 0) {
     log('  [PASS] Catalogs referential integrity validated.')

@@ -63,7 +63,7 @@ describe('system inclusions catalog suite', () => {
     expect(blogPost?.target_widgets).toContain('Blog')
 
     const legacyIcon = getServerInclusion('googlePlusIcon')
-    expect(legacyIcon?.deprecated).toBe(true)
+    expect(legacyIcon?.deprecated?.status).toBe('obsolete')
 
     const all = getAllServerInclusions()
     expect(Object.keys(all).length).toBeGreaterThanOrEqual(45)

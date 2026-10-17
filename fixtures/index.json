@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-17",
   "metrics": {
-    "totalFixtures": 203,
-    "positiveFixtures": 161,
+    "totalFixtures": 248,
+    "positiveFixtures": 206,
     "negativeFixtures": 42,
-    "coveredSpecEntities": 155
+    "coveredSpecEntities": 200
   },
   "fixtures": [
     {
@@ -2232,6 +2232,612 @@
       "verified_at": "2026-10-16"
     },
     {
+      "id": "expressions/modifiers/js-escaped",
+      "title": "jsEscaped Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:jsEscaped",
+        "type:string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.title.jsEscaped",
+        "context": {
+          "data": {
+            "post": {
+              "title": "Hello 'World'"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Hello \\'World\\'"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/json-escaped",
+      "title": "jsonEscaped Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:jsonEscaped",
+        "type:string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.body.jsonEscaped",
+        "context": {
+          "data": {
+            "post": {
+              "body": "Line 1\nLine 2"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Line 1\\nLine 2"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/css-escaped",
+      "title": "cssEscaped Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:cssEscaped",
+        "type:string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:cls.cssEscaped",
+        "context": {
+          "data": {
+            "cls": "my.class"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "my\\.class"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/size",
+      "title": "size Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:size",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.size",
+        "context": {
+          "data": {
+            "posts": [
+              1,
+              2,
+              3
+            ]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 3
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/first",
+      "title": "first Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:first",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.first",
+        "context": {
+          "data": {
+            "posts": [
+              "alpha",
+              "beta"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "alpha"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/last",
+      "title": "last Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:last",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.last",
+        "context": {
+          "data": {
+            "posts": [
+              "alpha",
+              "beta"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "beta"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/empty",
+      "title": "empty Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:empty",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.empty",
+        "context": {
+          "data": {
+            "posts": []
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/not-empty",
+      "title": "notEmpty Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:notEmpty",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.notEmpty",
+        "context": {
+          "data": {
+            "posts": [
+              1
+            ]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/any",
+      "title": "any Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:any",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.any",
+        "context": {
+          "data": {
+            "posts": [
+              1
+            ]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/widget-type",
+      "title": "widgetType Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:widgetType"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:widget.widgetType",
+        "context": {
+          "data": {
+            "widget": {
+              "widgetType": "Blog"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Blog"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/item-name",
+      "title": "itemName Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:itemName"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:item.itemName",
+        "context": {
+          "data": {
+            "item": {
+              "itemName": "author"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "author"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/url",
+      "title": "url Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:url",
+        "type:image_variant"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:variant.url",
+        "context": {
+          "data": {
+            "variant": {
+              "url": "https://example.com/320.jpg"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://example.com/320.jpg"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/width",
+      "title": "width Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:width",
+        "type:image"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:image.width",
+        "context": {
+          "data": {
+            "image": {
+              "width": 800
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 800
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/height",
+      "title": "height Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:height",
+        "type:image"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:image.height",
+        "context": {
+          "data": {
+            "image": {
+              "height": 600
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 600
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/day-of-month",
+      "title": "dayOfMonth Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:dayOfMonth",
+        "type:date"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.date.dayOfMonth",
+        "context": {
+          "data": {
+            "post": {
+              "date": {
+                "dayOfMonth": 17
+              }
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 17
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/red",
+      "title": "red Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:red",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.red)",
+        "context": {
+          "accent": {
+            "red": 255
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 255
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/green",
+      "title": "green Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:green",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.green)",
+        "context": {
+          "accent": {
+            "green": 128
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 128
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/blue",
+      "title": "blue Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:blue",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.blue)",
+        "context": {
+          "accent": {
+            "blue": 64
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 64
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/alpha",
+      "title": "alpha Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:alpha",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.alpha)",
+        "context": {
+          "accent": {
+            "alpha": 1
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 1
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/transparent",
+      "title": "transparent Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:transparent",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.transparent)",
+        "context": {
+          "accent": {
+            "transparent": "rgba(255, 128, 64, 0)"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "rgba(255, 128, 64, 0)"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/inverse",
+      "title": "inverse Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:inverse",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.inverse)",
+        "context": {
+          "accent": {
+            "inverse": "#007fbf"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "#007fbf"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/family",
+      "title": "family Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:family",
+        "type:skin:font"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(font.family)",
+        "context": {
+          "font": {
+            "family": "Helvetica, Arial, sans-serif"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Helvetica, Arial, sans-serif"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/image",
+      "title": "image Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:image",
+        "type:skin:background"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(background.image)",
+        "context": {
+          "background": {
+            "image": "url(https://example.com/bg.jpg)"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "url(https://example.com/bg.jpg)"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/color",
+      "title": "color Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:color",
+        "type:skin:background"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(background.color)",
+        "context": {
+          "background": {
+            "color": "#f0f0f0"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "#f0f0f0"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
       "id": "expressions/subtype_modifiers/url-canonical",
       "title": "Url Canonical Modifier Access",
       "evidence": "observed",
@@ -2661,6 +3267,518 @@
         "value": 280
       },
       "verified_at": "2026-10-14"
+    },
+    {
+      "id": "expressions/types/string",
+      "title": "String Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:title",
+        "context": {
+          "data": {
+            "title": "Hello World"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Hello World"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/number",
+      "title": "Number Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:number"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:count + 1",
+        "context": {
+          "data": {
+            "count": 41
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 42
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/boolean",
+      "title": "Boolean Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:boolean"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:isActive",
+        "context": {
+          "data": {
+            "isActive": true
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/object",
+      "title": "Object Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:object"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.author",
+        "context": {
+          "data": {
+            "post": {
+              "author": "John Doe"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "John Doe"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/array",
+      "title": "Array Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:items",
+        "context": {
+          "data": {
+            "items": [
+              1,
+              2,
+              3
+            ]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          1,
+          2,
+          3
+        ]
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/scalar",
+      "title": "Scalar Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:scalar"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:title == 'Test'",
+        "context": {
+          "data": {
+            "title": "Test"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/any",
+      "title": "Any Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:any"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:value ?: 'default'",
+        "context": {
+          "data": {
+            "value": "custom"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "custom"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/locale",
+      "title": "Locale Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:locale"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.language",
+        "context": {
+          "data": {
+            "blog": {
+              "locale": {
+                "language": "en"
+              }
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "en"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/message",
+      "title": "Message Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:message"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:messages.archive",
+        "context": {
+          "data": {
+            "messages": {
+              "archive": "Archive"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Archive"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/expression",
+      "title": "Expression Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:expression"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:score > 10 ? 'high' : 'low'",
+        "context": {
+          "data": {
+            "score": 15
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "high"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/predicate",
+      "title": "Predicate Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:predicate"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:items filter (x => x > 2)",
+        "context": {
+          "data": {
+            "items": [
+              1,
+              2,
+              3,
+              4
+            ]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          3,
+          4
+        ]
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/child_item",
+      "title": "Child Item Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:child_item"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:items.first",
+        "context": {
+          "data": {
+            "items": [
+              "alpha",
+              "beta"
+            ]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "alpha"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/skin-color",
+      "title": "Skin Color Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(main.color)",
+        "context": {
+          "main": {
+            "color": "#ff0000"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "#ff0000"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/skin-font",
+      "title": "Skin Font Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:skin:font"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(body.font)",
+        "context": {
+          "body": {
+            "font": "normal 14px Arial"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "normal 14px Arial"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/skin-background",
+      "title": "Skin Background Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:skin:background"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(header.background)",
+        "context": {
+          "header": {
+            "background": "#ffffff"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "#ffffff"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/skin-length",
+      "title": "Skin Length Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:skin:length"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(sidebar.width)",
+        "context": {
+          "sidebar": {
+            "width": "300px"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "300px"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/skin-automatic",
+      "title": "Skin Automatic Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:skin:automatic"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(content.auto)",
+        "context": {
+          "content": {
+            "auto": "auto"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "auto"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/skin-string",
+      "title": "Skin String Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:skin:string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(site.name)",
+        "context": {
+          "site": {
+            "name": "My Blog"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "My Blog"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/skin-url",
+      "title": "Skin URL Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:skin:url"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(logo.url)",
+        "context": {
+          "logo": {
+            "url": "https://example.com/logo.png"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://example.com/logo.png"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/skin-variable",
+      "title": "Skin Variable Generic Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:skin_variable"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(theme.accent)",
+        "context": {
+          "theme": {
+            "accent": "#00ff00"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "#00ff00"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/types/image-variant",
+      "title": "Image Variant Type Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "type:image_variant"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "(data:post.featuredImage resizeImage [320]).first.size",
+        "context": {
+          "data": {
+            "post": {
+              "featuredImage": "https://example.com/img.jpg"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 320
+      },
+      "verified_at": "2026-10-17"
     },
     {
       "id": "rendering/conditional_rendering/if-elseif-else-flow",

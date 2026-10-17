@@ -38,7 +38,7 @@ export type BloggerInclusionCategory = 'universal' | 'common' | 'icon' | 'theme'
 
 export type BloggerCanonicalPropertyType = 'any' | 'array' | 'boolean' | 'child_item' | 'date' | 'expression' | 'image' | 'image_variant' | 'locale' | 'message' | 'number' | 'object' | 'predicate' | 'scalar' | 'skin:automatic' | 'skin:background' | 'skin:color' | 'skin:font' | 'skin:length' | 'skin:string' | 'skin:url' | 'skin_variable' | 'string' | 'url' | (string & {});
 
-export type BloggerStandardDiagnosticKey = 'deprecated_attribute' | 'disallowed_expression_attribute' | 'duplicate_element_id' | 'duplicate_includable_id' | 'empty_required_attribute' | 'invalid_variable_type_attribute' | 'mismatched_or_unclosed_tag' | 'missing_required_attribute' | 'prohibited_nesting';
+export type BloggerStandardDiagnosticKey = 'deprecated_attribute' | 'disallowed_expression_attribute' | 'duplicate_element_id' | 'duplicate_includable_id' | 'empty_required_attribute' | 'invalid_variable_type_attribute' | 'mismatched_or_unclosed_tag' | 'missing_required_attribute' | 'non_object_include_data_payload' | 'prohibited_bracket_indexing_in_data_tag' | 'prohibited_nesting' | 'unknown_directive' | 'unresolved_inclusion';
 
 export type BloggerStandardDiagnostics = Record<BloggerStandardDiagnosticKey, BloggerDiagnosticCode>;
 
@@ -49,8 +49,8 @@ export type BloggerStandardDiagnostics = Record<BloggerStandardDiagnosticKey, Bl
 export interface BloggerDeprecatedEntry {
   status: BloggerDeprecationStatus;
   action: BloggerDeprecationAction;
-  type: BloggerCanonicalPropertyType;
-  replacement: string | null;
+  type?: BloggerCanonicalPropertyType;
+  replacement?: string | null;
   reason: string;
 }
 
@@ -144,6 +144,7 @@ export interface BloggerDirectiveTypeAttributeDefinition {
 
 export interface BloggerDirectiveAttribute {
   type: string;
+  diagnostic?: BloggerDiagnosticCode;
   /** Functional compilation classification: 'native_expression' (attribute natively evaluates dynamic expressions in unadorned form; when expr is true, the expr: prefix enables dynamic runtime dereferencing / double-evaluation, e.g. cond, values, value), 'prefixed_expression' (unadorned form evaluates as a static literal; dynamic expression evaluation requires the expr: prefix, e.g. name, value, class), or 'static_literal' (strictly literal value; expr: prefix is strictly prohibited, e.g. id, type, locked). */
   attribute_kind: 'native_expression' | 'prefixed_expression' | 'static_literal';
   accepted_types?: BloggerCanonicalPropertyType[];
@@ -158,15 +159,10 @@ export interface BloggerDirectiveAttribute {
   accepted_forms?: string[];
 }
 
-export interface BloggerDeprecatedAttributeEntry {
-  status: BloggerDeprecationStatus;
-  action: BloggerDeprecationAction;
-  type: string;
-  replacement: string | null;
-  reason: string;
-}
-
+export type BloggerDeprecatedAttributeEntry = BloggerDeprecatedEntry;
 export interface BloggerDirectiveDefinition {
+  evidence: BloggerEvidenceLevel;
+  verified_at: string;
   category: string;
   /** XML namespace prefix or syntactic domain for this directive. */
   namespace?: 'b' | 'data' | 'skin' | 'xml';
@@ -178,7 +174,7 @@ export interface BloggerDirectiveDefinition {
   /** Commonly inverted attribute mistakes mapped to their expected attribute name and diagnostic code. */
   attribute_inversions?: Record<string, BloggerDirectiveAttributeInversion>;
   constraints?: Record<string, Record<string, any>>;
-  deprecated_attributes?: Record<string, BloggerDeprecatedAttributeEntry>;
+  deprecated_attributes?: Record<string, BloggerDeprecatedEntry>;
   spec_extensions?: Record<string, Record<string, Record<string, any>>>;
   syntax_patterns?: Record<string, Record<string, any>>;
   /** Allowed and mandatory attributes mapped per subtype (e.g. for <Variable>). */
@@ -256,11 +252,12 @@ export interface BloggerOperatorSyntax {
 }
 
 export interface BloggerOperatorDefinition {
+  evidence: BloggerEvidenceLevel;
+  verified_at: string;
   family: 'concatenation' | 'arithmetic' | 'comparison' | 'logical' | 'membership' | 'content' | 'collection' | 'lambda' | 'ternary' | 'elvis' | 'url' | 'date' | 'image' | 'snippet';
   description: string;
   syntax: BloggerOperatorSyntax;
   precedence_level: number;
-  associativity?: 'left-to-right' | 'right-to-left' | 'inner-to-outer' | 'non-associative';
   token_cost?: number;
   operands: BloggerOperatorOperand[];
   return_type: string;
@@ -278,6 +275,7 @@ export interface BloggerOperatorDefinition {
   examples?: BloggerOperatorExample[];
   /** Secondary or intersecting semantic families this operator participates in. */
   secondary_families?: string[];
+  diagnostics?: Record<string, BloggerDiagnosticCode>;
 }
 
 export interface BloggerPrecedenceHierarchyLevel {
@@ -364,6 +362,8 @@ export interface BloggerCoercionRule {
 }
 
 export interface BloggerTypeDefinition {
+  evidence: BloggerEvidenceLevel;
+  verified_at: string;
   /** Architectural classification of the data type. */
   category: 'base' | 'subtype' | 'skin' | 'collection' | 'meta';
   description: string;
@@ -380,6 +380,7 @@ export interface BloggerTypeDefinition {
   /** Native data modifiers / accessors directly defined on this type. */
   modifiers?: Record<string, BloggerTypeModifierDefinition>;
   skin_metadata?: BloggerSkinMetadata;
+  diagnostics?: Record<string, BloggerDiagnosticCode>;
 }
 
 export interface BloggerTruthinessMatrix {
@@ -410,6 +411,8 @@ export interface BloggerTypesCatalog {
 // =========================================================================
 
 export interface BloggerGlobalObjectDefinition {
+  evidence: BloggerEvidenceLevel;
+  verified_at: string;
   cardinality: 'singleton' | 'collection';
   item_type?: string;
   item_properties?: Record<string, BloggerCanonicalProperty>;
@@ -432,6 +435,30 @@ export interface BloggerGlobalsCatalog {
   objects: Record<string, BloggerGlobalObjectDefinition>;
 }
 
+export interface BloggerWidgetDefinition {
+  evidence: BloggerEvidenceLevel;
+  verified_at: string;
+  description: string;
+  canonical: Record<string, BloggerCanonicalProperty>;
+  deprecated?: Record<string, BloggerDeprecatedEntry>;
+}
+
+
+export interface BloggerWidgetsCatalog {
+  $schema?: string;
+  version?: string;
+  title?: string;
+  description?: string;
+  domain_metadata?: {
+    layout_versions: number[];
+  };
+  widgets: Record<string, BloggerWidgetDefinition>;
+}
+
+// =========================================================================
+// Settings Catalog Models (SSoT: settings.schema.json)
+// =========================================================================
+
 export interface BloggerCanonicalSetting {
   type: BloggerCanonicalPropertyType;
   description: string;
@@ -443,15 +470,18 @@ export interface BloggerCanonicalSetting {
   item_properties?: Record<string, BloggerCanonicalSetting>;
 }
 
-export interface BloggerWidgetDefinition {
+export interface BloggerWidgetSettingEntry {
+  evidence: BloggerEvidenceLevel;
+  verified_at: string;
   description: string;
-  data?: Record<string, any>;
-  settings?: Record<string, any>;
+  canonical: Record<string, BloggerCanonicalSetting>;
+  patterns?: BloggerPatternDefinition[];
+  deprecated?: Record<string, BloggerDeprecatedEntry>;
 }
 
-export type BloggerWidgetSettingsDefinition = NonNullable<BloggerWidgetDefinition['settings']>;
+export type BloggerWidgetSettingsDefinition = BloggerWidgetSettingEntry;
 
-export interface BloggerWidgetsCatalog {
+export interface BloggerSettingsCatalog {
   $schema?: string;
   version?: string;
   title?: string;
@@ -459,7 +489,7 @@ export interface BloggerWidgetsCatalog {
   domain_metadata?: {
     layout_versions: number[];
   };
-  widgets: Record<string, BloggerWidgetDefinition>;
+  widgets: Record<string, BloggerWidgetSettingEntry>;
 }
 
 // =========================================================================
@@ -474,6 +504,8 @@ export interface BloggerMessageParameterDefinition {
 }
 
 export interface BloggerMessageDefinition {
+  evidence: BloggerEvidenceLevel;
+  verified_at: string;
   type?: 'message';
   description: string;
   /** Canonical un-interpolated template token or ICU plural format string (e.g. 'By %1', '{numComments, plural, ...}'). */
@@ -482,6 +514,7 @@ export interface BloggerMessageDefinition {
   direct_invocation?: boolean;
   /** Positional substitution parameters required by this message via child <b:param> tags. */
   parameters?: BloggerMessageParameterDefinition[];
+  diagnostic?: BloggerDiagnosticCode;
 }
 
 export interface BloggerMessagesCatalog {
@@ -536,8 +569,7 @@ export interface BloggerInclusionDefinition {
   category: 'universal' | 'common' | 'icon' | 'theme' | 'deprecated';
   description: string;
   evidence: BloggerEvidenceLevel;
-  deprecated?: boolean;
-  deprecation_note?: string;
+  deprecated?: BloggerDeprecatedEntry;
   /** Gadget engine version (<b:widget version='1' | '2'>) required when invoked inside a widget. */
   widget_version?: 1 | 2;
   target_widgets?: string[];
@@ -1013,6 +1045,18 @@ export interface BloggerDataDirectiveAttributes {
 // Global Data Models
 // =========================================================================
 
+/** Universal widget descriptor metadata in Layouts v3 */
+export interface BloggerWidgetDescriptor {
+  /** Unique widget instance ID (e.g. 'Blog1', 'Header1'). */
+  id?: string;
+  /** Parent <b:section> identifier containing the widget. */
+  sectionId?: string;
+  /** Configured widget header title. */
+  title?: string;
+  /** Canonical widget type name (e.g. 'Blog', 'AdSense'). */
+  type?: string;
+}
+
 /** Schema for global object `data:blog` */
 export interface BloggerBlogGlobal {
   /** True if AdSense Auto Ads are toggled on in blog settings. */
@@ -1381,58 +1425,59 @@ export interface BloggerWidgetGlobal {
 
 /** Schema for global object `data:widgets` */
 export interface BloggerWidgetsGlobal {
-  /** Collection of visible AdSense gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  AdSense?: Record<string, any>[];
-  /** Collection of visible Attribution gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Attribution?: Record<string, any>[];
   /** Collection of visible Blog gadget descriptors with specialized metadata and posts. Only exposes these specific descriptor fields, NOT the full private widget data dictionary (e.g. full post bodies, comments, settings). */
   Blog?: Record<string, any>[];
-  /** Collection of visible BlogArchive gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  BlogArchive?: Record<string, any>[];
-  /** Collection of visible BloggerButton gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  BloggerButton?: Record<string, any>[];
-  /** Collection of visible BlogList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  BlogList?: Record<string, any>[];
-  /** Collection of visible BlogSearch gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  BlogSearch?: Record<string, any>[];
-  /** Collection of visible ContactForm gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  ContactForm?: Record<string, any>[];
   /** Collection of visible FeaturedPost gadget descriptors with specialized pinned post metadata. Only exposes these specific descriptor fields, NOT the full private widget data dictionary. */
   FeaturedPost?: Record<string, any>[];
-  /** Collection of visible Feed gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Feed?: Record<string, any>[];
-  /** Collection of visible Followers gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Followers?: Record<string, any>[];
-  /** Collection of visible Header gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Header?: Record<string, any>[];
-  /** Collection of visible HTML gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  HTML?: Record<string, any>[];
-  /** Collection of visible Image gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Image?: Record<string, any>[];
-  /** Collection of visible Label gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Label?: Record<string, any>[];
-  /** Collection of visible LinkList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  LinkList?: Record<string, any>[];
-  /** Collection of visible PageList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  PageList?: Record<string, any>[];
   /** Collection of visible PopularPosts gadget descriptors with specialized popular posts metadata. Only exposes these specific descriptor fields, NOT the full private widget data dictionary. */
   PopularPosts?: Record<string, any>[];
-  /** Collection of visible Profile gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Profile?: Record<string, any>[];
-  /** Collection of visible ReportAbuse gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  ReportAbuse?: Record<string, any>[];
-  /** Collection of visible Stats gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Stats?: Record<string, any>[];
-  /** Collection of visible Subscribe gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Subscribe?: Record<string, any>[];
-  /** Collection of visible Text gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Text?: Record<string, any>[];
-  /** Collection of visible TextList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  TextList?: Record<string, any>[];
-  /** Collection of visible Translate gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Translate?: Record<string, any>[];
-  /** Collection of visible Wikipedia gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
-  Wikipedia?: Record<string, any>[];
+  /** Collection of visible AdSense gadget descriptors. */
+  AdSense?: BloggerWidgetDescriptor[];
+  /** Collection of visible Attribution gadget descriptors. */
+  Attribution?: BloggerWidgetDescriptor[];
+  /** Collection of visible BlogArchive gadget descriptors. */
+  BlogArchive?: BloggerWidgetDescriptor[];
+  /** Collection of visible BlogList gadget descriptors. */
+  BlogList?: BloggerWidgetDescriptor[];
+  /** Collection of visible BlogSearch gadget descriptors. */
+  BlogSearch?: BloggerWidgetDescriptor[];
+  /** Collection of visible BloggerButton gadget descriptors. */
+  BloggerButton?: BloggerWidgetDescriptor[];
+  /** Collection of visible ContactForm gadget descriptors. */
+  ContactForm?: BloggerWidgetDescriptor[];
+  /** Collection of visible Feed gadget descriptors. */
+  Feed?: BloggerWidgetDescriptor[];
+  /** Collection of visible Followers gadget descriptors. */
+  Followers?: BloggerWidgetDescriptor[];
+  /** Collection of visible HTML gadget descriptors. */
+  HTML?: BloggerWidgetDescriptor[];
+  /** Collection of visible Header gadget descriptors. */
+  Header?: BloggerWidgetDescriptor[];
+  /** Collection of visible Image gadget descriptors. */
+  Image?: BloggerWidgetDescriptor[];
+  /** Collection of visible Label gadget descriptors. */
+  Label?: BloggerWidgetDescriptor[];
+  /** Collection of visible LinkList gadget descriptors. */
+  LinkList?: BloggerWidgetDescriptor[];
+  /** Collection of visible PageList gadget descriptors. */
+  PageList?: BloggerWidgetDescriptor[];
+  /** Collection of visible Profile gadget descriptors. */
+  Profile?: BloggerWidgetDescriptor[];
+  /** Collection of visible ReportAbuse gadget descriptors. */
+  ReportAbuse?: BloggerWidgetDescriptor[];
+  /** Collection of visible Stats gadget descriptors. */
+  Stats?: BloggerWidgetDescriptor[];
+  /** Collection of visible Subscribe gadget descriptors. */
+  Subscribe?: BloggerWidgetDescriptor[];
+  /** Collection of visible Text gadget descriptors. */
+  Text?: BloggerWidgetDescriptor[];
+  /** Collection of visible TextList gadget descriptors. */
+  TextList?: BloggerWidgetDescriptor[];
+  /** Collection of visible Translate gadget descriptors. */
+  Translate?: BloggerWidgetDescriptor[];
+  /** Collection of visible Wikipedia gadget descriptors. */
+  Wikipedia?: BloggerWidgetDescriptor[];
+  [instanceId: string]: any;
 }
 
 // =========================================================================
@@ -2133,6 +2178,7 @@ export type BloggerCatalogName
     | 'messages'
     | 'operators'
     | 'scopes'
+    | 'settings'
     | 'types'
     | 'widgets';
 
@@ -2144,6 +2190,7 @@ export interface BloggerCatalogMap {
   messages: BloggerMessagesCatalog;
   operators: BloggerOperatorsCatalog;
   scopes: BloggerScopesCatalog;
+  settings: BloggerSettingsCatalog;
   types: BloggerTypesCatalog;
   widgets: BloggerWidgetsCatalog;
 }
