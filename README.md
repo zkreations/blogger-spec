@@ -338,6 +338,12 @@ console.log(`Passed ${results.passed} / ${results.total} fixtures.`)
 
 ---
 
+## Specification Authority & Empirical Grounding
+
+`blogger-spec` is a self-contained empirical specification, not an aggregator. Catalogs and schemas never include external documentation links (`documentation_urls`, `references`). Official docs are obsolete (<10% coverage, promoting deprecated attributes) and community resources are frozen. All syntax rules, diagnostics, and behaviors are proven directly against live production engines via empirical fixtures (`fixtures/`).
+
+---
+
 ## Contributing
 
 Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our single source of truth architecture, empirical fixture requirements, and the verification pipeline (`pnpm run test:spec`).

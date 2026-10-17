@@ -12,6 +12,7 @@
 4. **Empirical Verification**: Any spec change or fix requires empirical verification against the Google Blogger production engine and a corresponding test fixture under [`fixtures/`](fixtures/) with evidence attribution (`official` or `observed`).
 5. **Flat Type Hierarchy & Skin Variable Isolation**: Platform subtypes (`url`, `image`, `date`, `locale`, `message`) inherit directly from `string` (1-level depth). Theme variables (`skin:*`) have `parent_type: null` and must remain strictly isolated from template string modifiers (`.length`, `.escaped`).
 6. **Declarative Directive Grammar & Symbolic Groups**: Directive nesting rules (`valid_parents`, `valid_children`) and recovery behaviors (`invalid_nesting_policy` with `reject`, `strip`, `ignore`) reside in [`catalogs/directives.json`](catalogs/directives.json). Do not hardcode tag hierarchy assumptions in validators; query via `canNest` and `validateDirectiveNesting`.
+7. **No External Documentation Links**: Catalogs and schemas must never include external links (`documentation_urls`, `references`). Official documentation is obsolete and community sources are frozen; all canonical behavior is self-contained and verified via empirical fixtures (`fixtures/`).
 
 ---
 
