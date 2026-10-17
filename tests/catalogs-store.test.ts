@@ -1,3 +1,6 @@
+import { rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { embeddedCatalogs, embeddedSchemas } from '../src/catalogs/embedded.generated.js'
 import {
@@ -118,13 +121,72 @@ describe('catalogs and store formal verification suite', () => {
       expect(report.errors).toContain('Default layout version \'99\' is not supported.')
     })
 
-    it('does not hide a missing required inclusions catalog', () => {
+    it('rejects broken nested bound_runtime_data paths in widgets', () => {
       const catalogs = structuredClone(embeddedCatalogs)
-      delete (catalogs as any).inclusions
+      catalogs.widgets.widgets.Blog.settings!.canonical!.authorLabel.bound_runtime_data = 'data:widgets.Blog1.allBylineItems.author.nonExistentField'
 
-      expect(() => new SpecCatalog(new MemoryCatalogStore(catalogs, embeddedSchemas))).toThrow(
-        'Catalog not found in memory store: inclusions',
+      const report = validateSpec({
+        store: new MemoryCatalogStore(catalogs, embeddedSchemas),
+        checkDtsFreshness: false,
+      })
+
+      expect(report.valid).toBe(false)
+      expect(report.errors).toContain(
+        'Widget setting \'Blog.authorLabel\' declares unresolved bound_runtime_data \'data:widgets.Blog1.allBylineItems.author.nonExistentField\'.',
       )
+    })
+
+    it('rejects mismatched Theme Designer skin variable types across directives and types catalogs', () => {
+      const catalogs = structuredClone(embeddedCatalogs)
+      ;(catalogs.directives.directives.Variable as any).type_attributes.shadow = {
+        name: 'shadow',
+        description: 'Phantom shadow type',
+      }
+
+      const report = validateSpec({
+        store: new MemoryCatalogStore(catalogs, embeddedSchemas),
+        checkDtsFreshness: false,
+      })
+
+      expect(report.valid).toBe(false)
+      expect(report.errors).toContain(
+        'Directive \'<Variable>\' declares type_attribute \'shadow\' without matching \'skin:shadow\' type in types.json.',
+      )
+    })
+
+    it('rejects unknown or malformed covers entries in fixtures manifest', () => {
+      const tempManifestPath = join(tmpdir(), `test-fixtures-${Date.now()}.json`)
+      writeFileSync(
+        tempManifestPath,
+        JSON.stringify({
+          version: '1.0.0',
+          fixtures: [
+            {
+              id: 'test/broken-cover',
+              covers: ['invalid_prefix:something', 'operator:nonExistentOp'],
+              expected: { outcome: 'value', value: 1 },
+            },
+          ],
+        }),
+        'utf-8',
+      )
+
+      try {
+        const report = validateSpec({
+          fixturesManifestPath: tempManifestPath,
+          checkDtsFreshness: false,
+        })
+        expect(report.valid).toBe(false)
+        expect(report.errors).toContain(
+          'Fixture \'test/broken-cover\' declares cover \'invalid_prefix:something\' with unknown prefix \'invalid_prefix\'.',
+        )
+        expect(report.errors).toContain(
+          'Fixture \'test/broken-cover\' covers unknown operator \'nonExistentOp\'.',
+        )
+      }
+      finally {
+        rmSync(tempManifestPath, { force: true })
+      }
     })
   })
 

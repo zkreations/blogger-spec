@@ -27,6 +27,87 @@ export interface ValidateSpecOptions {
   reporter?: (message: string) => void
   checkDtsFreshness?: boolean
   store?: CatalogStore
+  fixturesManifestPath?: string
+}
+
+function resolveBoundRuntimeData(
+  bound: string,
+  dataCanonical: Record<string, any>,
+  globalsCatalog: any,
+): boolean {
+  const clean = bound.replace(/^data:/, '')
+  const parts = clean.split('.')
+
+  if (parts[0] === 'widgets') {
+    const instanceId = parts[1] || ''
+    const widgetType = instanceId.replace(/\d+$/, '')
+    const descriptor = globalsCatalog.objects?.['data:widgets']?.canonical?.[widgetType]
+    if (!descriptor) {
+      return false
+    }
+    if (parts.length === 2) {
+      return true
+    }
+    const prop = parts[2]
+    const itemProps = descriptor.item_properties?.[prop]
+    if (!itemProps) {
+      return false
+    }
+    if (parts.length === 3 || parts.length === 4) {
+      return true
+    }
+    if (parts.length === 5) {
+      return Boolean(itemProps.item_properties?.[parts[4]])
+    }
+    return false
+  }
+
+  const root = parts[0]!.replace(/\[\d+\]/, '')
+
+  if (root === 'post' || root === 'posts') {
+    const postContainer = dataCanonical.posts || dataCanonical.post
+    if (!postContainer) {
+      return false
+    }
+    if (parts.length === 1) {
+      return true
+    }
+    let targetProp = parts[parts.length - 1]
+    if (root === 'posts' && parts[1] === 'first' && parts.length === 3) {
+      targetProp = parts[2]
+    }
+    const itemProps = postContainer.item_properties || postContainer.properties || {}
+    return Boolean(itemProps[targetProp])
+  }
+
+  if (dataCanonical[root]) {
+    let curr = dataCanonical[root]
+    for (let i = 1; i < parts.length; i++) {
+      const seg = parts[i]!.replace(/\[\d+\]/, '')
+      const next = curr.properties?.[seg] || curr.item_properties?.[seg]
+      if (!next) {
+        return false
+      }
+      curr = next
+    }
+    return true
+  }
+
+  const globalObj = globalsCatalog.objects?.[`data:${root}`] || globalsCatalog.objects?.[root]
+  if (globalObj) {
+    let curr = globalObj
+    for (let i = 1; i < parts.length; i++) {
+      const seg = parts[i]!.replace(/\[\d+\]/, '')
+      const next = curr.canonical?.[seg] || curr.properties?.[seg] || curr.item_properties?.[seg]
+      if (!next) {
+        return false
+      }
+      curr = next
+    }
+    return true
+  }
+
+  return false
 }
 
 export function validateSpec(options?: ValidateSpecOptions): SpecValidationReport {
@@ -261,18 +342,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       }
       const bound = (settingDef as any).bound_runtime_data
       if (bound && typeof bound === 'string') {
-        const clean = bound.replace(/^data:/, '')
-        const rootProp = clean.split('.')[0]!.replace(/\[\d+\]/, '')
-        const inWidget = Boolean(
-          dataCanonical[rootProp]
-          || (rootProp === 'post' && dataCanonical.posts),
-        )
-        const inGlobals = Boolean(
-          globalsCatalog.objects?.[`data:${rootProp}`]
-          || globalsCatalog.objects?.[rootProp]
-          || globalsCatalog.objects?.[bound.split('.')[0]!],
-        )
-        if (!inWidget && !inGlobals) {
+        if (!resolveBoundRuntimeData(bound, dataCanonical, globalsCatalog)) {
           errors.push(`Widget setting '${widgetKey}.${settingKey}' declares unresolved bound_runtime_data '${bound}'.`)
         }
       }
@@ -305,6 +375,29 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       if (!knownDirectives.has(excKey) && !knownGrammarGroups.has(excKey)) {
         errors.push(`Directive '<${dirKey}>' defines nesting exception for unknown target '${excKey}'.`)
       }
+    }
+  }
+
+  // 2.3b Theme Designer Skin variables bijective cross-validation
+  const skinTypesInTypes = new Map<string, string>()
+  for (const [typeKey, typeDef] of Object.entries(typesCatalog.types || {})) {
+    if (typeKey.startsWith('skin:')) {
+      const tagAttr = (typeDef as any).skin_metadata?.tag_attribute_value
+      if (tagAttr) {
+        skinTypesInTypes.set(tagAttr, typeKey)
+      }
+    }
+  }
+
+  const variableTypeAttrs = (directivesCatalog.directives?.Variable as any)?.type_attributes || {}
+  for (const varAttrKey of Object.keys(variableTypeAttrs)) {
+    if (!skinTypesInTypes.has(varAttrKey)) {
+      errors.push(`Directive '<Variable>' declares type_attribute '${varAttrKey}' without matching 'skin:${varAttrKey}' type in types.json.`)
+    }
+  }
+  for (const [tagAttr, skinTypeKey] of skinTypesInTypes.entries()) {
+    if (!variableTypeAttrs[tagAttr]) {
+      errors.push(`Type '${skinTypeKey}' declares tag_attribute_value '${tagAttr}' missing from '<Variable>' type_attributes in directives.json.`)
     }
   }
 
@@ -425,24 +518,62 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   }
 
   log('-> 4. Validating fixtures manifest...')
-  const manifestItem = freshness.items.find(i => i.name === 'fixtures/index.json')
+  const manifestPath = options?.fixturesManifestPath || getWorkspacePaths().fixturesManifest
+  const manifestItem = options?.fixturesManifestPath
+    ? { name: 'fixtures/index.json', valid: true, count: 1, error: undefined }
+    : freshness.items.find(i => i.name === 'fixtures/index.json')
   if (manifestItem && !manifestItem.valid) {
     errors.push(manifestItem.error || 'fixtures/index.json is missing or out of sync. Run `pnpm run build` to synchronize.')
   }
   else if (manifestItem?.valid) {
     metrics.fixturesChecked = manifestItem.count || 0
-    log(`  [PASS] fixtures/index.json verified (${metrics.fixturesChecked} fixtures).`)
+    log(`  [PASS] fixtures manifest verified (${metrics.fixturesChecked} fixtures).`)
     const fixtureValidate = ajv.getSchema('fixture.schema.json#/$defs/fixture')
       || ajv.compile({ $ref: 'fixture.schema.json#/$defs/fixture' })
-    const manifest = JSON.parse(readFileSync(getWorkspacePaths().fixturesManifest, 'utf-8')) as {
+    const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8')) as {
       fixtures?: Array<{
         id: string
+        covers?: string[]
         expected?: {
           outcome?: string
           diagnosticCodes?: string[]
         }
       }>
     }
+
+    const knownModifiers = new Set<string>()
+    for (const typeDef of Object.values(typesCatalog.types || {})) {
+      for (const modKey of Object.keys((typeDef as any).modifiers || {})) {
+        knownModifiers.add(modKey)
+      }
+    }
+    const knownSubsystems = new Set([
+      'arithmetic',
+      'collections_and_lambdas',
+      'conditional_rendering',
+      'helpers_and_transforms',
+      'includable_inheritance',
+      'locale_modifiers',
+      'logical_and_comparisons',
+      'loop_rendering',
+      'loop_shadowing',
+      'message_rendering',
+      'subtype_modifiers',
+      'widget_rendering',
+      'with_nesting',
+    ])
+    const knownSemantics = new Set([
+      'coercion-canonical-string',
+      'coercion-equality',
+      'coercion-literal',
+      'coercion-literal-dominance',
+      'coercion-nullish',
+      'coercion-runtime-fallback',
+      'coercion-runtime-numeric',
+      'coercion-strict-types',
+    ])
+    const validCoverPrefixes = new Set(['tag', 'operator', 'rule', 'type', 'modifier', 'subsystem', 'semantics'])
+
     for (const fixture of manifest.fixtures || []) {
       if (!fixtureValidate(fixture)) {
         for (const err of fixtureValidate.errors || []) {
@@ -456,6 +587,40 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       for (const diagCode of fixture.expected?.diagnosticCodes || []) {
         if (!knownDiagnosticCodes.has(diagCode)) {
           errors.push(`Fixture '${fixture.id}' references unknown diagnostic code '${diagCode}'.`)
+        }
+      }
+      for (const cover of fixture.covers || []) {
+        const colonIdx = cover.indexOf(':')
+        if (colonIdx === -1) {
+          errors.push(`Fixture '${fixture.id}' declares cover '${cover}' without required prefix.`)
+          continue
+        }
+        const prefix = cover.slice(0, colonIdx)
+        const target = cover.slice(colonIdx + 1)
+        if (!validCoverPrefixes.has(prefix)) {
+          errors.push(`Fixture '${fixture.id}' declares cover '${cover}' with unknown prefix '${prefix}'.`)
+          continue
+        }
+        if (prefix === 'tag' && !knownDirectives.has(target)) {
+          errors.push(`Fixture '${fixture.id}' covers unknown tag '${target}'.`)
+        }
+        else if (prefix === 'operator' && !allOpKeys.has(target)) {
+          errors.push(`Fixture '${fixture.id}' covers unknown operator '${target}'.`)
+        }
+        else if (prefix === 'rule' && !knownDiagnosticCodes.has(target)) {
+          errors.push(`Fixture '${fixture.id}' covers unknown diagnostic rule '${target}'.`)
+        }
+        else if (prefix === 'type' && !knownTypes.has(target)) {
+          errors.push(`Fixture '${fixture.id}' covers unknown type '${target}'.`)
+        }
+        else if (prefix === 'modifier' && !knownModifiers.has(target)) {
+          errors.push(`Fixture '${fixture.id}' covers unknown modifier '${target}'.`)
+        }
+        else if (prefix === 'subsystem' && !knownSubsystems.has(target)) {
+          errors.push(`Fixture '${fixture.id}' covers unknown subsystem '${target}'.`)
+        }
+        else if (prefix === 'semantics' && !knownSemantics.has(target)) {
+          errors.push(`Fixture '${fixture.id}' covers unknown semantics '${target}'.`)
         }
       }
     }
