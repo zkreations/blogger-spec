@@ -98,6 +98,37 @@
             "type": "string"
           },
           "description": "Standard coercion semantics identifiers validated by conformance fixtures."
+        },
+        "prohibited_literals": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "diagnostic",
+              "description"
+            ],
+            "properties": {
+              "diagnostic": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "expression_diagnostics": {
+          "type": "object",
+          "properties": {
+            "prohibited_null_literal": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "string_boolean_in_expression": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -118,9 +149,17 @@
         "category",
         "description",
         "user_constructible",
-        "ts_type"
+        "ts_type",
+        "evidence",
+        "verified_at"
       ],
       "properties": {
+        "evidence": {
+          "$ref": "common.schema.json#/$defs/evidenceLevel"
+        },
+        "verified_at": {
+          "$ref": "common.schema.json#/$defs/verified_at"
+        },
         "category": {
           "type": "string",
           "enum": [
@@ -167,6 +206,12 @@
         },
         "skin_metadata": {
           "$ref": "#/$defs/skinMetadata"
+        },
+        "diagnostics": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "common.schema.json#/$defs/diagnosticCode"
+          }
         }
       },
       "additionalProperties": false

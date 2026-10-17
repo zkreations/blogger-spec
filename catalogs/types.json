@@ -316,7 +316,17 @@
       "coercion-runtime-fallback",
       "coercion-runtime-numeric",
       "coercion-strict-types"
-    ]
+    ],
+    "prohibited_literals": {
+      "null": {
+        "diagnostic": "BX1020",
+        "description": "Literal 'null' does not exist in Blogger expressions and causes a fatal compilation abort."
+      }
+    },
+    "expression_diagnostics": {
+      "prohibited_null_literal": "BX1020",
+      "string_boolean_in_expression": "BX1038"
+    }
   },
   "types": {
     "string": {
@@ -374,7 +384,9 @@
           "expr_syntax": "([expr]).cssEscaped",
           "example": "data:view.featuredImage.cssEscaped"
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "number": {
       "category": "base",
@@ -382,7 +394,9 @@
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "number",
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "boolean": {
       "category": "base",
@@ -390,7 +404,12 @@
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "boolean",
-      "modifiers": {}
+      "modifiers": {},
+      "diagnostics": {
+        "string_boolean_in_expression": "BX1038"
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "object": {
       "category": "base",
@@ -398,7 +417,9 @@
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "Record<string, any>",
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "array": {
       "category": "base",
@@ -480,7 +501,9 @@
           "expr_syntax": "data:widgets.Blog.first.allBylineItems.[itemName]",
           "example": "data:widgets.Blog.first.allBylineItems.author.label"
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "image_variant": {
       "category": "subtype",
@@ -505,7 +528,9 @@
           "expr_syntax": "([expr]).url",
           "example": "(data:post.featuredImage resizeImage [320, 640]).first.url"
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "url": {
       "category": "subtype",
@@ -538,7 +563,9 @@
           "expr_syntax": "([expr]).https",
           "example": "data:blog.url.https"
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "image": {
       "category": "subtype",
@@ -603,7 +630,9 @@
           "expr_syntax": "([expr]).originalHeight",
           "example": "data:post.featuredImage.originalHeight"
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "date": {
       "category": "subtype",
@@ -668,7 +697,12 @@
           "expr_syntax": "([expr]).dayOfYear",
           "example": "data:post.date.dayOfYear"
         }
-      }
+      },
+      "diagnostics": {
+        "prohibited_relational_comparison": "BX1026"
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "locale": {
       "category": "subtype",
@@ -741,7 +775,9 @@
           "expr_syntax": "([expr]).languageAlignment",
           "example": "data:blog.locale.languageAlignment"
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "message": {
       "category": "subtype",
@@ -749,7 +785,9 @@
       "parent_type": "string",
       "user_constructible": false,
       "ts_type": "BloggerMessage",
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "skin:color": {
       "category": "skin",
@@ -812,7 +850,9 @@
           "expr_syntax": "data:skin.vars.name.inverse",
           "example": "data:skin.vars.keycolor.inverse"
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "skin:font": {
       "category": "skin",
@@ -843,7 +883,9 @@
           "expr_syntax": "data:skin.vars.name.size",
           "example": "data:skin.vars.body_font.size"
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "skin:background": {
       "category": "skin",
@@ -874,7 +916,9 @@
           "expr_syntax": "data:skin.vars.name.color",
           "example": "data:skin.vars.header_bg.color"
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "skin:length": {
       "category": "skin",
@@ -888,7 +932,9 @@
         "inside_skin_syntax": "$(variable.name)",
         "outside_skin_syntax": "data:skin.vars.variable_name"
       },
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "skin:automatic": {
       "category": "skin",
@@ -902,7 +948,9 @@
         "inside_skin_syntax": "$(variable.name)",
         "outside_skin_syntax": "data:skin.vars.variable_name"
       },
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "skin:string": {
       "category": "skin",
@@ -916,7 +964,9 @@
         "inside_skin_syntax": "$(variable.name)",
         "outside_skin_syntax": "data:skin.vars.variable_name"
       },
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "skin:url": {
       "category": "skin",
@@ -930,7 +980,9 @@
         "inside_skin_syntax": "$(variable.name)",
         "outside_skin_syntax": "data:skin.vars.variable_name"
       },
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "skin_variable": {
       "category": "skin",
@@ -938,7 +990,9 @@
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "string",
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "scalar": {
       "category": "meta",
@@ -946,7 +1000,9 @@
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "string | number | boolean",
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "expression": {
       "category": "meta",
@@ -954,7 +1010,9 @@
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "any",
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "any": {
       "category": "meta",
@@ -962,7 +1020,9 @@
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "any",
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "predicate": {
       "category": "meta",
@@ -970,7 +1030,9 @@
       "parent_type": "expression",
       "user_constructible": true,
       "ts_type": "(item: any) => any",
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "child_item": {
       "category": "meta",
@@ -978,7 +1040,9 @@
       "parent_type": null,
       "user_constructible": false,
       "ts_type": "any",
-      "modifiers": {}
+      "modifiers": {},
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     }
   }
 }
