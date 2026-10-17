@@ -3,6 +3,13 @@
   "title": "Blogger Gadgets & Widgets Unified Master Catalog",
   "description": "Canonical unified catalog of Blogger official gadgets, defining runtime data dictionaries (data.*) and layout configuration settings (<b:widget-setting name=\"...\">).",
   "version": "1.0.0",
+  "domain_metadata": {
+    "layout_versions": [
+      1,
+      2,
+      3
+    ]
+  },
   "widgets": {
     "AdSense": {
       "description": "Google AdSense ad slot configuration, publisher client ID, and slot dimension parameters.",
