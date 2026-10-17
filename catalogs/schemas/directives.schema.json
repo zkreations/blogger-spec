@@ -471,6 +471,13 @@
           "items": {
             "type": "string"
           }
+        },
+        "allowed_values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Exhaustive list of allowed literal string values for this attribute."
         }
       },
       "additionalProperties": false
