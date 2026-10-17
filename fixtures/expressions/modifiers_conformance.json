@@ -1,0 +1,597 @@
+{
+  "subsystem": "subtype_modifiers",
+  "fixtures": [
+    {
+      "id": "expressions/modifiers/js-escaped",
+      "title": "jsEscaped Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:jsEscaped",
+        "type:string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.title.jsEscaped",
+        "context": {
+          "data": {
+            "post": {
+              "title": "Hello 'World'"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Hello \\'World\\'"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/json-escaped",
+      "title": "jsonEscaped Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:jsonEscaped",
+        "type:string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.body.jsonEscaped",
+        "context": {
+          "data": {
+            "post": {
+              "body": "Line 1\nLine 2"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Line 1\\nLine 2"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/css-escaped",
+      "title": "cssEscaped Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:cssEscaped",
+        "type:string"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:cls.cssEscaped",
+        "context": {
+          "data": {
+            "cls": "my.class"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "my\\.class"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/size",
+      "title": "size Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:size",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.size",
+        "context": {
+          "data": {
+            "posts": [1, 2, 3]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 3
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/first",
+      "title": "first Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:first",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.first",
+        "context": {
+          "data": {
+            "posts": ["alpha", "beta"]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "alpha"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/last",
+      "title": "last Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:last",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.last",
+        "context": {
+          "data": {
+            "posts": ["alpha", "beta"]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "beta"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/empty",
+      "title": "empty Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:empty",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.empty",
+        "context": {
+          "data": {
+            "posts": []
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/not-empty",
+      "title": "notEmpty Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:notEmpty",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.notEmpty",
+        "context": {
+          "data": {
+            "posts": [1]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/any",
+      "title": "any Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:any",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.any",
+        "context": {
+          "data": {
+            "posts": [1]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/widget-type",
+      "title": "widgetType Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:widgetType"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:widget.widgetType",
+        "context": {
+          "data": {
+            "widget": {
+              "widgetType": "Blog"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Blog"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/item-name",
+      "title": "itemName Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:itemName"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:item.itemName",
+        "context": {
+          "data": {
+            "item": {
+              "itemName": "author"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "author"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/url",
+      "title": "url Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:url",
+        "type:image_variant"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:variant.url",
+        "context": {
+          "data": {
+            "variant": {
+              "url": "https://example.com/320.jpg"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://example.com/320.jpg"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/width",
+      "title": "width Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:width",
+        "type:image"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:image.width",
+        "context": {
+          "data": {
+            "image": {
+              "width": 800
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 800
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/height",
+      "title": "height Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:height",
+        "type:image"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:image.height",
+        "context": {
+          "data": {
+            "image": {
+              "height": 600
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 600
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/day-of-month",
+      "title": "dayOfMonth Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:dayOfMonth",
+        "type:date"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.date.dayOfMonth",
+        "context": {
+          "data": {
+            "post": {
+              "date": {
+                "dayOfMonth": 17
+              }
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 17
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/red",
+      "title": "red Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:red",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.red)",
+        "context": {
+          "accent": {
+            "red": 255
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 255
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/green",
+      "title": "green Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:green",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.green)",
+        "context": {
+          "accent": {
+            "green": 128
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 128
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/blue",
+      "title": "blue Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:blue",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.blue)",
+        "context": {
+          "accent": {
+            "blue": 64
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 64
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/alpha",
+      "title": "alpha Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:alpha",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.alpha)",
+        "context": {
+          "accent": {
+            "alpha": 1
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 1
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/transparent",
+      "title": "transparent Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:transparent",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.transparent)",
+        "context": {
+          "accent": {
+            "transparent": "rgba(255, 128, 64, 0)"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "rgba(255, 128, 64, 0)"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/inverse",
+      "title": "inverse Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:inverse",
+        "type:skin:color"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(accent.inverse)",
+        "context": {
+          "accent": {
+            "inverse": "#007fbf"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "#007fbf"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/family",
+      "title": "family Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:family",
+        "type:skin:font"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(font.family)",
+        "context": {
+          "font": {
+            "family": "Helvetica, Arial, sans-serif"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Helvetica, Arial, sans-serif"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/image",
+      "title": "image Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:image",
+        "type:skin:background"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(background.image)",
+        "context": {
+          "background": {
+            "image": "url(https://example.com/bg.jpg)"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "url(https://example.com/bg.jpg)"
+      },
+      "verified_at": "2026-10-17"
+    },
+    {
+      "id": "expressions/modifiers/color",
+      "title": "color Modifier Conformance",
+      "evidence": "official",
+      "covers": [
+        "subsystem:subtype_modifiers",
+        "modifier:color",
+        "type:skin:background"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "$(background.color)",
+        "context": {
+          "background": {
+            "color": "#f0f0f0"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "#f0f0f0"
+      },
+      "verified_at": "2026-10-17"
+    }
+  ]
+}
