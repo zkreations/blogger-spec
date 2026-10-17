@@ -122,6 +122,7 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   log('-> 1. Validating catalogs against JSON Schemas (Draft 2020-12)...')
   const ajv = new (Ajv2020 as unknown as new (opts: any) => any)({ allErrors: true, strict: true, allowUnionTypes: true });
   (addFormats as unknown as (ajv: any) => void)(ajv)
+  ajv.addKeyword('x-generated-required')
 
   const schemas = store.getAllSchemas()
   for (const { schema } of schemas) {
