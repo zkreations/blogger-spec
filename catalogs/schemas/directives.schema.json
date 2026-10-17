@@ -413,7 +413,7 @@
         "accepted_types": {
           "type": "array",
           "items": {
-            "type": "string"
+            "$ref": "common.schema.json#/$defs/canonicalPropertyType"
           }
         },
         "required": {
