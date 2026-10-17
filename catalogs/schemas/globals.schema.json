@@ -9,6 +9,7 @@
     "title",
     "description",
     "version",
+    "domain_metadata",
     "objects"
   ],
   "properties": {
@@ -23,6 +24,22 @@
     },
     "version": {
       "type": "string"
+    },
+    "domain_metadata": {
+      "type": "object",
+      "required": [
+        "root_datasets"
+      ],
+      "properties": {
+        "root_datasets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Standard root dataset namespaces provided by the Blogger platform runtime."
+        }
+      },
+      "additionalProperties": false
     },
     "objects": {
       "type": "object",

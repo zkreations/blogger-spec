@@ -3,6 +3,17 @@
   "title": "Blogger Global Data Objects Master Catalog",
   "description": "Comprehensive, machine-readable registry of universal and host-scoped data objects in Blogger Layouts v3, categorizing properties into canonical (modern), patterns (dynamic lookups), and deprecated (obsolete or non-functional).",
   "version": "1.0.0",
+  "domain_metadata": {
+    "root_datasets": [
+      "data:blog",
+      "data:view",
+      "data:messages",
+      "data:skin",
+      "data:widgets",
+      "data:template",
+      "data:widget"
+    ]
+  },
   "objects": {
     "data:view": {
       "cardinality": "singleton",
