@@ -95,6 +95,18 @@
             },
             "mismatched_or_unclosed_tag": {
               "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "unknown_directive": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "unresolved_inclusion": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "non_object_include_data_payload": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "prohibited_bracket_indexing_in_data_tag": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             }
           },
           "additionalProperties": false
@@ -195,9 +207,17 @@
         "description",
         "closure_mode",
         "grammar",
-        "attributes"
+        "attributes",
+        "evidence",
+        "verified_at"
       ],
       "properties": {
+        "evidence": {
+          "$ref": "common.schema.json#/$defs/evidenceLevel"
+        },
+        "verified_at": {
+          "$ref": "common.schema.json#/$defs/verified_at"
+        },
         "category": {
           "type": "string"
         },
@@ -246,6 +266,9 @@
             "properties": {
               "action": {
                 "type": "string"
+              },
+              "diagnostic": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "allowed_values": {
                 "type": "array",
@@ -302,7 +325,7 @@
         "deprecated_attributes": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/$defs/deprecatedAttributeEntry"
+            "$ref": "common.schema.json#/$defs/deprecatedEntry"
           }
         },
         "spec_extensions": {
@@ -401,6 +424,9 @@
         "type": {
           "$ref": "types.schema.json#/$defs/directiveAttributeType"
         },
+        "diagnostic": {
+          "$ref": "common.schema.json#/$defs/diagnosticCode"
+        },
         "attribute_kind": {
           "type": "string",
           "enum": [
@@ -445,37 +471,6 @@
           "items": {
             "type": "string"
           }
-        }
-      },
-      "additionalProperties": false
-    },
-    "deprecatedAttributeEntry": {
-      "type": "object",
-      "required": [
-        "status",
-        "action",
-        "type",
-        "replacement",
-        "reason"
-      ],
-      "properties": {
-        "status": {
-          "$ref": "common.schema.json#/$defs/deprecationStatus"
-        },
-        "action": {
-          "$ref": "common.schema.json#/$defs/deprecationAction"
-        },
-        "type": {
-          "$ref": "types.schema.json#/$defs/directiveAttributeType"
-        },
-        "replacement": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "reason": {
-          "type": "string"
         }
       },
       "additionalProperties": false

@@ -30,7 +30,11 @@
       "duplicate_includable_id": "BX1036",
       "invalid_variable_type_attribute": "BX1040",
       "prohibited_nesting": "BX1023",
-      "mismatched_or_unclosed_tag": "BX1041"
+      "mismatched_or_unclosed_tag": "BX1041",
+      "unknown_directive": "BX1025",
+      "unresolved_inclusion": "BX1037",
+      "non_object_include_data_payload": "BX1031",
+      "prohibited_bracket_indexing_in_data_tag": "BX1032"
     },
     "html_void_elements": [
       "area",
@@ -263,7 +267,9 @@
           "reason": "Legacy horizontal/vertical layout hint in deprecated GUI."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:widget": {
       "category": "Structuring",
@@ -375,7 +381,9 @@
           "reason": "Legacy attribute used to control widget display on designated page types."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:includable": {
       "category": "Structuring",
@@ -432,7 +440,9 @@
           "description": "Direct child b:class and b:attr elements within id='main' directly mutate the widget's synthetic HTML root container element (<div class='widget [Type]' ...>)."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:include": {
       "category": "Structuring",
@@ -447,6 +457,7 @@
       "attributes": {
         "name": {
           "type": "string",
+          "diagnostic": "BX1037",
           "description": "Target includable identifier. Prefix super. calls the platform backend default.",
           "required": true,
           "expr": true,
@@ -454,6 +465,7 @@
         },
         "data": {
           "type": "expression",
+          "diagnostic": "BX1031",
           "description": "Dataset or object forwarded to the includable's var. Properties become data:VAR.property. Strictly requires an object or object literal { ... }; scalar primitives are rejected at runtime.",
           "attribute_kind": "native_expression",
           "expr": true
@@ -501,7 +513,9 @@
           "description": "b:class and b:attr elements executed within the invoked b:includable hoist across the include boundary to mutate the enclosing HTML ancestor at the call site."
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:defaultmarkups": {
       "category": "Structuring",
@@ -527,7 +541,9 @@
           "reason": "b:defaultmarkups does not operate inside CDATA sections."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:defaultmarkup": {
       "category": "Structuring",
@@ -585,7 +601,9 @@
           }
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:widget-settings": {
       "category": "Structuring",
@@ -613,7 +631,9 @@
           "description": "The element is generated automatically and cannot be created, deleted, or moved manually."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:widget-setting": {
       "category": "Structuring",
@@ -649,7 +669,9 @@
           "description": "The element is generated automatically and cannot be created, deleted, or moved manually."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:loop": {
       "category": "Logic",
@@ -702,7 +724,9 @@
           "description": "b:loop elements can be nested."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:with": {
       "category": "Logic",
@@ -745,7 +769,9 @@
           "description": "The alias is available through its variable name in child nodes."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:if": {
       "category": "Logic",
@@ -787,7 +813,9 @@
           "description": "A b:if container evaluates conditions sequentially with optional trailing b:elseif and b:else delimiters."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:elseif": {
       "category": "Logic",
@@ -832,7 +860,9 @@
           "reason": "A b:elseif without the cond attribute has no effect and is ignored by Blogger."
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:else": {
       "category": "Logic",
@@ -869,7 +899,9 @@
           "reason": "b:else does not accept attributes."
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:switch": {
       "category": "Logic",
@@ -919,7 +951,9 @@
           "description": "A b:switch container requires at least one b:case child branch."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:case": {
       "category": "Logic",
@@ -957,7 +991,9 @@
           "description": "A b:switch must contain one or more b:case branches."
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:default": {
       "category": "Logic",
@@ -990,7 +1026,9 @@
           "reason": "b:default does not accept attributes."
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:tag": {
       "category": "DOM Gen",
@@ -1039,7 +1077,9 @@
           "description": "Standard HTML attributes may be passed statically or dynamically via expr: (e.g., class, expr:href)."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:attr": {
       "category": "DOM Gen",
@@ -1099,7 +1139,9 @@
           "description": "Hoists across arbitrary nesting of logic container directives (b:if, b:elseif, b:else, b:switch, b:with, b:tag) to add attributes to the nearest enclosing HTML ancestor. When placed inside a b:loop, accumulates attributes across iterations on the enclosing HTML container. When placed as a direct child of <b:includable id='main'>, directly mutates the synthetic outer widget wrapper element. Crosses subroutine boundaries (<b:include>) to mutate the caller's enclosing HTML element. Discards attributes completely when cond evaluates to false."
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:class": {
       "category": "DOM Gen",
@@ -1158,7 +1200,9 @@
           "description": "Hoists across arbitrary nesting of logic container directives (b:if, b:elseif, b:else, b:switch, b:with, b:tag) to mutate the nearest enclosing HTML ancestor. When placed inside a b:loop, accumulates classes across all iterations on the enclosing HTML container. When placed as a direct child of <b:includable id='main'>, directly mutates the synthetic outer widget wrapper element (<div class='widget [Type]'>). Crosses subroutine boundaries (<b:include>) to mutate the caller's enclosing HTML element. Between sibling HTML elements, strictly binds to the ancestor container, never to adjacent siblings."
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:eval": {
       "category": "Output",
@@ -1202,7 +1246,9 @@
           "reason": "If the data set does not exist, the containing inclusion will not be executed."
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "data:*": {
       "category": "Output",
@@ -1226,6 +1272,7 @@
         },
         "array_index": {
           "status": "forbidden",
+          "diagnostic": "BX1032",
           "reason": "Array data cannot be extracted by index with a data:* tag."
         }
       },
@@ -1243,7 +1290,9 @@
           "description": "Extracts an item through multiple nested objects."
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:message": {
       "category": "Localization",
@@ -1295,7 +1344,9 @@
           "description": "Sequential sibling b:param elements nested inside b:message must be separated by whitespace or newlines. Writing multiple b:param tags directly inline on the same line without whitespace (<b:param .../><b:param .../>) triggers an engine evaluation abort: 'Invalid parameters for message'."
         }
       },
-      "closure_mode": "dual"
+      "closure_mode": "dual",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:param": {
       "category": "Localization",
@@ -1346,7 +1397,9 @@
           "description": "Multiple b:param elements can be used within the same b:message."
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:skin": {
       "category": "Styling",
@@ -1384,7 +1437,9 @@
           "description": "Exactly one b:skin element is permitted per theme."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:template-skin": {
       "category": "Styling",
@@ -1423,7 +1478,9 @@
           "description": "At most one b:template-skin element is permitted per theme."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "Group": {
       "category": "Styling",
@@ -1476,7 +1533,9 @@
           "description": "Group elements must reside inside a CDATA block within b:skin."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "Variable": {
       "category": "Styling",
@@ -1712,7 +1771,9 @@
           ]
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:comment": {
       "category": "Utility",
@@ -1753,7 +1814,9 @@
           "description": "Blogger expressions contained within the comment are evaluated before the resulting comment is generated."
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "b:template-script": {
       "category": "Utility",
@@ -1801,7 +1864,9 @@
           }
         }
       },
-      "closure_mode": "self_closing"
+      "closure_mode": "self_closing",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "CDATA": {
       "category": "Core Syntax",
@@ -1850,7 +1915,9 @@
           }
         }
       },
-      "closure_mode": "container"
+      "closure_mode": "container",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     }
   }
 }
