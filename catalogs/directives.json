@@ -13,7 +13,13 @@
       "b:set": "BX1003",
       "b:var": "BX1004",
       "b:let": "BX1005",
-      "b:else-if": "BX1006"
+      "b:else-if": "BX1006",
+      "b:choose": "BX1007",
+      "b:when": "BX1008",
+      "b:otherwise": "BX1009",
+      "b:template": "BX1010",
+      "b:macro": "BX1011",
+      "b:function": "BX1012"
     },
     "standard_diagnostics": {
       "missing_required_attribute": "BX1022",
