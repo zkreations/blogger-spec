@@ -390,8 +390,8 @@ export class Lexer {
     }
 
     const value = this.source.slice(startOffset, this.pos)
-
-    if (value === 'true' || value === 'false') {
+    const lower = value.toLowerCase()
+    if (lower === 'true' || lower === 'false' || lower === 'yes' || lower === 'no') {
       return this.makeToken('BOOLEAN', value, startPos)
     }
 

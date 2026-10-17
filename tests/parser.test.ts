@@ -3,6 +3,8 @@ import type {
   BloggerCallExpressionNode,
   BloggerConditionalExpressionNode,
   BloggerDataPathNode,
+  BloggerErrorNode,
+  BloggerIdentifierNode,
   BloggerLambdaExpressionNode,
   BloggerLiteralNode,
   BloggerLogicalExpressionNode,
@@ -30,12 +32,12 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
 
   it('supports custom SpecCatalog injection in ExpressionParser and parseExpression', () => {
     const customCatalog = RootExports.getSpecCatalog()
-    const node = parseExpression('10 + 5', customCatalog) as BloggerBinaryExpressionNode
+    const node = parseExpression('10 + 5', { catalog: customCatalog }) as BloggerBinaryExpressionNode
     expect(node.type).toBe('BinaryExpression')
     expect(node.operator).toBe('+')
     expect(node.precedence).toBe(4)
 
-    const parser = new ExpressionParser('data:posts take 5', customCatalog)
+    const parser = new ExpressionParser('data:posts take 5', { catalog: customCatalog })
     const parsed = parser.parse() as BloggerBinaryExpressionNode
     expect(parsed.type).toBe('BinaryExpression')
     expect(parsed.operator).toBe('take')
@@ -540,6 +542,52 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
     })
   })
 
+  describe('tolerant mode (error recovery for IDEs)', () => {
+    it('returns Error node on empty or whitespace expression in tolerant mode', () => {
+      const emptyNode = parseExpression('', { tolerant: true })
+      expect(emptyNode.type).toBe('Error')
+      expect((emptyNode as BloggerErrorNode).message).toBe('Empty expression cannot be parsed')
+
+      const wsNode = parseExpression('   ', { tolerant: true })
+      expect(wsNode.type).toBe('Error')
+    })
+
+    it('recovers partial AST when binary expression right-hand side is missing', () => {
+      const node = parseExpression('data:blog.title + ', { tolerant: true }) as BloggerBinaryExpressionNode
+      expect(node.type).toBe('BinaryExpression')
+      expect(node.operator).toBe('+')
+      expect(node.left.type).toBe('DataPath')
+      expect(node.right.type).toBe('Error')
+    })
+
+    it('recovers unclosed parentheses without crashing', () => {
+      const node = parseExpression('(1 + 2', { tolerant: true }) as BloggerBinaryExpressionNode
+      expect(node.type).toBe('BinaryExpression')
+      expect(node.operator).toBe('+')
+    })
+
+    it('recovers incomplete lambda and member expressions', () => {
+      const node = parseExpression('data:posts filter (p => p.', { tolerant: true }) as BloggerLambdaExpressionNode
+      expect(node.type).toBe('LambdaExpression')
+      expect(node.operator).toBe('filter')
+      expect(node.parameter).toBe('p')
+      expect(node.body.type).toBe('MemberExpression')
+      const member = node.body as BloggerMemberExpressionNode
+      expect(member.object.type).toBe('Identifier')
+      expect((member.object as BloggerIdentifierNode).name).toBe('p')
+      expect(member.property.type).toBe('Identifier')
+      expect((member.property as BloggerIdentifierNode).name).toBe('')
+    })
+
+    it('recovers trailing dot in data path for autocompletion', () => {
+      const node = parseExpression('data:blog.', { tolerant: true }) as BloggerDataPathNode
+      expect(node.type).toBe('DataPath')
+      expect(node.members).toHaveLength(2)
+      expect(node.members[0]?.property).toBe('blog')
+      expect(node.members[1]?.property).toBe('')
+    })
+  })
+
   describe('conformance against real empirical expression fixtures', () => {
     const fixtureFiles = [
       'fixtures/expressions/arithmetic.json',
@@ -633,6 +681,38 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect(unescapeXmlEntities('&amp;amp;')).toBe('&amp;')
       expect(unescapeXmlEntities('&amp;quot;')).toBe('&quot;')
       expect(unescapeXmlEntities('&amp;#39;')).toBe('&#39;')
+    })
+  })
+
+  describe('boolean literals (yes, no, true, false)', () => {
+    it('tokenizes yes and no as BOOLEAN', () => {
+      const tokens = tokenize('yes == true and no == false')
+      const booleans = tokens.filter(t => t.type === 'BOOLEAN').map(t => t.value)
+      expect(booleans).toEqual(['yes', 'true', 'no', 'false'])
+    })
+
+    it('parses yes and no into Literal nodes with boolean values', () => {
+      const parsedYes = parseExpression('yes')
+      expect(parsedYes).toMatchObject({
+        type: 'Literal',
+        value: true,
+        raw: 'yes',
+      })
+
+      const parsedNo = parseExpression('no')
+      expect(parsedNo).toMatchObject({
+        type: 'Literal',
+        value: false,
+        raw: 'no',
+      })
+    })
+
+    it('allows boolean keywords as property names after dot or in object literals', () => {
+      const expr = parseExpression('data:blog.yes')
+      expect(expr.type).toBe('DataPath')
+
+      const objExpr = parseExpression('{ yes: 1, no: 2, true: 3, false: 4 }')
+      expect(objExpr.type).toBe('ObjectExpression')
     })
   })
 })

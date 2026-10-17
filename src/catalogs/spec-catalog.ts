@@ -5,9 +5,11 @@ import type {
   BloggerDiagnosticRule,
   BloggerDiagnosticsCatalog,
   BloggerDirectiveAttribute,
+  BloggerDirectiveAttributeToken,
   BloggerDirectiveDefinition,
   BloggerDirectiveName,
   BloggerDirectivesCatalog,
+  BloggerDirectiveToken,
   BloggerGlobalObjectDefinition,
   BloggerGlobalsCatalog,
   BloggerInclusionDefinition,
@@ -30,12 +32,21 @@ import type {
   BloggerWidgetSettingsDefinition,
   BloggerWidgetType,
   DirectiveAttributesValidationResult,
+  DirectiveAttributeViolation,
   DirectiveNestingAction,
   DirectiveNestingViolation,
   VariableAttributesValidationResult,
 } from '../types.js'
 import type { CatalogStore } from './store.js'
+import {
+  BLOGGER_BOOLEAN_VALUES,
+  isBloggerBoolean,
+} from '../types.js'
 import { getDefaultCatalogStore, registerCacheResetListener } from './store.js'
+
+export type DirectiveAttributesValidationTarget
+  = | BloggerDirectiveToken
+    | { tagName: string, attributes: Record<string, BloggerDirectiveAttributeToken | { value?: string }> | string[] }
 
 let defaultSpecCatalogInstance: SpecCatalog | null = null
 
@@ -66,11 +77,17 @@ export function validateVariableAttributes(
 }
 
 export function validateDirectiveAttributes(
-  tagName: string,
-  presentAttributes: string[],
+  target: string | DirectiveAttributesValidationTarget,
+  attributesOrCatalog?: string[] | Record<string, BloggerDirectiveAttributeToken | { value?: string }> | SpecCatalog,
   catalog: SpecCatalog = getSpecCatalog(),
 ): DirectiveAttributesValidationResult {
-  return catalog.validateDirectiveAttributes(tagName, presentAttributes)
+  if (typeof target !== 'string') {
+    const spec = (attributesOrCatalog && typeof attributesOrCatalog === 'object' && 'validateDirectiveAttributes' in attributesOrCatalog)
+      ? (attributesOrCatalog as SpecCatalog)
+      : catalog
+    return spec.validateDirectiveAttributes(target)
+  }
+  return catalog.validateDirectiveAttributes(target, attributesOrCatalog as any)
 }
 
 export function getThemeDesignerDescriptions(catalog: SpecCatalog = getSpecCatalog()): readonly string[] {
@@ -90,6 +107,10 @@ export type {
   DirectiveAttributesValidationResult,
   VariableAttributesValidationResult,
 } from '../types.js'
+export {
+  BLOGGER_BOOLEAN_VALUES,
+  isBloggerBoolean,
+}
 
 export class SpecCatalog {
   private readonly store: CatalogStore
@@ -501,9 +522,40 @@ export class SpecCatalog {
   }
 
   validateDirectiveAttributes(
-    tagName: string,
-    presentAttributes: string[],
+    target: string | DirectiveAttributesValidationTarget,
+    attributesOrCatalog?: string[] | Record<string, BloggerDirectiveAttributeToken | { value?: string }> | SpecCatalog,
   ): DirectiveAttributesValidationResult {
+    let tagName: string
+    let attributesRecord: Record<string, { value?: string, start?: number, end?: number, valueStart?: number, valueEnd?: number }> = {}
+    let presentAttributes: string[] = []
+
+    if (typeof target === 'string') {
+      tagName = target
+      if (Array.isArray(attributesOrCatalog)) {
+        presentAttributes = attributesOrCatalog
+        for (const attr of presentAttributes) {
+          attributesRecord[attr] = {}
+        }
+      }
+      else if (attributesOrCatalog && typeof attributesOrCatalog === 'object' && !('getAllDirectives' in attributesOrCatalog)) {
+        attributesRecord = attributesOrCatalog as any
+        presentAttributes = Object.keys(attributesRecord)
+      }
+    }
+    else {
+      tagName = target.tagName
+      if (Array.isArray(target.attributes)) {
+        presentAttributes = target.attributes
+        for (const attr of presentAttributes) {
+          attributesRecord[attr] = {}
+        }
+      }
+      else if (target.attributes && typeof target.attributes === 'object') {
+        attributesRecord = target.attributes as any
+        presentAttributes = Object.keys(attributesRecord)
+      }
+    }
+
     const directive = this.getDirective(tagName)
     if (!directive) {
       return {
@@ -513,6 +565,13 @@ export class SpecCatalog {
         deprecated: [],
         invalidExpressions: [],
         inverted: [],
+        disallowedValues: [],
+        violations: presentAttributes.map(attr => ({
+          attribute: attr,
+          code: 'BX1025' as BloggerDiagnosticCode,
+          message: `Unknown directive <${tagName}>.`,
+          ...attributesRecord[attr],
+        })),
       }
     }
 
@@ -524,6 +583,8 @@ export class SpecCatalog {
     const deprecated: DirectiveAttributesValidationResult['deprecated'] = []
     const invalidExpressions: string[] = []
     const inverted: DirectiveAttributesValidationResult['inverted'] = []
+    const disallowedValues: DirectiveAttributesValidationResult['disallowedValues'] = []
+    const violations: DirectiveAttributeViolation[] = []
 
     const inversions = directive.attribute_inversions || {}
     for (const [invAttr, invDef] of Object.entries(inversions)) {
@@ -531,10 +592,22 @@ export class SpecCatalog {
       const hasInv = presentAttributes.includes(invAttr)
       const hasExpected = presentAttributes.includes(expectedAttr) || presentAttributes.includes(`expr:${expectedAttr}`)
       if (hasInv && !hasExpected) {
+        const tokenInfo = attributesRecord[invAttr]
+        const invCode = invDef.diagnostic as BloggerDiagnosticCode
         inverted.push({
-          code: invDef.diagnostic as BloggerDiagnosticCode,
+          code: invCode,
           attribute: invAttr,
           expected: expectedAttr,
+          start: tokenInfo?.start,
+          end: tokenInfo?.end,
+          valueStart: tokenInfo?.valueStart,
+          valueEnd: tokenInfo?.valueEnd,
+        })
+        violations.push({
+          attribute: invAttr,
+          code: invCode,
+          message: `Attribute '${invAttr}' is inverted; expected '${expectedAttr}' on <${tagName}>.`,
+          ...tokenInfo,
         })
       }
     }
@@ -542,18 +615,67 @@ export class SpecCatalog {
     for (const attr of presentAttributes) {
       const hasExpr = attr.startsWith('expr:')
       const canonicalAttr = hasExpr ? attr.slice(5) : attr
+      const tokenInfo = attributesRecord[attr]
 
       if (deprecatedMap[canonicalAttr]) {
+        const depMeta = deprecatedMap[canonicalAttr]!
         deprecated.push({
           name: attr,
-          reason: deprecatedMap[canonicalAttr].reason,
-          replacement: deprecatedMap[canonicalAttr].replacement,
+          reason: depMeta.reason,
+          replacement: depMeta.replacement,
+          start: tokenInfo?.start,
+          end: tokenInfo?.end,
+          valueStart: tokenInfo?.valueStart,
+          valueEnd: tokenInfo?.valueEnd,
+        })
+        violations.push({
+          attribute: attr,
+          code: 'BX1024' as BloggerDiagnosticCode,
+          message: `Attribute '${attr}' on <${tagName}> is deprecated. ${depMeta.reason || ''}`.trim(),
+          ...tokenInfo,
         })
       }
       else if (allowedAttrs[canonicalAttr]) {
-        const meta = allowedAttrs[canonicalAttr]
+        const meta = allowedAttrs[canonicalAttr]!
         if (hasExpr && (meta.expr === false || meta.attribute_kind === 'static_literal')) {
           invalidExpressions.push(attr)
+          violations.push({
+            attribute: attr,
+            code: 'BX1042' as BloggerDiagnosticCode,
+            message: `Attribute '${attr}' on <${tagName}> does not support expressions.`,
+            ...tokenInfo,
+          })
+        }
+        else if (!hasExpr) {
+          const isBooleanAttr = meta.type === 'boolean'
+          const allowedValues = meta.allowed_values ?? (isBooleanAttr ? BLOGGER_BOOLEAN_VALUES : undefined)
+
+          if (allowedValues && Array.isArray(allowedValues)) {
+            const val = tokenInfo?.value
+            if (val !== undefined && val !== '') {
+              const isAllowed = isBooleanAttr
+                ? allowedValues.some(a => a.toLowerCase() === val.toLowerCase())
+                : allowedValues.includes(val)
+
+              if (!isAllowed) {
+                disallowedValues.push({
+                  attribute: attr,
+                  value: val,
+                  allowed: allowedValues,
+                  start: tokenInfo?.start,
+                  end: tokenInfo?.end,
+                  valueStart: tokenInfo?.valueStart,
+                  valueEnd: tokenInfo?.valueEnd,
+                })
+                violations.push({
+                  attribute: attr,
+                  code: 'BX1024' as BloggerDiagnosticCode,
+                  message: `Value '${val}' is not allowed for attribute '${attr}' on <${tagName}>. Allowed values: ${allowedValues.join(', ')}.`,
+                  ...tokenInfo,
+                })
+              }
+            }
+          }
         }
       }
       else if (inverted.some(inv => inv.attribute === canonicalAttr)) {
@@ -561,6 +683,12 @@ export class SpecCatalog {
       }
       else if (!allowsArbitrary) {
         unknown.push(attr)
+        violations.push({
+          attribute: attr,
+          code: 'BX1025' as BloggerDiagnosticCode,
+          message: `Unknown attribute '${attr}' on <${tagName}>.`,
+          ...tokenInfo,
+        })
       }
     }
 
@@ -577,6 +705,11 @@ export class SpecCatalog {
 
         if (!hasLiteral && !hasExpr) {
           missingRequired.push(attrName)
+          violations.push({
+            attribute: attrName,
+            code: 'BX1022' as BloggerDiagnosticCode,
+            message: `Mandatory attribute '${attrName}' is missing on <${tagName}>.`,
+          })
         }
       }
     }
@@ -585,12 +718,15 @@ export class SpecCatalog {
       valid: missingRequired.length === 0
         && unknown.length === 0
         && invalidExpressions.length === 0
-        && inverted.length === 0,
+        && inverted.length === 0
+        && disallowedValues.length === 0,
       missingRequired,
       unknown,
       deprecated,
       invalidExpressions,
       inverted,
+      disallowedValues,
+      violations,
     }
   }
 

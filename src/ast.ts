@@ -18,97 +18,104 @@ export interface BloggerSourceLocation {
 }
 
 export interface BloggerNodeBase {
-  type: string
-  loc?: BloggerSourceLocation
+  readonly type: string
+  readonly loc?: BloggerSourceLocation
 }
 
 export interface BloggerLiteralNode extends BloggerNodeBase {
-  type: 'Literal'
-  value: string | number | boolean | null
-  raw?: string
+  readonly type: 'Literal'
+  readonly value: string | number | boolean | null
+  readonly raw?: string
 }
 
 export interface BloggerIdentifierNode extends BloggerNodeBase {
-  type: 'Identifier'
-  name: string
+  readonly type: 'Identifier'
+  readonly name: string
 }
 
 export interface BloggerDataPathNode extends BloggerNodeBase {
-  type: 'DataPath'
-  raw: string
-  root: string
-  members: Array<{
-    property: string
-    computed: boolean
-    expression?: BloggerExpressionNode
+  readonly type: 'DataPath'
+  readonly raw: string
+  readonly root: string
+  readonly members: Array<{
+    readonly property: string
+    readonly computed: boolean
+    readonly expression?: BloggerExpressionNode
   }>
 }
 
 export interface BloggerUnaryExpressionNode extends BloggerNodeBase {
-  type: 'UnaryExpression'
-  operator: string
-  argument: BloggerExpressionNode
-  prefix: boolean
+  readonly type: 'UnaryExpression'
+  readonly operator: string
+  readonly argument: BloggerExpressionNode
+  readonly prefix: boolean
 }
 
 export interface BloggerBinaryExpressionNode extends BloggerNodeBase {
-  type: 'BinaryExpression'
-  operator: string
-  left: BloggerExpressionNode
-  right: BloggerExpressionNode
-  precedence: number
+  readonly type: 'BinaryExpression'
+  readonly operator: string
+  readonly left: BloggerExpressionNode
+  readonly right: BloggerExpressionNode
+  readonly precedence: number
 }
 
 export interface BloggerLogicalExpressionNode extends BloggerNodeBase {
-  type: 'LogicalExpression'
-  operator: '&&' | '||' | 'and' | 'or'
-  left: BloggerExpressionNode
-  right: BloggerExpressionNode
+  readonly type: 'LogicalExpression'
+  readonly operator: '&&' | '||' | 'and' | 'or'
+  readonly left: BloggerExpressionNode
+  readonly right: BloggerExpressionNode
 }
 
 export interface BloggerConditionalExpressionNode extends BloggerNodeBase {
-  type: 'ConditionalExpression'
-  test: BloggerExpressionNode
-  consequent: BloggerExpressionNode
-  alternate?: BloggerExpressionNode
-  isElvis?: boolean
+  readonly type: 'ConditionalExpression'
+  readonly test: BloggerExpressionNode
+  readonly consequent: BloggerExpressionNode
+  readonly alternate?: BloggerExpressionNode
+  readonly isElvis?: boolean
 }
 
 export interface BloggerCallExpressionNode extends BloggerNodeBase {
-  type: 'CallExpression'
-  callee: string
-  arguments: BloggerExpressionNode[]
+  readonly type: 'CallExpression'
+  readonly callee: string
+  readonly arguments: BloggerExpressionNode[]
 }
 
 export interface BloggerLambdaExpressionNode extends BloggerNodeBase {
-  type: 'LambdaExpression'
-  callee: BloggerExpressionNode
-  operator: string
-  parameter: string
-  body: BloggerExpressionNode
+  readonly type: 'LambdaExpression'
+  readonly callee: BloggerExpressionNode
+  readonly operator: string
+  readonly parameter: string
+  readonly body: BloggerExpressionNode
 }
 
 export interface BloggerPropertyNode extends BloggerNodeBase {
-  type: 'Property'
-  key: string
-  value: BloggerExpressionNode
+  readonly type: 'Property'
+  readonly key: string
+  readonly value: BloggerExpressionNode
 }
 
 export interface BloggerObjectExpressionNode extends BloggerNodeBase {
-  type: 'ObjectExpression'
-  properties: BloggerPropertyNode[]
+  readonly type: 'ObjectExpression'
+  readonly properties: BloggerPropertyNode[]
 }
 
 export interface BloggerArrayExpressionNode extends BloggerNodeBase {
-  type: 'ArrayExpression'
-  elements: BloggerExpressionNode[]
+  readonly type: 'ArrayExpression'
+  readonly elements: BloggerExpressionNode[]
 }
 
 export interface BloggerMemberExpressionNode extends BloggerNodeBase {
-  type: 'MemberExpression'
-  object: BloggerExpressionNode
-  property: BloggerExpressionNode | BloggerIdentifierNode
-  computed: boolean
+  readonly type: 'MemberExpression'
+  readonly object: BloggerExpressionNode
+  readonly property: BloggerExpressionNode | BloggerIdentifierNode
+  readonly computed: boolean
+}
+
+export interface BloggerErrorNode extends BloggerNodeBase {
+  readonly type: 'Error'
+  readonly message: string
+  readonly raw?: string
+  readonly unexpectedToken?: string
 }
 
 export type BloggerExpressionNode
@@ -124,49 +131,50 @@ export type BloggerExpressionNode
     | BloggerObjectExpressionNode
     | BloggerArrayExpressionNode
     | BloggerMemberExpressionNode
+    | BloggerErrorNode
 
 export interface BloggerAttributeNode extends BloggerNodeBase {
-  type: 'Attribute'
-  name: string
-  value: string | BloggerExpressionNode
-  isExpression: boolean
+  readonly type: 'Attribute'
+  readonly name: string
+  readonly value: string | BloggerExpressionNode
+  readonly isExpression: boolean
 }
 
 export interface BloggerDirectiveNode extends BloggerNodeBase {
-  type: 'Directive'
-  name: BloggerDirectiveName
-  attributes: BloggerAttributeNode[]
-  children: BloggerTemplateNode[]
-  selfClosing: boolean
+  readonly type: 'Directive'
+  readonly name: BloggerDirectiveName
+  readonly attributes: BloggerAttributeNode[]
+  readonly children: BloggerTemplateNode[]
+  readonly selfClosing: boolean
 }
 
 export interface BloggerElementNode extends BloggerNodeBase {
-  type: 'Element'
-  name: string
-  namespace?: string
-  attributes: BloggerAttributeNode[]
-  children: BloggerTemplateNode[]
-  selfClosing: boolean
+  readonly type: 'Element'
+  readonly name: string
+  readonly namespace?: string
+  readonly attributes: BloggerAttributeNode[]
+  readonly children: BloggerTemplateNode[]
+  readonly selfClosing: boolean
 }
 
 export interface BloggerTextNode extends BloggerNodeBase {
-  type: 'Text'
-  value: string
+  readonly type: 'Text'
+  readonly value: string
 }
 
 export interface BloggerCDataNode extends BloggerNodeBase {
-  type: 'CData'
-  value: string
+  readonly type: 'CData'
+  readonly value: string
 }
 
 export interface BloggerCommentNode extends BloggerNodeBase {
-  type: 'Comment'
-  value: string
+  readonly type: 'Comment'
+  readonly value: string
 }
 
 export interface BloggerDocumentNode extends BloggerNodeBase {
-  type: 'Document'
-  children: BloggerTemplateNode[]
+  readonly type: 'Document'
+  readonly children: BloggerTemplateNode[]
 }
 
 export type BloggerTemplateNode
@@ -184,5 +192,5 @@ export type BloggerASTNode
     | BloggerPropertyNode
 
 export * from './parser/directive-scanner.js'
-export { ExpressionParser, parseExpression } from './parser/expr-parser.js'
+export { ExpressionParser, parseExpression, type ParseExpressionOptions } from './parser/expr-parser.js'
 export { Lexer, type Token, tokenize, type TokenPosition, type TokenType } from './parser/lexer.js'

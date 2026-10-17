@@ -474,5 +474,66 @@ describe('helpers & canonical structure validation suite', () => {
       expect(result.missingRequired).toEqual([])
       expect(result.invalidExpressions).toEqual([])
     })
+
+    it('validates allowed_values when passed a scanned BloggerDirectiveToken', () => {
+      const xml = '<b:section id="main" tag="invalidTag"/>'
+      const tokens = scanDirectiveTokens(xml)
+      const token = tokens[0]!
+      const result = validateDirectiveAttributes(token)
+
+      expect(result.valid).toBe(false)
+      expect(result.disallowedValues).toHaveLength(1)
+      const disallowed = result.disallowedValues[0]!
+      expect(disallowed.attribute).toBe('tag')
+      expect(disallowed.value).toBe('invalidTag')
+      expect(disallowed.allowed).toContain('div')
+      expect(disallowed.allowed).toContain('header')
+      expect(disallowed.allowed).toContain('footer')
+      expect(disallowed.start).toBeDefined()
+      expect(disallowed.end).toBeDefined()
+      expect(disallowed.valueStart).toBeDefined()
+      expect(disallowed.valueEnd).toBeDefined()
+
+      expect(result.violations).toHaveLength(1)
+      expect(result.violations[0]?.code).toBe('BX1024')
+    })
+
+    it('accepts valid allowed_values in BloggerDirectiveToken', () => {
+      const xml = '<b:section id="main" tag="footer" growth="vertical"/>'
+      const tokens = scanDirectiveTokens(xml)
+      const token = tokens[0]!
+      const result = validateDirectiveAttributes(token)
+
+      expect(result.valid).toBe(true)
+      expect(result.disallowedValues).toHaveLength(0)
+    })
+
+    it('accepts all 4 canonical boolean values (yes, no, true, false) on boolean attributes', () => {
+      for (const val of ['yes', 'no', 'true', 'false', 'YES', 'TRUE']) {
+        const xml = `<b:section id="main" ads="${val}" showaddelement="${val}" preferred="${val}"/>`
+        const token = scanDirectiveTokens(xml)[0]!
+        const result = validateDirectiveAttributes(token)
+        expect(result.valid).toBe(true)
+        expect(result.disallowedValues).toHaveLength(0)
+      }
+    })
+
+    it('rejects non-boolean values on boolean attributes', () => {
+      const xml = '<b:section id="main" ads="invalid_val"/>'
+      const token = scanDirectiveTokens(xml)[0]!
+      const result = validateDirectiveAttributes(token)
+      expect(result.valid).toBe(false)
+      expect(result.disallowedValues).toHaveLength(1)
+      expect(result.disallowedValues[0]?.allowed).toEqual(['yes', 'no', 'true', 'false'])
+    })
+
+    it('emits diagnostic with exact range in validateTemplateStructure for disallowed attribute values', () => {
+      const xml = '<b:section id="main" tag="notAValidTag"/>'
+      const diags = validateTemplateStructure(xml)
+      const diag = diags.find(d => d.code === 'BX1024' && d.message.includes('notAValidTag'))
+      expect(diag).toBeDefined()
+      expect(diag?.tagStart).toBeDefined()
+      expect(diag?.tagEnd).toBeDefined()
+    })
   })
 })

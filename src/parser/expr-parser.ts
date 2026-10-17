@@ -4,6 +4,7 @@ import type {
   BloggerCallExpressionNode,
   BloggerConditionalExpressionNode,
   BloggerDataPathNode,
+  BloggerErrorNode,
   BloggerExpressionNode,
   BloggerIdentifierNode,
   BloggerLambdaExpressionNode,
@@ -20,6 +21,11 @@ import type { SpecCatalog } from '../catalogs/index.js'
 import type { Token, TokenPosition, TokenType } from './lexer.js'
 import { getSpecCatalog } from '../catalogs/index.js'
 import { tokenize } from './lexer.js'
+
+export interface ParseExpressionOptions {
+  readonly catalog?: SpecCatalog
+  readonly tolerant?: boolean
+}
 
 interface InfixOpInfo {
   name: string
@@ -69,16 +75,25 @@ export class ExpressionParser {
   private readonly tokens: Token[]
   private readonly source: string
   private readonly catalog: SpecCatalog
+  private readonly tolerant: boolean
   private current = 0
 
-  constructor(source: string, catalog: SpecCatalog = getSpecCatalog()) {
+  constructor(source: string, options: ParseExpressionOptions = {}) {
     this.source = source
     this.tokens = tokenize(source)
-    this.catalog = catalog
+    this.catalog = options.catalog ?? getSpecCatalog()
+    this.tolerant = Boolean(options.tolerant)
   }
 
   public parse(): BloggerExpressionNode {
     if (this.isAtEnd()) {
+      if (this.tolerant) {
+        return {
+          type: 'Error',
+          message: 'Empty expression cannot be parsed',
+          raw: '',
+        }
+      }
       throw new Error('Empty expression cannot be parsed')
     }
 
@@ -86,6 +101,9 @@ export class ExpressionParser {
 
     if (!this.isAtEnd()) {
       const tok = this.peek()
+      if (this.tolerant) {
+        return expr
+      }
       throw new Error(`Unexpected token '${tok.value}' at line ${tok.start.line}, column ${tok.start.column}`)
     }
 
@@ -137,9 +155,10 @@ export class ExpressionParser {
 
       case 'BOOLEAN': {
         this.advance()
+        const lower = token.value.toLowerCase()
         const node: BloggerLiteralNode = {
           type: 'Literal',
-          value: token.value === 'true',
+          value: lower === 'true' || lower === 'yes',
           raw: token.value,
           loc: makeLoc(token.start, token.end),
         }
@@ -314,11 +333,33 @@ export class ExpressionParser {
           }
           return node
         }
+        if (this.tolerant) {
+          const errNode: BloggerErrorNode = {
+            type: 'Error',
+            message: `Unexpected operator '${opToken.value}' in prefix position`,
+            raw: opToken.value,
+            unexpectedToken: opToken.value,
+            loc: makeLoc(opToken.start, opToken.end),
+          }
+          return errNode
+        }
         throw new Error(`Unexpected operator '${opToken.value}' in prefix position at line ${opToken.start.line}, column ${opToken.start.column}`)
       }
 
-      default:
+      default: {
+        if (this.tolerant) {
+          const tok = this.isAtEnd() ? this.peek() : this.advance()
+          const errNode: BloggerErrorNode = {
+            type: 'Error',
+            message: tok.type === 'EOF' ? 'Unexpected end of expression' : `Unexpected token '${tok.value}'`,
+            raw: tok.type === 'EOF' ? '' : tok.value,
+            unexpectedToken: tok.value,
+            loc: makeLoc(tok.start, tok.end),
+          }
+          return errNode
+        }
         throw new Error(`Unexpected token '${token.value}' at line ${token.start.line}, column ${token.start.column}`)
+      }
     }
   }
 
@@ -328,7 +369,7 @@ export class ExpressionParser {
     // 1. Member dot access: object.property
     if (opInfo.isMemberDot) {
       this.advance() // '.'
-      const propToken = this.consume('IDENTIFIER', 'Expected property name after \'.\'')
+      const propToken = this.consumePropertyName('Expected property name after \'.\'')
       const node: BloggerMemberExpressionNode = {
         type: 'MemberExpression',
         object: left,
@@ -464,18 +505,32 @@ export class ExpressionParser {
     const members: BloggerDataPathNode['members'] = []
     let lastEnd = dataPrefixToken.end
 
-    if (this.check('IDENTIFIER')) {
+    if (this.checkPropertyName()) {
       const firstPropToken = this.advance()
       members.push({ property: firstPropToken.value, computed: false })
       lastEnd = firstPropToken.end
+    }
+    else if (this.tolerant && !this.check('LBRACKET') && !this.check('DOT')) {
+      members.push({ property: '', computed: false })
     }
 
     while (!this.isAtEnd()) {
       if (this.check('DOT')) {
         this.advance() // '.'
-        const memberToken = this.consume('IDENTIFIER', 'Expected member identifier after \'.\'')
-        members.push({ property: memberToken.value, computed: false })
-        lastEnd = memberToken.end
+        if (this.checkPropertyName()) {
+          const memberToken = this.advance()
+          members.push({ property: memberToken.value, computed: false })
+          lastEnd = memberToken.end
+        }
+        else if (this.tolerant) {
+          members.push({ property: '', computed: false })
+          break
+        }
+        else {
+          const memberToken = this.consumePropertyName('Expected member identifier after \'.\'')
+          members.push({ property: memberToken.value, computed: false })
+          lastEnd = memberToken.end
+        }
       }
       else if (this.check('LBRACKET')) {
         this.advance() // '['
@@ -555,12 +610,20 @@ export class ExpressionParser {
     const keyTok = this.peek()
     let key = ''
 
-    if (keyTok.type === 'IDENTIFIER' || keyTok.type === 'STRING') {
+    if (keyTok.type === 'IDENTIFIER' || keyTok.type === 'STRING' || keyTok.type === 'BOOLEAN' || keyTok.type === 'NULL') {
       this.advance()
       key = keyTok.value
     }
     else {
-      throw new Error(`Expected object property key at line ${keyTok.start.line}, column ${keyTok.start.column}`)
+      if (this.tolerant) {
+        key = keyTok.value || 'error'
+        if (!this.isAtEnd()) {
+          this.advance()
+        }
+      }
+      else {
+        throw new Error(`Expected object property key at line ${keyTok.start.line}, column ${keyTok.start.column}`)
+      }
     }
 
     this.consume('COLON', 'Expected \':\' after object property key')
@@ -675,7 +738,30 @@ export class ExpressionParser {
       return this.advance()
     }
     const tok = this.peek()
+    if (this.tolerant) {
+      return {
+        type,
+        value: '',
+        start: tok.start,
+        end: tok.end,
+      }
+    }
     throw new Error(`${errorMessage} (found '${tok.value}' at line ${tok.start.line}, column ${tok.start.column})`)
+  }
+
+  private checkPropertyName(): boolean {
+    if (this.isAtEnd()) {
+      return false
+    }
+    const t = this.peek().type
+    return t === 'IDENTIFIER' || t === 'BOOLEAN' || t === 'NULL'
+  }
+
+  private consumePropertyName(errorMessage: string): Token {
+    if (this.checkPropertyName()) {
+      return this.advance()
+    }
+    return this.consume('IDENTIFIER', errorMessage)
   }
 
   private isAtEnd(): boolean {
@@ -685,8 +771,8 @@ export class ExpressionParser {
 
 export function parseExpression(
   source: string,
-  catalog: SpecCatalog = getSpecCatalog(),
+  options?: ParseExpressionOptions,
 ): BloggerExpressionNode {
-  const parser = new ExpressionParser(source, catalog)
+  const parser = new ExpressionParser(source, options)
   return parser.parse()
 }

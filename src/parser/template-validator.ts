@@ -127,11 +127,13 @@ function validateDirectiveAttributeRules(
     return
   }
 
-  const presentAttrs = Object.keys(token.attributes)
-  const attrValidation = catalog.validateDirectiveAttributes(token.tagName, presentAttrs)
+  const attrValidation = catalog.validateDirectiveAttributes(token)
 
   for (const inv of attrValidation.inverted) {
-    pushDiagnostic(diagnostics, catalog, inv.code as BloggerDiagnosticCode, token)
+    pushDiagnostic(diagnostics, catalog, inv.code as BloggerDiagnosticCode, token, {
+      start: inv.start ?? token.tagStart,
+      end: inv.end ?? token.tagEnd,
+    })
   }
 
   const missingDiag = catalog.getStandardDiagnostic('missing_required_attribute')
@@ -143,11 +145,10 @@ function validateDirectiveAttributeRules(
 
   const deprecatedDiag = catalog.getStandardDiagnostic('deprecated_attribute')
   for (const dep of attrValidation.deprecated) {
-    const attrToken = token.attributes[dep.name]
     pushDiagnostic(diagnostics, catalog, deprecatedDiag, token, {
       message: `Attribute '${dep.name}' on <${token.tagName}> is deprecated. ${dep.reason || ''}`.trim(),
-      start: attrToken?.start ?? token.tagStart,
-      end: attrToken?.end ?? token.tagEnd,
+      start: dep.start ?? token.tagStart,
+      end: dep.end ?? token.tagEnd,
     })
   }
 
@@ -158,6 +159,14 @@ function validateDirectiveAttributeRules(
       message: `Attribute '${invalidExpr}' on <${token.tagName}> does not support expressions.`,
       start: attrToken?.start ?? token.tagStart,
       end: attrToken?.end ?? token.tagEnd,
+    })
+  }
+
+  for (const disallowed of attrValidation.disallowedValues) {
+    pushDiagnostic(diagnostics, catalog, deprecatedDiag, token, {
+      message: `Value '${disallowed.value}' is not allowed for attribute '${disallowed.attribute}' on <${token.tagName}>. Allowed values: ${disallowed.allowed.join(', ')}.`,
+      start: disallowed.valueStart ?? disallowed.start ?? token.tagStart,
+      end: disallowed.valueEnd ?? disallowed.end ?? token.tagEnd,
     })
   }
 

@@ -388,4 +388,78 @@ describe('canonical type system & coercion engine', () => {
       expect(isTruthy('0', customCatalog)).toBe(true)
     })
   })
+
+  describe('inferExpressionType (static node typing)', () => {
+    it('infers literal primitive types', () => {
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('"hello"'))).toBe('string')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('42'))).toBe('number')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('true'))).toBe('boolean')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('null'))).toBe('null')
+    })
+
+    it('infers binary arithmetic, string concatenation and comparisons', () => {
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('1 + 2'))).toBe('number')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('"a" + "b"'))).toBe('string')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('5 * 10'))).toBe('number')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('10 > 5'))).toBe('boolean')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('true and false'))).toBe('boolean')
+    })
+
+    it('infers DataPath roots and canonical nested properties from catalog', () => {
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:blog'))).toBe('object')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:blog.title'))).toBe('string')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:view.isPost'))).toBe('boolean')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:view.url'))).toBe('url')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:messages.home'))).toBe('string')
+    })
+
+    it('infers member modifiers on string/data expressions', () => {
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:blog.title.length'))).toBe('number')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:blog.title.escaped'))).toBe('string')
+    })
+
+    it('infers elvis and conditional expressions', () => {
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:blog.title ?: "Fallback"'))).toBe('string')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:view.isPost ? "Post" : "Page"'))).toBe('string')
+    })
+
+    it('infers functional operator calls', () => {
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('+(1, 2)'))).toBe('number')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('resizeImage(data:blog.url, 320)'))).toBe('image')
+    })
+
+    it('infers lambda pipelines and collection transformations', () => {
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:posts count (p => p.id > 0)'))).toBe('number')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:posts any (p => p.isDraft)'))).toBe('boolean')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:posts filter (p => p.id > 0)'))).toBe('array[object]')
+
+      const context: TypeSystemExports.TypeContext = {
+        variables: {
+          posts: 'array[post]',
+        },
+      }
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:posts filter (p => p.id > 0)'), context)).toBe('array[post]')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:posts map (p => p.title)'), context)).toBe('array[string]')
+    })
+
+    it('resolves scoped variables provided via TypeContext', () => {
+      const context: TypeSystemExports.TypeContext = {
+        variables: {
+          currentPost: 'post',
+          counter: 'number',
+        },
+      }
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('currentPost'), context)).toBe('post')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('counter + 1'), context)).toBe('number')
+    })
+
+    it('infers boolean type for all 4 canonical boolean literals (yes, no, true, false)', () => {
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('yes'))).toBe('boolean')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('no'))).toBe('boolean')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('true'))).toBe('boolean')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('false'))).toBe('boolean')
+      expect(TypeSystemExports.inferExpressionType({ type: 'Identifier', name: 'yes' } as any)).toBe('boolean')
+      expect(TypeSystemExports.inferExpressionType({ type: 'Identifier', name: 'no' } as any)).toBe('boolean')
+    })
+  })
 })

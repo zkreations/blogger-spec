@@ -220,9 +220,19 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
         },
         "tag": {
           "type": "string",
-          "description": "HTML element used for output ('header', 'nav', 'main', 'aside', 'footer'). Defaults to 'div'.",
+          "description": "HTML element used for output ('header', 'nav', 'main', 'aside', 'footer', 'section', 'article'). Defaults to 'div'.",
           "expr": true,
-          "attribute_kind": "prefixed_expression"
+          "attribute_kind": "prefixed_expression",
+          "allowed_values": [
+            "div",
+            "header",
+            "nav",
+            "main",
+            "aside",
+            "footer",
+            "section",
+            "article"
+          ]
         },
         "maxwidgets": {
           "type": "number",
@@ -234,13 +244,25 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "type": "boolean",
           "description": "Shows the 'Add a Gadget' button in Layout UI. Values: 'yes' / 'true' (default, visible), 'no' / 'false' (hidden).",
           "attribute_kind": "static_literal",
-          "expr": false
+          "expr": false,
+          "allowed_values": [
+            "yes",
+            "no",
+            "true",
+            "false"
+          ]
         },
         "preferred": {
           "type": "boolean",
           "description": "Preferred section. Indicates whether the section is considered the main section. Values: 'yes' / 'true', 'no' / 'false' (default). Maintained for legacy compatibility, functional in modern themes.",
           "attribute_kind": "static_literal",
-          "expr": false
+          "expr": false,
+          "allowed_values": [
+            "yes",
+            "no",
+            "true",
+            "false"
+          ]
         },
         "cond": {
           "type": "boolean",
@@ -250,15 +272,25 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
         },
         "ads": {
           "type": "boolean",
-          "description": "Set to 'true' if the section is reserved exclusively for AdSense gadgets.",
+          "description": "Set to 'true' (or 'yes') if the section is reserved exclusively for AdSense gadgets. Values: 'yes' / 'true', 'no' / 'false' (default).",
           "attribute_kind": "static_literal",
-          "expr": false
+          "expr": false,
+          "allowed_values": [
+            "yes",
+            "no",
+            "true",
+            "false"
+          ]
         },
         "growth": {
           "type": "string",
           "description": "Deprecated layout alignment in legacy GUI ('vertical' default, or 'horizontal').",
           "expr": true,
-          "attribute_kind": "prefixed_expression"
+          "attribute_kind": "prefixed_expression",
+          "allowed_values": [
+            "horizontal",
+            "vertical"
+          ]
         }
       },
       "constraints": {
@@ -342,13 +374,25 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "type": "boolean",
           "description": "When 'true' (or 'yes'), prevents users from moving or deleting the gadget in Layout UI. Values: 'true' / 'yes', 'false' / 'no'. Default: 'false'.",
           "attribute_kind": "static_literal",
-          "expr": false
+          "expr": false,
+          "allowed_values": [
+            "yes",
+            "no",
+            "true",
+            "false"
+          ]
         },
         "visible": {
           "type": "boolean",
           "description": "When 'true' (or 'yes'), the gadget is active and exposed in data:widgets global dictionary. Values: 'true' / 'yes' (default), 'false' / 'no'.",
           "attribute_kind": "static_literal",
-          "expr": false
+          "expr": false,
+          "allowed_values": [
+            "yes",
+            "no",
+            "true",
+            "false"
+          ]
         },
         "version": {
           "type": "number",
@@ -731,7 +775,13 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "description": "Reverses iteration order when true (or 'yes'). Values: 'true' / 'yes', 'false' / 'no'. Defaults to false. Does not reverse index numbering.",
           "default": false,
           "attribute_kind": "prefixed_expression",
-          "expr": true
+          "expr": true,
+          "allowed_values": [
+            "yes",
+            "no",
+            "true",
+            "false"
+          ]
         }
       },
       "constraints": {
@@ -1648,7 +1698,13 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "description": "Optional flag (defaults to false). When 'true' (or 'yes'), suppresses the interactive control from the Theme Designer UI. Values: 'true' / 'yes', 'false' / 'no'.",
           "default": false,
           "attribute_kind": "static_literal",
-          "expr": false
+          "expr": false,
+          "allowed_values": [
+            "yes",
+            "no",
+            "true",
+            "false"
+          ]
         }
       },
       "constraints": {
@@ -1810,9 +1866,15 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
       "attributes": {
         "render": {
           "type": "boolean",
-          "description": "Controls HTML emission. If true, renders as an HTML comment (<!--...-->) without interior padding. If false or omitted, stripped. Note: Standard XML comments inside <b:includable> are stripped at compile-time.",
+          "description": "Controls HTML emission. If true (or 'yes'), renders as an HTML comment (<!--...-->) without interior padding. If false, 'no', or omitted, stripped. Note: Standard XML comments inside <b:includable> are stripped at compile-time.",
           "expr": true,
-          "attribute_kind": "prefixed_expression"
+          "attribute_kind": "prefixed_expression",
+          "allowed_values": [
+            "yes",
+            "no",
+            "true",
+            "false"
+          ]
         }
       },
       "constraints": {
@@ -12369,6 +12431,13 @@ export const embeddedSchemas: Record<string, any> = {
             "items": {
               "type": "string"
             }
+          },
+          "allowed_values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Exhaustive list of allowed literal string values for this attribute."
           }
         },
         "additionalProperties": false

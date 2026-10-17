@@ -157,6 +157,8 @@ export interface BloggerDirectiveAttribute {
   /** Default value for the attribute if omitted. */
   default?: string | number | boolean | null;
   accepted_forms?: string[];
+  /** Exhaustive list of allowed literal string values for this attribute. */
+  allowed_values?: string[];
 }
 
 export type BloggerDeprecatedAttributeEntry = BloggerDeprecatedEntry;
@@ -817,7 +819,7 @@ export interface BloggerClassDirectiveAttributes {
 
 /** Attributes for directive `<b:comment>` */
 export interface BloggerCommentDirectiveAttributes {
-  /** Controls HTML emission. If true, renders as an HTML comment (<!--...-->) without interior padding. If false or omitted, stripped. Note: Standard XML comments inside <b:includable> are stripped at compile-time. */
+  /** Controls HTML emission. If true (or 'yes'), renders as an HTML comment (<!--...-->) without interior padding. If false, 'no', or omitted, stripped. Note: Standard XML comments inside <b:includable> are stripped at compile-time. */
   render?: boolean;
   /** Dynamic expression for `render` */
   "expr:render"?: BloggerExpression;
@@ -927,7 +929,7 @@ export interface BloggerParamDirectiveAttributes {
 
 /** Attributes for directive `<b:section>` */
 export interface BloggerSectionDirectiveAttributes {
-  /** Set to 'true' if the section is reserved exclusively for AdSense gadgets. */
+  /** Set to 'true' (or 'yes') if the section is reserved exclusively for AdSense gadgets. Values: 'yes' / 'true', 'no' / 'false' (default). */
   ads?: boolean;
   /** Custom CSS classes. The engine always appends 'section' (and 'no-items' if empty). */
   class?: string;
@@ -951,7 +953,7 @@ export interface BloggerSectionDirectiveAttributes {
   preferred?: boolean;
   /** Shows the 'Add a Gadget' button in Layout UI. Values: 'yes' / 'true' (default, visible), 'no' / 'false' (hidden). */
   showaddelement?: boolean;
-  /** HTML element used for output ('header', 'nav', 'main', 'aside', 'footer'). Defaults to 'div'. */
+  /** HTML element used for output ('header', 'nav', 'main', 'aside', 'footer', 'section', 'article'). Defaults to 'div'. */
   tag?: string;
   /** Dynamic expression for `tag` */
   "expr:tag"?: BloggerExpression;

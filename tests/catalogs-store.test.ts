@@ -879,7 +879,7 @@ describe('catalogs and store formal verification suite', () => {
         expect(stdAst.operator).toBe('+')
         expect(stdAst.right.operator).toBe('*')
 
-        const customAst = RootExports.parseExpression('2 + 3 * 4', customSpec) as any
+        const customAst = RootExports.parseExpression('2 + 3 * 4', { catalog: customSpec }) as any
         expect(customAst.operator).toBe('*')
         expect(customAst.left.operator).toBe('+')
       })

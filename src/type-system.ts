@@ -1,3 +1,4 @@
+import type { BloggerExpressionNode } from './ast.js'
 import type { SpecCatalog } from './catalogs/index.js'
 import type {
   BloggerCompatibleOperator,
@@ -219,4 +220,284 @@ export function isTruthy(
   catalog: SpecCatalog = getSpecCatalog(),
 ): boolean {
   return catalog.isTruthy(value)
+}
+
+export interface TypeContext {
+  readonly variables?: Record<string, string>
+  readonly globals?: Record<string, string>
+  readonly catalog?: SpecCatalog
+}
+
+export function inferExpressionType(
+  node: BloggerExpressionNode,
+  context?: TypeContext,
+): string {
+  const catalog = context?.catalog ?? getSpecCatalog()
+
+  switch (node.type) {
+    case 'Literal': {
+      if (node.value === null) {
+        return 'null'
+      }
+      if (typeof node.value === 'string') {
+        return 'string'
+      }
+      if (typeof node.value === 'number') {
+        return 'number'
+      }
+      if (typeof node.value === 'boolean') {
+        return 'boolean'
+      }
+      return 'unknown'
+    }
+
+    case 'Identifier': {
+      const lower = node.name.toLowerCase()
+      if (lower === 'true' || lower === 'false' || lower === 'yes' || lower === 'no') {
+        return 'boolean'
+      }
+      if (lower === 'null') {
+        return 'null'
+      }
+      if (context?.variables?.[node.name]) {
+        return context.variables[node.name]!
+      }
+      if (context?.globals?.[node.name]) {
+        return context.globals[node.name]!
+      }
+      return 'unknown'
+    }
+
+    case 'DataPath': {
+      if (!node.members || node.members.length === 0) {
+        return 'unknown'
+      }
+
+      const first = node.members[0]!
+      let currentType = 'unknown'
+
+      if (context?.variables?.[first.property]) {
+        currentType = context.variables[first.property]!
+      }
+      else if (context?.variables?.[`data:${first.property}`]) {
+        currentType = context.variables[`data:${first.property}`]!
+      }
+      else {
+        const globalKey = `data:${first.property}`
+        const globalDef = catalog.getGlobal(globalKey)
+        if (globalDef) {
+          const rootType = globalDef.cardinality === 'collection'
+            ? (globalDef.item_type ? `array[${globalDef.item_type}]` : 'array')
+            : 'object'
+          if (node.members.length === 1) {
+            return rootType
+          }
+          currentType = rootType
+        }
+        else {
+          const blogWidget = catalog.getWidget('Blog')
+          if (blogWidget?.canonical?.[first.property]) {
+            const rootType = blogWidget.canonical[first.property]!.type ?? 'object'
+            if (node.members.length === 1) {
+              return rootType
+            }
+            currentType = rootType
+          }
+          else if (context?.globals?.[first.property]) {
+            currentType = context.globals[first.property]!
+          }
+        }
+      }
+
+      if (node.members.length === 1) {
+        return currentType
+      }
+
+      const globalDef = catalog.getGlobal(`data:${first.property}`)
+      for (let i = 1; i < node.members.length; i++) {
+        const member = node.members[i]!
+        if (member.computed && member.expression) {
+          if (currentType.startsWith('array[') && currentType.endsWith(']')) {
+            currentType = currentType.slice(6, -1)
+            continue
+          }
+          if (currentType === 'array') {
+            currentType = 'unknown'
+            continue
+          }
+        }
+
+        if (first.property === 'messages' && (catalog.isMessage(member.property) || globalDef?.catalog_ref === 'messages.json')) {
+          currentType = 'string'
+          continue
+        }
+
+        if (i === 1 && globalDef?.canonical?.[member.property]) {
+          currentType = globalDef.canonical[member.property]!.type ?? 'unknown'
+          continue
+        }
+
+        if (globalDef?.item_properties?.[member.property]) {
+          currentType = globalDef.item_properties[member.property]!.type ?? 'unknown'
+          continue
+        }
+
+        const modType = resolveModifierReturnType(currentType, member.property, catalog)
+        if (modType !== 'unknown') {
+          currentType = modType
+          continue
+        }
+
+        if (currentType.startsWith('array[') && currentType.endsWith(']')) {
+          const itemType = currentType.slice(6, -1)
+          if (member.property === 'first' || member.property === 'last') {
+            currentType = itemType
+            continue
+          }
+        }
+
+        currentType = 'unknown'
+      }
+
+      return currentType
+    }
+
+    case 'UnaryExpression': {
+      if (node.operator === '!' || node.operator === 'not') {
+        return 'boolean'
+      }
+      if (node.operator === '-') {
+        return 'number'
+      }
+      return 'unknown'
+    }
+
+    case 'BinaryExpression': {
+      const leftType = inferExpressionType(node.left, context)
+      const rightType = inferExpressionType(node.right, context)
+      return resolveOperatorReturnType(node.operator, leftType, rightType, catalog)
+    }
+
+    case 'LogicalExpression': {
+      return 'boolean'
+    }
+
+    case 'ConditionalExpression': {
+      if (node.isElvis) {
+        const testType = inferExpressionType(node.test, context)
+        const altType = node.alternate
+          ? inferExpressionType(node.alternate, context)
+          : inferExpressionType(node.consequent, context)
+        return resolveOperatorReturnType('?:', testType, altType, catalog)
+      }
+      const consType = inferExpressionType(node.consequent, context)
+      if (node.alternate) {
+        const altType = inferExpressionType(node.alternate, context)
+        if (consType === altType) {
+          return consType
+        }
+        if (isTypeAssignable(consType, altType, catalog)) {
+          return altType
+        }
+        if (isTypeAssignable(altType, consType, catalog)) {
+          return consType
+        }
+      }
+      return consType
+    }
+
+    case 'CallExpression': {
+      const opDef = catalog.getOperator(node.callee)
+      if (opDef) {
+        const firstArgType = node.arguments[0] ? inferExpressionType(node.arguments[0], context) : undefined
+        const secondArgType = node.arguments[1] ? inferExpressionType(node.arguments[1], context) : undefined
+        return resolveOperatorReturnType(node.callee, firstArgType, secondArgType, catalog)
+      }
+      return 'unknown'
+    }
+
+    case 'LambdaExpression': {
+      const calleeType = inferExpressionType(node.callee, context)
+      const op = node.operator.toLowerCase()
+
+      if (op === 'count') {
+        return 'number'
+      }
+      if (op === 'any' || op === 'all' || op === 'none') {
+        return 'boolean'
+      }
+      if (op === 'first') {
+        if (calleeType.startsWith('array[') && calleeType.endsWith(']')) {
+          return calleeType.slice(6, -1)
+        }
+        return 'unknown'
+      }
+      if (op === 'filter') {
+        return calleeType
+      }
+      if (op === 'map') {
+        let itemType = 'unknown'
+        if (calleeType.startsWith('array[') && calleeType.endsWith(']')) {
+          itemType = calleeType.slice(6, -1)
+        }
+        const lambdaContext: TypeContext = {
+          ...context,
+          variables: {
+            ...(context?.variables || {}),
+            [node.parameter]: itemType,
+          },
+        }
+        const bodyType = inferExpressionType(node.body, lambdaContext)
+        return `array[${bodyType}]`
+      }
+
+      return calleeType
+    }
+
+    case 'ArrayExpression': {
+      if (node.elements.length === 0) {
+        return 'array'
+      }
+      const firstType = inferExpressionType(node.elements[0]!, context)
+      const allSame = node.elements.every(elem => inferExpressionType(elem, context) === firstType)
+      return allSame && firstType !== 'unknown' ? `array[${firstType}]` : 'array'
+    }
+
+    case 'ObjectExpression': {
+      return 'object'
+    }
+
+    case 'MemberExpression': {
+      const objType = inferExpressionType(node.object, context)
+      if (node.computed) {
+        if (objType.startsWith('array[') && objType.endsWith(']')) {
+          return objType.slice(6, -1)
+        }
+        return 'unknown'
+      }
+      const propName = node.property.type === 'Identifier' ? node.property.name : ''
+      if (!propName) {
+        return 'unknown'
+      }
+      const modType = resolveModifierReturnType(objType, propName, catalog)
+      if (modType !== 'unknown') {
+        return modType
+      }
+      if (objType === 'post' || objType === 'object') {
+        const blogWidget = catalog.getWidget('Blog')
+        if (blogWidget?.canonical?.posts?.item_properties?.[propName]) {
+          return blogWidget.canonical.posts.item_properties[propName]!.type ?? 'unknown'
+        }
+      }
+      return 'unknown'
+    }
+
+    case 'Error': {
+      return 'unknown'
+    }
+
+    default: {
+      return 'unknown'
+    }
+  }
 }

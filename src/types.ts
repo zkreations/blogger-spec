@@ -14,6 +14,20 @@ import type {
 
 export type * from './catalogs/types.generated.js'
 
+export const BLOGGER_BOOLEAN_VALUES = ['yes', 'no', 'true', 'false'] as const
+export type BloggerBooleanValue = typeof BLOGGER_BOOLEAN_VALUES[number]
+
+export function isBloggerBoolean(value: unknown): boolean {
+  if (typeof value === 'boolean') {
+    return true
+  }
+  if (typeof value === 'string') {
+    const lower = value.trim().toLowerCase()
+    return lower === 'yes' || lower === 'no' || lower === 'true' || lower === 'false'
+  }
+  return false
+}
+
 export interface BloggerStructureDiagnostic {
   code: BloggerDiagnosticCode
   rule: BloggerDiagnosticRule
@@ -31,21 +45,49 @@ export interface DirectiveNestingViolation {
   message: string
 }
 
+export interface DirectiveAttributeViolation {
+  readonly attribute: string
+  readonly code: BloggerDiagnosticCode
+  readonly message: string
+  readonly start?: number
+  readonly end?: number
+  readonly valueStart?: number
+  readonly valueEnd?: number
+}
+
 export interface DirectiveAttributesValidationResult {
-  valid: boolean
-  missingRequired: string[]
-  unknown: string[]
-  deprecated: Array<{
-    name: string
-    reason?: string
-    replacement?: string | null
+  readonly valid: boolean
+  readonly missingRequired: string[]
+  readonly unknown: string[]
+  readonly deprecated: Array<{
+    readonly name: string
+    readonly reason?: string
+    readonly replacement?: string | null
+    readonly start?: number
+    readonly end?: number
+    readonly valueStart?: number
+    readonly valueEnd?: number
   }>
-  invalidExpressions: string[]
-  inverted: Array<{
-    code: string
-    attribute: string
-    expected: string
+  readonly invalidExpressions: string[]
+  readonly inverted: Array<{
+    readonly code: string
+    readonly attribute: string
+    readonly expected: string
+    readonly start?: number
+    readonly end?: number
+    readonly valueStart?: number
+    readonly valueEnd?: number
   }>
+  readonly disallowedValues: Array<{
+    readonly attribute: string
+    readonly value: string
+    readonly allowed: string[]
+    readonly start?: number
+    readonly end?: number
+    readonly valueStart?: number
+    readonly valueEnd?: number
+  }>
+  readonly violations: DirectiveAttributeViolation[]
 }
 
 export interface VariableAttributesValidationResult {
