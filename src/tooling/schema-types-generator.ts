@@ -516,7 +516,9 @@ export function generateCanonicalSchemaTypes(): string {
 
   for (const st of platformSubtypes) {
     const pascal = toPascalCase(st)
-    const ownMods = typesData.types?.[st]?.modifiers || {}
+    const typeDef = typesData.types?.[st]
+    const isStringSubtype = typeDef?.parent_type === 'string'
+    const ownMods = typeDef?.modifiers || {}
     lines.push(`export interface Blogger${pascal}Modifiers {`)
     for (const [mName, mDef] of Object.entries(ownMods)) {
       if ((mDef as any).description) {
@@ -531,17 +533,24 @@ export function generateCanonicalSchemaTypes(): string {
       }
       lines.push(`  ${sanitizePropName(mName)}?: ${propType};`)
     }
-    for (const [sName, sDef] of Object.entries(stringModifiers)) {
-      if (!ownMods[sName]) {
-        if ((sDef as any).description) {
-          lines.push(`  /** ${(sDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
+    if (isStringSubtype) {
+      for (const [sName, sDef] of Object.entries(stringModifiers)) {
+        if (!ownMods[sName]) {
+          if ((sDef as any).description) {
+            lines.push(`  /** ${(sDef as any).description.replace(/\*\//g, '*\\/').replace(/\n/g, ' ')} */`)
+          }
+          const propType = mapPropertyTypeToTs((sDef as any).output_type, typeDefinitions)
+          lines.push(`  ${sanitizePropName(sName)}?: ${propType};`)
         }
-        const propType = mapPropertyTypeToTs((sDef as any).output_type, typeDefinitions)
-        lines.push(`  ${sanitizePropName(sName)}?: ${propType};`)
       }
     }
     lines.push('}')
-    lines.push(`export type Blogger${pascal} = string & Blogger${pascal}Modifiers;`)
+    if (isStringSubtype) {
+      lines.push(`export type Blogger${pascal} = string & Blogger${pascal}Modifiers;`)
+    }
+    else {
+      lines.push(`export type Blogger${pascal} = Blogger${pascal}Modifiers;`)
+    }
     lines.push('')
   }
 

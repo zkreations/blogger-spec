@@ -58,6 +58,10 @@ describe('canonical type system & coercion engine', () => {
       expect(isTypeAssignable('date', 'image')).toBe(false)
       expect(isTypeAssignable('locale', 'date')).toBe(false)
       expect(isTypeAssignable('string', 'url')).toBe(false)
+
+      // Object subtype: image_variant extends object, not string
+      expect(isTypeAssignable('image_variant', 'object')).toBe(true)
+      expect(isTypeAssignable('image_variant', 'string')).toBe(false)
     })
 
     it('enforces isolation of skin variables from template string hierarchy', () => {
@@ -123,6 +127,14 @@ describe('canonical type system & coercion engine', () => {
       expect(localeMods.languageAlignment).toBeDefined()
       expect(localeMods.length).toBeDefined()
       expect(localeMods.escaped).toBeDefined()
+    })
+
+    it('isolates object subtypes like image_variant from string modifiers', () => {
+      const variantMods = getTypeModifiers('image_variant')
+      expect(variantMods.url).toBeDefined()
+      expect(variantMods.size).toBeDefined()
+      expect(variantMods.length).toBeUndefined()
+      expect(variantMods.escaped).toBeUndefined()
     })
 
     it('returns array collection modifiers for both generic and parameterized forms', () => {

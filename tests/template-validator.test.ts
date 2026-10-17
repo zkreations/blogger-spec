@@ -246,6 +246,37 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diags.some(d => d.code === 'BX1001')).toBe(true)
     })
 
+    it('detects all hallucinated directives with their dedicated diagnostic codes (BX1001-BX1012)', () => {
+      const hallucinatedSamples: Record<string, string> = {
+        'b:for': 'BX1001',
+        'b:each': 'BX1002',
+        'b:set': 'BX1003',
+        'b:var': 'BX1004',
+        'b:let': 'BX1005',
+        'b:else-if': 'BX1006',
+        'b:choose': 'BX1007',
+        'b:when': 'BX1008',
+        'b:otherwise': 'BX1009',
+        'b:template': 'BX1010',
+        'b:macro': 'BX1011',
+        'b:function': 'BX1012',
+      }
+
+      for (const [tag, expectedCode] of Object.entries(hallucinatedSamples)) {
+        const xml = `
+          <b:section id='main'>
+            <b:widget id='Blog1' type='Blog'>
+              <b:includable id='main'>
+                <${tag}/>
+              </b:includable>
+            </b:widget>
+          </b:section>
+        `
+        const diags = validateTemplateStructure(xml)
+        expect(diags.some(d => d.code === expectedCode)).toBe(true)
+      }
+    })
+
     it('detects duplicate element id across sections and widgets (BX1033)', () => {
       const xml = `
         <b:section id='main'>

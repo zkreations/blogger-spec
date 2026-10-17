@@ -601,18 +601,8 @@ export interface BloggerImageVariantModifiers {
   size?: number;
   /** Asset URL of the specific resized image variant in dynamic pipeline collections. */
   url?: BloggerImage;
-  /** Returns total character count of the string. */
-  length?: number;
-  /** HTML-escapes reserved entities (&, <, >, ", '). */
-  escaped?: string;
-  /** Escapes characters for safe inclusion within JavaScript string literals. */
-  jsEscaped?: string;
-  /** Escapes characters conforming to JSON serialization rules. */
-  jsonEscaped?: string;
-  /** Escapes characters for CSS identifier or string contexts. */
-  cssEscaped?: string;
 }
-export type BloggerImageVariant = string & BloggerImageVariantModifiers;
+export type BloggerImageVariant = BloggerImageVariantModifiers;
 
 export interface BloggerLocaleModifiers {
   /** Returns the localized language name (e.g. 'Catalan (Spain, Valencian)'). */
@@ -1362,8 +1352,6 @@ export interface BloggerWidgetGlobal {
 export interface BloggerWidgetsGlobal {
   /** Collection of visible AdSense gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
   AdSense?: Record<string, any>[];
-  /** True if collection contains 1 or more widgets (alias of notEmpty). */
-  any?: boolean;
   /** Collection of visible Attribution gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
   Attribution?: Record<string, any>[];
   /** Collection of visible Blog gadget descriptors with specialized metadata and posts. Only exposes these specific descriptor fields, NOT the full private widget data dictionary (e.g. full post bodies, comments, settings). */
@@ -1378,14 +1366,10 @@ export interface BloggerWidgetsGlobal {
   BlogSearch?: Record<string, any>[];
   /** Collection of visible ContactForm gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
   ContactForm?: Record<string, any>[];
-  /** True if collection contains 0 widgets. */
-  empty?: boolean;
   /** Collection of visible FeaturedPost gadget descriptors with specialized pinned post metadata. Only exposes these specific descriptor fields, NOT the full private widget data dictionary. */
   FeaturedPost?: Record<string, any>[];
   /** Collection of visible Feed gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
   Feed?: Record<string, any>[];
-  /** First widget object in collection without looping ({ id, sectionId, title, type }). */
-  first?: Record<string, any>;
   /** Collection of visible Followers gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
   Followers?: Record<string, any>[];
   /** Collection of visible Header gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
@@ -1396,14 +1380,8 @@ export interface BloggerWidgetsGlobal {
   Image?: Record<string, any>[];
   /** Collection of visible Label gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
   Label?: Record<string, any>[];
-  /** Last widget object in collection without looping ({ id, sectionId, title, type }). */
-  last?: Record<string, any>;
-  /** Total count of widgets in collection. */
-  length?: number;
   /** Collection of visible LinkList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
   LinkList?: Record<string, any>[];
-  /** True if collection contains 1 or more widgets. */
-  notEmpty?: boolean;
   /** Collection of visible PageList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
   PageList?: Record<string, any>[];
   /** Collection of visible PopularPosts gadget descriptors with specialized popular posts metadata. Only exposes these specific descriptor fields, NOT the full private widget data dictionary. */
@@ -1412,8 +1390,6 @@ export interface BloggerWidgetsGlobal {
   Profile?: Record<string, any>[];
   /** Collection of visible ReportAbuse gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
   ReportAbuse?: Record<string, any>[];
-  /** Total count of widgets in collection. */
-  size?: number;
   /** Collection of visible Stats gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */
   Stats?: Record<string, any>[];
   /** Collection of visible Subscribe gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary. */

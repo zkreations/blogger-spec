@@ -22,7 +22,13 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "b:set": "BX1003",
         "b:var": "BX1004",
         "b:let": "BX1005",
-        "b:else-if": "BX1006"
+        "b:else-if": "BX1006",
+        "b:choose": "BX1007",
+        "b:when": "BX1008",
+        "b:otherwise": "BX1009",
+        "b:template": "BX1010",
+        "b:macro": "BX1011",
+        "b:function": "BX1012"
       },
       "standard_diagnostics": {
         "missing_required_attribute": "BX1022",
@@ -9150,10 +9156,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
               }
             }
           },
-          "any": {
-            "type": "boolean",
-            "description": "True if collection contains 1 or more widgets (alias of notEmpty)."
-          },
           "Attribution": {
             "type": "array[object]",
             "description": "Collection of visible Attribution gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
@@ -9392,10 +9394,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
               }
             }
           },
-          "empty": {
-            "type": "boolean",
-            "description": "True if collection contains 0 widgets."
-          },
           "FeaturedPost": {
             "type": "array[object]",
             "description": "Collection of visible FeaturedPost gadget descriptors with specialized pinned post metadata. Only exposes these specific descriptor fields, NOT the full private widget data dictionary.",
@@ -9441,28 +9439,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
               "type": {
                 "type": "string",
                 "description": "Canonical widget type name ('Feed')."
-              }
-            }
-          },
-          "first": {
-            "type": "object",
-            "description": "First widget object in collection without looping ({ id, sectionId, title, type }).",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "Unique widget instance ID (e.g. 'Blog1', 'Header1')."
-              },
-              "sectionId": {
-                "type": "string",
-                "description": "Parent <b:section> identifier containing the widget."
-              },
-              "title": {
-                "type": "string",
-                "description": "Configured widget header title."
-              },
-              "type": {
-                "type": "string",
-                "description": "Canonical widget type name (e.g. 'Blog', 'AdSense')."
               }
             }
           },
@@ -9576,32 +9552,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
               }
             }
           },
-          "last": {
-            "type": "object",
-            "description": "Last widget object in collection without looping ({ id, sectionId, title, type }).",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "Unique widget instance ID (e.g. 'Blog1', 'Header1')."
-              },
-              "sectionId": {
-                "type": "string",
-                "description": "Parent <b:section> identifier containing the widget."
-              },
-              "title": {
-                "type": "string",
-                "description": "Configured widget header title."
-              },
-              "type": {
-                "type": "string",
-                "description": "Canonical widget type name (e.g. 'Blog', 'AdSense')."
-              }
-            }
-          },
-          "length": {
-            "type": "number",
-            "description": "Total count of widgets in collection."
-          },
           "LinkList": {
             "type": "array[object]",
             "description": "Collection of visible LinkList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
@@ -9623,10 +9573,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
                 "description": "Canonical widget type name ('LinkList')."
               }
             }
-          },
-          "notEmpty": {
-            "type": "boolean",
-            "description": "True if collection contains 1 or more widgets."
           },
           "PageList": {
             "type": "array[object]",
@@ -9729,10 +9675,6 @@ export const embeddedCatalogs: BloggerCatalogMap = {
                 "description": "Canonical widget type name ('ReportAbuse')."
               }
             }
-          },
-          "size": {
-            "type": "number",
-            "description": "Total count of widgets in collection."
           },
           "Stats": {
             "type": "array[object]",

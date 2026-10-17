@@ -586,13 +586,23 @@ describe('catalogs and store formal verification suite', () => {
         expect(hallucinated['b:var']).toBe('BX1004')
         expect(hallucinated['b:let']).toBe('BX1005')
         expect(hallucinated['b:else-if']).toBe('BX1006')
+        expect(hallucinated['b:choose']).toBe('BX1007')
+        expect(hallucinated['b:when']).toBe('BX1008')
+        expect(hallucinated['b:otherwise']).toBe('BX1009')
+        expect(hallucinated['b:template']).toBe('BX1010')
+        expect(hallucinated['b:macro']).toBe('BX1011')
+        expect(hallucinated['b:function']).toBe('BX1012')
 
         expect(isHallucinatedDirective('b:for')).toBe(true)
         expect(isHallucinatedDirective('b:FOR')).toBe(true)
+        expect(isHallucinatedDirective('b:choose')).toBe(true)
+        expect(isHallucinatedDirective('b:template')).toBe(true)
         expect(isHallucinatedDirective('b:if')).toBe(false)
 
         expect(getHallucinatedDirectiveDiagnostic('b:for')).toBe('BX1001')
         expect(getHallucinatedDirectiveDiagnostic('b:ELSE-IF')).toBe('BX1006')
+        expect(getHallucinatedDirectiveDiagnostic('b:choose')).toBe('BX1007')
+        expect(getHallucinatedDirectiveDiagnostic('b:function')).toBe('BX1012')
         expect(getHallucinatedDirectiveDiagnostic('b:if')).toBeUndefined()
       })
 
