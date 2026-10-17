@@ -8,7 +8,8 @@
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:widget",
-        "tag:b:includable"
+        "tag:b:includable",
+        "tag:data:*"
       ],
       "input": {
         "kind": "template",
@@ -284,6 +285,96 @@
         "canonicalDom": true
       },
       "verified_at": "2026-10-14"
+    },
+    {
+      "id": "rendering/widget_rendering/section-container-with-widget",
+      "title": "Section Container With Widget Rendering",
+      "evidence": "official",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:section",
+        "tag:b:widget",
+        "tag:b:includable"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main' tag='main'><b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><h1>Main Content</h1></b:includable></b:widget></b:section>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<main class=\"section\" id=\"main\"><div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><h1>Main Content</h1></div></main>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "rendering/widget_rendering/skin-designer-variables",
+      "title": "Skin Designer Variables Declaration",
+      "evidence": "official",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:skin",
+        "tag:Group",
+        "tag:Variable",
+        "tag:CDATA"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:skin><![CDATA[/* <Group description=\"Colors\"><Variable name=\"primaryColor\" description=\"Primary\" type=\"color\" default=\"#333333\" value=\"#333333\"/></Group> */ body { color: $(primaryColor); }]]></b:skin>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<style id=\"page-skin-1\" type=\"text/css\"><!--\nbody { color: #333333; }\n--></style>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "rendering/widget_rendering/template-skin-layout-styles",
+      "title": "Template Skin Layout Styles",
+      "evidence": "official",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:template-skin",
+        "tag:CDATA"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:template-skin><![CDATA[body#layout { color: red; }]]></b:template-skin>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<style id=\"template-skin-1\" type=\"text/css\"><!--\nbody#layout { color: red; }\n--></style>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "rendering/widget_rendering/template-script-loader",
+      "title": "Template Script Theme Asset Loader",
+      "evidence": "official",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:template-script"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:template-script name='indie'/>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<script type=\"text/javascript\" src=\"https://www.blogger.com/static/v1/jsbin/123456789-indie.js\"></script>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-16"
     }
   ]
 }

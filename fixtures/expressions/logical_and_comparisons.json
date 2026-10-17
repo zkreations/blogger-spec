@@ -25,7 +25,8 @@
       "title": "Relational Greater Than",
       "evidence": "official",
       "covers": [
-        "subsystem:logical_and_comparisons"
+        "subsystem:logical_and_comparisons",
+        "operator:>"
       ],
       "input": {
         "kind": "expression",
@@ -140,7 +141,8 @@
       "title": "Ternary Conditional",
       "evidence": "official",
       "covers": [
-        "subsystem:logical_and_comparisons"
+        "subsystem:logical_and_comparisons",
+        "operator:? :"
       ],
       "input": {
         "kind": "expression",
@@ -308,6 +310,63 @@
         "value": "2026-08-29T14:48:00-05:00"
       },
       "verified_at": "2026-10-12"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/inequality-numbers",
+      "title": "Inequality Numbers",
+      "evidence": "official",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:!="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 != 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/relational-less-than-or-equal",
+      "title": "Relational Less Than Or Equal",
+      "evidence": "official",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:<="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 <= 10",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/relational-greater-than-or-equal",
+      "title": "Relational Greater Than Or Equal",
+      "evidence": "official",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:>="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "20 >= 15",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-16"
     }
   ]
 }

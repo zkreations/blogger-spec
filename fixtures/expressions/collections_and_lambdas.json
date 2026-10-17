@@ -73,7 +73,8 @@
       "title": "Lambda Count",
       "evidence": "official",
       "covers": [
-        "subsystem:collections_and_lambdas"
+        "subsystem:collections_and_lambdas",
+        "operator:count"
       ],
       "input": {
         "kind": "expression",
@@ -103,7 +104,8 @@
       "title": "Lambda Any",
       "evidence": "official",
       "covers": [
-        "subsystem:collections_and_lambdas"
+        "subsystem:collections_and_lambdas",
+        "operator:any"
       ],
       "input": {
         "kind": "expression",
@@ -133,7 +135,8 @@
       "title": "Lambda All Falsy",
       "evidence": "official",
       "covers": [
-        "subsystem:collections_and_lambdas"
+        "subsystem:collections_and_lambdas",
+        "operator:all"
       ],
       "input": {
         "kind": "expression",
@@ -500,6 +503,156 @@
         "value": false
       },
       "verified_at": "2026-10-14"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-none",
+      "title": "Lambda None Evaluates True When No Elements Match Predicate",
+      "evidence": "official",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:none"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts none (p => p.comments < 0)",
+        "context": {
+          "posts": [
+            {
+              "comments": 5
+            },
+            {
+              "comments": 0
+            },
+            {
+              "comments": 12
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-first",
+      "title": "Lambda First Returns First Matching Element",
+      "evidence": "official",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:first"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts first (p => p.comments > 5)",
+        "context": {
+          "posts": [
+            {
+              "id": 1,
+              "comments": 5
+            },
+            {
+              "id": 2,
+              "comments": 12
+            },
+            {
+              "id": 3,
+              "comments": 20
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": {
+          "id": 2,
+          "comments": 12
+        }
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-filter",
+      "title": "Lambda Filter Retains Elements Matching Predicate",
+      "evidence": "official",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:filter"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numbers filter (n => n > 15)",
+        "context": {
+          "numbers": [
+            10,
+            20,
+            30
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          20,
+          30
+        ]
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-map",
+      "title": "Lambda Map Transforms Elements Through Projection Expression",
+      "evidence": "official",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:map"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numbers map (n => n * 10)",
+        "context": {
+          "numbers": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          10,
+          20,
+          30
+        ]
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-range-to",
+      "title": "Collection Range To Operator Generates Inclusive Sequence",
+      "evidence": "official",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:to"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "1 to 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "verified_at": "2026-10-16"
     }
   ]
 }

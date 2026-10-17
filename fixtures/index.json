@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-17",
   "metrics": {
-    "totalFixtures": 188,
-    "positiveFixtures": 146,
+    "totalFixtures": 203,
+    "positiveFixtures": 161,
     "negativeFixtures": 42,
-    "coveredSpecEntities": 131
+    "coveredSpecEntities": 155
   },
   "fixtures": [
     {
@@ -671,7 +671,8 @@
       "title": "Lambda Count",
       "evidence": "official",
       "covers": [
-        "subsystem:collections_and_lambdas"
+        "subsystem:collections_and_lambdas",
+        "operator:count"
       ],
       "input": {
         "kind": "expression",
@@ -701,7 +702,8 @@
       "title": "Lambda Any",
       "evidence": "official",
       "covers": [
-        "subsystem:collections_and_lambdas"
+        "subsystem:collections_and_lambdas",
+        "operator:any"
       ],
       "input": {
         "kind": "expression",
@@ -731,7 +733,8 @@
       "title": "Lambda All Falsy",
       "evidence": "official",
       "covers": [
-        "subsystem:collections_and_lambdas"
+        "subsystem:collections_and_lambdas",
+        "operator:all"
       ],
       "input": {
         "kind": "expression",
@@ -1100,6 +1103,156 @@
       "verified_at": "2026-10-14"
     },
     {
+      "id": "expressions/collections_and_lambdas/lambda-none",
+      "title": "Lambda None Evaluates True When No Elements Match Predicate",
+      "evidence": "official",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:none"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts none (p => p.comments < 0)",
+        "context": {
+          "posts": [
+            {
+              "comments": 5
+            },
+            {
+              "comments": 0
+            },
+            {
+              "comments": 12
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-first",
+      "title": "Lambda First Returns First Matching Element",
+      "evidence": "official",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:first"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts first (p => p.comments > 5)",
+        "context": {
+          "posts": [
+            {
+              "id": 1,
+              "comments": 5
+            },
+            {
+              "id": 2,
+              "comments": 12
+            },
+            {
+              "id": 3,
+              "comments": 20
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": {
+          "id": 2,
+          "comments": 12
+        }
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-filter",
+      "title": "Lambda Filter Retains Elements Matching Predicate",
+      "evidence": "official",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:filter"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numbers filter (n => n > 15)",
+        "context": {
+          "numbers": [
+            10,
+            20,
+            30
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          20,
+          30
+        ]
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/lambda-map",
+      "title": "Lambda Map Transforms Elements Through Projection Expression",
+      "evidence": "official",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:map"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:numbers map (n => n * 10)",
+        "context": {
+          "numbers": [
+            1,
+            2,
+            3
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          10,
+          20,
+          30
+        ]
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-range-to",
+      "title": "Collection Range To Operator Generates Inclusive Sequence",
+      "evidence": "official",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:to"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "1 to 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
       "id": "expressions/helpers_and_transforms/url-params-append",
       "title": "Url Params Append",
       "evidence": "official",
@@ -1166,7 +1319,8 @@
       "title": "Url Fragment Append",
       "evidence": "official",
       "covers": [
-        "subsystem:helpers_and_transforms"
+        "subsystem:helpers_and_transforms",
+        "operator:fragment"
       ],
       "input": {
         "kind": "expression",
@@ -1351,6 +1505,69 @@
         "value": true
       },
       "verified_at": "2026-10-12"
+    },
+    {
+      "id": "expressions/helpers_and_transforms/url-path-replacement",
+      "title": "Url Path Replacement",
+      "evidence": "official",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:path"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:url path \"/p/contacto.html\"",
+        "context": {
+          "url": "https://example.blogspot.com"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://example.blogspot.com/p/contacto.html"
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/helpers_and_transforms/text-snippet-truncation",
+      "title": "Text Snippet Truncation",
+      "evidence": "official",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:snippet"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:content snippet { length: 50, ellipsis: true }",
+        "context": {
+          "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Lorem ipsum dolor sit amet, consectetur adipiscin…"
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/helpers_and_transforms/text-snippet-truncation-no-ellipsis",
+      "title": "Text Snippet Truncation Without Ellipsis",
+      "evidence": "official",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:snippet"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:content snippet { length: 50, ellipsis: false }",
+        "context": {
+          "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Lorem ipsum dolor sit amet, consectetur adipiscing"
+      },
+      "verified_at": "2026-10-16"
     },
     {
       "id": "expressions/locale_modifiers/locale-name-access",
@@ -1671,7 +1888,8 @@
       "title": "Relational Greater Than",
       "evidence": "official",
       "covers": [
-        "subsystem:logical_and_comparisons"
+        "subsystem:logical_and_comparisons",
+        "operator:>"
       ],
       "input": {
         "kind": "expression",
@@ -1786,7 +2004,8 @@
       "title": "Ternary Conditional",
       "evidence": "official",
       "covers": [
-        "subsystem:logical_and_comparisons"
+        "subsystem:logical_and_comparisons",
+        "operator:? :"
       ],
       "input": {
         "kind": "expression",
@@ -1954,6 +2173,63 @@
         "value": "2026-08-29T14:48:00-05:00"
       },
       "verified_at": "2026-10-12"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/inequality-numbers",
+      "title": "Inequality Numbers",
+      "evidence": "official",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:!="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 != 5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/relational-less-than-or-equal",
+      "title": "Relational Less Than Or Equal",
+      "evidence": "official",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:<="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "10 <= 10",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/relational-greater-than-or-equal",
+      "title": "Relational Greater Than Or Equal",
+      "evidence": "official",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:>="
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "20 >= 15",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-16"
     },
     {
       "id": "expressions/subtype_modifiers/url-canonical",
@@ -3012,7 +3288,8 @@
       "covers": [
         "subsystem:widget_rendering",
         "tag:b:widget",
-        "tag:b:includable"
+        "tag:b:includable",
+        "tag:data:*"
       ],
       "input": {
         "kind": "template",
@@ -3288,6 +3565,96 @@
         "canonicalDom": true
       },
       "verified_at": "2026-10-14"
+    },
+    {
+      "id": "rendering/widget_rendering/section-container-with-widget",
+      "title": "Section Container With Widget Rendering",
+      "evidence": "official",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:section",
+        "tag:b:widget",
+        "tag:b:includable"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main' tag='main'><b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><h1>Main Content</h1></b:includable></b:widget></b:section>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<main class=\"section\" id=\"main\"><div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><h1>Main Content</h1></div></main>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "rendering/widget_rendering/skin-designer-variables",
+      "title": "Skin Designer Variables Declaration",
+      "evidence": "official",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:skin",
+        "tag:Group",
+        "tag:Variable",
+        "tag:CDATA"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:skin><![CDATA[/* <Group description=\"Colors\"><Variable name=\"primaryColor\" description=\"Primary\" type=\"color\" default=\"#333333\" value=\"#333333\"/></Group> */ body { color: $(primaryColor); }]]></b:skin>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<style id=\"page-skin-1\" type=\"text/css\"><!--\nbody { color: #333333; }\n--></style>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "rendering/widget_rendering/template-skin-layout-styles",
+      "title": "Template Skin Layout Styles",
+      "evidence": "official",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:template-skin",
+        "tag:CDATA"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:template-skin><![CDATA[body#layout { color: red; }]]></b:template-skin>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<style id=\"template-skin-1\" type=\"text/css\"><!--\nbody#layout { color: red; }\n--></style>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "rendering/widget_rendering/template-script-loader",
+      "title": "Template Script Theme Asset Loader",
+      "evidence": "official",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:template-script"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:template-script name='indie'/>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<script type=\"text/javascript\" src=\"https://www.blogger.com/static/v1/jsbin/123456789-indie.js\"></script>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-16"
     },
     {
       "id": "scopes/with_nesting/with-alias-resolution",

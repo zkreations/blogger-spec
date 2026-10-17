@@ -68,7 +68,8 @@
       "title": "Url Fragment Append",
       "evidence": "official",
       "covers": [
-        "subsystem:helpers_and_transforms"
+        "subsystem:helpers_and_transforms",
+        "operator:fragment"
       ],
       "input": {
         "kind": "expression",
@@ -253,6 +254,69 @@
         "value": true
       },
       "verified_at": "2026-10-12"
+    },
+    {
+      "id": "expressions/helpers_and_transforms/url-path-replacement",
+      "title": "Url Path Replacement",
+      "evidence": "official",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:path"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:url path \"/p/contacto.html\"",
+        "context": {
+          "url": "https://example.blogspot.com"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://example.blogspot.com/p/contacto.html"
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/helpers_and_transforms/text-snippet-truncation",
+      "title": "Text Snippet Truncation",
+      "evidence": "official",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:snippet"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:content snippet { length: 50, ellipsis: true }",
+        "context": {
+          "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Lorem ipsum dolor sit amet, consectetur adipiscin…"
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/helpers_and_transforms/text-snippet-truncation-no-ellipsis",
+      "title": "Text Snippet Truncation Without Ellipsis",
+      "evidence": "official",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:snippet"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:content snippet { length: 50, ellipsis: false }",
+        "context": {
+          "content": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore."
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Lorem ipsum dolor sit amet, consectetur adipiscing"
+      },
+      "verified_at": "2026-10-16"
     }
   ]
 }
