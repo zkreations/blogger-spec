@@ -149,7 +149,9 @@
           "replacement": "data:blog.isMobileRequest",
           "reason": "data:view.isMobile is non-functional in responsive v3 themes. Use data:blog.isMobileRequest for URL query detection or CSS media queries for layout."
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "data:blog": {
       "cardinality": "singleton",
@@ -469,7 +471,9 @@
           "replacement": null,
           "reason": "Google+ share button dimension decommissioned."
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "data:messages": {
       "cardinality": "singleton",
@@ -482,7 +486,9 @@
           "type": "message",
           "description": "Any platform system message key translated dynamically into data:blog.locale."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "data:widgets": {
       "cardinality": "collection",
@@ -506,50 +512,6 @@
         }
       },
       "canonical": {
-        "AdSense": {
-          "type": "array[object]",
-          "description": "Collection of visible AdSense gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'AdSense1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('AdSense')."
-            }
-          }
-        },
-        "Attribution": {
-          "type": "array[object]",
-          "description": "Collection of visible Attribution gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Attribution1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Attribution')."
-            }
-          }
-        },
         "Blog": {
           "type": "array[object]",
           "description": "Collection of visible Blog gadget descriptors with specialized metadata and posts. Only exposes these specific descriptor fields, NOT the full private widget data dictionary (e.g. full post bodies, comments, settings).",
@@ -656,116 +618,6 @@
             }
           }
         },
-        "BlogArchive": {
-          "type": "array[object]",
-          "description": "Collection of visible BlogArchive gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'BlogArchive1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('BlogArchive')."
-            }
-          }
-        },
-        "BloggerButton": {
-          "type": "array[object]",
-          "description": "Collection of visible BloggerButton gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'BloggerButton1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('BloggerButton')."
-            }
-          }
-        },
-        "BlogList": {
-          "type": "array[object]",
-          "description": "Collection of visible BlogList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'BlogList1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('BlogList')."
-            }
-          }
-        },
-        "BlogSearch": {
-          "type": "array[object]",
-          "description": "Collection of visible BlogSearch gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'BlogSearch1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('BlogSearch')."
-            }
-          }
-        },
-        "ContactForm": {
-          "type": "array[object]",
-          "description": "Collection of visible ContactForm gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'ContactForm1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('ContactForm')."
-            }
-          }
-        },
         "FeaturedPost": {
           "type": "array[object]",
           "description": "Collection of visible FeaturedPost gadget descriptors with specialized pinned post metadata. Only exposes these specific descriptor fields, NOT the full private widget data dictionary.",
@@ -789,182 +641,6 @@
             "postId": {
               "type": "number",
               "description": "Numerical identifier of the featured post."
-            }
-          }
-        },
-        "Feed": {
-          "type": "array[object]",
-          "description": "Collection of visible Feed gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Feed1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Feed')."
-            }
-          }
-        },
-        "Followers": {
-          "type": "array[object]",
-          "description": "Collection of visible Followers gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Followers1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Followers')."
-            }
-          }
-        },
-        "Header": {
-          "type": "array[object]",
-          "description": "Collection of visible Header gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Header1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Header')."
-            }
-          }
-        },
-        "HTML": {
-          "type": "array[object]",
-          "description": "Collection of visible HTML gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'HTML1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('HTML')."
-            }
-          }
-        },
-        "Image": {
-          "type": "array[object]",
-          "description": "Collection of visible Image gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Image1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Image')."
-            }
-          }
-        },
-        "Label": {
-          "type": "array[object]",
-          "description": "Collection of visible Label gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Label1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Label')."
-            }
-          }
-        },
-        "LinkList": {
-          "type": "array[object]",
-          "description": "Collection of visible LinkList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'LinkList1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('LinkList')."
-            }
-          }
-        },
-        "PageList": {
-          "type": "array[object]",
-          "description": "Collection of visible PageList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'PageList1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('PageList')."
             }
           }
         },
@@ -1001,182 +677,6 @@
                   "description": "Post title string."
                 }
               }
-            }
-          }
-        },
-        "Profile": {
-          "type": "array[object]",
-          "description": "Collection of visible Profile gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Profile1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Profile')."
-            }
-          }
-        },
-        "ReportAbuse": {
-          "type": "array[object]",
-          "description": "Collection of visible ReportAbuse gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'ReportAbuse1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('ReportAbuse')."
-            }
-          }
-        },
-        "Stats": {
-          "type": "array[object]",
-          "description": "Collection of visible Stats gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Stats1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Stats')."
-            }
-          }
-        },
-        "Subscribe": {
-          "type": "array[object]",
-          "description": "Collection of visible Subscribe gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Subscribe1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Subscribe')."
-            }
-          }
-        },
-        "Text": {
-          "type": "array[object]",
-          "description": "Collection of visible Text gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Text1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Text')."
-            }
-          }
-        },
-        "TextList": {
-          "type": "array[object]",
-          "description": "Collection of visible TextList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'TextList1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('TextList')."
-            }
-          }
-        },
-        "Translate": {
-          "type": "array[object]",
-          "description": "Collection of visible Translate gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Translate1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Translate')."
-            }
-          }
-        },
-        "Wikipedia": {
-          "type": "array[object]",
-          "description": "Collection of visible Wikipedia gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
-          "item_properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Wikipedia1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name ('Wikipedia')."
             }
           }
         }
@@ -1220,7 +720,9 @@
           ],
           "description": "Returns array of all gadget instances matching the specified widget type ({ id, sectionId, title, type }). Does not expose the private widget data dictionary."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "data:widget": {
       "cardinality": "singleton",
@@ -1242,7 +744,9 @@
           "type": "number",
           "description": "Schema version of the enclosing gadget (1 or 2)."
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "data:skin": {
       "cardinality": "singleton",
@@ -1272,7 +776,9 @@
           ],
           "description": "Evaluates the value of a Theme Designer variable by name."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "data:template": {
       "cardinality": "singleton",
@@ -1306,7 +812,9 @@
           "type": "string",
           "description": "Programmatic identifier for variant (e.g. 'light', 'dark')."
         }
-      }
+      },
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     }
   }
 }

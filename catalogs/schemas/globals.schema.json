@@ -55,9 +55,17 @@
       "required": [
         "cardinality",
         "description",
-        "canonical"
+        "canonical",
+        "evidence",
+        "verified_at"
       ],
       "properties": {
+        "evidence": {
+          "$ref": "common.schema.json#/$defs/evidenceLevel"
+        },
+        "verified_at": {
+          "$ref": "common.schema.json#/$defs/verified_at"
+        },
         "cardinality": {
           "type": "string",
           "enum": [
