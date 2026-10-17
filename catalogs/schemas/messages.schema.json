@@ -36,6 +36,21 @@
           "items": {
             "$ref": "common.schema.json#/$defs/patternDefinition"
           }
+        },
+        "standard_diagnostics": {
+          "type": "object",
+          "properties": {
+            "direct_parameterized_invocation": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "plural_param_missing_name": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "inline_concatenated_params": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -52,9 +67,17 @@
     "messageDefinition": {
       "type": "object",
       "required": [
-        "description"
+        "description",
+        "evidence",
+        "verified_at"
       ],
       "properties": {
+        "evidence": {
+          "$ref": "common.schema.json#/$defs/evidenceLevel"
+        },
+        "verified_at": {
+          "$ref": "common.schema.json#/$defs/verified_at"
+        },
         "type": {
           "type": "string",
           "enum": [
@@ -78,6 +101,9 @@
           "items": {
             "$ref": "#/$defs/parameterDefinition"
           }
+        },
+        "diagnostic": {
+          "$ref": "common.schema.json#/$defs/diagnosticCode"
         }
       },
       "additionalProperties": false

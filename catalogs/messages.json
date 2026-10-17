@@ -10,33 +10,48 @@
         "type": "message",
         "description": "Any platform system message key translated dynamically into data:blog.locale."
       }
-    ]
+    ],
+    "standard_diagnostics": {
+      "direct_parameterized_invocation": "BX1027",
+      "plural_param_missing_name": "BX1028",
+      "inline_concatenated_params": "BX1029"
+    }
   },
   "messages": {
     "adsGoHere": {
-      "description": "Ad placeholder banner notice."
+      "description": "Ad placeholder banner notice.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "archive": {
-      "description": "Blog archive label ('Archive')."
+      "description": "Blog archive label ('Archive').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "at": {
-      "description": "Time preposition ('at')."
+      "description": "Time preposition ('at').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "authorSaid": {
       "description": "Comment author attribution quote ('%1 said&hellip;'). Direct tag invocation prohibited; requires <b:message>.",
       "pattern": "%1 said&hellip;",
       "direct_invocation": false,
+      "diagnostic": "BX1027",
       "parameters": [
         {
           "name": "authorName",
           "description": "Name of the comment author."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "authorSaidWithLink": {
       "description": "Comment author quote with HTML anchor markup ('<a href=\"%2\" rel=\"nofollow\">%1</a> said&hellip;'). Direct tag invocation prohibited; requires <b:message>.",
       "pattern": "<a href=\"%2\" rel=\"nofollow\">%1</a> said&hellip;",
       "direct_invocation": false,
+      "diagnostic": "BX1027",
       "parameters": [
         {
           "name": "authorName",
@@ -46,16 +61,24 @@
           "name": "authorUrl",
           "description": "Profile URL of the comment author."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "blogArchive": {
-      "description": "BlogArchive widget title ('Blog Archive')."
+      "description": "BlogArchive widget title ('Blog Archive').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "blogAuthors": {
-      "description": "Blog authors header label."
+      "description": "Blog authors header label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "by": {
-      "description": "Author preposition ('by')."
+      "description": "Author preposition ('by').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "byAuthor": {
       "description": "Attribution phrase ('By %1'). Direct tag invocation prohibited; requires <b:message>.",
@@ -66,7 +89,9 @@
           "name": "authorName",
           "description": "Author name."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "byAuthorLink": {
       "description": "Attribution phrase with author profile anchor ('By <a href=\"%2\">%1</a>'). Direct tag invocation prohibited; requires <b:message>.",
@@ -81,121 +106,199 @@
           "name": "authorUrl",
           "description": "Author profile URL."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "comments": {
-      "description": "Comments count or section title ('Comments')."
+      "description": "Comments count or section title ('Comments').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "configurationRequired": {
-      "description": "Widget setup requirement prompt."
+      "description": "Widget setup requirement prompt.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "copy": {
-      "description": "Copy action button label."
+      "description": "Copy action button label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "copyToClipboard": {
-      "description": "Copy to clipboard action label."
+      "description": "Copy to clipboard action label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "deleteComment": {
-      "description": "Delete comment moderation button label."
+      "description": "Delete comment moderation button label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "dynamicViewsNotAvailable": {
-      "description": "Dynamic Views unavailable warning text."
+      "description": "Dynamic Views unavailable warning text.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "edit": {
-      "description": "Quick-edit item action link."
+      "description": "Quick-edit item action link.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "emailAddress": {
-      "description": "Email input field label / placeholder."
+      "description": "Email input field label / placeholder.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "emailPost": {
-      "description": "Share via email button label."
+      "description": "Share via email button label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "euCookieNotice": {
-      "description": "European Union cookie consent banner text."
+      "description": "European Union cookie consent banner text.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "euCookieNotice2018": {
-      "description": "Updated EU cookie notice text."
+      "description": "Updated EU cookie notice text.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "euCookieNoticeCloseButton": {
-      "description": "Cookie consent banner close button label."
+      "description": "Cookie consent banner close button label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "euCookieResponsibility": {
-      "description": "Cookie compliance disclaimer statement."
+      "description": "Cookie compliance disclaimer statement.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "euCookieResponsibility2018": {
-      "description": "Updated cookie compliance disclaimer statement."
+      "description": "Updated cookie compliance disclaimer statement.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "featured": {
-      "description": "Featured post badge / header label."
+      "description": "Featured post badge / header label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "getEmailNotifications": {
-      "description": "Email subscription call to action."
+      "description": "Email subscription call to action.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "gotIt": {
-      "description": "Confirmation dismissal button ('Got it')."
+      "description": "Confirmation dismissal button ('Got it').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "hidden": {
-      "description": "Hidden state label."
+      "description": "Hidden state label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "home": {
-      "description": "Root homepage navigation label ('Home')."
+      "description": "Root homepage navigation label ('Home').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "image": {
-      "description": "Generic image label / alt placeholder."
+      "description": "Generic image label / alt placeholder.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "joinTheConversation": {
-      "description": "Comment section header invitation."
+      "description": "Comment section header invitation.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "keepReading": {
-      "description": "Post continuation teaser link ('Keep reading')."
+      "description": "Post continuation teaser link ('Keep reading').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "labels": {
-      "description": "Post labels / tags header label."
+      "description": "Post labels / tags header label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "latestPosts": {
-      "description": "Latest posts widget heading."
+      "description": "Latest posts widget heading.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "learnMore": {
-      "description": "Informational link label ('Learn more')."
+      "description": "Informational link label ('Learn more').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "linkCopiedToClipboard": {
-      "description": "Copy confirmation toast notice."
+      "description": "Copy confirmation toast notice.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "loadMorePosts": {
-      "description": "Infinite scroll / load more button label."
+      "description": "Infinite scroll / load more button label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "loading": {
-      "description": "Asynchronous loading status text."
+      "description": "Asynchronous loading status text.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "moreEllipsis": {
-      "description": "Truncation ellipsis continuation ('...')."
+      "description": "Truncation ellipsis continuation ('...').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "morePosts": {
-      "description": "Pagination action label ('More posts')."
+      "description": "Pagination action label ('More posts').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "myBlogList": {
-      "description": "BlogList widget default title."
+      "description": "BlogList widget default title.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "myFavoriteSites": {
-      "description": "Favorite sites widget heading."
+      "description": "Favorite sites widget heading.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "myPhoto": {
-      "description": "Author profile avatar label."
+      "description": "Author profile avatar label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "newer": {
-      "description": "Newer pagination link label ('Newer')."
+      "description": "Newer pagination link label ('Newer').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "newerPosts": {
-      "description": "Newer posts pagination link ('Newer posts')."
+      "description": "Newer posts pagination link ('Newer posts').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "newest": {
-      "description": "Newest pagination link label ('Newest')."
+      "description": "Newest pagination link label ('Newest').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "noResultsFound": {
-      "description": "Empty search results notice."
+      "description": "Empty search results notice.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "noTitle": {
-      "description": "Fallback title for untitled posts ('No title')."
+      "description": "Fallback title for untitled posts ('No title').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "numberOfComments": {
       "description": "Comment counter display template ('{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}'). Direct tag invocation prohibited; requires <b:message>.",
@@ -206,43 +309,69 @@
           "name": "numComments",
           "description": "Comment counter value."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "ok": {
-      "description": "Confirmation button label ('OK')."
+      "description": "Confirmation button label ('OK').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "older": {
-      "description": "Older pagination link label ('Older')."
+      "description": "Older pagination link label ('Older').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "olderPosts": {
-      "description": "Older posts pagination link ('Older posts')."
+      "description": "Older posts pagination link ('Older posts').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "oldest": {
-      "description": "Oldest pagination link label ('Oldest')."
+      "description": "Oldest pagination link label ('Oldest').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "on": {
-      "description": "Date preposition ('on')."
+      "description": "Date preposition ('on').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "onlyTeamMembersCanComment": {
-      "description": "Restricted commenting notice."
+      "description": "Restricted commenting notice.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "photo": {
-      "description": "Generic photo label."
+      "description": "Generic photo label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "popularPosts": {
-      "description": "PopularPosts widget header label."
+      "description": "PopularPosts widget header label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "popularPostsFromThisBlog": {
-      "description": "Popular posts descriptive header."
+      "description": "Popular posts descriptive header.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "postAComment": {
-      "description": "Comment form submission header."
+      "description": "Comment form submission header.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "postLink": {
-      "description": "Post permalink action link label."
+      "description": "Post permalink action link label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "postedBy": {
-      "description": "Post author attribution prefix ('Posted by')."
+      "description": "Post author attribution prefix ('Posted by').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "postedByAuthor": {
       "description": "Author attribution display string ('Posted by %1'). Direct tag invocation prohibited; requires <b:message>.",
@@ -253,7 +382,9 @@
           "name": "authorName",
           "description": "Name of the post author."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "postedByAuthorLink": {
       "description": "Author attribution with HTML anchor ('Posted by <a href=\"%2\">%1</a>'). Direct tag invocation prohibited; requires <b:message>.",
@@ -268,13 +399,19 @@
           "name": "authorUrl",
           "description": "Profile URL of the post author."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "posts": {
-      "description": "Generic posts label ('Posts')."
+      "description": "Generic posts label ('Posts').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "poweredByBlogger": {
-      "description": "Platform attribution text ('Powered by Blogger')."
+      "description": "Platform attribution text ('Powered by Blogger').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "poweredByBloggerLink": {
       "description": "Platform attribution with Blogger anchor ('Powered by <a href='%1' target='_blank'>Blogger</a>'). Direct tag invocation prohibited; requires <b:message>.",
@@ -285,58 +422,94 @@
           "name": "bloggerUrl",
           "description": "Blogger homepage URL."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "readMore": {
-      "description": "Post jump link action ('Read more')."
+      "description": "Post jump link action ('Read more').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "recentPosts": {
-      "description": "Recent posts widget heading."
+      "description": "Recent posts widget heading.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "reportAbuse": {
-      "description": "Abuse reporting action link."
+      "description": "Abuse reporting action link.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "search": {
-      "description": "Search button / action label ('Search')."
+      "description": "Search button / action label ('Search').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "searchBlog": {
-      "description": "Search input placeholder ('Search blog')."
+      "description": "Search input placeholder ('Search blog').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "searchThisBlog": {
-      "description": "SearchThisBlog widget header."
+      "description": "SearchThisBlog widget header.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "share": {
-      "description": "Social sharing action button label."
+      "description": "Social sharing action button label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "shareOtherApps": {
-      "description": "Share to external applications label."
+      "description": "Share to external applications label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "shareToOtherApps": {
-      "description": "Share to external apps button label."
+      "description": "Share to external apps button label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "showAll": {
-      "description": "Expand all items button label."
+      "description": "Expand all items button label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "showLess": {
-      "description": "Collapse items button label."
+      "description": "Collapse items button label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "showMore": {
-      "description": "Show more items button label."
+      "description": "Show more items button label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "skipToMainContent": {
-      "description": "Accessibility skip link navigation label."
+      "description": "Accessibility skip link navigation label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "someOfMyFavoriteSites": {
-      "description": "Alternate favorite sites widget title."
+      "description": "Alternate favorite sites widget title.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "subscribe": {
-      "description": "Feed subscription action label."
+      "description": "Feed subscription action label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "subscribeTo": {
-      "description": "Feed subscription prefix label."
+      "description": "Feed subscription prefix label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "subscribeToThisBlog": {
-      "description": "Blog feed subscription title."
+      "description": "Blog feed subscription title.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "templateImagesBy": {
       "description": "Theme image designer attribution ('Theme images by %1'). Direct tag invocation prohibited; requires <b:message>.",
@@ -347,7 +520,9 @@
           "name": "authorName",
           "description": "Name of the template image designer."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "templateImagesByLink": {
       "description": "Theme image designer attribution with link ('Theme images by <a href=\"%1\">%2</a>'). Direct tag invocation prohibited; requires <b:message>.",
@@ -362,37 +537,59 @@
           "name": "authorName",
           "description": "Name of the template image designer."
         }
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "theresNothingHere": {
-      "description": "Empty state message ('There's nothing here')."
+      "description": "Empty state message ('There's nothing here').",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "title": {
-      "description": "Generic title label."
+      "description": "Generic title label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "viewAll": {
-      "description": "View all items action link."
+      "description": "View all items action link.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "viewMyCompleteProfile": {
-      "description": "Profile widget link to author details."
+      "description": "Profile widget link to author details.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "visible": {
-      "description": "Visible state label."
+      "description": "Visible state label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "visitProfile": {
-      "description": "Author profile link label."
+      "description": "Author profile link label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "visitSite": {
-      "description": "External website link label."
+      "description": "External website link label.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "widget": {
-      "description": "Generic widget indicator."
+      "description": "Generic widget indicator.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "widgetNotAvailableInPreview": {
-      "description": "Theme designer preview warning text."
+      "description": "Theme designer preview warning text.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "youMayLikeThesePosts": {
-      "description": "Related posts recommendation heading."
+      "description": "Related posts recommendation heading.",
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     }
   }
 }
