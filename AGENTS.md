@@ -4,7 +4,7 @@ Zero-runtime-dependency specification authority and execution engine for Blogger
 
 ## Architecture
 
-- `catalogs/*.json`: **Single Source of Truth** (SSOT for all 9 domains). Never hardcode catalog domain knowledge in `src/`.
+- `catalogs/*.json`: **Single Source of Truth** (SSOT for all 10 domains). Never hardcode catalog domain knowledge in `src/`.
 - `catalogs/schemas/`: Draft 2020-12 canonical validation schemas.
 - `fixtures/`: Empirical test suite (`expressions/`, `templates/`, `diagnostics/`).
 - `src/`: Engine and tooling (`ast.ts`, `parser/` [`expr-parser.ts`, `lexer.ts`, `directive-scanner.ts`, `template-validator.ts`], `version.ts`, `quota.ts`, `type-system.ts`, `catalogs/`, `runner.ts`, `tooling/`, `types.ts`).
