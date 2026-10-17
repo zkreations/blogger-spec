@@ -30,10 +30,12 @@ describe('universal ESM & in-memory store suite', () => {
 
     expect(RootExports.types).toBeDefined()
     expect(RootExports.widgets).toBeDefined()
+    expect(RootExports.settings).toBeDefined()
     expect(RootExports.globals).toBeDefined()
     expect(RootExports.messages).toBeDefined()
     expect(RootExports.scopes).toBeDefined()
     expect(RootExports.diagnostics).toBeDefined()
+    expect(RootExports.inclusions).toBeDefined()
   })
 
   it('serves all catalogs and schemas through standard helpers', () => {
@@ -94,11 +96,13 @@ describe('universal ESM & in-memory store suite', () => {
     expect(RootExports.embeddedMessagesCatalog).toBeDefined()
     expect(RootExports.embeddedOperatorsCatalog).toBeDefined()
     expect(RootExports.embeddedScopesCatalog).toBeDefined()
+    expect(RootExports.embeddedSettingsCatalog).toBeDefined()
     expect(RootExports.embeddedTypesCatalog).toBeDefined()
     expect(RootExports.embeddedWidgetsCatalog).toBeDefined()
 
     expect(RootExports.embeddedDirectivesCatalog).toBe(RootExports.embeddedCatalogs.directives)
     expect(RootExports.embeddedDiagnosticsCatalog).toBe(RootExports.embeddedCatalogs.diagnostics)
     expect(RootExports.embeddedWidgetsCatalog).toBe(RootExports.embeddedCatalogs.widgets)
+    expect(RootExports.embeddedSettingsCatalog).toBe(RootExports.embeddedCatalogs.settings)
   })
 })

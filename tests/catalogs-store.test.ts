@@ -1119,6 +1119,9 @@ describe('catalogs and store formal verification suite', () => {
       expect(dtsContent).toContain('export * from \'./types.js\';')
       expect(dtsContent).toContain('export * from \'./ast.js\';')
       expect(dtsContent).toContain('export * from \'./catalogs/index.js\';')
+      expect(dtsContent).toContain('export declare let directives:')
+      expect(dtsContent).toContain('export declare let settings:')
+      expect(dtsContent).toContain('export declare let operators:')
       // Should not contain duplicate inline declarations of domain union types or manual models
       expect(dtsContent).not.toContain('export type BloggerDirectiveName =')
       expect(dtsContent).not.toContain('export type BloggerDiagnosticCode =')

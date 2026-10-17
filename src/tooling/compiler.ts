@@ -25,18 +25,24 @@ export interface VerificationFreshnessReport {
 
 export function generateDts(): string {
   return [
-    '/**',
-    ' * blogger-spec — Canonical Blogger XML Template & Expression Language Type Definitions.',
-    ' * Automatically generated from master JSON catalogs.',
-    ' * DO NOT EDIT MANUALLY.',
-    ' */',
-    '',
-    'export * from \'./types.js\';',
+    'import { getAllCatalogs, getCatalog, getDiagnostics, getDirectives, getGlobals, getInclusions, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets } from \'./catalogs/index.js\';',
+    'export declare let directives: import("./types.js").BloggerDirectivesCatalog;',
+    'export declare let operators: import("./types.js").BloggerOperatorsCatalog;',
+    'export declare let types: import("./types.js").BloggerTypesCatalog;',
+    'export declare let widgets: import("./types.js").BloggerWidgetsCatalog;',
+    'export declare let settings: import("./types.js").BloggerSettingsCatalog;',
+    'export declare let globals: import("./types.js").BloggerGlobalsCatalog;',
+    'export declare let messages: import("./types.js").BloggerMessagesCatalog;',
+    'export declare let scopes: import("./types.js").BloggerScopesCatalog;',
+    'export declare let diagnostics: import("./types.js").BloggerDiagnosticsCatalog;',
+    'export declare let inclusions: import("./types.js").BloggerInclusionsCatalog;',
+    'export { getAllCatalogs, getCatalog, getDiagnostics, getDirectives, getGlobals, getInclusions, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets, };',
     'export * from \'./ast.js\';',
     'export * from \'./catalogs/index.js\';',
     'export * from \'./parser/index.js\';',
     'export * from \'./quota.js\';',
     'export * from \'./type-system.js\';',
+    'export * from \'./types.js\';',
     'export * from \'./version.js\';',
     '',
   ].join('\n')
@@ -320,8 +326,8 @@ export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): Veri
       items.push({ name: 'dist/index.d.ts', valid: false, error: 'File does not exist.' })
     }
     else {
-      const currentDts = readFileSync(paths.dts, 'utf-8')
-      const freshDts = generateDts()
+      const currentDts = readFileSync(paths.dts, 'utf-8').replace(/\r\n/g, '\n')
+      const freshDts = generateDts().replace(/\r\n/g, '\n')
       const valid = currentDts === freshDts
       items.push({
         name: 'dist/index.d.ts',
