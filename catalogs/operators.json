@@ -146,6 +146,7 @@
       "compiler_quotas": {
         "max_expression_tokens": 40,
         "warning_expression_tokens": 36,
+        "diagnostic": "BX1021",
         "token_cost_rules": "1 token per operator (2 for ternary ? :), 1 per literal/operand (including unary negative numbers), 1 per data path (including static and dynamic bracket indexing), 1 per array/object container, 1 per grouping parentheses pair ( ... ), 0 for argument parentheses in function calls/lambdas, and 0 for object property keys and delimiters (, and :)"
       },
       "default_allowed_contexts": [
@@ -155,6 +156,21 @@
         "values",
         "expr:*"
       ]
+    },
+    "prohibited_syntax": {
+      "js_methods": {
+        "diagnostic": "BX1017",
+        "description": "JavaScript method calls are invalid in Blogger expressions. Use native operators and helpers."
+      },
+      "js_equality_operators": {
+        "operators": [
+          "===",
+          "!=="
+        ],
+        "diagnostic": "BX1018",
+        "replacement": "==",
+        "description": "Strict equality (===, !==) is not supported in Blogger expressions; use == or !=."
+      }
     },
     "families": {
       "concatenation": {
@@ -455,7 +471,9 @@
       ],
       "secondary_families": [
         "concatenation"
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "-": {
       "family": "arithmetic",
@@ -538,6 +556,9 @@
       "anti_patterns": [
         "Unary negation cannot be applied to parenthesized compound expressions like '-(a - b)'; unary minus is strictly supported only on immediate numeric literals like -5."
       ],
+      "diagnostics": {
+        "prohibited_unary_compound_negation": "BX1030"
+      },
       "examples": [
         {
           "expression": "10 - 4",
@@ -548,7 +569,9 @@
       "grammar_aliases": [],
       "doc_aliases": [
         "minus"
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "*": {
       "family": "arithmetic",
@@ -594,7 +617,9 @@
       "grammar_aliases": [],
       "doc_aliases": [
         "multiply"
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "/": {
       "family": "arithmetic",
@@ -643,7 +668,9 @@
       "grammar_aliases": [],
       "doc_aliases": [
         "divide"
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "%": {
       "family": "arithmetic",
@@ -692,7 +719,9 @@
       "doc_aliases": [
         "modulo",
         "mod"
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "==": {
       "family": "comparison",
@@ -740,7 +769,9 @@
       "grammar_aliases": [
         "eq"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "!=": {
       "family": "comparison",
@@ -787,7 +818,9 @@
       "grammar_aliases": [
         "neq"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "<": {
       "family": "comparison",
@@ -826,6 +859,9 @@
       "anti_patterns": [
         "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date < data:post.date); format to string or use date.iso8601."
       ],
+      "diagnostics": {
+        "prohibited_date_relational_comparison": "BX1026"
+      },
       "examples": [
         {
           "expression": "data:posts.size < 5",
@@ -836,7 +872,9 @@
       "grammar_aliases": [
         "lt"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     ">": {
       "family": "comparison",
@@ -885,7 +923,9 @@
       "grammar_aliases": [
         "gt"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "<=": {
       "family": "comparison",
@@ -934,7 +974,9 @@
       "grammar_aliases": [
         "lte"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     ">=": {
       "family": "comparison",
@@ -983,7 +1025,9 @@
       "grammar_aliases": [
         "gte"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "and": {
       "family": "logical",
@@ -1034,7 +1078,9 @@
       "grammar_aliases": [
         "&&"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "or": {
       "family": "logical",
@@ -1085,7 +1131,9 @@
       "grammar_aliases": [
         "||"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "not": {
       "family": "logical",
@@ -1128,7 +1176,9 @@
       "grammar_aliases": [
         "!"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "in": {
       "family": "membership",
@@ -1220,7 +1270,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "contains": {
       "family": "content",
@@ -1315,7 +1367,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "take": {
       "family": "collection",
@@ -1370,7 +1424,9 @@
       "grammar_aliases": [
         "limit"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "skip": {
       "family": "collection",
@@ -1422,7 +1478,9 @@
       "grammar_aliases": [
         "offset"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "to": {
       "family": "collection",
@@ -1470,7 +1528,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "any": {
       "family": "lambda",
@@ -1516,7 +1576,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "all": {
       "family": "lambda",
@@ -1559,7 +1621,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "none": {
       "family": "lambda",
@@ -1602,7 +1666,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "count": {
       "family": "lambda",
@@ -1645,7 +1711,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "map": {
       "family": "lambda",
@@ -1701,7 +1769,9 @@
       "grammar_aliases": [
         "select"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "filter": {
       "family": "lambda",
@@ -1742,6 +1812,9 @@
       "anti_patterns": [
         "Do not use JavaScript .filter() method; use keyword operator: array filter (p => ...)"
       ],
+      "diagnostics": {
+        "prohibited_lambda_data_prefix": "BX1019"
+      },
       "examples": [
         {
           "expression": "data:posts filter (p => p.featuredImage)",
@@ -1752,7 +1825,9 @@
       "grammar_aliases": [
         "where"
       ],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "first": {
       "family": "lambda",
@@ -1796,7 +1871,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "?:": {
       "family": "elvis",
@@ -1810,7 +1887,6 @@
         "functional": "?:(a, b)"
       },
       "precedence_level": 2,
-      "associativity": "right-to-left",
       "operands": [
         {
           "name": "target",
@@ -1845,7 +1921,9 @@
       "doc_aliases": [
         "default",
         "elvis"
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "? :": {
       "family": "ternary",
@@ -1859,7 +1937,6 @@
         "functional": null
       },
       "precedence_level": 10,
-      "associativity": "right-to-left",
       "token_cost": 2,
       "operands": [
         {
@@ -1908,7 +1985,9 @@
       ],
       "doc_aliases": [
         "ternary"
-      ]
+      ],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "path": {
       "family": "url",
@@ -1957,7 +2036,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "params": {
       "family": "url",
@@ -2009,7 +2090,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "appendParams": {
       "family": "url",
@@ -2058,7 +2141,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "fragment": {
       "family": "url",
@@ -2107,7 +2192,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "format": {
       "family": "date",
@@ -2150,7 +2237,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "resizeImage": {
       "family": "image",
@@ -2264,7 +2353,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "sourceSet": {
       "family": "image",
@@ -2322,7 +2413,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     },
     "snippet": {
       "family": "snippet",
@@ -2373,7 +2466,9 @@
         }
       ],
       "grammar_aliases": [],
-      "doc_aliases": []
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-10"
     }
   }
 }

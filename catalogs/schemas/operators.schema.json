@@ -90,6 +90,58 @@
                 },
                 "token_cost_rules": {
                   "type": "string"
+                },
+                "diagnostic": {
+                  "$ref": "common.schema.json#/$defs/diagnosticCode"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        "prohibited_syntax": {
+          "type": "object",
+          "properties": {
+            "js_methods": {
+              "type": "object",
+              "required": [
+                "diagnostic",
+                "description"
+              ],
+              "properties": {
+                "diagnostic": {
+                  "$ref": "common.schema.json#/$defs/diagnosticCode"
+                },
+                "description": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "js_equality_operators": {
+              "type": "object",
+              "required": [
+                "operators",
+                "diagnostic",
+                "replacement",
+                "description"
+              ],
+              "properties": {
+                "operators": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "diagnostic": {
+                  "$ref": "common.schema.json#/$defs/diagnosticCode"
+                },
+                "replacement": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
                 }
               },
               "additionalProperties": false
@@ -190,9 +242,17 @@
         "syntax",
         "precedence_level",
         "operands",
-        "return_type"
+        "return_type",
+        "evidence",
+        "verified_at"
       ],
       "properties": {
+        "evidence": {
+          "$ref": "common.schema.json#/$defs/evidenceLevel"
+        },
+        "verified_at": {
+          "$ref": "common.schema.json#/$defs/verified_at"
+        },
         "family": {
           "type": "string",
           "enum": [
@@ -222,15 +282,6 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 15
-        },
-        "associativity": {
-          "type": "string",
-          "enum": [
-            "left-to-right",
-            "right-to-left",
-            "inner-to-outer",
-            "non-associative"
-          ]
         },
         "token_cost": {
           "type": "integer",
@@ -312,6 +363,12 @@
             "type": "string"
           },
           "description": "Secondary or intersecting semantic families this operator participates in."
+        },
+        "diagnostics": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "common.schema.json#/$defs/diagnosticCode"
+          }
         }
       },
       "additionalProperties": false
