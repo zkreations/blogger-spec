@@ -92,25 +92,15 @@ Import pre-hydrated typed catalogs, parser, or domain models directly:
 
 ```typescript
 import {
+  catalogs,
   detectTemplateVersion,
-  diagnostics,
-  // Pre-hydrated in-memory catalogs
-  directives,
   evaluateExpressionBudget,
+  getDirectives,
   getSpecCatalog,
-  globals,
-  inclusions,
   isTypeAssignable,
-  messages,
-  operators,
-  // Core engines & helpers
   parseExpression,
   scanDirectiveTokens,
-  scopes,
-  settings,
-  types,
   validateTemplateStructure,
-  widgets,
 } from 'blogger-spec'
 ```
 
