@@ -41,10 +41,10 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:switch var='data:view.pageType'><b:case value='item'/>Item View<b:case value='static_page'/>Page View<b:default/>General View</b:switch>",
+        "source": "<b:switch var='data:blog.pageType'><b:case value='item'/>Item View<b:case value='static_page'/>Page View<b:default/>General View</b:switch>",
         "mode": "fragment",
         "context": {
-          "view": {
+          "blog": {
             "pageType": "item"
           }
         }
