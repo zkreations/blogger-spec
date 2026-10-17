@@ -160,6 +160,22 @@
       "format": "date",
       "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
       "description": "ISO 8601 calendar date (YYYY-MM-DD) indicating the empirical verification milestone."
+    },
+    "empiricalMetadata": {
+      "type": "object",
+      "required": [
+        "evidence",
+        "verified_at"
+      ],
+      "properties": {
+        "evidence": {
+          "$ref": "#/$defs/evidenceLevel"
+        },
+        "verified_at": {
+          "$ref": "#/$defs/verified_at"
+        }
+      },
+      "additionalProperties": false
     }
   }
 }
