@@ -135,7 +135,7 @@ export class SpecCatalog {
   private readonly typeMap = new Map<string, BloggerTypeDefinition>()
   private readonly coercionRules: Record<string, any> = {}
   private readonly inclusionMap = new Map<string, BloggerInclusionDefinition>()
-  private readonly hallucinatedDirectives: Record<string, BloggerDiagnosticCode> = {}
+  private readonly hallucinatedDirectives = new Map<string, BloggerDiagnosticCode>()
   private readonly standardDiagnostics = new Map<BloggerStandardDiagnosticKey, BloggerDiagnosticCode>()
   private readonly scalarTypes: string[] = []
   private readonly falsyStringLiterals = new Set<string>()
@@ -169,7 +169,7 @@ export class SpecCatalog {
 
     const hallucinated = dirCatalog.domain_metadata?.hallucinated_directives || {}
     for (const [tag, code] of Object.entries(hallucinated)) {
-      this.hallucinatedDirectives[tag.toLowerCase()] = code as BloggerDiagnosticCode
+      this.hallucinatedDirectives.set(tag.toLowerCase(), code as BloggerDiagnosticCode)
     }
 
     const stdDiags = (dirCatalog.domain_metadata?.standard_diagnostics as Record<string, string>) || {}
@@ -1076,16 +1076,16 @@ export class SpecCatalog {
     return result
   }
 
-  getHallucinatedDirectives(): Readonly<Record<string, BloggerDiagnosticCode>> {
-    return { ...this.hallucinatedDirectives }
+  getHallucinatedDirectives(): ReadonlyMap<string, BloggerDiagnosticCode> {
+    return this.hallucinatedDirectives
   }
 
   isHallucinatedDirective(tagName: string): boolean {
-    return Boolean(this.hallucinatedDirectives[tagName.toLowerCase()])
+    return this.hallucinatedDirectives.has(tagName.toLowerCase())
   }
 
   getHallucinatedDirectiveDiagnostic(tagName: string): BloggerDiagnosticCode | undefined {
-    return this.hallucinatedDirectives[tagName.toLowerCase()]
+    return this.hallucinatedDirectives.get(tagName.toLowerCase())
   }
 
   getInclusion(name: string): BloggerInclusionDefinition | undefined {
@@ -1394,7 +1394,7 @@ export function getLambdaKeywords(catalog: SpecCatalog = getSpecCatalog()): Read
   return catalog.getLambdaKeywords()
 }
 
-export function getHallucinatedDirectives(catalog: SpecCatalog = getSpecCatalog()): Readonly<Record<string, BloggerDiagnosticCode>> {
+export function getHallucinatedDirectives(catalog: SpecCatalog = getSpecCatalog()): ReadonlyMap<string, BloggerDiagnosticCode> {
   return catalog.getHallucinatedDirectives()
 }
 

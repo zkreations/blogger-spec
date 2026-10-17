@@ -586,6 +586,23 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect(node.members[0]?.property).toBe('blog')
       expect(node.members[1]?.property).toBe('')
     })
+
+    it('aborts with error on exceeding maximum recursion depth in strict mode', () => {
+      const nested = `${'('.repeat(60)}1${')'.repeat(60)}`
+      expect(() => parseExpression(nested)).toThrow(/Maximum expression recursion depth of 50 exceeded/)
+    })
+
+    it('returns Error node when exceeding maximum recursion depth in tolerant mode', () => {
+      const nested = `${'('.repeat(60)}1${')'.repeat(60)}`
+      const node = parseExpression(nested, { tolerant: true })
+      expect(node.type).toBe('Error')
+      expect((node as any).message).toMatch(/Maximum expression recursion depth of 50 exceeded/)
+    })
+
+    it('respects custom maxDepth option in ExpressionParser', () => {
+      expect(() => parseExpression('((1))', { maxDepth: 2 })).toThrow(/Maximum expression recursion depth of 2 exceeded/)
+      expect(parseExpression('1', { maxDepth: 2 }).type).toBe('Literal')
+    })
   })
 
   describe('conformance against real empirical expression fixtures', () => {

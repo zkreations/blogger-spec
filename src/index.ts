@@ -1,4 +1,3 @@
-/* eslint-disable import/no-mutable-exports */
 import {
   getAllCatalogs,
   getCatalog,
@@ -12,50 +11,20 @@ import {
   getSettings,
   getTypes,
   getWidgets,
-  registerCacheResetListener,
 } from './catalogs/index.js'
 
-export let directives = getDirectives()
-export let operators = getOperators()
-export let types = getTypes()
-export let widgets = getWidgets()
-export let settings = getSettings()
-export let globals = getGlobals()
-export let messages = getMessages()
-export let scopes = getScopes()
-export let diagnostics = getDiagnostics()
-export let inclusions = getInclusions()
-
-registerCacheResetListener(() => {
-  try {
-    const next = {
-      directives: getDirectives(),
-      operators: getOperators(),
-      types: getTypes(),
-      widgets: getWidgets(),
-      settings: getSettings(),
-      globals: getGlobals(),
-      messages: getMessages(),
-      scopes: getScopes(),
-      diagnostics: getDiagnostics(),
-      inclusions: getInclusions(),
-    }
-
-    directives = next.directives
-    operators = next.operators
-    types = next.types
-    widgets = next.widgets
-    settings = next.settings
-    globals = next.globals
-    messages = next.messages
-    scopes = next.scopes
-    diagnostics = next.diagnostics
-    inclusions = next.inclusions
-  }
-  catch {
-    // Retain previous snapshots if the custom store is a partial test mock
-  }
-})
+export const catalogs = {
+  get directives() { return getDirectives() },
+  get operators() { return getOperators() },
+  get types() { return getTypes() },
+  get widgets() { return getWidgets() },
+  get settings() { return getSettings() },
+  get globals() { return getGlobals() },
+  get messages() { return getMessages() },
+  get scopes() { return getScopes() },
+  get diagnostics() { return getDiagnostics() },
+  get inclusions() { return getInclusions() },
+}
 
 export {
   getAllCatalogs,

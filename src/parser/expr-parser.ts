@@ -22,9 +22,12 @@ import type { Token, TokenPosition, TokenType } from './lexer.js'
 import { getSpecCatalog } from '../catalogs/index.js'
 import { tokenize } from './lexer.js'
 
+export const DEFAULT_MAX_EXPRESSION_DEPTH = 50
+
 export interface ParseExpressionOptions {
   readonly catalog?: SpecCatalog
   readonly tolerant?: boolean
+  readonly maxDepth?: number
 }
 
 interface InfixOpInfo {
@@ -76,6 +79,8 @@ export class ExpressionParser {
   private readonly source: string
   private readonly catalog: SpecCatalog
   private readonly tolerant: boolean
+  private readonly maxDepth: number
+  private depth = 0
   private current = 0
 
   constructor(source: string, options: ParseExpressionOptions = {}) {
@@ -83,6 +88,7 @@ export class ExpressionParser {
     this.tokens = tokenize(source)
     this.catalog = options.catalog ?? getSpecCatalog()
     this.tolerant = Boolean(options.tolerant)
+    this.maxDepth = options.maxDepth ?? DEFAULT_MAX_EXPRESSION_DEPTH
   }
 
   public parse(): BloggerExpressionNode {
@@ -111,18 +117,36 @@ export class ExpressionParser {
   }
 
   private parseExpression(currentBindingPower: number): BloggerExpressionNode {
-    let left = this.parsePrefix()
-
-    while (!this.isAtEnd()) {
-      const opInfo = this.getInfixOpInfo(this.peek())
-      if (!opInfo || opInfo.bindingPower <= currentBindingPower) {
-        break
+    if (this.depth >= this.maxDepth) {
+      if (this.tolerant) {
+        const tok = !this.isAtEnd() ? this.peek() : undefined
+        return {
+          type: 'Error',
+          message: `Maximum expression recursion depth of ${this.maxDepth} exceeded`,
+          raw: tok?.rawValue ?? tok?.value ?? '',
+        }
       }
-
-      left = this.parseInfix(left, opInfo)
+      throw new Error(`Maximum expression recursion depth of ${this.maxDepth} exceeded`)
     }
 
-    return left
+    this.depth++
+    try {
+      let left = this.parsePrefix()
+
+      while (!this.isAtEnd()) {
+        const opInfo = this.getInfixOpInfo(this.peek())
+        if (!opInfo || opInfo.bindingPower <= currentBindingPower) {
+          break
+        }
+
+        left = this.parseInfix(left, opInfo)
+      }
+
+      return left
+    }
+    finally {
+      this.depth--
+    }
   }
 
   private parsePrefix(): BloggerExpressionNode {

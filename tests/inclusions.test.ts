@@ -19,9 +19,9 @@ describe('system inclusions catalog suite', () => {
   })
 
   it('exposes prehydrated inclusions from root exports', () => {
-    expect(RootExports.inclusions).toEqual(getInclusions())
+    expect(RootExports.catalogs.inclusions).toEqual(getInclusions())
     expect(RootExports.getInclusions).toBe(RootExports.getInclusions)
-    expect(RootExports.inclusions.inclusions['all-head-content']).toBeDefined()
+    expect(RootExports.catalogs.inclusions.inclusions['all-head-content']).toBeDefined()
   })
 
   it('correctly validates server inclusions and super delegation prefix', () => {

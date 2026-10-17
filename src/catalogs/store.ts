@@ -36,7 +36,6 @@ export interface CatalogStore {
 
 export class MemoryCatalogStore implements CatalogStore {
   private readonly rawCatalogs: Partial<BloggerCatalogMap>
-  private readonly catalogCache = new Map<string, any>()
   private readonly schemas: Record<string, any>
 
   constructor(catalogs: Partial<BloggerCatalogMap> = {}, schemas: Record<string, any> = {}) {
@@ -45,16 +44,11 @@ export class MemoryCatalogStore implements CatalogStore {
   }
 
   getCatalog<K extends BloggerCatalogName>(name: K): BloggerCatalogMap[K] {
-    if (this.catalogCache.has(name)) {
-      return this.catalogCache.get(name)
-    }
     const cat = this.rawCatalogs[name]
     if (!cat) {
       throw new Error(`Catalog not found in memory store: ${name}`)
     }
-    const clone = JSON.parse(JSON.stringify(cat))
-    this.catalogCache.set(name, clone)
-    return clone as BloggerCatalogMap[K]
+    return cat as BloggerCatalogMap[K]
   }
 
   getSchema(name: string): any {
@@ -75,9 +69,7 @@ export class MemoryCatalogStore implements CatalogStore {
     }))
   }
 
-  clearCache(): void {
-    this.catalogCache.clear()
-  }
+  clearCache(): void {}
 }
 
 let defaultStore: CatalogStore = new MemoryCatalogStore(embeddedCatalogs, embeddedSchemas)

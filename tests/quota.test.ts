@@ -240,4 +240,23 @@ describe('compiler token quota suite (BX1021)', () => {
     expect(result.isValid).toBe(true)
     expect(result.status).toBe('SAFE')
   })
+
+  it('guarantees exact numerical parity between countExpressionTokens and tokenizeExpression tokensConsumed', () => {
+    const expressions = [
+      '1 + 2 * 3',
+      'data:posts filter (p => p.id == 123)',
+      'data:view.isPost ? "Post" : "Other"',
+      'data:post.title ?: "Default Title"',
+      '{ a: 1, b: [10, 20, 30] }',
+      '-(10 + 20)',
+      '!data:blog.isMobile and data:view.isMultipleItems',
+      'format(data:blog.date, "YYYY-MM-DD")',
+    ]
+
+    for (const expr of expressions) {
+      const tokens = tokenizeExpression(expr)
+      const expectedSum = tokens.reduce((acc, t) => acc + t.tokensConsumed, 0)
+      expect(countExpressionTokens(expr)).toBe(expectedSum)
+    }
+  })
 })

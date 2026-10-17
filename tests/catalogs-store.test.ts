@@ -261,29 +261,27 @@ describe('catalogs and store formal verification suite', () => {
       ])
     })
 
-    it('isolates mutations by cloning raw catalogs on first cache access', () => {
+    it('serves raw catalogs directly by reference without serialization overhead', () => {
+      const directivesCat = {
+        $schema: 'directives.schema.json',
+        title: 'Test',
+        description: 'Test directives',
+        directives: {},
+        domain_metadata: {
+          inclusion_classifications: {},
+          super_inclusion: { syntax: '', description: '', requirements: [] },
+        },
+      } as any
+
       const store = new MemoryCatalogStore({
-        directives: {
-          $schema: 'directives.schema.json',
-          title: 'Test',
-          description: 'Test directives',
-          directives: {},
-          domain_metadata: {
-            inclusion_classifications: {},
-            super_inclusion: { syntax: '', description: '', requirements: [] },
-          },
-        } as any,
+        directives: directivesCat,
       })
 
       const first = store.getCatalog('directives')
-      ;(first as any).title = 'MUTATED_TITLE'
+      expect(first).toBe(directivesCat)
 
       const second = store.getCatalog('directives')
-      expect(second.title).toBe('MUTATED_TITLE') // Cached instance
-
-      store.clearCache()
-      const third = store.getCatalog('directives')
-      expect(third.title).toBe('Test') // Restored from original raw catalog
+      expect(second).toBe(directivesCat)
     })
 
     it('throws descriptive error on missing catalog', () => {
@@ -634,24 +632,28 @@ describe('catalogs and store formal verification suite', () => {
 
       it('detects hallucinated directives and maps them to canonical diagnostics', () => {
         const hallucinated = getHallucinatedDirectives()
-        expect(hallucinated['b:for']).toBe('BX1001')
-        expect(hallucinated['b:each']).toBe('BX1002')
-        expect(hallucinated['b:set']).toBe('BX1003')
-        expect(hallucinated['b:var']).toBe('BX1004')
-        expect(hallucinated['b:let']).toBe('BX1005')
-        expect(hallucinated['b:else-if']).toBe('BX1006')
-        expect(hallucinated['b:choose']).toBe('BX1007')
-        expect(hallucinated['b:when']).toBe('BX1008')
-        expect(hallucinated['b:otherwise']).toBe('BX1009')
-        expect(hallucinated['b:template']).toBe('BX1010')
-        expect(hallucinated['b:macro']).toBe('BX1011')
-        expect(hallucinated['b:function']).toBe('BX1012')
+        expect(hallucinated.get('b:for')).toBe('BX1001')
+        expect(hallucinated.get('b:each')).toBe('BX1002')
+        expect(hallucinated.get('b:set')).toBe('BX1003')
+        expect(hallucinated.get('b:var')).toBe('BX1004')
+        expect(hallucinated.get('b:let')).toBe('BX1005')
+        expect(hallucinated.get('b:else-if')).toBe('BX1006')
+        expect(hallucinated.get('b:choose')).toBe('BX1007')
+        expect(hallucinated.get('b:when')).toBe('BX1008')
+        expect(hallucinated.get('b:otherwise')).toBe('BX1009')
+        expect(hallucinated.get('b:template')).toBe('BX1010')
+        expect(hallucinated.get('b:macro')).toBe('BX1011')
+        expect(hallucinated.get('b:function')).toBe('BX1012')
 
         expect(isHallucinatedDirective('b:for')).toBe(true)
         expect(isHallucinatedDirective('b:FOR')).toBe(true)
         expect(isHallucinatedDirective('b:choose')).toBe(true)
         expect(isHallucinatedDirective('b:template')).toBe(true)
         expect(isHallucinatedDirective('b:if')).toBe(false)
+        expect(isHallucinatedDirective('constructor')).toBe(false)
+        expect(isHallucinatedDirective('toString')).toBe(false)
+        expect(isHallucinatedDirective('valueOf')).toBe(false)
+        expect(hallucinated.get('constructor')).toBeUndefined()
 
         expect(getHallucinatedDirectiveDiagnostic('b:for')).toBe('BX1001')
         expect(getHallucinatedDirectiveDiagnostic('b:ELSE-IF')).toBe('BX1006')
@@ -1032,9 +1034,9 @@ describe('catalogs and store formal verification suite', () => {
           expect(RootExports.BLOGGER_STRICTLY_SELF_CLOSING_TAGS.has('b:custom-self')).toBe(true)
 
           // Top-level exported catalog instances update dynamically
-          expect(RootExports.operators.domain_metadata?.evaluation_contexts?.compiler_quotas?.max_expression_tokens).toBe(99)
-          expect(RootExports.directives.domain_metadata?.compiler_limits?.max_directive_nesting_depth).toBe(88)
-          expect(RootExports.directives.directives['b:custom-self']).toBeDefined()
+          expect(RootExports.catalogs.operators.domain_metadata?.evaluation_contexts?.compiler_quotas?.max_expression_tokens).toBe(99)
+          expect(RootExports.catalogs.directives.domain_metadata?.compiler_limits?.max_directive_nesting_depth).toBe(88)
+          expect(RootExports.catalogs.directives.directives['b:custom-self']).toBeDefined()
         }
         finally {
           setDefaultCatalogStore(originalStore)
@@ -1045,9 +1047,9 @@ describe('catalogs and store formal verification suite', () => {
         expect(RootExports.COMPILER_NESTING_LIMIT).toBe(50)
         expect(RootExports.HTML_VOID_ELEMENTS.has('custom-void')).toBe(false)
         expect(RootExports.BLOGGER_STRICTLY_SELF_CLOSING_TAGS.has('b:custom-self')).toBe(false)
-        expect(RootExports.operators.domain_metadata?.evaluation_contexts?.compiler_quotas?.max_expression_tokens).toBe(40)
-        expect(RootExports.directives.domain_metadata?.compiler_limits?.max_directive_nesting_depth).toBe(50)
-        expect(RootExports.directives.directives['b:custom-self']).toBeUndefined()
+        expect(RootExports.catalogs.operators.domain_metadata?.evaluation_contexts?.compiler_quotas?.max_expression_tokens).toBe(40)
+        expect(RootExports.catalogs.directives.domain_metadata?.compiler_limits?.max_directive_nesting_depth).toBe(50)
+        expect(RootExports.catalogs.directives.directives['b:custom-self']).toBeUndefined()
       })
     })
   })

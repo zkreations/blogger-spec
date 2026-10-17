@@ -103,22 +103,23 @@ export function maskCdataBlock(match: string, catalog: SpecCatalog = getSpecCata
   return prefixSpaces + maskedInner + suffixSpaces
 }
 
+const MASK_BLOCK_REGEX = /<!--[\s\S]*?-->|<!\[CDATA\[[\s\S]*?\]\]>|<b:comment\b[^>]*>[\s\S]*?<\/b:comment>/gi
+
 export function maskXmlCommentsAndCdata(text: string, catalog: SpecCatalog = getSpecCatalog()): string {
-  let masked = text
-
-  if (masked.includes('<!--')) {
-    masked = masked.replace(/<!--[\s\S]*?-->/g, match => match.replace(/[^\r\n]/g, ' '))
+  if (!text.includes('<!--') && !text.includes('<![CDATA[') && !text.includes('<b:comment')) {
+    return text
   }
 
-  if (masked.includes('<![CDATA[')) {
-    masked = masked.replace(/<!\[CDATA\[[\s\S]*?\]\]>/g, match => maskCdataBlock(match, catalog))
-  }
-
-  if (masked.includes('<b:comment')) {
-    masked = masked.replace(/<b:comment\b[^>]*>[\s\S]*?<\/b:comment>/gi, match => match.replace(/[^\r\n]/g, ' '))
-  }
-
-  return masked
+  MASK_BLOCK_REGEX.lastIndex = 0
+  return text.replace(MASK_BLOCK_REGEX, (match) => {
+    if (match.charCodeAt(1) === 33 /* '!' */) {
+      if (match.charCodeAt(2) === 45 /* '-' */) {
+        return match.replace(/[^\r\n]/g, ' ')
+      }
+      return maskCdataBlock(match, catalog)
+    }
+    return match.replace(/[^\r\n]/g, ' ')
+  })
 }
 
 const ATTR_PARSER_REGEX = /([\w:-]+)(?:\s*=\s*(?:(")([\s\S]*?)(")|(')([\s\S]*?)(')|([^\s"'=<>`]+)))?/g
@@ -127,7 +128,7 @@ export function parseAttributes(
   attributesText: string,
   baseOffset: number,
 ): Record<string, BloggerDirectiveAttributeToken> {
-  const result: Record<string, BloggerDirectiveAttributeToken> = {}
+  const result: Record<string, BloggerDirectiveAttributeToken> = Object.create(null)
   if (!attributesText.trim()) {
     return result
   }
@@ -260,7 +261,7 @@ export function scanDirectiveTokens(
       ? rawContent.slice(0, rawContent.lastIndexOf('/'))
       : rawContent
 
-    const attributes = isClosing ? {} : parseAttributes(cleanAttrsText, attributesOffset)
+    const attributes = isClosing ? Object.create(null) : parseAttributes(cleanAttrsText, attributesOffset)
 
     tokens.push({
       tagName,

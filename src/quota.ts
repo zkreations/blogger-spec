@@ -35,20 +35,31 @@ export {
   unescapeXmlEntities,
 }
 
-export function tokenizeExpression(
+export function forEachExpressionToken(
   expr: string,
   catalog: SpecCatalog = getSpecCatalog(),
-): BloggerExpressionToken[] {
-  const tokens: BloggerExpressionToken[] = []
+  callback: (token: BloggerExpressionToken) => void,
+): void {
   const flattened = flattenMultilineExpression(expr)
   const s = unescapeXmlEntities(flattened)
   if (!s.trim()) {
-    return []
+    return
   }
 
   const rawTokens = new Lexer(s).tokenize()
   const ternaryStack = [0]
   const inObjectStack = [false]
+
+  let lastToken: BloggerExpressionToken | undefined
+  let prevToken: BloggerExpressionToken | undefined
+  let tokenCount = 0
+
+  const emit = (tok: BloggerExpressionToken) => {
+    prevToken = lastToken
+    lastToken = tok
+    tokenCount++
+    callback(tok)
+  }
 
   let i = 0
   while (i < rawTokens.length) {
@@ -57,11 +68,8 @@ export function tokenizeExpression(
       break
     }
 
-    const lastToken = tokens[tokens.length - 1]
-    const prevToken = tokens.length > 1 ? tokens[tokens.length - 2] : undefined
-
     if (token.type === 'STRING') {
-      tokens.push({
+      emit({
         value: token.rawValue ?? token.value,
         tokenType: 'STRING_LITERAL',
         tokensConsumed: 1,
@@ -72,7 +80,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'NUMBER') {
-      tokens.push({
+      emit({
         value: token.value,
         tokenType: 'NUMBER_LITERAL',
         tokensConsumed: 1,
@@ -84,19 +92,19 @@ export function tokenizeExpression(
 
     if (token.type === 'MINUS') {
       const nextToken = rawTokens[i + 1]
-      const isUnaryMinus = (tokens.length === 0
-        || tokens[tokens.length - 1]!.tokenType.startsWith('OPERATOR_')
+      const isUnaryMinus = (tokenCount === 0
+        || lastToken!.tokenType.startsWith('OPERATOR_')
         || [
           'GROUPING_PAREN_OPEN',
           'CONTAINER_ARRAY',
           'CONTAINER_OBJECT',
           'DELIMITER_COMMA',
           'DELIMITER_COLON',
-        ].includes(tokens[tokens.length - 1]!.tokenType)
+        ].includes(lastToken!.tokenType)
       ) && nextToken?.type === 'NUMBER' && nextToken.start.offset === token.end.offset
 
       if (isUnaryMinus) {
-        tokens.push({
+        emit({
           value: `-${nextToken.value}`,
           tokenType: 'NUMBER_LITERAL',
           tokensConsumed: 1,
@@ -105,7 +113,7 @@ export function tokenizeExpression(
         i += 2
         continue
       }
-      tokens.push({
+      emit({
         value: '-',
         tokenType: 'OPERATOR_ARITHMETIC',
         tokensConsumed: catalog.getOperator('-')?.token_cost ?? 1,
@@ -116,7 +124,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'PLUS' || token.type === 'STAR' || token.type === 'SLASH' || token.type === 'PERCENT') {
-      tokens.push({
+      emit({
         value: token.value,
         tokenType: 'OPERATOR_ARITHMETIC',
         tokensConsumed: catalog.getOperator(token.value)?.token_cost ?? 1,
@@ -127,7 +135,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'EQ' || token.type === 'NEQ' || token.type === 'LT' || token.type === 'GT' || token.type === 'LTE' || token.type === 'GTE') {
-      tokens.push({
+      emit({
         value: token.value,
         tokenType: 'OPERATOR_RELATIONAL',
         tokensConsumed: catalog.getOperator(token.value)?.token_cost ?? 1,
@@ -138,7 +146,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'ELVIS') {
-      tokens.push({
+      emit({
         value: '?:',
         tokenType: 'OPERATOR_ELVIS',
         tokensConsumed: catalog.getOperator('?:')?.token_cost ?? 1,
@@ -149,7 +157,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'ARROW') {
-      tokens.push({
+      emit({
         value: '=>',
         tokenType: 'OPERATOR_LAMBDA',
         tokensConsumed: 1,
@@ -160,7 +168,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'AND' || token.type === 'OR') {
-      tokens.push({
+      emit({
         value: token.value,
         tokenType: 'OPERATOR_LOGICAL_JS',
         tokensConsumed: catalog.getOperator(token.value)?.token_cost ?? 1,
@@ -171,7 +179,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'BANG') {
-      tokens.push({
+      emit({
         value: '!',
         tokenType: 'OPERATOR_LOGICAL',
         tokensConsumed: catalog.getOperator('!')?.token_cost ?? 1,
@@ -182,7 +190,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'LBRACE') {
-      tokens.push({
+      emit({
         value: '{',
         tokenType: 'CONTAINER_OBJECT',
         tokensConsumed: 1,
@@ -194,7 +202,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'RBRACE') {
-      tokens.push({
+      emit({
         value: '}',
         tokenType: 'CONTAINER_OBJECT_CLOSE',
         tokensConsumed: 0,
@@ -208,7 +216,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'LBRACKET') {
-      tokens.push({
+      emit({
         value: '[',
         tokenType: 'CONTAINER_ARRAY',
         tokensConsumed: 1,
@@ -219,7 +227,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'RBRACKET') {
-      tokens.push({
+      emit({
         value: ']',
         tokenType: 'CONTAINER_ARRAY_CLOSE',
         tokensConsumed: 0,
@@ -230,7 +238,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'COMMA') {
-      tokens.push({
+      emit({
         value: ',',
         tokenType: 'DELIMITER_COMMA',
         tokensConsumed: 0,
@@ -242,7 +250,7 @@ export function tokenizeExpression(
 
     if (token.type === 'QUESTION') {
       ternaryStack[ternaryStack.length - 1]! += 1
-      tokens.push({
+      emit({
         value: '?',
         tokenType: 'OPERATOR_TERNARY_SELECT',
         tokensConsumed: 1,
@@ -255,7 +263,7 @@ export function tokenizeExpression(
     if (token.type === 'COLON') {
       if (ternaryStack[ternaryStack.length - 1]! > 0) {
         ternaryStack[ternaryStack.length - 1]! -= 1
-        tokens.push({
+        emit({
           value: ':',
           tokenType: 'OPERATOR_TERNARY_BRANCH',
           tokensConsumed: 1,
@@ -263,7 +271,7 @@ export function tokenizeExpression(
         })
       }
       else {
-        tokens.push({
+        emit({
           value: ':',
           tokenType: 'DELIMITER_COLON',
           tokensConsumed: 0,
@@ -281,7 +289,7 @@ export function tokenizeExpression(
           && (lastToken.value === '!' || lastToken.value.toLowerCase() === 'not')
 
       const isPrefixContext
-        = tokens.length === 1
+        = tokenCount === 1
           || (prevToken !== undefined
             && (prevToken.tokenType === 'DELIMITER_COMMA'
               || prevToken.tokenType === 'GROUPING_PAREN_OPEN'
@@ -292,7 +300,7 @@ export function tokenizeExpression(
       const lastWord = lastToken?.value.toLowerCase()
       const lastOp = lastWord ? catalog.getOperator(lastWord) : undefined
       const isFunctionalCall
-        = tokens.length > 0
+        = tokenCount > 0
           && !isNonFunctionalPrefix
           && (lastToken!.tokenType === 'NATIVE_FUNCTION'
             || lastToken!.tokenType === 'OPERATOR_LAMBDA'
@@ -300,7 +308,7 @@ export function tokenizeExpression(
             || (lastToken!.tokenType.startsWith('OPERATOR_') && isPrefixContext))
 
       const cost = isFunctionalCall ? 0 : 1
-      tokens.push({
+      emit({
         value: '(',
         tokenType: 'GROUPING_PAREN_OPEN',
         tokensConsumed: cost,
@@ -314,7 +322,7 @@ export function tokenizeExpression(
       if (ternaryStack.length > 1) {
         ternaryStack.pop()
       }
-      tokens.push({
+      emit({
         value: ')',
         tokenType: 'GROUPING_PAREN_CLOSE',
         tokensConsumed: 0,
@@ -359,7 +367,7 @@ export function tokenizeExpression(
       }
 
       const val = s.slice(startOffset, lastConsumed.end.offset)
-      tokens.push({
+      emit({
         value: val,
         tokenType: 'DATA_PATH',
         tokensConsumed: 1,
@@ -371,7 +379,7 @@ export function tokenizeExpression(
     if (token.type === 'DOT') {
       const nextToken = rawTokens[i + 1]
       if (nextToken?.type === 'IDENTIFIER' && nextToken.start.offset === token.end.offset) {
-        tokens.push({
+        emit({
           value: `.${nextToken.value}`,
           tokenType: 'IDENTIFIER',
           tokensConsumed: 1,
@@ -380,7 +388,7 @@ export function tokenizeExpression(
         i += 2
         continue
       }
-      tokens.push({
+      emit({
         value: '.',
         tokenType: 'IDENTIFIER',
         tokensConsumed: 1,
@@ -391,7 +399,7 @@ export function tokenizeExpression(
     }
 
     if (token.type === 'BOOLEAN' || token.type === 'NULL') {
-      tokens.push({
+      emit({
         value: token.value,
         tokenType: 'BOOLEAN_LITERAL',
         tokensConsumed: 1,
@@ -412,7 +420,7 @@ export function tokenizeExpression(
             || lastToken.tokenType === 'DELIMITER_COMMA')
 
       if (isObjectKey) {
-        tokens.push({
+        emit({
           value: token.value,
           tokenType: 'OBJECT_KEY',
           tokensConsumed: 0,
@@ -424,7 +432,7 @@ export function tokenizeExpression(
 
       const opDef = catalog.getOperator(token.value)
       const isPrefixContext
-        = tokens.length === 0
+        = tokenCount === 0
           || lastToken === undefined
           || lastToken.tokenType === 'DELIMITER_COMMA'
           || lastToken.tokenType === 'GROUPING_PAREN_OPEN'
@@ -438,7 +446,7 @@ export function tokenizeExpression(
         && opDef.family !== 'lambda'
         && (isPrefixContext || !['comparison', 'logical', 'arithmetic'].includes(opDef.family))
       ) {
-        tokens.push({
+        emit({
           value: token.value,
           tokenType: 'NATIVE_FUNCTION',
           tokensConsumed: opDef?.token_cost ?? 1,
@@ -446,7 +454,7 @@ export function tokenizeExpression(
         })
       }
       else if (opDef?.family === 'comparison') {
-        tokens.push({
+        emit({
           value: token.value,
           tokenType: 'OPERATOR_RELATIONAL',
           tokensConsumed: opDef?.token_cost ?? 1,
@@ -454,7 +462,7 @@ export function tokenizeExpression(
         })
       }
       else if (opDef?.family === 'logical') {
-        tokens.push({
+        emit({
           value: token.value,
           tokenType: 'OPERATOR_LOGICAL',
           tokensConsumed: opDef?.token_cost ?? 1,
@@ -462,7 +470,7 @@ export function tokenizeExpression(
         })
       }
       else if (opDef?.family === 'membership' || opDef?.family === 'content') {
-        tokens.push({
+        emit({
           value: token.value,
           tokenType: 'OPERATOR_MEMBERSHIP',
           tokensConsumed: opDef?.token_cost ?? 1,
@@ -470,7 +478,7 @@ export function tokenizeExpression(
         })
       }
       else if (opDef?.family === 'lambda') {
-        tokens.push({
+        emit({
           value: token.value,
           tokenType: 'OPERATOR_LAMBDA',
           tokensConsumed: opDef?.token_cost ?? 1,
@@ -478,7 +486,7 @@ export function tokenizeExpression(
         })
       }
       else if (opDef?.family === 'collection') {
-        tokens.push({
+        emit({
           value: token.value,
           tokenType: 'OPERATOR_COLLECTION',
           tokensConsumed: opDef?.token_cost ?? 1,
@@ -486,7 +494,7 @@ export function tokenizeExpression(
         })
       }
       else {
-        tokens.push({
+        emit({
           value: token.value,
           tokenType: 'IDENTIFIER',
           tokensConsumed: 1,
@@ -499,7 +507,14 @@ export function tokenizeExpression(
 
     i++
   }
+}
 
+export function tokenizeExpression(
+  expr: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): BloggerExpressionToken[] {
+  const tokens: BloggerExpressionToken[] = []
+  forEachExpressionToken(expr, catalog, tok => tokens.push(tok))
   return tokens
 }
 
@@ -514,8 +529,11 @@ export function countExpressionTokens(
     if (!trimmed) {
       return 0
     }
-    const tokens = tokenizeExpression(trimmed, catalog)
-    return tokens.reduce((acc, t) => acc + t.tokensConsumed, 0)
+    let total = 0
+    forEachExpressionToken(trimmed, catalog, (tok) => {
+      total += tok.tokensConsumed
+    })
+    return total
   }
 
   if (typeof expr === 'object' && expr !== null) {

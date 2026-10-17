@@ -282,5 +282,28 @@ describe('directive scanner suite', () => {
       expect(RootExports.scanDirectiveTokens(xml)).toEqual(directScan(xml))
       expect(RootExports.isStrictlySelfClosingTag('b:include')).toBe(directIsSelfClosing('b:include'))
     })
+
+    it('prevents prototype pollution in attribute parsing using null prototype', () => {
+      /* eslint-disable dot-notation, no-proto, no-restricted-properties */
+      const attrs = parseAttributes('constructor="custom" __proto__="polluted" toString="str" normal="ok"', 0)
+      expect(Object.getPrototypeOf(attrs)).toBeNull()
+      expect(attrs['constructor']?.value).toBe('custom')
+      expect(attrs['__proto__']?.value).toBe('polluted')
+      expect(attrs['toString']?.value).toBe('str')
+      expect(attrs.normal?.value).toBe('ok')
+      expect(attrs['nonExistent']).toBeUndefined()
+      /* eslint-enable dot-notation, no-proto, no-restricted-properties */
+    })
+
+    it('masks mixed comments and CDATA blocks in a single pass preserving length and offsets', () => {
+      const xml = '<div><!-- comment 1 --><![CDATA[cdata content]]><b:comment>blogger comment</b:comment></div>'
+      const masked = maskXmlCommentsAndCdata(xml)
+      expect(masked.length).toBe(xml.length)
+      expect(masked.startsWith('<div>')).toBe(true)
+      expect(masked.endsWith('</div>')).toBe(true)
+      expect(masked.includes('comment 1')).toBe(false)
+      expect(masked.includes('blogger comment')).toBe(false)
+      expect(masked.includes('cdata content')).toBe(false)
+    })
   })
 })

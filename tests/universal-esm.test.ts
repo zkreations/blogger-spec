@@ -20,22 +20,22 @@ describe('universal ESM & in-memory store suite', () => {
   })
 
   it('provides prehydrated root catalog exports without node:fs calls', () => {
-    expect(RootExports.directives).toBeDefined()
-    expect(RootExports.directives.directives).toBeDefined()
-    expect(Object.keys(RootExports.directives.directives).length).toBeGreaterThan(10)
+    expect(RootExports.catalogs.directives).toBeDefined()
+    expect(RootExports.catalogs.directives.directives).toBeDefined()
+    expect(Object.keys(RootExports.catalogs.directives.directives).length).toBeGreaterThan(10)
 
-    expect(RootExports.operators).toBeDefined()
-    expect(RootExports.operators.operators).toBeDefined()
-    expect(Object.keys(RootExports.operators.operators).length).toBeGreaterThan(10)
+    expect(RootExports.catalogs.operators).toBeDefined()
+    expect(RootExports.catalogs.operators.operators).toBeDefined()
+    expect(Object.keys(RootExports.catalogs.operators.operators).length).toBeGreaterThan(10)
 
-    expect(RootExports.types).toBeDefined()
-    expect(RootExports.widgets).toBeDefined()
-    expect(RootExports.settings).toBeDefined()
-    expect(RootExports.globals).toBeDefined()
-    expect(RootExports.messages).toBeDefined()
-    expect(RootExports.scopes).toBeDefined()
-    expect(RootExports.diagnostics).toBeDefined()
-    expect(RootExports.inclusions).toBeDefined()
+    expect(RootExports.catalogs.types).toBeDefined()
+    expect(RootExports.catalogs.widgets).toBeDefined()
+    expect(RootExports.catalogs.settings).toBeDefined()
+    expect(RootExports.catalogs.globals).toBeDefined()
+    expect(RootExports.catalogs.messages).toBeDefined()
+    expect(RootExports.catalogs.scopes).toBeDefined()
+    expect(RootExports.catalogs.diagnostics).toBeDefined()
+    expect(RootExports.catalogs.inclusions).toBeDefined()
   })
 
   it('serves all catalogs and schemas through standard helpers', () => {
