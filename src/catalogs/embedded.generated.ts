@@ -4550,6 +4550,16 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "Visited Color",
         "Visited Link Color",
         "Widths"
+      ],
+      "semantics": [
+        "coercion-canonical-string",
+        "coercion-equality",
+        "coercion-literal",
+        "coercion-literal-dominance",
+        "coercion-nullish",
+        "coercion-runtime-fallback",
+        "coercion-runtime-numeric",
+        "coercion-strict-types"
       ]
     },
     "types": {
@@ -5221,6 +5231,13 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "title": "Blogger Gadgets & Widgets Unified Master Catalog",
     "description": "Canonical unified catalog of Blogger official gadgets, defining runtime data dictionaries (data.*) and layout configuration settings (<b:widget-setting name=\"...\">).",
     "version": "1.0.0",
+    "domain_metadata": {
+      "layout_versions": [
+        1,
+        2,
+        3
+      ]
+    },
     "widgets": {
       "AdSense": {
         "description": "Google AdSense ad slot configuration, publisher client ID, and slot dimension parameters.",
@@ -8642,6 +8659,17 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "title": "Blogger Global Data Objects Master Catalog",
     "description": "Comprehensive, machine-readable registry of universal and host-scoped data objects in Blogger Layouts v3, categorizing properties into canonical (modern), patterns (dynamic lookups), and deprecated (obsolete or non-functional).",
     "version": "1.0.0",
+    "domain_metadata": {
+      "root_datasets": [
+        "data:blog",
+        "data:view",
+        "data:messages",
+        "data:skin",
+        "data:widgets",
+        "data:template",
+        "data:widget"
+      ]
+    },
     "objects": {
       "data:view": {
         "cardinality": "singleton",
@@ -10364,6 +10392,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "visibility": "local_only",
         "shadowing": "local-wins",
         "evidence": "official",
+        "verified_at": "2026-10-10",
         "notes": "Iterator member properties MUST be accessed directly without 'data:' prefix (e.g. p.title, NOT data:p.title)."
       },
       "loop": {
@@ -10379,6 +10408,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "visibility": "descendants",
         "shadowing": "local-wins",
         "evidence": "official",
+        "verified_at": "2026-10-10",
         "notes": "Nested loops reusing the same 'var' identifier will shadow outer variables. 'index' counter always increments forward 0..N."
       },
       "with": {
@@ -10393,6 +10423,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "visibility": "descendants",
         "shadowing": "local-wins",
         "evidence": "official",
+        "verified_at": "2026-10-10",
         "notes": "Used extensively for decomposing expressions and caching expensive collection operations."
       },
       "includable": {
@@ -10407,6 +10438,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "visibility": "descendants",
         "shadowing": "local-wins",
         "evidence": "official",
+        "verified_at": "2026-10-10",
         "notes": "Standard entrypoint is id='main'. The 'var' attribute names the incoming data parameter (conventionally 'this' or custom name). Forwarding datasets via <b:include data='...'> strictly requires an object or object literal { ... } (or array wrapped in braces {[ ... ]}); passing raw scalar primitives is rejected. When <b:include> omits the 'data' attribute inside a widget, 'var' automatically binds to the host widget data dictionary. Calling an includable with 'var' from the global scope without 'data' aborts with 'Error during evaluation of <id>'."
       },
       "widget": {
@@ -10422,6 +10454,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "visibility": "descendants",
         "shadowing": "none",
         "evidence": "official",
+        "verified_at": "2026-10-10",
         "notes": "Direct access to private widget data (e.g. data:posts, data:title) and common metadata data:widget (instanceId, sectionId, type, version) strictly within child nodes of <b:includable> inside <b:widget> or <b:defaultmarkup>. Inaccessible from sibling widgets or outside includables; data:widgets provides layout descriptors and specific summary models per data-widgets catalog, not full private widget dictionaries."
       },
       "section": {
@@ -10434,6 +10467,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "visibility": "descendants",
         "shadowing": "none",
         "evidence": "official",
+        "verified_at": "2026-10-10",
         "notes": "Does not inject custom template variables into child gadgets, but controls section-level conditional rendering via 'cond'."
       },
       "global": {
@@ -10453,6 +10487,7 @@ export const embeddedCatalogs: BloggerCatalogMap = {
         "visibility": "global",
         "shadowing": "none",
         "evidence": "official",
+        "verified_at": "2026-10-10",
         "notes": "Universal read-only datasets provided by the Blogger platform runtime. data:widgets provides layout descriptors and specific summary models per data-widgets catalog, not full private widget dictionaries."
       }
     }
@@ -10462,6 +10497,23 @@ export const embeddedCatalogs: BloggerCatalogMap = {
     "title": "Blogger Canonical Diagnostics Catalog",
     "description": "Standard catalogue of diagnostic codes, severities, and validation rules for Blogger template compilers and linters.",
     "version": "1.0.0",
+    "domain_metadata": {
+      "subsystems": [
+        "arithmetic",
+        "collections_and_lambdas",
+        "conditional_rendering",
+        "helpers_and_transforms",
+        "includable_inheritance",
+        "locale_modifiers",
+        "logical_and_comparisons",
+        "loop_rendering",
+        "loop_shadowing",
+        "message_rendering",
+        "subtype_modifiers",
+        "widget_rendering",
+        "with_nesting"
+      ]
+    },
     "rules": {
       "BX1001": {
         "name": "PROHIBITED_FOR_TAG",
@@ -11563,6 +11615,22 @@ export const embeddedSchemas: Record<string, any> = {
         "format": "date",
         "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
         "description": "ISO 8601 calendar date (YYYY-MM-DD) indicating the empirical verification milestone."
+      },
+      "empiricalMetadata": {
+        "type": "object",
+        "required": [
+          "evidence",
+          "verified_at"
+        ],
+        "properties": {
+          "evidence": {
+            "$ref": "#/$defs/evidenceLevel"
+          },
+          "verified_at": {
+            "$ref": "#/$defs/verified_at"
+          }
+        },
+        "additionalProperties": false
       }
     }
   },
@@ -11577,6 +11645,7 @@ export const embeddedSchemas: Record<string, any> = {
       "title",
       "description",
       "version",
+      "domain_metadata",
       "rules"
     ],
     "properties": {
@@ -11591,6 +11660,22 @@ export const embeddedSchemas: Record<string, any> = {
       },
       "version": {
         "type": "string"
+      },
+      "domain_metadata": {
+        "type": "object",
+        "required": [
+          "subsystems"
+        ],
+        "properties": {
+          "subsystems": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Standard compiler and execution subsystems validated by conformance fixtures."
+          }
+        },
+        "additionalProperties": false
       },
       "rules": {
         "type": "object",
@@ -12073,7 +12158,7 @@ export const embeddedSchemas: Record<string, any> = {
           "accepted_types": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "common.schema.json#/$defs/canonicalPropertyType"
             }
           },
           "required": {
@@ -12361,6 +12446,7 @@ export const embeddedSchemas: Record<string, any> = {
       "title",
       "description",
       "version",
+      "domain_metadata",
       "objects"
     ],
     "properties": {
@@ -12375,6 +12461,22 @@ export const embeddedSchemas: Record<string, any> = {
       },
       "version": {
         "type": "string"
+      },
+      "domain_metadata": {
+        "type": "object",
+        "required": [
+          "root_datasets"
+        ],
+        "properties": {
+          "root_datasets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Standard root dataset namespaces provided by the Blogger platform runtime."
+          }
+        },
+        "additionalProperties": false
       },
       "objects": {
         "type": "object",
@@ -13181,7 +13283,8 @@ export const embeddedSchemas: Record<string, any> = {
           "introduces",
           "visibility",
           "shadowing",
-          "evidence"
+          "evidence",
+          "verified_at"
         ],
         "properties": {
           "name": {
@@ -13231,6 +13334,9 @@ export const embeddedSchemas: Record<string, any> = {
           "evidence": {
             "$ref": "common.schema.json#/$defs/evidenceLevel"
           },
+          "verified_at": {
+            "$ref": "common.schema.json#/$defs/verified_at"
+          },
           "notes": {
             "type": "string"
           }
@@ -13271,7 +13377,8 @@ export const embeddedSchemas: Record<string, any> = {
         "required": [
           "coercion_rules",
           "truthiness_matrix",
-          "scalar_types"
+          "scalar_types",
+          "semantics"
         ],
         "properties": {
           "coercion_rules": {
@@ -13331,6 +13438,13 @@ export const embeddedSchemas: Record<string, any> = {
               "type": "string"
             },
             "description": "Predefined standard variable description labels supported by Blogger Theme Designer."
+          },
+          "semantics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Standard coercion semantics identifiers validated by conformance fixtures."
           }
         },
         "additionalProperties": false
@@ -13420,7 +13534,8 @@ export const embeddedSchemas: Record<string, any> = {
           },
           "output_type": {
             "type": "string",
-            "description": "Return type of the modifier, referencing a canonical Blogger type or 'child_item'."
+            "pattern": "^([a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?|child_item)( \\| ([a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?))*$",
+            "description": "Return type of the modifier, referencing a canonical Blogger type, parameterized collection, union, or 'child_item'."
           },
           "syntax": {
             "type": "string",
@@ -13526,6 +13641,7 @@ export const embeddedSchemas: Record<string, any> = {
       "title",
       "description",
       "version",
+      "domain_metadata",
       "widgets"
     ],
     "properties": {
@@ -13540,6 +13656,22 @@ export const embeddedSchemas: Record<string, any> = {
       },
       "version": {
         "type": "string"
+      },
+      "domain_metadata": {
+        "type": "object",
+        "required": [
+          "layout_versions"
+        ],
+        "properties": {
+          "layout_versions": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Supported Blogger XML template layout syntax versions."
+          }
+        },
+        "additionalProperties": false
       },
       "widgets": {
         "type": "object",
@@ -13612,7 +13744,7 @@ export const embeddedSchemas: Record<string, any> = {
         ],
         "properties": {
           "type": {
-            "type": "string"
+            "$ref": "common.schema.json#/$defs/canonicalPropertyType"
           },
           "description": {
             "type": "string"

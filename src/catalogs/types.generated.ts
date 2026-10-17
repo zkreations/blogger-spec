@@ -94,6 +94,9 @@ export interface BloggerDiagnosticsCatalog {
   version?: string;
   title?: string;
   description?: string;
+  domain_metadata?: {
+    subsystems: string[];
+  };
   rules: Record<string, BloggerDiagnosticRule>;
 }
 
@@ -138,7 +141,7 @@ export interface BloggerDirectiveAttribute {
   type: string;
   /** Functional compilation classification: 'native_expression' (attribute natively evaluates dynamic expressions in unadorned form; when expr is true, the expr: prefix enables dynamic runtime dereferencing / double-evaluation, e.g. cond, values, value), 'prefixed_expression' (unadorned form evaluates as a static literal; dynamic expression evaluation requires the expr: prefix, e.g. name, value, class), or 'static_literal' (strictly literal value; expr: prefix is strictly prohibited, e.g. id, type, locked). */
   attribute_kind: 'native_expression' | 'prefixed_expression' | 'static_literal';
-  accepted_types?: string[];
+  accepted_types?: BloggerCanonicalPropertyType[];
   required?: boolean;
   /** Specifies whether an empty literal string value (e.g. value='') is valid semantics and exempt from empty attribute warnings (e.g. b:attr value='' to remove parent attribute). */
   allow_empty?: boolean;
@@ -310,7 +313,7 @@ export interface BloggerOperatorsCatalog {
 
 export interface BloggerTypeModifierDefinition {
   description: string;
-  /** Return type of the modifier, referencing a canonical Blogger type or 'child_item'. */
+  /** Return type of the modifier, referencing a canonical Blogger type, parameterized collection, union, or 'child_item'. */
   output_type: string;
   /** Canonical syntax pattern (e.g. '.escaped', '.width', '.first'). */
   syntax: string;
@@ -376,6 +379,7 @@ export interface BloggerTypesCatalog {
     truthiness_matrix: BloggerTruthinessMatrix;
     scalar_types: string[];
     theme_designer_descriptions?: string[];
+    semantics?: string[];
   };
   types: Record<string, BloggerTypeDefinition>;
   modifiers?: Record<string, any>;
@@ -402,11 +406,14 @@ export interface BloggerGlobalsCatalog {
   version?: string;
   title?: string;
   description?: string;
+  domain_metadata?: {
+    root_datasets: string[];
+  };
   objects: Record<string, BloggerGlobalObjectDefinition>;
 }
 
 export interface BloggerCanonicalSetting {
-  type: string;
+  type: BloggerCanonicalPropertyType;
   description: string;
   default?: string | null | boolean | number | number;
   allowed_values?: string[];
@@ -429,6 +436,9 @@ export interface BloggerWidgetsCatalog {
   version?: string;
   title?: string;
   description?: string;
+  domain_metadata?: {
+    layout_versions: number[];
+  };
   widgets: Record<string, BloggerWidgetDefinition>;
 }
 
@@ -482,6 +492,7 @@ export interface BloggerScopeDefinition {
   visibility: 'descendants' | 'local_only' | 'global';
   shadowing: 'local-wins' | 'prohibited' | 'none';
   evidence: BloggerEvidenceLevel;
+  verified_at: string;
   notes?: string;
 }
 

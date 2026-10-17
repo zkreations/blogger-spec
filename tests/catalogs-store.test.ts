@@ -189,6 +189,59 @@ describe('catalogs and store formal verification suite', () => {
         rmSync(tempManifestPath, { force: true })
       }
     })
+
+    it('validates dynamic subsystems and semantics from catalogs domain_metadata in fixtures', () => {
+      const tempManifestPath = join(tmpdir(), `test-fixtures-dynamic-${Date.now()}.json`)
+      writeFileSync(
+        tempManifestPath,
+        JSON.stringify({
+          fixtures: [
+            {
+              id: 'test/dynamic-cover',
+              title: 'Dynamic cover test',
+              evidence: 'observed',
+              verified_at: '2026-10-17',
+              covers: ['subsystem:non_existent_subsystem', 'semantics:non_existent_semantics'],
+              input: { kind: 'expression', source: '1' },
+              expected: { outcome: 'value', value: 1 },
+            },
+          ],
+        }),
+      )
+
+      try {
+        const report = validateSpec({
+          fixturesManifestPath: tempManifestPath,
+          checkDtsFreshness: false,
+        })
+
+        expect(report.valid).toBe(false)
+        expect(report.errors).toContain(
+          'Fixture \'test/dynamic-cover\' covers unknown subsystem \'non_existent_subsystem\'.',
+        )
+        expect(report.errors).toContain(
+          'Fixture \'test/dynamic-cover\' covers unknown semantics \'non_existent_semantics\'.',
+        )
+      }
+      finally {
+        rmSync(tempManifestPath, { force: true })
+      }
+    })
+
+    it('ensures all 9 canonical catalogs declare domain_metadata', () => {
+      const all = getAllCatalogs()
+      for (const [name, cat] of Object.entries(all)) {
+        expect((cat as any).domain_metadata, `Catalog '${name}' must have domain_metadata`).toBeDefined()
+      }
+    })
+
+    it('ensures all scopes declare evidence and verified_at', () => {
+      const scopesCatalog = getAllCatalogs().scopes
+      for (const [scopeId, scope] of Object.entries(scopesCatalog.scopes || {})) {
+        expect(scope.evidence, `Scope '${scopeId}' must declare evidence`).toBeDefined()
+        expect(scope.verified_at, `Scope '${scopeId}' must declare verified_at`).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+      }
+    })
   })
 
   describe('memoryCatalogStore & store life-cycle', () => {

@@ -548,31 +548,14 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
         knownModifiers.add(modKey)
       }
     }
-    const knownSubsystems = new Set([
-      'arithmetic',
-      'collections_and_lambdas',
-      'conditional_rendering',
-      'helpers_and_transforms',
-      'includable_inheritance',
-      'locale_modifiers',
-      'logical_and_comparisons',
-      'loop_rendering',
-      'loop_shadowing',
-      'message_rendering',
-      'subtype_modifiers',
-      'widget_rendering',
-      'with_nesting',
-    ])
-    const knownSemantics = new Set([
-      'coercion-canonical-string',
-      'coercion-equality',
-      'coercion-literal',
-      'coercion-literal-dominance',
-      'coercion-nullish',
-      'coercion-runtime-fallback',
-      'coercion-runtime-numeric',
-      'coercion-strict-types',
-    ])
+    const knownSubsystems = new Set<string>(diagnosticsCatalog.domain_metadata?.subsystems || [])
+    if (knownSubsystems.size === 0) {
+      errors.push('Diagnostics catalog domain_metadata.subsystems is missing or empty.')
+    }
+    const knownSemantics = new Set<string>(typesCatalog.domain_metadata?.semantics || [])
+    if (knownSemantics.size === 0) {
+      errors.push('Types catalog domain_metadata.semantics is missing or empty.')
+    }
     const validCoverPrefixes = new Set(['tag', 'operator', 'rule', 'type', 'modifier', 'subsystem', 'semantics'])
 
     for (const fixture of manifest.fixtures || []) {
