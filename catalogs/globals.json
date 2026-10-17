@@ -517,10 +517,6 @@
             }
           }
         },
-        "any": {
-          "type": "boolean",
-          "description": "True if collection contains 1 or more widgets (alias of notEmpty)."
-        },
         "Attribution": {
           "type": "array[object]",
           "description": "Collection of visible Attribution gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
@@ -759,10 +755,6 @@
             }
           }
         },
-        "empty": {
-          "type": "boolean",
-          "description": "True if collection contains 0 widgets."
-        },
         "FeaturedPost": {
           "type": "array[object]",
           "description": "Collection of visible FeaturedPost gadget descriptors with specialized pinned post metadata. Only exposes these specific descriptor fields, NOT the full private widget data dictionary.",
@@ -808,28 +800,6 @@
             "type": {
               "type": "string",
               "description": "Canonical widget type name ('Feed')."
-            }
-          }
-        },
-        "first": {
-          "type": "object",
-          "description": "First widget object in collection without looping ({ id, sectionId, title, type }).",
-          "properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Blog1', 'Header1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name (e.g. 'Blog', 'AdSense')."
             }
           }
         },
@@ -943,32 +913,6 @@
             }
           }
         },
-        "last": {
-          "type": "object",
-          "description": "Last widget object in collection without looping ({ id, sectionId, title, type }).",
-          "properties": {
-            "id": {
-              "type": "string",
-              "description": "Unique widget instance ID (e.g. 'Blog1', 'Header1')."
-            },
-            "sectionId": {
-              "type": "string",
-              "description": "Parent <b:section> identifier containing the widget."
-            },
-            "title": {
-              "type": "string",
-              "description": "Configured widget header title."
-            },
-            "type": {
-              "type": "string",
-              "description": "Canonical widget type name (e.g. 'Blog', 'AdSense')."
-            }
-          }
-        },
-        "length": {
-          "type": "number",
-          "description": "Total count of widgets in collection."
-        },
         "LinkList": {
           "type": "array[object]",
           "description": "Collection of visible LinkList gadget descriptors. Only exposes basic layout metadata ({ id, sectionId, title, type }), not the private widget dictionary.",
@@ -990,10 +934,6 @@
               "description": "Canonical widget type name ('LinkList')."
             }
           }
-        },
-        "notEmpty": {
-          "type": "boolean",
-          "description": "True if collection contains 1 or more widgets."
         },
         "PageList": {
           "type": "array[object]",
@@ -1096,10 +1036,6 @@
               "description": "Canonical widget type name ('ReportAbuse')."
             }
           }
-        },
-        "size": {
-          "type": "number",
-          "description": "Total count of widgets in collection."
         },
         "Stats": {
           "type": "array[object]",
