@@ -51,6 +51,15 @@
             }
           },
           "additionalProperties": false
+        },
+        "standard_diagnostics": {
+          "type": "object",
+          "properties": {
+            "unresolved_inclusion": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -66,10 +75,8 @@
   "$defs": {
     "inclusionDefinition": {
       "type": "object",
-      "x-generated-required": [
-        "name"
-      ],
       "required": [
+        "name",
         "category",
         "description",
         "evidence",
@@ -96,10 +103,7 @@
           "$ref": "common.schema.json#/$defs/evidenceLevel"
         },
         "deprecated": {
-          "type": "boolean"
-        },
-        "deprecation_note": {
-          "type": "string"
+          "$ref": "common.schema.json#/$defs/deprecatedEntry"
         },
         "widget_version": {
           "type": "integer",
