@@ -9,11 +9,13 @@ labels: ["enhancement", "catalog"]
 - [ ] Directive or Attribute (`catalogs/directives.json`)
 - [ ] Expression Operator (`catalogs/operators.json`)
 - [ ] Data Type or Modifier (`catalogs/types.json`)
-- [ ] System Inclusion (`catalogs/inclusions.json`)
+- [ ] Widget Definition or Gadget Schema (`catalogs/widgets.json`)
+- [ ] Widget Setting (`catalogs/settings.json`)
 - [ ] Global Data Object (`catalogs/globals.json`)
 - [ ] Localized UI Message (`catalogs/messages.json`)
-- [ ] Widget Setting (`catalogs/settings.json`)
+- [ ] Scope Definition (`catalogs/scopes.json`)
 - [ ] Diagnostic Rule (`catalogs/diagnostics.json`)
+- [ ] System Inclusion (`catalogs/inclusions.json`)
 - [ ] Other
 
 ### Discovered Syntax & Signature

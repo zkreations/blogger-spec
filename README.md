@@ -21,7 +21,7 @@ It is designed to be consumed by external tools—such as IDE extensions (VS Cod
 6. **Canonical Type System & Coercion Engine (`blogger-spec/type-system`)**: Subtype assignability, modifier inheritance (preserving flat hierarchy and isolating `skin:*` theme variables), operator compatibility, and return type inference.
 7. **Declarative Structural Validation & Spec Catalogs (`blogger-spec/catalogs` & `blogger-spec/parser`)**: High-level validation utilities (`validateTemplateStructure`, `canNest`, `validateDirectiveNesting`) evaluating hierarchy rules, symbolic grammar groups (`@flow_instructions`, `@flow_containers`), and declarative recovery policies (`reject`, `strip`, `ignore`) against official compiler diagnostics (`BX1001-BX1040`).
 8. **Universal ESM & Browser Ready**: Pure in-memory catalog store by default with zero Node.js built-in dependencies (`fs`, `path`). Works seamlessly in browsers, Node.js, Cloudflare Workers, and Web Workers.
-9. **Empirical Conformance Suite**: Automated test harness validating against 185+ empirical test fixtures verified on live Blogger production engines.
+9. **Empirical Conformance Suite**: Automated test harness validating against 248 empirical test fixtures verified on live Blogger production engines.
 
 ---
 
@@ -47,6 +47,7 @@ blogger-spec/
 │   ├── diagnostics/          # Negative fixtures (code Blogger server rejects)
 │   └── index.json            # Consolidated manifest (compiled via build)
 ├── src/                      # Spec modules, runtime helpers, and tooling
+│   ├── index.ts              # Canonical root package entry point
 │   ├── ast.ts                # Formal AST specification interfaces & parser exports
 │   ├── parser/               # Parsers, tokenizers, and structural validator
 │   │   ├── lexer.ts          # Deterministic expression lexer with loc tracking
@@ -60,8 +61,7 @@ blogger-spec/
 │   ├── paths.ts              # Workspace path resolution utilities
 │   ├── runner.ts             # Conformance harness engine
 │   ├── tooling/              # Build pipeline, schema validator, and compiler
-│   ├── types.ts              # Canonical models, catalog types, and fixture interfaces
-│   └── index.ts              # Canonical root package entry point
+│   └── types.ts              # Canonical models, catalog types, and fixture interfaces
 └── dist/                     # Distribution package artifacts (zero runtime dependencies)
     ├── index.js / .d.ts      # Canonical entry point and TypeScript types
     ├── ast.js / .d.ts        # AST interfaces and parseExpression
@@ -86,12 +86,40 @@ pnpm add blogger-spec
 npm install blogger-spec
 ```
 
-### Subpath Imports
+### 1. Root Package Imports (Recommended)
 
-Consume only what your tool requires:
+Import pre-hydrated typed catalogs, parser, or domain models directly:
 
 ```typescript
-// 1. Pratt Expression Parser & AST Types
+import {
+  detectTemplateVersion,
+  diagnostics,
+  // Pre-hydrated in-memory catalogs
+  directives,
+  evaluateExpressionBudget,
+  getSpecCatalog,
+  globals,
+  inclusions,
+  isTypeAssignable,
+  messages,
+  operators,
+  // Core engines & helpers
+  parseExpression,
+  scanDirectiveTokens,
+  scopes,
+  settings,
+  types,
+  validateTemplateStructure,
+  widgets,
+} from 'blogger-spec'
+```
+
+### 2. Granular Subpath Imports
+
+Consume only what your tool requires for optimal bundle sizes:
+
+```typescript
+// Pratt Expression Parser & AST Types
 import { parseExpression, tokenize } from 'blogger-spec/ast'
 
 // Spec Catalogs & Query Helpers
@@ -103,10 +131,10 @@ import {
   isOperator,
 } from 'blogger-spec/catalogs'
 
-// 7. Node.js Filesystem Catalog Store (Optional, Node-only)
+// Node.js Filesystem Catalog Store (Optional, Node-only)
 import { FsCatalogStore } from 'blogger-spec/node'
 
-// 2. Structural Validation & Directive Scanning
+// Structural Validation & Directive Scanning
 import {
   canNest,
   getNearestUnclosedDirective,
@@ -117,14 +145,14 @@ import {
   validateTemplateStructure,
 } from 'blogger-spec/parser'
 
-// 4. Token Quota Calculator (BX1021)
+// Token Quota Calculator (BX1021)
 import {
   COMPILER_QUOTA_LIMIT,
   countExpressionTokens,
   evaluateExpressionBudget,
 } from 'blogger-spec/quota'
 
-// 5. Type System & Modifiers
+// Type System & Modifiers
 import {
   getTypeModifiers,
   isTruthy,
@@ -132,21 +160,21 @@ import {
   resolveOperatorReturnType,
 } from 'blogger-spec/type-system'
 
-// 3. Template Layout Versions Authority
+// Template Layout Versions Authority
 import {
   detectTemplateVersion,
   getLayoutVersionsSpec,
 } from 'blogger-spec/version'
 ```
 
-Or import raw JSON catalogs directly:
+Raw JSON catalogs can also be imported directly (using `with { type: 'json' }` in Node ESM):
 
 ```typescript
-import diagnostics from 'blogger-spec/diagnostics'
-import directives from 'blogger-spec/directives'
-import inclusions from 'blogger-spec/inclusions'
-import operators from 'blogger-spec/operators'
-import types from 'blogger-spec/types'
+import diagnostics from 'blogger-spec/diagnostics' with { type: 'json' }
+import directives from 'blogger-spec/directives' with { type: 'json' }
+import inclusions from 'blogger-spec/inclusions' with { type: 'json' }
+import operators from 'blogger-spec/operators' with { type: 'json' }
+import types from 'blogger-spec/types' with { type: 'json' }
 ```
 
 ### Exported Utilities by Subpath

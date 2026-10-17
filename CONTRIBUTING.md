@@ -7,7 +7,7 @@
 ## Core Invariants
 
 1. **Catalogs are the SSOT**: All directive grammar, operator precedence tiers, types, globals, and system inclusion rules live in [`catalogs/<catalog>.json`](catalogs/). Never hardcode domain knowledge in `src/`.
-2. **Never Edit Generated Artifacts Directly**: `dist/`, `fixtures/index.json`, and `src/catalogs/embedded.generated.ts` are generated automatically via `pnpm run build`.
+2. **Never Edit Generated Artifacts Directly**: `dist/`, `fixtures/index.json`, `src/catalogs/embedded.generated.ts`, and `src/catalogs/types.generated.ts` are generated automatically via `pnpm run build`.
 3. **Zero Runtime Dependencies**: Production exports must strictly maintain `"dependencies": {}` in `package.json`.
 4. **Empirical Verification**: Any spec change or fix requires empirical verification against the Google Blogger production engine and a corresponding test fixture under [`fixtures/`](fixtures/) with evidence attribution (`official` or `observed`).
 5. **Flat Type Hierarchy & Skin Variable Isolation**: Platform subtypes (`url`, `image`, `date`, `locale`, `message`) inherit directly from `string` (1-level depth). Theme variables (`skin:*`) have `parent_type: null` and must remain strictly isolated from template string modifiers (`.length`, `.escaped`).
@@ -37,6 +37,7 @@ blogger-spec/
 │   ├── diagnostics/          # Negative validation fixtures (rejected by Blogger)
 │   └── index.json            # Compiled fixtures manifest (generated)
 ├── src/                      # Spec modules, runtime helpers, parser, and tooling
+│   ├── index.ts              # Canonical package entry point (ESM exports)
 │   ├── ast.ts                # Formal AST interfaces and parseExpression export
 │   ├── parser/               # Pratt expression parser, directive scanner, lexer, validator
 │   │   ├── lexer.ts          # Deterministic expression lexer with loc tracking
@@ -47,8 +48,10 @@ blogger-spec/
 │   ├── quota.ts              # Canonical token quota calculator (BX1021 rules)
 │   ├── type-system.ts        # Type assignability, modifiers, and operator compatibility
 │   ├── catalogs/             # Typed CatalogStore and SpecCatalog domain models
+│   ├── paths.ts              # Workspace path resolution utilities
 │   ├── runner.ts             # Conformance test runner engine
-│   └── tooling/              # Build pipeline, schema validator, and compiler
+│   ├── tooling/              # Build pipeline, schema validator, and compiler
+│   └── types.ts              # Canonical models, catalog types, and fixture interfaces
 └── dist/                     # ESM bundles and generated type definitions
 ```
 
@@ -60,6 +63,12 @@ blogger-spec/
 - **Directives & Attributes**: Edit [`catalogs/directives.json`](catalogs/directives.json).
 - **Operators & Precedence**: Edit [`catalogs/operators.json`](catalogs/operators.json). Ensure both `precedence_hierarchy` and the `operators` dictionary remain synchronized.
 - **Data Types & Modifiers**: Edit [`catalogs/types.json`](catalogs/types.json).
+- **Widgets**: Edit [`catalogs/widgets.json`](catalogs/widgets.json).
+- **Widget Settings**: Edit [`catalogs/settings.json`](catalogs/settings.json).
+- **Globals**: Edit [`catalogs/globals.json`](catalogs/globals.json).
+- **Messages**: Edit [`catalogs/messages.json`](catalogs/messages.json).
+- **Scopes**: Edit [`catalogs/scopes.json`](catalogs/scopes.json).
+- **Diagnostics**: Edit [`catalogs/diagnostics.json`](catalogs/diagnostics.json).
 - **System Inclusions**: Edit [`catalogs/inclusions.json`](catalogs/inclusions.json).
 - **Schemas**: If metadata structures change, update [`catalogs/schemas/`](catalogs/schemas/).
 
@@ -78,7 +87,7 @@ Add empirical test cases under [`fixtures/`](fixtures/) adhering to the `Blogger
 Run the complete verification pipeline before submitting any changes:
 
 ```bash
-pnpm run build        # Compiles dist/, embedded.generated.ts, and fixtures/index.json
+pnpm run build        # Compiles dist/, embedded.generated.ts, types.generated.ts, and fixtures manifest
 pnpm run test:spec    # Validates schemas (AJV Draft 2020-12), referential integrity & d.ts
 pnpm run typecheck    # Strict TypeScript typecheck (tsc --noEmit)
 pnpm run lint         # ESLint code style check

@@ -7,7 +7,7 @@ Zero-runtime-dependency specification authority and execution engine for Blogger
 - `catalogs/*.json`: **Single Source of Truth** (SSOT for all 10 domains). Never hardcode catalog domain knowledge in `src/`.
 - `catalogs/schemas/`: Draft 2020-12 canonical validation schemas.
 - `fixtures/`: Empirical test suite (`expressions/`, `templates/`, `diagnostics/`).
-- `src/`: Engine and tooling (`ast.ts`, `parser/` [`expr-parser.ts`, `lexer.ts`, `directive-scanner.ts`, `template-validator.ts`], `version.ts`, `quota.ts`, `type-system.ts`, `catalogs/`, `runner.ts`, `tooling/`, `types.ts`).
+- `src/`: Engine and tooling (`index.ts`, `ast.ts`, `parser/` [`expr-parser.ts`, `lexer.ts`, `directive-scanner.ts`, `template-validator.ts`], `version.ts`, `quota.ts`, `type-system.ts`, `catalogs/`, `runner.ts`, `tooling/`, `types.ts`).
 - **Generated artifacts**: `dist/`, `fixtures/index.json`, `src/catalogs/embedded.generated.ts`, and `src/catalogs/types.generated.ts`. Never edit directly.
 
 ## Verification Loop
@@ -15,7 +15,7 @@ Zero-runtime-dependency specification authority and execution engine for Blogger
 Run via `pnpm.cmd` on Windows (`pnpm` on POSIX):
 
 ```bash
-pnpm.cmd run build        # Compile dist/, embedded.generated.ts & sync fixtures manifest
+pnpm.cmd run build        # Compile dist/, generated artifacts & sync fixtures manifest
 pnpm.cmd run test:spec    # Validate schemas (AJV Draft 2020-12), integrity & .d.ts freshness
 pnpm.cmd run typecheck    # Strict TypeScript check (tsc --noEmit)
 pnpm.cmd run lint         # ESLint check (@antfu/eslint-config)

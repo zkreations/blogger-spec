@@ -29,8 +29,10 @@ labels: ["bug", "catalog"]
 <!-- What should blogger-spec permit, reject, parse, or declare instead -->
 
 ### Affected Component / Catalog
-- [ ] Catalog: `catalogs/<catalog>.json`
-- [ ] Expression Parser (`src/parser/`)
+- [ ] Canonical Catalog (`catalogs/<catalog>.json`)
+- [ ] Expression Parser & AST (`src/parser/expr-parser.ts`, `src/ast.ts`)
+- [ ] Directive Scanner & Structural Validator (`src/parser/directive-scanner.ts`, `src/parser/template-validator.ts`)
+- [ ] Template Layouts Version Detection (`src/version.ts`)
 - [ ] Type System & Coercion (`src/type-system.ts`)
 - [ ] Token Quota Engine (`src/quota.ts`)
 - [ ] Test Fixtures (`fixtures/`)
