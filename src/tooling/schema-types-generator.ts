@@ -151,40 +151,49 @@ export function generateCanonicalSchemaTypes(): string {
     '',
   ]
 
+  const explicitRefTypeMap: Record<string, string> = {
+    evidenceLevel: 'BloggerEvidenceLevel',
+    verified_at: 'string',
+    diagnosticCode: 'BloggerDiagnosticCode',
+    canonicalProperty: 'BloggerCanonicalProperty',
+    deprecatedEntry: 'BloggerDeprecatedEntry',
+    deprecationStatus: 'BloggerDeprecationStatus',
+    deprecationAction: 'BloggerDeprecationAction',
+    patternDefinition: 'BloggerPatternDefinition',
+    canonicalPropertyType: 'BloggerCanonicalPropertyType',
+    empiricalMetadata: 'BloggerEmpiricalMetadata',
+    operatorDataType: 'string',
+    widgetSettingType: 'string',
+    directiveAttributeType: 'string',
+    invalidNestingPolicyAction: 'DirectiveNestingPolicyAction',
+    invalidNestingPolicy: 'DirectiveInvalidNestingPolicy',
+    directiveAttributeInversion: 'BloggerDirectiveAttributeInversion',
+    directiveTypeAttributeDefinition: 'BloggerDirectiveTypeAttributeDefinition',
+    attributeDefinition: 'BloggerDirectiveAttribute',
+    grammarDefinition: 'BloggerDirectiveGrammar',
+    operandDefinition: 'BloggerOperatorOperand',
+    operatorOverload: 'BloggerOperatorOverload',
+    syntaxVariants: 'BloggerOperatorSyntax',
+    precedenceLevel: 'BloggerPrecedenceHierarchyLevel',
+    operatorFamily: 'BloggerOperatorFamily',
+    modifierDefinition: 'BloggerTypeModifierDefinition',
+    typeDefinition: 'BloggerTypeDefinition',
+    skinMetadata: 'BloggerSkinMetadata',
+    coercionRule: 'BloggerCoercionRule',
+    canonicalSetting: 'BloggerCanonicalSetting',
+    parameterDefinition: 'BloggerMessageParameterDefinition',
+  }
+
   function resolveRef(ref: string): string {
     const def = ref.includes('#/$defs/') ? ref.split('#/$defs/')[1] : ref
-    switch (def) {
-      case 'evidenceLevel': return 'BloggerEvidenceLevel'
-      case 'verified_at': return 'string'
-      case 'diagnosticCode': return 'BloggerDiagnosticCode'
-      case 'canonicalProperty': return 'BloggerCanonicalProperty'
-      case 'deprecatedEntry': return 'BloggerDeprecatedEntry'
-      case 'deprecationStatus': return 'BloggerDeprecationStatus'
-      case 'deprecationAction': return 'BloggerDeprecationAction'
-      case 'patternDefinition': return 'BloggerPatternDefinition'
-      case 'canonicalPropertyType': return 'BloggerCanonicalPropertyType'
-      case 'operatorDataType': return 'string'
-      case 'widgetSettingType': return 'string'
-      case 'directiveAttributeType': return 'string'
-      case 'invalidNestingPolicyAction': return 'DirectiveNestingPolicyAction'
-      case 'invalidNestingPolicy': return 'DirectiveInvalidNestingPolicy'
-      case 'directiveAttributeInversion': return 'BloggerDirectiveAttributeInversion'
-      case 'directiveTypeAttributeDefinition': return 'BloggerDirectiveTypeAttributeDefinition'
-      case 'attributeDefinition': return 'BloggerDirectiveAttribute'
-      case 'grammarDefinition': return 'BloggerDirectiveGrammar'
-      case 'operandDefinition': return 'BloggerOperatorOperand'
-      case 'operatorOverload': return 'BloggerOperatorOverload'
-      case 'syntaxVariants': return 'BloggerOperatorSyntax'
-      case 'precedenceLevel': return 'BloggerPrecedenceHierarchyLevel'
-      case 'operatorFamily': return 'BloggerOperatorFamily'
-      case 'modifierDefinition': return 'BloggerTypeModifierDefinition'
-      case 'typeDefinition': return 'BloggerTypeDefinition'
-      case 'skinMetadata': return 'BloggerSkinMetadata'
-      case 'coercionRule': return 'BloggerCoercionRule'
-      case 'canonicalSetting': return 'BloggerCanonicalSetting'
-      case 'parameterDefinition': return 'BloggerMessageParameterDefinition'
-      default: return 'any'
+    if (explicitRefTypeMap[def]) {
+      return explicitRefTypeMap[def]
     }
+    const pascal = toPascalCase(def)
+    if (pascal.startsWith('Blogger') || pascal.startsWith('Directive')) {
+      return pascal
+    }
+    return `Blogger${pascal}`
   }
 
   function schemaTypeToTs(schema: any): string {
@@ -271,6 +280,7 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push(generateInterface('BloggerDeprecatedEntry', commonSchema.$defs.deprecatedEntry))
   lines.push(generateInterface('BloggerPatternDefinition', commonSchema.$defs.patternDefinition))
   lines.push(generateInterface('BloggerCanonicalProperty', commonSchema.$defs.canonicalProperty))
+  lines.push(generateInterface('BloggerEmpiricalMetadata', commonSchema.$defs.empiricalMetadata))
 
   // --- Diagnostics Catalog Models ---
   lines.push('// =========================================================================')
@@ -307,6 +317,7 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push(generateInterface('BloggerDirectiveAttributeInversion', dirSchema.$defs.directiveAttributeInversion))
   lines.push(generateInterface('BloggerDirectiveTypeAttributeDefinition', dirSchema.$defs.directiveTypeAttributeDefinition))
   lines.push(generateInterface('BloggerDirectiveAttribute', dirSchema.$defs.attributeDefinition))
+  lines.push(generateInterface('BloggerDeprecatedAttributeEntry', dirSchema.$defs.deprecatedAttributeEntry))
   lines.push(generateInterface('BloggerDirectiveDefinition', dirSchema.$defs.directiveDefinition))
   lines.push(`export type BloggerLayoutVersion = ${layoutVersions.join(' | ') || 'never'};`)
   lines.push('')
@@ -357,6 +368,7 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push(generateInterface('BloggerOperatorDefinition', opSchema.$defs.operatorDefinition))
   lines.push(generateInterface('BloggerPrecedenceHierarchyLevel', opSchema.$defs.precedenceLevel))
   lines.push(generateInterface('BloggerOperatorFamily', opSchema.$defs.operatorFamily))
+  lines.push(generateInterface('BloggerOperatorExample', opSchema.$defs.operatorExample))
   lines.push('export interface BloggerCompilerQuotas {')
   lines.push('  max_expression_tokens: number;')
   lines.push('  warning_expression_tokens: number;')

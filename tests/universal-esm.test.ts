@@ -84,4 +84,20 @@ describe('universal ESM & in-memory store suite', () => {
       clearCatalogCache()
     }
   })
+
+  it('exports individual granular embedded catalogs for modular imports', () => {
+    expect(RootExports.embeddedDirectivesCatalog).toBeDefined()
+    expect(RootExports.embeddedDiagnosticsCatalog).toBeDefined()
+    expect(RootExports.embeddedGlobalsCatalog).toBeDefined()
+    expect(RootExports.embeddedInclusionsCatalog).toBeDefined()
+    expect(RootExports.embeddedMessagesCatalog).toBeDefined()
+    expect(RootExports.embeddedOperatorsCatalog).toBeDefined()
+    expect(RootExports.embeddedScopesCatalog).toBeDefined()
+    expect(RootExports.embeddedTypesCatalog).toBeDefined()
+    expect(RootExports.embeddedWidgetsCatalog).toBeDefined()
+
+    expect(RootExports.embeddedDirectivesCatalog).toBe(RootExports.embeddedCatalogs.directives)
+    expect(RootExports.embeddedDiagnosticsCatalog).toBe(RootExports.embeddedCatalogs.diagnostics)
+    expect(RootExports.embeddedWidgetsCatalog).toBe(RootExports.embeddedCatalogs.widgets)
+  })
 })

@@ -38,7 +38,7 @@ export interface DirectiveAttributesValidationResult {
   deprecated: Array<{
     name: string
     reason?: string
-    replacement?: string
+    replacement?: string | null
   }>
   invalidExpressions: string[]
   inverted: Array<{

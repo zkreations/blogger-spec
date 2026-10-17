@@ -74,6 +74,11 @@ export interface BloggerCanonicalProperty {
   deprecated?: Record<string, BloggerDeprecatedEntry>;
 }
 
+export interface BloggerEmpiricalMetadata {
+  evidence: BloggerEvidenceLevel;
+  verified_at: string;
+}
+
 // =========================================================================
 // Diagnostics Catalog Models (SSoT: diagnostics.schema.json)
 // =========================================================================
@@ -153,6 +158,14 @@ export interface BloggerDirectiveAttribute {
   accepted_forms?: string[];
 }
 
+export interface BloggerDeprecatedAttributeEntry {
+  status: BloggerDeprecationStatus;
+  action: BloggerDeprecationAction;
+  type: string;
+  replacement: string | null;
+  reason: string;
+}
+
 export interface BloggerDirectiveDefinition {
   category: string;
   /** XML namespace prefix or syntactic domain for this directive. */
@@ -165,7 +178,7 @@ export interface BloggerDirectiveDefinition {
   /** Commonly inverted attribute mistakes mapped to their expected attribute name and diagnostic code. */
   attribute_inversions?: Record<string, BloggerDirectiveAttributeInversion>;
   constraints?: Record<string, Record<string, any>>;
-  deprecated_attributes?: Record<string, any>;
+  deprecated_attributes?: Record<string, BloggerDeprecatedAttributeEntry>;
   spec_extensions?: Record<string, Record<string, Record<string, any>>>;
   syntax_patterns?: Record<string, Record<string, any>>;
   /** Allowed and mandatory attributes mapped per subtype (e.g. for <Variable>). */
@@ -262,7 +275,7 @@ export interface BloggerOperatorDefinition {
   allowed_contexts?: ('cond' | 'expr' | 'value' | 'values' | 'expr:*')[];
   overloads?: BloggerOperatorOverload[];
   anti_patterns?: string[];
-  examples?: any[];
+  examples?: BloggerOperatorExample[];
   /** Secondary or intersecting semantic families this operator participates in. */
   secondary_families?: string[];
 }
@@ -279,6 +292,13 @@ export interface BloggerOperatorFamily {
   description: string;
   precedence_tiers: number[];
   operators: string[];
+}
+
+export interface BloggerOperatorExample {
+  expression: string;
+  context?: string;
+  result: string;
+  description?: string;
 }
 
 export interface BloggerCompilerQuotas {

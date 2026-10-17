@@ -129,6 +129,16 @@ export function generateEmbeddedCatalogs(): string {
     }
   }
 
+  const individualExports = CATALOG_NAMES.map((name) => {
+    const pascal = name.charAt(0).toUpperCase() + name.slice(1)
+    return `export const embedded${pascal}Catalog: Blogger${pascal}Catalog = ${JSON.stringify(catalogs[name] || {}, null, 2)} as unknown as Blogger${pascal}Catalog;`
+  }).join('\n\n')
+
+  const mapProperties = CATALOG_NAMES.map((name) => {
+    const pascal = name.charAt(0).toUpperCase() + name.slice(1)
+    return `  ${name}: embedded${pascal}Catalog,`
+  }).join('\n')
+
   return [
     '/**',
     ' * blogger-spec — Canonical In-Memory Embedded Catalogs & Schemas.',
@@ -136,9 +146,24 @@ export function generateEmbeddedCatalogs(): string {
     ' * DO NOT EDIT MANUALLY.',
     ' */',
     '',
-    'import type { BloggerCatalogMap } from \'../types.js\'',
+    'import type {',
+    '  BloggerCatalogMap,',
+    '  BloggerDiagnosticsCatalog,',
+    '  BloggerDirectivesCatalog,',
+    '  BloggerGlobalsCatalog,',
+    '  BloggerInclusionsCatalog,',
+    '  BloggerMessagesCatalog,',
+    '  BloggerOperatorsCatalog,',
+    '  BloggerScopesCatalog,',
+    '  BloggerTypesCatalog,',
+    '  BloggerWidgetsCatalog,',
+    '} from \'../types.js\'',
     '',
-    `export const embeddedCatalogs: BloggerCatalogMap = ${JSON.stringify(catalogs, null, 2)} as unknown as BloggerCatalogMap;`,
+    individualExports,
+    '',
+    'export const embeddedCatalogs: BloggerCatalogMap = {',
+    mapProperties,
+    '};',
     '',
     `export const embeddedSchemas: Record<string, any> = ${JSON.stringify(schemas, null, 2)};`,
     '',
