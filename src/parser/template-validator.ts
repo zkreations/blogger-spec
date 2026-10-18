@@ -167,8 +167,9 @@ function validateDirectiveAttributeRules(
     })
   }
 
+  const disallowedValueDiag = catalog.getStandardDiagnostic('disallowed_attribute_value')
   for (const disallowed of attrValidation.disallowedValues) {
-    pushDiagnostic(diagnostics, catalog, deprecatedDiag, token, {
+    pushDiagnostic(diagnostics, catalog, disallowedValueDiag, token, {
       message: `Value '${disallowed.value}' is not allowed for attribute '${disallowed.attribute}' on <${token.tagName}>. Allowed values: ${disallowed.allowed.join(', ')}.`,
       start: disallowed.valueStart ?? disallowed.start ?? token.tagStart,
       end: disallowed.valueEnd ?? disallowed.end ?? token.tagEnd,

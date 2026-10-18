@@ -46,6 +46,7 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
       "deprecated_attribute": "BX1024",
       "empty_required_attribute": "BX1039",
       "disallowed_expression_attribute": "BX1042",
+      "disallowed_attribute_value": "BX1043",
       "duplicate_element_id": "BX1033",
       "duplicate_includable_id": "BX1036",
       "invalid_variable_type_attribute": "BX1040",
@@ -11021,6 +11022,15 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "message": "Directive attribute does not allow dynamic expressions ('expr:').",
       "evidence": "official",
       "verified_at": "2026-10-16"
+    },
+    "BX1043": {
+      "code": "BX1043",
+      "name": "DISALLOWED_ATTRIBUTE_VALUE",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Directive attribute value is not in the set of allowed canonical values.",
+      "evidence": "official",
+      "verified_at": "2026-10-18"
     }
   }
 } as unknown as BloggerDiagnosticsCatalog;
@@ -12022,6 +12032,7 @@ export const embeddedSchemas: Record<string, any> = {
               "deprecated_attribute",
               "empty_required_attribute",
               "disallowed_expression_attribute",
+              "disallowed_attribute_value",
               "duplicate_element_id",
               "duplicate_includable_id",
               "invalid_variable_type_attribute",
@@ -12039,6 +12050,9 @@ export const embeddedSchemas: Record<string, any> = {
                 "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "disallowed_expression_attribute": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
+              },
+              "disallowed_attribute_value": {
                 "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "duplicate_element_id": {

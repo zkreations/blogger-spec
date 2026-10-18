@@ -656,7 +656,7 @@ export class SpecCatalog {
             ...tokenInfo,
           })
         }
-        else if (!hasExpr) {
+        else if (!hasExpr && meta.attribute_kind !== 'native_expression') {
           const isBooleanAttr = meta.type === 'boolean'
           const allowedValues = meta.allowed_values ?? (isBooleanAttr ? BLOGGER_BOOLEAN_VALUES : undefined)
 
@@ -677,9 +677,10 @@ export class SpecCatalog {
                   valueStart: tokenInfo?.valueStart,
                   valueEnd: tokenInfo?.valueEnd,
                 })
+                const disallowedCode = (this.standardDiagnostics.get('disallowed_attribute_value') ?? 'BX1043') as BloggerDiagnosticCode
                 violations.push({
                   attribute: attr,
-                  code: 'BX1024' as BloggerDiagnosticCode,
+                  code: disallowedCode,
                   message: `Value '${val}' is not allowed for attribute '${attr}' on <${tagName}>. Allowed values: ${allowedValues.join(', ')}.`,
                   ...tokenInfo,
                 })

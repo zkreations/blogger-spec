@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-18",
   "metrics": {
-    "totalFixtures": 248,
+    "totalFixtures": 249,
     "positiveFixtures": 206,
-    "negativeFixtures": 42,
-    "coveredSpecEntities": 200
+    "negativeFixtures": 43,
+    "coveredSpecEntities": 201
   },
   "fixtures": [
     {
@@ -5750,6 +5750,27 @@
         "stage": "linter"
       },
       "verified_at": "2026-10-16"
+    },
+    {
+      "id": "diagnostics/negative_syntax/disallowed-attribute-value",
+      "title": "Disallowed Directive Attribute Value",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1043"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main' tag='notAValidTag'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1043"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-18"
     }
   ]
 }

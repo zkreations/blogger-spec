@@ -497,7 +497,7 @@ describe('helpers & canonical structure validation suite', () => {
       expect(disallowed.valueEnd).toBeDefined()
 
       expect(result.violations).toHaveLength(1)
-      expect(result.violations[0]?.code).toBe('BX1024')
+      expect(result.violations[0]?.code).toBe('BX1043')
     })
 
     it('accepts valid allowed_values in BloggerDirectiveToken', () => {
@@ -527,15 +527,34 @@ describe('helpers & canonical structure validation suite', () => {
       expect(result.valid).toBe(false)
       expect(result.disallowedValues).toHaveLength(1)
       expect(result.disallowedValues[0]?.allowed).toEqual(['yes', 'no', 'true', 'false'])
+      expect(result.violations[0]?.code).toBe('BX1043')
     })
 
     it('emits diagnostic with exact range in validateTemplateStructure for disallowed attribute values', () => {
       const xml = '<b:section id="main" tag="notAValidTag"/>'
       const diags = validateTemplateStructure(xml)
-      const diag = diags.find(d => d.code === 'BX1024' && d.message.includes('notAValidTag'))
+      const diag = diags.find(d => d.code === 'BX1043' && d.message.includes('notAValidTag'))
       expect(diag).toBeDefined()
       expect(diag?.tagStart).toBeDefined()
       expect(diag?.tagEnd).toBeDefined()
+    })
+
+    it('does not reject expressions on native_expression boolean attributes such as cond', () => {
+      const snippets = [
+        '<b:if cond="data:blog.pageType == &quot;index&quot;"/>',
+        '<b:if cond="data:post.hasTitle"/>',
+        '<b:elseif cond="!data:view.isPost"/>',
+        '<b:class cond="data:view.isMultipleItems" name="multi"/>',
+        '<b:tag cond="data:hasWrapper" name="div"/>',
+        '<b:include cond="data:post.allowComments" name="comments"/>',
+      ]
+
+      for (const xml of snippets) {
+        const token = scanDirectiveTokens(xml)[0]!
+        const result = validateDirectiveAttributes(token)
+        expect(result.disallowedValues).toEqual([])
+        expect(result.violations.filter(v => v.code === 'BX1043')).toEqual([])
+      }
     })
   })
 

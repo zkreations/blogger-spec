@@ -26,6 +26,7 @@
       "deprecated_attribute": "BX1024",
       "empty_required_attribute": "BX1039",
       "disallowed_expression_attribute": "BX1042",
+      "disallowed_attribute_value": "BX1043",
       "duplicate_element_id": "BX1033",
       "duplicate_includable_id": "BX1036",
       "invalid_variable_type_attribute": "BX1040",

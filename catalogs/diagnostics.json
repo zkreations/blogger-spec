@@ -422,6 +422,15 @@
       "message": "Directive attribute does not allow dynamic expressions ('expr:').",
       "evidence": "official",
       "verified_at": "2026-10-16"
+    },
+    "BX1043": {
+      "code": "BX1043",
+      "name": "DISALLOWED_ATTRIBUTE_VALUE",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Directive attribute value is not in the set of allowed canonical values.",
+      "evidence": "official",
+      "verified_at": "2026-10-18"
     }
   }
 }
