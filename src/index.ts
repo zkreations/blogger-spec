@@ -43,8 +43,10 @@ export {
 
 export * from './ast.js'
 export * from './catalogs/index.js'
+export * from './data-path.js'
 export * from './parser/index.js'
 export * from './quota.js'
+export * from './scope.js'
 export * from './type-system.js'
 export * from './types.js'
 export * from './version.js'

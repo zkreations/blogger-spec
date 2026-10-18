@@ -518,3 +518,5 @@ export function inferExpressionType(
     }
   }
 }
+
+export * from './data-path.js'
