@@ -47,6 +47,14 @@
       "types": "./dist/quota.d.ts",
       "default": "./dist/quota.js"
     },
+    "./data-path": {
+      "types": "./dist/data-path.d.ts",
+      "default": "./dist/data-path.js"
+    },
+    "./scope": {
+      "types": "./dist/scope.d.ts",
+      "default": "./dist/scope.js"
+    },
     "./type-system": {
       "types": "./dist/type-system.d.ts",
       "default": "./dist/type-system.js"

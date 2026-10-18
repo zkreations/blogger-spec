@@ -40,6 +40,8 @@ blogger-spec/
 ├── src/                      # Spec modules, runtime helpers, parser, and tooling
 │   ├── index.ts              # Canonical package entry point (ESM exports)
 │   ├── ast.ts                # Formal AST interfaces and parseExpression export
+│   ├── data-path.ts          # Canonical deep data path navigator (resolveDataPath)
+│   ├── scope.ts              # Formalized ScopeEnvironment symbol table & scope stack
 │   ├── parser/               # Pratt expression parser, directive scanner, lexer, validator
 │   │   ├── lexer.ts          # Deterministic expression lexer with loc tracking
 │   │   ├── expr-parser.ts    # Pratt parser guided by operators.json precedence
@@ -74,12 +76,13 @@ blogger-spec/
 - **Schemas**: If metadata structures change, update [`catalogs/schemas/`](catalogs/schemas/).
 
 ### 2. Engine & Parser Changes
-- **Expression Parser**: If grammar, lexing, or operator binding power changes, update [`src/parser/lexer.ts`](src/parser/lexer.ts) and [`src/parser/expr-parser.ts`](src/parser/expr-parser.ts).
+- **Expression Parser**: If grammar, lexing, recursion limits, or operator binding power changes, update [`src/parser/lexer.ts`](src/parser/lexer.ts) and [`src/parser/expr-parser.ts`](src/parser/expr-parser.ts).
 - **Directive Scanner**: If XML tag tokenization, attribute parsing, or CDATA/comment masking changes, update [`src/parser/directive-scanner.ts`](src/parser/directive-scanner.ts).
+- **Data Path Navigator & Scope Environment**: If deep data path traversal or scope stack resolution semantics change, update [`src/data-path.ts`](src/data-path.ts) and [`src/scope.ts`](src/scope.ts).
 - **Layout Versions**: If layout version heuristics change, update `domain_metadata.layout_versions` in [`catalogs/directives.json`](catalogs/directives.json) and [`src/version.ts`](src/version.ts).
 - **Token Quota**: If token cost rules or quota thresholds change, update [`src/quota.ts`](src/quota.ts).
 - **Type Checking**: If coercion matrices, truthiness, or assignability change, update [`src/type-system.ts`](src/type-system.ts).
-- **Structural Validation & Helpers**: If directive nesting, grammar groups, or template structure validation rules change, update [`catalogs/directives.json`](catalogs/directives.json), [`src/catalogs/spec-catalog.ts`](src/catalogs/spec-catalog.ts), and [`src/parser/template-validator.ts`](src/parser/template-validator.ts). Ensure `canNest` and `validateDirectiveNesting` reflect canonical policies.
+- **Structural Validation & Expression Audits**: If directive nesting, grammar groups, expression attribute validation, or snippet generators change, update [`catalogs/directives.json`](catalogs/directives.json), [`src/catalogs/spec-catalog.ts`](src/catalogs/spec-catalog.ts), and [`src/parser/template-validator.ts`](src/parser/template-validator.ts). Ensure `canNest`, `validateDirectiveNesting`, and `validateTemplateExpressions` reflect canonical policies.
 
 ### 3. Add Conformance Fixtures
 Add empirical test cases under [`fixtures/`](fixtures/) adhering to the `BloggerFixture` discriminated union contract (`input.kind`, `expected.outcome`, `covers[]`, `verifiedAt`).
