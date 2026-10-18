@@ -7,8 +7,8 @@ Zero-runtime-dependency specification authority and execution engine for Blogger
 - `catalogs/*.json`: **Single Source of Truth** (SSOT for all 10 domains). Never hardcode catalog domain knowledge in `src/`.
 - `catalogs/schemas/`: Draft 2020-12 canonical validation schemas.
 - `fixtures/`: Empirical test suite (`expressions/`, `templates/`, `diagnostics/`).
-- `src/`: Engine and tooling (`index.ts`, `ast.ts`, `data-path.ts`, `scope.ts`, `parser/` [`expr-parser.ts`, `lexer.ts`, `directive-scanner.ts`, `template-validator.ts`], `version.ts`, `quota.ts`, `type-system.ts`, `catalogs/`, `runner.ts`, `tooling/`, `types.ts`).
-- **Generated artifacts**: `dist/`, `fixtures/index.json`, `src/catalogs/embedded.generated.ts`, and `src/catalogs/types.generated.ts`. Never edit directly.
+- `src/`: Engine implementation and validation logic.
+- **Generated artifacts**: `dist/`, `fixtures/index.json`, `src/catalogs/*.generated.ts`. Never edit directly; generated via `pnpm run build`.
 
 ## Verification Loop
 
@@ -28,15 +28,16 @@ pnpm.cmd run test         # Vitest conformance suite
 - **Fixture contract**: Conforms to `BloggerFixture` union (`input.kind`, `expected.outcome`, `covers[]`, `verifiedAt`).
 - **Zero runtime dependencies**: Production export strictly maintains `"dependencies": {}`.
 - **Type ontology**: Platform subtypes inherit directly from `string` (depth 1). Theme variables (`skin:*`) are strictly isolated (`parent_type: null`) and do not receive template string modifiers (`.length`, `.escaped`).
-- **Layout versioning**: Layouts v1, v2, v3 metadata resides in `catalogs/directives.json`. Pure detection is executed via `detectTemplateVersion(xmlText)` with explicit attribute precedence and fallback to modern Layouts v3.
-- **Directive scanning**: Fault-tolerant tokenizer (`directive-scanner.ts`) maintains exact byte offsets by whitespace-masking comments and non-variable CDATA blocks in a unified single-pass regex scanner without heap string cloning.
-- **Parser DoS protection**: Expression parser (`expr-parser.ts`) enforces a canonical recursion depth limit (`maxDepth: 50`) preventing call stack exhaustion (`RangeError`) on deeply nested expressions in both strict and tolerant modes.
-- **Directive nesting & grammar groups**: Tag nesting rules reside declaratively in `catalogs/directives.json` (`valid_parents`, `valid_children`, `invalid_nesting_policy`). Symbolic groups (`@flow_instructions`, `@flow_containers`, `@template_markup`, `@any_container`) map content models. Nesting checks run via `canNest` and `validateDirectiveNesting`, returning `DirectiveNestingViolation` with empirical recovery actions (`reject`, `strip`, `ignore`).
-- **Layout container parents**: `<b:section>` accepts `body` and structural HTML containers (`html:*`), but strictly forbids `<head>`, widgets, or nested sections (`BX1035`).
-- **Skin variable exclusivity**: Theme Designer variables (`<Variable>`, `<Group>`) reside strictly within `<b:skin>` CDATA. They are prohibited in `<b:template-skin>`, generic CDATA, or `<body>` (`BX1023`).
-- **Boolean states**: In Blogger, booleans canonically encompass exactly 4 valid values across XML attributes, expressions, operators, and types: `yes`, `no`, `true`, `false`. `yes` and `true` are truthy; `no` and `false` are falsy. Boolean attributes strictly accept only these 4 values.
+- **Layout versioning**: Layouts v1, v2, v3 metadata resides in `catalogs/directives.json`. Detection runs via `detectTemplateVersion(xmlText)` with explicit attribute precedence and fallback to Layouts v3.
+- **Directive scanning**: Tokenizer (`directive-scanner.ts`) maintains exact byte offsets by whitespace-masking comments and non-variable CDATA blocks in a unified single pass without heap string cloning.
+- **Parser recursion limit**: Expression parser (`expr-parser.ts`) enforces `maxDepth: 50` preventing call stack exhaustion (`RangeError`) on deeply nested expressions in strict and tolerant modes.
+- **Directive nesting**: Rules reside in `catalogs/directives.json` (`valid_parents`, `valid_children`, `invalid_nesting_policy`). Content models map via `@flow_instructions`, `@flow_containers`, `@template_markup`, `@any_container`. Validation returns `DirectiveNestingViolation` with recovery actions (`reject`, `strip`, `ignore`).
+- **Section parents**: `<b:section>` is permitted only under `<body>` and structural HTML containers (`html:*`); forbidden under `<head>`, widgets, or nested sections (`BX1035`).
+- **Skin variables**: Theme Designer tags (`<Variable>`, `<Group>`) reside strictly within `<b:skin>` CDATA; forbidden in `<b:template-skin>`, generic CDATA, or `<body>` (`BX1023`).
+- **Boolean values**: Exactly 4 valid values: `yes`, `no`, `true`, `false` (`yes`/`true` = truthy; `no`/`false` = falsy). Boolean attributes accept only these four.
 - **Data path navigation**: `resolveDataPath` provides canonical deep member traversal across globals, widgets, types, modifiers, and variables without editor AST coupling.
-- **Scope environment & symbol table**: `ScopeEnvironment` strictly enforces `resolution_precedence` (`lambda` -> `loop` -> `with` -> `includable` -> `widget` -> `global`) and shadowing (`local-wins`) per `catalogs/scopes.json`. Lambda iterators prohibit `data:` prefix (`BX1019`).
-- **Snippet quotation**: Directive XML snippets use single quotes (`'...'`) by default per Horatio Directive 6, avoiding delimiter collisions with double-quoted expression string literals (`expr='data:title ?: "Default"'`). CDATA Theme Designer tags (`<Variable>`, `<Group>`) strictly use double quotes (`"..."`).
-- **Template expression validation**: `validateTemplateExpressions` scans dynamic expression attributes (`expr:*`, `cond`, `values`, `value`) across directives and HTML elements, reporting canonical anti-hallucination diagnostics (`BX1017` JS native methods, `BX1018` JS strict equality, `BX1020` null literal, `BX1021` compiler quota limit).
-- **Empirical authority vs. external links**: `blogger-spec` is a self-contained empirical specification, not an aggregator. Catalogs and schemas must never include external documentation links (`documentation_urls`, `references`). Official docs are severely outdated (<10% coverage, promoting deprecated attributes) and community sources are frozen. Canonical knowledge is proven exclusively via empirical fixtures (`fixtures/`) and self-contained syntax examples.
+- **Scope environment**: `ScopeEnvironment` strictly enforces `resolution_precedence` (`lambda` -> `loop` -> `with` -> `includable` -> `widget` -> `global`) and shadowing (`local-wins`) per `catalogs/scopes.json`. Lambda iterators prohibit `data:` prefix (`BX1019`).
+- **Snippet quotation**: Directive XML attributes default to single quotes (`'...'`) to avoid collisions with double-quoted string literals (`expr='data:title ?: "Default"'`). CDATA Theme Designer tags (`<Variable>`, `<Group>`) strictly use double quotes (`"..."`).
+- **Template expression validation**: `validateTemplateExpressions` scans dynamic expression attributes (`expr:*`, `cond`, `values`, `value`) across directives and HTML elements, reporting diagnostics (`BX1017`, `BX1018`, `BX1020`, `BX1021`).
+- **Empirical authority**: Catalogs and schemas must never include external documentation links (`documentation_urls`, `references`). Canonical truth is proven exclusively via empirical fixtures (`fixtures/`) and self-contained syntax examples.
+
