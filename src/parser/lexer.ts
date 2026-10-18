@@ -47,6 +47,8 @@ export type TokenType
     | 'PERCENT'
     | 'EQ'
     | 'NEQ'
+    | 'STRICT_EQ'
+    | 'STRICT_NEQ'
     | 'LT'
     | 'GT'
     | 'LTE'
@@ -129,6 +131,19 @@ export class Lexer {
       const token = this.readString(startPos, ch)
       this.lastToken = token
       return token
+    }
+
+    // Three-character operators & sequences (prohibited JS strict equality: ===, !==)
+    if (this.pos + 2 < this.length) {
+      const three = this.source.slice(this.pos, this.pos + 3)
+      if (three === '===') {
+        this.advance(3)
+        return this.makeToken('STRICT_EQ', '===', startPos)
+      }
+      if (three === '!==') {
+        this.advance(3)
+        return this.makeToken('STRICT_NEQ', '!==', startPos)
+      }
     }
 
     // Two-character operators & sequences

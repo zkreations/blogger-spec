@@ -225,6 +225,7 @@ export function isTruthy(
 export interface TypeContext {
   readonly variables?: Record<string, string>
   readonly globals?: Record<string, string>
+  readonly widgetType?: string
   readonly catalog?: SpecCatalog
 }
 
@@ -295,9 +296,11 @@ export function inferExpressionType(
           currentType = rootType
         }
         else {
-          const blogWidget = catalog.getWidget('Blog')
-          if (blogWidget?.canonical?.[first.property]) {
-            const rootType = blogWidget.canonical[first.property]!.type ?? 'object'
+          const widgetName = context?.widgetType ?? 'Blog'
+          const widget = catalog.getWidget(widgetName)
+          const widgetPropDef = widget?.canonical?.[first.property]
+          if (widgetPropDef) {
+            const rootType = widgetPropDef.type ?? 'object'
             if (node.members.length === 1) {
               return rootType
             }
@@ -314,6 +317,10 @@ export function inferExpressionType(
       }
 
       const globalDef = catalog.getGlobal(`data:${first.property}`)
+      const widgetName = context?.widgetType ?? 'Blog'
+      const widget = catalog.getWidget(widgetName)
+      const widgetPropDef = widget?.canonical?.[first.property]
+
       for (let i = 1; i < node.members.length; i++) {
         const member = node.members[i]!
         if (member.computed && member.expression) {
@@ -339,6 +346,16 @@ export function inferExpressionType(
 
         if (globalDef?.item_properties?.[member.property]) {
           currentType = globalDef.item_properties[member.property]!.type ?? 'unknown'
+          continue
+        }
+
+        if (i === 1 && (widgetPropDef as any)?.properties?.[member.property]) {
+          currentType = (widgetPropDef as any).properties[member.property]!.type ?? 'unknown'
+          continue
+        }
+
+        if ((widgetPropDef as any)?.item_properties?.[member.property]) {
+          currentType = (widgetPropDef as any).item_properties[member.property]!.type ?? 'unknown'
           continue
         }
 

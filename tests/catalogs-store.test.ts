@@ -30,6 +30,7 @@ import {
   getDirectiveAttributes,
   getDirectiveNestingLimit,
   getDirectives,
+  getDirectiveSnippet,
   getExpressionQuotaLimit,
   getExpressionQuotaWarning,
   getFalsyStringLiterals,
@@ -49,6 +50,7 @@ import {
   getOperatorBindingPower,
   getOperatorPrecedence,
   getOperators,
+  getOperatorSnippet,
   getPrecedenceHierarchy,
   getScalarTypes,
   getSchema,
@@ -1132,6 +1134,84 @@ describe('catalogs and store formal verification suite', () => {
       expect(dtsContent).not.toContain('export type BloggerWidgetType =')
       expect(dtsContent).not.toContain('export interface BloggerCDATADirectiveAttributes')
       expect(dtsContent).not.toContain('export interface BloggerBlogGlobal')
+    })
+  })
+
+  describe('canonical snippet generators for LSP / VS Code (Directive and Operator Snippets)', () => {
+    /* eslint-disable no-template-curly-in-string */
+    it('generates container directive snippets with required attributes and tabstops using single quotes', () => {
+      const loopSnippet = getDirectiveSnippet('b:loop')
+      expect(loopSnippet).toContain('<b:loop')
+      expect(loopSnippet).toContain('values=\'${1:data:items}\'')
+      expect(loopSnippet).toContain('var=\'${2:item}\'')
+      expect(loopSnippet).toContain('$0')
+      expect(loopSnippet).toContain('</b:loop>')
+
+      const withSnippet = getDirectiveSnippet('b:with')
+      expect(withSnippet).toContain('<b:with')
+      expect(withSnippet).toContain('value=\'${1:value}\'')
+      expect(withSnippet).toContain('var=\'${2:item}\'')
+      expect(withSnippet).toContain('</b:with>')
+    })
+
+    it('generates self-closing directive snippets', () => {
+      const evalSnippet = getDirectiveSnippet('b:eval')
+      expect(evalSnippet).toBe('<b:eval expr=\'${1:data:expression}\'/>$0')
+
+      const includeSnippet = getDirectiveSnippet('b:include')
+      expect(includeSnippet).toBe('<b:include name=\'${1:name}\'/>$0')
+    })
+
+    it('supports custom selfClosing, indent and quote options on directives', () => {
+      const messageContainer = getDirectiveSnippet('b:message', { selfClosing: false, indent: '    ' })
+      expect(messageContainer).toContain('<b:message name=\'${1:name}\'>\n    $0\n</b:message>')
+
+      const messageSelfClosing = getDirectiveSnippet('b:message', { selfClosing: true })
+      expect(messageSelfClosing).toBe('<b:message name=\'${1:name}\'/>$0')
+
+      const variableSnippet = getDirectiveSnippet('Variable')
+      expect(variableSnippet).toContain('name="${1:name}"')
+
+      const customQuote = getDirectiveSnippet('b:eval', { quote: '"' })
+      expect(customQuote).toBe('<b:eval expr="${1:data:expression}"/>$0')
+    })
+
+    it('generates functional operator snippets with parameter tabstops', () => {
+      const snippetOp = getOperatorSnippet('snippet')
+      expect(snippetOp).toBe('snippet(${1:text}, ${2:options})$0')
+
+      const resizeOp = getOperatorSnippet('resizeImage')
+      expect(resizeOp).toBe('resizeImage(${1:image}, ${2:size}, ${3:ratio})$0')
+
+      const pathOp = getOperatorSnippet('path')
+      expect(pathOp).toBe('path(${1:url}, ${2:new_path})$0')
+    })
+
+    it('generates lambda operator snippets', () => {
+      const filterOp = getOperatorSnippet('filter')
+      expect(filterOp).toBe('${1:collection} filter (${2:item} => ${3:condition})$0')
+
+      const countOp = getOperatorSnippet('count')
+      expect(countOp).toBe('${1:collection} count (${2:item} => ${3:condition})$0')
+    })
+
+    it('generates infix operator snippets and supports syntax override', () => {
+      const addOp = getOperatorSnippet('+')
+      expect(addOp).toBe('${1:left} + ${2:right}$0')
+
+      const notOp = getOperatorSnippet('not')
+      expect(notOp).toBe('not ${1:operand}$0')
+
+      const bangOp = getOperatorSnippet('!')
+      expect(bangOp).toBe('!${1:operand}$0')
+
+      const containsInfix = getOperatorSnippet('contains', { syntax: 'infix' })
+      expect(containsInfix).toBe('${1:haystack} contains ${2:needle}$0')
+    })
+
+    it('handles unknown directives and operators gracefully', () => {
+      expect(getDirectiveSnippet('custom:tag')).toBe('<custom:tag>$0</custom:tag>')
+      expect(getOperatorSnippet('unknownOp')).toBe('unknownOp($0)')
     })
   })
 })

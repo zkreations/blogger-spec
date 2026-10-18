@@ -461,5 +461,28 @@ describe('canonical type system & coercion engine', () => {
       expect(TypeSystemExports.inferExpressionType({ type: 'Identifier', name: 'yes' } as any)).toBe('boolean')
       expect(TypeSystemExports.inferExpressionType({ type: 'Identifier', name: 'no' } as any)).toBe('boolean')
     })
+
+    it('resolves widget-specific properties when widgetType is specified in TypeContext', () => {
+      const headerContext: TypeSystemExports.TypeContext = {
+        widgetType: 'Header',
+      }
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:title'), headerContext)).toBe('string')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:description'), headerContext)).toBe('string')
+
+      const attributionContext: TypeSystemExports.TypeContext = {
+        widgetType: 'Attribution',
+      }
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:bloggerUrl'), attributionContext)).toBe('url')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:imageAuthor.name'), attributionContext)).toBe('string')
+
+      const blogContext: TypeSystemExports.TypeContext = {
+        widgetType: 'Blog',
+      }
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:allBylineItems'), blogContext)).toBe('array[object]')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:allBylineItems[0].name'), blogContext)).toBe('string')
+
+      // Falls back to Blog by default when widgetType is omitted
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:allBylineItems'))).toBe('array[object]')
+    })
   })
 })

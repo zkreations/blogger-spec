@@ -51,6 +51,8 @@ const INFIX_TOKEN_SYMBOLS: Partial<Record<TokenType, string>> = {
   MINUS: '-',
   EQ: '==',
   NEQ: '!=',
+  STRICT_EQ: '===',
+  STRICT_NEQ: '!==',
   LT: '<',
   GT: '>',
   LTE: '<=',
@@ -702,8 +704,12 @@ export class ExpressionParser {
 
     const symbol = INFIX_TOKEN_SYMBOLS[token.type]
     if (symbol) {
-      const precLevel = this.catalog.getOperatorPrecedence(symbol)
-      const bindingPower = this.catalog.getOperatorBindingPower(symbol)
+      let precLevel = this.catalog.getOperatorPrecedence(symbol)
+      let bindingPower = this.catalog.getOperatorBindingPower(symbol)
+      if ((symbol === '===' || symbol === '!==') && (precLevel === undefined || bindingPower === undefined)) {
+        precLevel = this.catalog.getOperatorPrecedence('==') ?? 7
+        bindingPower = this.catalog.getOperatorBindingPower('==') ?? 30
+      }
       if (precLevel !== undefined && bindingPower !== undefined) {
         return {
           name: symbol,

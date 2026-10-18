@@ -34,6 +34,7 @@ export interface BloggerStructureDiagnostic {
   message: string
   severity: BloggerDiagnosticSeverity
   tagName: string
+  attribute?: string
   tagStart?: number
   tagEnd?: number
 }

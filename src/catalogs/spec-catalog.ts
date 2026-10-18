@@ -48,6 +48,16 @@ export type DirectiveAttributesValidationTarget
   = | BloggerDirectiveToken
     | { tagName: string, attributes: Record<string, BloggerDirectiveAttributeToken | { value?: string }> | string[] }
 
+export interface DirectiveSnippetOptions {
+  readonly selfClosing?: boolean
+  readonly indent?: string
+  readonly quote?: '\'' | '"'
+}
+
+export interface OperatorSnippetOptions {
+  readonly syntax?: 'functional' | 'infix'
+}
+
 let defaultSpecCatalogInstance: SpecCatalog | null = null
 
 registerCacheResetListener(() => {
@@ -1173,6 +1183,98 @@ export class SpecCatalog {
     const attrDef = def?.attributes?.[attrName]
     return Boolean(attrDef?.attribute_kind === 'native_expression' || attrDef?.type === 'expression')
   }
+
+  getDirectiveSnippet(tagName: string, options?: DirectiveSnippetOptions): string {
+    const def = this.getDirective(tagName)
+    if (!def) {
+      return `<${tagName}>$0</${tagName}>`
+    }
+
+    const attrs = def.attributes || {}
+    const requiredAttrNames = Object.keys(attrs).filter(attrName => attrs[attrName]?.required)
+
+    let tabstopIndex = 1
+    const attrSnippets: string[] = []
+
+    const isThemeDesignerVar = tagName === 'Variable' || tagName === 'Group'
+    const quote = options?.quote ?? (isThemeDesignerVar ? '"' : '\'')
+
+    for (const attrName of requiredAttrNames) {
+      let placeholder = attrName
+      if (attrName === 'values') {
+        placeholder = 'data:items'
+      }
+      else if (attrName === 'var') {
+        placeholder = tagName === 'b:switch' ? 'data:view.type' : 'item'
+      }
+      else if (attrName === 'cond') {
+        placeholder = 'data:condition'
+      }
+      else if (attrName === 'expr') {
+        placeholder = 'data:expression'
+      }
+      else if (attrName === 'value') {
+        placeholder = tagName === 'b:case' ? 'item' : 'value'
+      }
+      else if (attrName === 'name') {
+        placeholder = 'name'
+      }
+      else if (attrName === 'id') {
+        placeholder = 'id'
+      }
+      else if (attrName === 'type') {
+        placeholder = 'type'
+      }
+
+      attrSnippets.push(`${attrName}=${quote}\${${tabstopIndex++}:${placeholder}}${quote}`)
+    }
+
+    const attrsString = attrSnippets.length > 0 ? ` ${attrSnippets.join(' ')}` : ''
+    const isSelfClosing = options?.selfClosing ?? (def.closure_mode === 'self_closing')
+    const indent = options?.indent ?? '  '
+
+    if (isSelfClosing) {
+      return `<${tagName}${attrsString}/>$0`
+    }
+
+    return `<${tagName}${attrsString}>\n${indent}$0\n</${tagName}>`
+  }
+
+  getOperatorSnippet(operatorName: string, options?: OperatorSnippetOptions): string {
+    const op = this.getOperator(operatorName)
+    if (!op) {
+      return `${operatorName}($0)`
+    }
+
+    const isSymbolic = !/^[a-z_]/i.test(operatorName)
+    const preferredSyntax = options?.syntax
+      ?? (op.syntax?.supports_functional && !isSymbolic ? 'functional' : (op.syntax?.supports_infix ? 'infix' : 'functional'))
+
+    if (preferredSyntax === 'functional' && op.syntax?.supports_functional) {
+      const fnName = op.syntax.functional_identifier ?? operatorName
+      const operands = op.operands || []
+      let tabstopIndex = 1
+      const args = operands.map(o => `\${${tabstopIndex++}:${o.name}}`)
+      return `${fnName}(${args.join(', ')})$0`
+    }
+
+    if (op.family === 'lambda') {
+      const collectionName = op.operands?.[0]?.name ?? 'items'
+      const varName = 'item'
+      const condition = 'condition'
+      return `\${1:${collectionName}} ${operatorName} (\${2:${varName}} => \${3:${condition}})$0`
+    }
+
+    if (op.operands && op.operands.length === 1) {
+      const operandName = op.operands[0]?.name ?? 'expression'
+      const sep = /^[a-z]/i.test(operatorName) ? ' ' : ''
+      return `${operatorName}${sep}\${1:${operandName}}$0`
+    }
+
+    const left = op.operands?.[0]?.name ?? 'left'
+    const right = op.operands?.[1]?.name ?? 'right'
+    return `\${1:${left}} ${operatorName} \${2:${right}}$0`
+  }
 }
 
 export function isDirective(tagName: string, catalog: SpecCatalog = getSpecCatalog()): tagName is BloggerDirectiveName {
@@ -1443,4 +1545,20 @@ export function getHtmlVoidElements(catalog: SpecCatalog = getSpecCatalog()): Re
 
 export function getCdataDirectives(catalog: SpecCatalog = getSpecCatalog()): readonly string[] {
   return catalog.getCdataDirectives()
+}
+
+export function getDirectiveSnippet(
+  tagName: string,
+  options?: DirectiveSnippetOptions,
+  catalog: SpecCatalog = getSpecCatalog(),
+): string {
+  return catalog.getDirectiveSnippet(tagName, options)
+}
+
+export function getOperatorSnippet(
+  operatorName: string,
+  options?: OperatorSnippetOptions,
+  catalog: SpecCatalog = getSpecCatalog(),
+): string {
+  return catalog.getOperatorSnippet(operatorName, options)
 }

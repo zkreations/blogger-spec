@@ -6,8 +6,11 @@ import type {
   BloggerStructureDiagnostic,
   DirectiveNestingViolation,
 } from '../types.js'
+import type { Token } from './lexer.js'
 import { getSpecCatalog } from '../catalogs/index.js'
+import { evaluateExpressionBudget } from '../quota.js'
 import { scanDirectiveTokens } from './directive-scanner.js'
+import { flattenMultilineExpression, tokenize, unescapeXmlEntities } from './lexer.js'
 
 function pushDiagnostic(
   diagnostics: BloggerStructureDiagnostic[],
@@ -17,6 +20,7 @@ function pushDiagnostic(
   options?: {
     message?: string
     rule?: BloggerDiagnosticRule
+    attribute?: string
     start?: number
     end?: number
   },
@@ -36,6 +40,7 @@ function pushDiagnostic(
     message: options?.message ?? rule?.message ?? `Diagnostic ${code}`,
     severity: rule?.severity ?? 'error',
     tagName: token.tagName,
+    attribute: options?.attribute,
     tagStart: options?.start ?? token.tagStart,
     tagEnd: options?.end ?? token.tagEnd,
   })
@@ -283,9 +288,211 @@ export function validateDirectiveNesting(
   return catalog.validateNesting(parentTag, childTag)
 }
 
+export interface ExpressionValidationContext {
+  readonly tagName?: string
+  readonly tagStart?: number
+  readonly tagEnd?: number
+  readonly attributeName?: string
+  readonly valueStart?: number
+  readonly valueEnd?: number
+  readonly widgetType?: string
+}
+
+export function validateExpression(
+  exprText: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+  context?: ExpressionValidationContext,
+): BloggerStructureDiagnostic[] {
+  const diagnostics: BloggerStructureDiagnostic[] = []
+  const tagName = context?.tagName ?? 'expression'
+  const baseStart = context?.valueStart ?? context?.tagStart ?? 0
+  const baseEnd = context?.valueEnd ?? context?.tagEnd ?? exprText.length
+
+  const fakeToken: BloggerDirectiveToken = {
+    tagName,
+    tagStart: context?.tagStart ?? baseStart,
+    tagEnd: context?.tagEnd ?? baseEnd,
+    isClosing: false,
+    isSelfClosing: true,
+    hasSelfClosingSlash: true,
+    attributesText: '',
+    rawAttributesText: '',
+    attributesOffset: baseStart,
+    attributes: {},
+  }
+
+  const unescaped = unescapeXmlEntities(flattenMultilineExpression(exprText))
+  const trimmed = unescaped.trim()
+  if (!trimmed) {
+    return diagnostics
+  }
+
+  // 1. Compiler token quota budget check (BX1021)
+  const budget = evaluateExpressionBudget(unescaped, catalog)
+  if (budget.status === 'EXCEEDED') {
+    pushDiagnostic(diagnostics, catalog, 'BX1021', fakeToken, {
+      attribute: context?.attributeName,
+      start: baseStart,
+      end: baseEnd,
+      message: `Expression consumes ${budget.totalTokens} tokens, exceeding the compiler limit of ${catalog.getExpressionQuotaLimit()}.`,
+    })
+  }
+
+  // 2. Tokenize expression to evaluate lexical / grammatical anti-patterns
+  let tokens: Token[] = []
+  try {
+    tokens = tokenize(unescaped)
+  }
+  catch {
+    // If tokenization failed on syntax, continue with partial analysis
+  }
+
+  for (let i = 0; i < tokens.length; i++) {
+    const tok = tokens[i]!
+
+    // BX1018: Strict equality operator (===, !==)
+    if (tok.type === 'STRICT_EQ' || tok.type === 'STRICT_NEQ') {
+      pushDiagnostic(diagnostics, catalog, 'BX1018', fakeToken, {
+        attribute: context?.attributeName,
+        start: baseStart + tok.start.offset,
+        end: baseStart + tok.end.offset,
+        message: `Strict equality operator '${tok.value}' is prohibited in Blogger expressions; use == or !=.`,
+      })
+    }
+
+    // BX1020: Prohibited Literal Null
+    if (tok.type === 'NULL') {
+      pushDiagnostic(diagnostics, catalog, 'BX1020', fakeToken, {
+        attribute: context?.attributeName,
+        start: baseStart + tok.start.offset,
+        end: baseStart + tok.end.offset,
+        message: `Literal 'null' is not supported in Blogger expressions.`,
+      })
+    }
+
+    // BX1017: Prohibited JavaScript method call (.method(...))
+    if (tok.type === 'DOT' && i + 2 < tokens.length) {
+      const next1 = tokens[i + 1]!
+      const next2 = tokens[i + 2]!
+      if (next1.type === 'IDENTIFIER' && next2.type === 'LPAREN') {
+        pushDiagnostic(diagnostics, catalog, 'BX1017', fakeToken, {
+          attribute: context?.attributeName,
+          start: baseStart + tok.start.offset,
+          end: baseStart + next2.end.offset,
+          message: `JavaScript method call '.${next1.value}()' is prohibited in Blogger expressions. Use native operators and helpers.`,
+        })
+      }
+    }
+
+    // BX1019: Prohibited Lambda Data Prefix (p => data:p.prop)
+    if (tok.type === 'IDENTIFIER' && i + 1 < tokens.length && tokens[i + 1]!.type === 'ARROW') {
+      const paramName = tok.value
+      for (let j = i + 2; j < tokens.length; j++) {
+        if (tokens[j]!.type === 'DATA_PREFIX' && j + 1 < tokens.length) {
+          const nextTok = tokens[j + 1]!
+          if (nextTok.type === 'IDENTIFIER' && nextTok.value === paramName) {
+            pushDiagnostic(diagnostics, catalog, 'BX1019', fakeToken, {
+              attribute: context?.attributeName,
+              start: baseStart + tokens[j]!.start.offset,
+              end: baseStart + nextTok.end.offset,
+              message: `Using 'data:' prefix on lambda iterator property 'data:${paramName}' is redundant. Access properties directly (${paramName}.prop).`,
+            })
+          }
+        }
+      }
+    }
+
+    // BX1030: Prohibited Unary Negation on Compound Expressions (-(...))
+    if (tok.type === 'MINUS' && i + 1 < tokens.length && tokens[i + 1]!.type === 'LPAREN') {
+      const isPrefix = i === 0 || ['LPAREN', 'COMMA', 'COLON', 'QUESTION', 'ELVIS', 'PLUS', 'MINUS', 'STAR', 'SLASH', 'PERCENT', 'EQ', 'NEQ', 'STRICT_EQ', 'STRICT_NEQ', 'LT', 'GT', 'LTE', 'GTE', 'AND', 'OR', 'BANG'].includes(tokens[i - 1]!.type)
+      if (isPrefix) {
+        pushDiagnostic(diagnostics, catalog, 'BX1030', fakeToken, {
+          attribute: context?.attributeName,
+          start: baseStart + tok.start.offset,
+          end: baseStart + tokens[i + 1]!.end.offset,
+          message: `Unary negation '-' cannot be applied to parenthesized compound expressions; use (0 - (...)) instead.`,
+        })
+      }
+    }
+
+    // BX1038: String Boolean in Expression (== "true", == "false", != "true", != "false")
+    if ((tok.type === 'EQ' || tok.type === 'NEQ') && i + 1 < tokens.length) {
+      const nextTok = tokens[i + 1]!
+      if (nextTok.type === 'STRING') {
+        const val = nextTok.value.toLowerCase()
+        if (val === 'true' || val === 'false' || val === 'yes' || val === 'no') {
+          pushDiagnostic(diagnostics, catalog, 'BX1038', fakeToken, {
+            attribute: context?.attributeName,
+            start: baseStart + nextTok.start.offset,
+            end: baseStart + nextTok.end.offset,
+            message: `Comparing against a quoted boolean string literal ('${nextTok.value}') in expression. Use boolean literals true or false directly.`,
+          })
+        }
+      }
+    }
+  }
+
+  return diagnostics
+}
+
+export function validateTemplateExpressions(
+  tokensOrXml: readonly BloggerDirectiveToken[] | string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): BloggerStructureDiagnostic[] {
+  const tokens = typeof tokensOrXml === 'string'
+    ? scanDirectiveTokens(tokensOrXml, { catalog })
+    : tokensOrXml
+
+  const diagnostics: BloggerStructureDiagnostic[] = []
+  let currentWidgetType: string | undefined
+
+  for (const token of tokens) {
+    if (token.isClosing) {
+      if (token.tagName === 'b:widget') {
+        currentWidgetType = undefined
+      }
+      continue
+    }
+
+    if (token.tagName === 'b:widget') {
+      currentWidgetType = token.attributes.type?.value
+    }
+
+    for (const [attrName, attrToken] of Object.entries(token.attributes)) {
+      const isExpr = catalog.isDirectiveExpressionAttribute(token.tagName, attrName) || attrName.startsWith('expr:')
+      if (!isExpr) {
+        continue
+      }
+
+      if (!attrToken.value || !attrToken.value.trim()) {
+        continue
+      }
+
+      const exprDiagnostics = validateExpression(attrToken.value, catalog, {
+        tagName: token.tagName,
+        tagStart: token.tagStart,
+        tagEnd: token.tagEnd,
+        attributeName: attrName,
+        valueStart: attrToken.valueStart,
+        valueEnd: attrToken.valueEnd,
+        widgetType: currentWidgetType,
+      })
+
+      diagnostics.push(...exprDiagnostics)
+    }
+  }
+
+  return diagnostics
+}
+
+export interface ValidateTemplateStructureOptions {
+  readonly validateExpressions?: boolean
+}
+
 export function validateTemplateStructure(
   tokensOrXml: readonly BloggerDirectiveToken[] | string,
   catalog: SpecCatalog = getSpecCatalog(),
+  options?: ValidateTemplateStructureOptions,
 ): BloggerStructureDiagnostic[] {
   const tokens = typeof tokensOrXml === 'string'
     ? scanDirectiveTokens(tokensOrXml, { catalog })
@@ -319,6 +526,11 @@ export function validateTemplateStructure(
       rule,
       message: rule?.message ?? `Tag <${token.tagName}> is not closed.`,
     })
+  }
+
+  if (options?.validateExpressions) {
+    const exprDiags = validateTemplateExpressions(tokens, catalog)
+    diagnostics.push(...exprDiags)
   }
 
   return diagnostics

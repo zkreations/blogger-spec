@@ -9,6 +9,8 @@ import * as RootExports from '../src/index.js'
 import {
   scanDirectiveTokens,
   validateDirectiveNesting,
+  validateExpression,
+  validateTemplateExpressions,
   validateTemplateStructure,
 } from '../src/parser/index.js'
 
@@ -534,6 +536,95 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diag).toBeDefined()
       expect(diag?.tagStart).toBeDefined()
       expect(diag?.tagEnd).toBeDefined()
+    })
+  })
+
+  describe('expression validation in template attributes', () => {
+    it('detects prohibited JavaScript method calls (BX1017)', () => {
+      const diags = validateExpression('data:posts.filter(p => p.id).slice(0, 5)')
+      expect(diags.some(d => d.code === 'BX1017')).toBe(true)
+      const diag = diags.find(d => d.code === 'BX1017')
+      expect(diag?.message).toContain('.filter()')
+    })
+
+    it('detects prohibited strict equality operators === and !== (BX1018)', () => {
+      const diags = validateExpression('data:view.pageType === "item"')
+      expect(diags.some(d => d.code === 'BX1018')).toBe(true)
+      const diag = diags.find(d => d.code === 'BX1018')
+      expect(diag?.message).toContain('===')
+
+      const neqDiags = validateExpression('data:view.pageType !== "item"')
+      expect(neqDiags.some(d => d.code === 'BX1018')).toBe(true)
+    })
+
+    it('detects redundant lambda data prefix (BX1019)', () => {
+      const diags = validateExpression('data:posts count (p => data:p.numberOfComments > 0)')
+      expect(diags.some(d => d.code === 'BX1019')).toBe(true)
+      const diag = diags.find(d => d.code === 'BX1019')
+      expect(diag?.message).toContain('data:p')
+    })
+
+    it('detects prohibited literal null in expressions (BX1020)', () => {
+      const diags = validateExpression('data:post.author == null')
+      expect(diags.some(d => d.code === 'BX1020')).toBe(true)
+      const nullFirst = validateExpression('null == ""')
+      expect(nullFirst.some(d => d.code === 'BX1020')).toBe(true)
+    })
+
+    it('detects compiler token quota exceeded (BX1021)', () => {
+      const longExpr = '1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17 + 18 + 19 + 20 + 21'
+      const diags = validateExpression(longExpr)
+      expect(diags.some(d => d.code === 'BX1021')).toBe(true)
+    })
+
+    it('detects unary minus on compound expressions (BX1030)', () => {
+      const diags = validateExpression('-(data:a - data:b)')
+      expect(diags.some(d => d.code === 'BX1030')).toBe(true)
+    })
+
+    it('detects boolean strings compared in expressions (BX1038)', () => {
+      const diags = validateExpression('data:post.isFirst == "true"')
+      expect(diags.some(d => d.code === 'BX1038')).toBe(true)
+    })
+
+    it('validates expressions across all template attributes via validateTemplateExpressions', () => {
+      const xml = `
+        <b:section id="main">
+          <b:widget id="Blog1" type="Blog">
+            <b:includable id="main">
+              <div expr:class="data:posts.filter(p => p.id)"/>
+              <b:if cond="data:view.pageType === 'item'">
+                <b:eval expr="data:post.author == null"/>
+              </b:if>
+            </b:includable>
+          </b:widget>
+        </b:section>
+      `
+      const diags = validateTemplateExpressions(xml)
+      expect(diags.some(d => d.code === 'BX1017')).toBe(true)
+      expect(diags.some(d => d.code === 'BX1018')).toBe(true)
+      expect(diags.some(d => d.code === 'BX1020')).toBe(true)
+
+      const filterDiag = diags.find(d => d.code === 'BX1017')
+      expect(filterDiag?.attribute).toBe('expr:class')
+      expect(filterDiag?.tagName).toBe('div')
+
+      const eqDiag = diags.find(d => d.code === 'BX1018')
+      expect(eqDiag?.attribute).toBe('cond')
+      expect(eqDiag?.tagName).toBe('b:if')
+
+      const nullDiag = diags.find(d => d.code === 'BX1020')
+      expect(nullDiag?.attribute).toBe('expr')
+      expect(nullDiag?.tagName).toBe('b:eval')
+    })
+
+    it('supports validateExpressions option in validateTemplateStructure', () => {
+      const xml = '<b:section id="main"><b:if cond="data:view.pageType === \'item\'"/></b:section>'
+      const withoutExpressions = validateTemplateStructure(xml)
+      expect(withoutExpressions.some(d => d.code === 'BX1018')).toBe(false)
+
+      const withExpressions = validateTemplateStructure(xml, undefined, { validateExpressions: true })
+      expect(withExpressions.some(d => d.code === 'BX1018')).toBe(true)
     })
   })
 })

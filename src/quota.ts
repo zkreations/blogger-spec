@@ -134,7 +134,7 @@ export function forEachExpressionToken(
       continue
     }
 
-    if (token.type === 'EQ' || token.type === 'NEQ' || token.type === 'LT' || token.type === 'GT' || token.type === 'LTE' || token.type === 'GTE') {
+    if (token.type === 'EQ' || token.type === 'NEQ' || token.type === 'STRICT_EQ' || token.type === 'STRICT_NEQ' || token.type === 'LT' || token.type === 'GT' || token.type === 'LTE' || token.type === 'GTE') {
       emit({
         value: token.value,
         tokenType: 'OPERATOR_RELATIONAL',
