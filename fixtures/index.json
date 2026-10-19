@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-19",
   "metrics": {
-    "totalFixtures": 249,
-    "positiveFixtures": 206,
-    "negativeFixtures": 43,
-    "coveredSpecEntities": 201
+    "totalFixtures": 255,
+    "positiveFixtures": 211,
+    "negativeFixtures": 44,
+    "coveredSpecEntities": 202
   },
   "fixtures": [
     {
@@ -241,6 +241,63 @@
         "value": -5
       },
       "verified_at": "2026-10-14"
+    },
+    {
+      "id": "expressions/arithmetic/functional-variadic-subtraction",
+      "title": "Functional Variadic Subtraction",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:-"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "-(50, 20, 10)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "expressions/arithmetic/functional-variadic-multiplication",
+      "title": "Functional Variadic Multiplication",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:*"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "*(2, 3, 4)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 24
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "expressions/arithmetic/functional-variadic-division",
+      "title": "Functional Variadic Division",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:/"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "/(100, 4, 5)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 5
+      },
+      "verified_at": "2026-10-19"
     },
     {
       "id": "expressions/coercion/addition-literal-string-concatenation",
@@ -2230,6 +2287,44 @@
         "value": true
       },
       "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/functional-not",
+      "title": "Functional Logical Not",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:not"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "not(true)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/functional-ternary",
+      "title": "Functional Ternary Operator",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:? :"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "?(true, \"Post\", \"Page\")",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Post"
+      },
+      "verified_at": "2026-10-19"
     },
     {
       "id": "expressions/modifiers/js-escaped",
@@ -5771,6 +5866,26 @@
         "stage": "linter"
       },
       "verified_at": "2026-10-18"
+    },
+    {
+      "id": "diagnostics/negative_syntax/fatal-operator-arity",
+      "title": "Fatal Operator Arity Crashing Backend",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1044"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "eq(5)"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1044"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-19"
     }
   ]
 }

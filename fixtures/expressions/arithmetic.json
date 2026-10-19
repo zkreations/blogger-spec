@@ -234,6 +234,63 @@
         "value": -5
       },
       "verified_at": "2026-10-14"
+    },
+    {
+      "id": "expressions/arithmetic/functional-variadic-subtraction",
+      "title": "Functional Variadic Subtraction",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:-"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "-(50, 20, 10)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 20
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "expressions/arithmetic/functional-variadic-multiplication",
+      "title": "Functional Variadic Multiplication",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:*"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "*(2, 3, 4)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 24
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "expressions/arithmetic/functional-variadic-division",
+      "title": "Functional Variadic Division",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:/"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "/(100, 4, 5)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 5
+      },
+      "verified_at": "2026-10-19"
     }
   ]
 }

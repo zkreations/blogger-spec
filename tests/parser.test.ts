@@ -319,6 +319,15 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect((node.alternate as BloggerLiteralNode).value).toBe('Page')
     })
 
+    it('parses functional ternary operator (?(cond, then, else))', () => {
+      const node = parseExpression('?(true, "Post", "Page")') as BloggerConditionalExpressionNode
+      expect(node.type).toBe('ConditionalExpression')
+      expect(node.test.type).toBe('Literal')
+      expect((node.test as BloggerLiteralNode).value).toBe(true)
+      expect((node.consequent as BloggerLiteralNode).value).toBe('Post')
+      expect((node.alternate as BloggerLiteralNode).value).toBe('Page')
+    })
+
     it('honors right-associativity of elvis (a ?: b ?: c)', () => {
       const node = parseExpression('data:a ?: data:b ?: data:c') as BloggerConditionalExpressionNode
       expect(node.type).toBe('ConditionalExpression')
@@ -455,6 +464,26 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect(variadicPlus.type).toBe('CallExpression')
       expect(variadicPlus.callee).toBe('+')
       expect(variadicPlus.arguments).toHaveLength(3)
+
+      const variadicMinus = parseExpression('-(10, 5, 2)') as BloggerCallExpressionNode
+      expect(variadicMinus.type).toBe('CallExpression')
+      expect(variadicMinus.callee).toBe('-')
+      expect(variadicMinus.arguments).toHaveLength(3)
+
+      const variadicMult = parseExpression('*(2, 3, 4)') as BloggerCallExpressionNode
+      expect(variadicMult.type).toBe('CallExpression')
+      expect(variadicMult.callee).toBe('*')
+      expect(variadicMult.arguments).toHaveLength(3)
+
+      const variadicDiv = parseExpression('/(100, 2, 2)') as BloggerCallExpressionNode
+      expect(variadicDiv.type).toBe('CallExpression')
+      expect(variadicDiv.callee).toBe('/')
+      expect(variadicDiv.arguments).toHaveLength(3)
+
+      const emptyMinus = parseExpression('-()') as BloggerCallExpressionNode
+      expect(emptyMinus.type).toBe('CallExpression')
+      expect(emptyMinus.callee).toBe('-')
+      expect(emptyMinus.arguments).toHaveLength(0)
 
       const variadicAnd = parseExpression('and(data:a, data:b, data:c)') as BloggerCallExpressionNode
       expect(variadicAnd.type).toBe('CallExpression')

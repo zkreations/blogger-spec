@@ -367,6 +367,44 @@
         "value": true
       },
       "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/functional-not",
+      "title": "Functional Logical Not",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:not"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "not(true)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/functional-ternary",
+      "title": "Functional Ternary Operator",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:? :"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "?(true, \"Post\", \"Page\")",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Post"
+      },
+      "verified_at": "2026-10-19"
     }
   ]
 }

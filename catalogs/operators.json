@@ -482,7 +482,7 @@
         "supports_infix": true,
         "supports_functional": true,
         "functional_identifier": "-",
-        "variadic": false,
+        "variadic": true,
         "infix": "a - b",
         "functional": "-(a, b)"
       },
@@ -580,7 +580,7 @@
         "supports_infix": true,
         "supports_functional": true,
         "functional_identifier": "*",
-        "variadic": false,
+        "variadic": true,
         "infix": "a * b",
         "functional": "*(a, b)"
       },
@@ -628,7 +628,7 @@
         "supports_infix": true,
         "supports_functional": true,
         "functional_identifier": "/",
-        "variadic": false,
+        "variadic": true,
         "infix": "a / b",
         "functional": "/(a, b)"
       },
@@ -759,6 +759,9 @@
         "Do not use JavaScript '===' triple equals in Blogger expressions.",
         "Do not expect boolean-to-number coercion (e.g. true == 1 evaluates to false)."
       ],
+      "diagnostics": {
+        "fatal_operator_arity": "BX1044"
+      },
       "examples": [
         {
           "expression": "data:view.type == \"item\"",
@@ -1140,11 +1143,11 @@
       "description": "Logical inversion negating truthiness.",
       "syntax": {
         "supports_infix": true,
-        "supports_functional": false,
-        "functional_identifier": null,
+        "supports_functional": true,
+        "functional_identifier": "not",
         "variadic": false,
         "infix": "not a",
-        "functional": null
+        "functional": "not(a)"
       },
       "precedence_level": 7,
       "operands": [
@@ -1163,7 +1166,6 @@
         "!"
       ],
       "anti_patterns": [
-        "not(a)",
         "!(a)"
       ],
       "examples": [
@@ -1930,11 +1932,11 @@
       "description": "Inline conditional branching expression (condition ? truthyValue : falsyValue).",
       "syntax": {
         "supports_infix": true,
-        "supports_functional": false,
-        "functional_identifier": null,
+        "supports_functional": true,
+        "functional_identifier": "?",
         "variadic": false,
         "infix": "cond ? val1 : val2",
-        "functional": null
+        "functional": "?(cond, val1, val2)"
       },
       "precedence_level": 10,
       "token_cost": 2,

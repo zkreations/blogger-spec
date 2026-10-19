@@ -2514,7 +2514,7 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         "supports_infix": true,
         "supports_functional": true,
         "functional_identifier": "-",
-        "variadic": false,
+        "variadic": true,
         "infix": "a - b",
         "functional": "-(a, b)"
       },
@@ -2612,7 +2612,7 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         "supports_infix": true,
         "supports_functional": true,
         "functional_identifier": "*",
-        "variadic": false,
+        "variadic": true,
         "infix": "a * b",
         "functional": "*(a, b)"
       },
@@ -2660,7 +2660,7 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         "supports_infix": true,
         "supports_functional": true,
         "functional_identifier": "/",
-        "variadic": false,
+        "variadic": true,
         "infix": "a / b",
         "functional": "/(a, b)"
       },
@@ -2791,6 +2791,9 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         "Do not use JavaScript '===' triple equals in Blogger expressions.",
         "Do not expect boolean-to-number coercion (e.g. true == 1 evaluates to false)."
       ],
+      "diagnostics": {
+        "fatal_operator_arity": "BX1044"
+      },
       "examples": [
         {
           "expression": "data:view.type == \"item\"",
@@ -3172,11 +3175,11 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
       "description": "Logical inversion negating truthiness.",
       "syntax": {
         "supports_infix": true,
-        "supports_functional": false,
-        "functional_identifier": null,
+        "supports_functional": true,
+        "functional_identifier": "not",
         "variadic": false,
         "infix": "not a",
-        "functional": null
+        "functional": "not(a)"
       },
       "precedence_level": 7,
       "operands": [
@@ -3195,7 +3198,6 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         "!"
       ],
       "anti_patterns": [
-        "not(a)",
         "!(a)"
       ],
       "examples": [
@@ -3962,11 +3964,11 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
       "description": "Inline conditional branching expression (condition ? truthyValue : falsyValue).",
       "syntax": {
         "supports_infix": true,
-        "supports_functional": false,
-        "functional_identifier": null,
+        "supports_functional": true,
+        "functional_identifier": "?",
         "variadic": false,
         "infix": "cond ? val1 : val2",
-        "functional": null
+        "functional": "?(cond, val1, val2)"
       },
       "precedence_level": 10,
       "token_cost": 2,
@@ -10932,10 +10934,10 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "name": "PROHIBITED_UNARY_EXPRESSION_NEGATION",
       "category": "expressions",
       "severity": "error",
-      "message": "Unary negation '-' cannot be applied to parenthesized compound expressions (e.g. -(a - b)) and triggers 'Invalid expression' compiler error. Blogger expression engine only permits unary minus on immediate numeric literals (-5).",
+      "message": "Unary prefix operators ('-', '+', '!') cannot be applied to parenthesized compound expressions (e.g. -(a - b), +(a - b), !(a - b)) and trigger 'Invalid expression' compiler error. Blogger expression engine only permits unary operators on simple literals or variables.",
       "replacement": "(0 - (a - b))",
       "evidence": "observed",
-      "verified_at": "2026-10-14"
+      "verified_at": "2026-10-19"
     },
     "BX1031": {
       "code": "BX1031",
@@ -11056,6 +11058,15 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "message": "Directive attribute value is not in the set of allowed canonical values.",
       "evidence": "official",
       "verified_at": "2026-10-18"
+    },
+    "BX1044": {
+      "code": "BX1044",
+      "name": "FATAL_OPERATOR_ARITY",
+      "category": "runtime",
+      "severity": "error",
+      "message": "Invoking operator with fatal arity (such as eq() with fewer than 2 arguments or -() with 0 arguments) triggers an unhandled backend crash (HTTP 500) on Blogger template engine.",
+      "evidence": "observed",
+      "verified_at": "2026-10-19"
     }
   }
 } as unknown as BloggerDiagnosticsCatalog;

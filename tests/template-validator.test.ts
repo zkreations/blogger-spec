@@ -663,8 +663,38 @@ describe('helpers & canonical structure validation suite', () => {
     })
 
     it('detects unary minus on compound expressions (BX1030)', () => {
-      const diags = validateExpression('-(data:a - data:b)')
-      expect(diags.some(d => d.code === 'BX1030')).toBe(true)
+      expect(validateExpression('-(data:a - data:b)').some(d => d.code === 'BX1030')).toBe(true)
+      expect(validateExpression('-(10 - 3)').some(d => d.code === 'BX1030')).toBe(true)
+      expect(validateExpression('-(a + b)').some(d => d.code === 'BX1030')).toBe(true)
+      expect(validateExpression('+(10 - 3)').some(d => d.code === 'BX1030')).toBe(true)
+      expect(validateExpression('!(10 - 3)').some(d => d.code === 'BX1030')).toBe(true)
+      expect(validateExpression('-(a and b)').some(d => d.code === 'BX1030')).toBe(true)
+      expect(validateExpression('-(a ?: b)').some(d => d.code === 'BX1030')).toBe(true)
+      expect(validateExpression('-(a ? b : c)').some(d => d.code === 'BX1030')).toBe(true)
+      expect(validateExpression('-((10 - 3))').some(d => d.code === 'BX1030')).toBe(true)
+    })
+
+    it('does not emit BX1030 on functional minus calls or simple parenthesized values', () => {
+      // Functional minus syntax -(a, b)
+      expect(validateExpression('-(-1, 5)').some(d => d.code === 'BX1030')).toBe(false)
+      expect(validateExpression('-(20, 10)').some(d => d.code === 'BX1030')).toBe(false)
+      expect(validateExpression('-(data:a, data:b)').some(d => d.code === 'BX1030')).toBe(false)
+
+      // Simple parenthesized literals, paths, and identifiers
+      expect(validateExpression('-(-1)').some(d => d.code === 'BX1030')).toBe(false)
+      expect(validateExpression('-(5)').some(d => d.code === 'BX1030')).toBe(false)
+      expect(validateExpression('+(10)').some(d => d.code === 'BX1030')).toBe(false)
+      expect(validateExpression('!(true)').some(d => d.code === 'BX1030')).toBe(false)
+      expect(validateExpression('-(data:order)').some(d => d.code === 'BX1030')).toBe(false)
+      expect(validateExpression('-(item)').some(d => d.code === 'BX1030')).toBe(false)
+    })
+
+    it('detects fatal operator arity crashing Blogger backend (BX1044)', () => {
+      expect(validateExpression('eq(5)').some(d => d.code === 'BX1044')).toBe(true)
+      expect(validateExpression('eq()').some(d => d.code === 'BX1044')).toBe(true)
+      expect(validateExpression('-()').some(d => d.code === 'BX1044')).toBe(true)
+      expect(validateExpression('eq(5, 5)').some(d => d.code === 'BX1044')).toBe(false)
+      expect(validateExpression('eq(5, 5, 5)').some(d => d.code === 'BX1044')).toBe(false)
     })
 
     it('detects boolean strings compared in expressions (BX1038)', () => {

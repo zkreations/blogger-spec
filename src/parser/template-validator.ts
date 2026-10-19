@@ -10,6 +10,7 @@ import type { Token } from './lexer.js'
 import { getSpecCatalog } from '../catalogs/index.js'
 import { evaluateExpressionBudget } from '../quota.js'
 import { scanDirectiveTokens } from './directive-scanner.js'
+import { parseExpression } from './expr-parser.js'
 import { flattenMultilineExpression, tokenize, unescapeXmlEntities } from './lexer.js'
 
 function pushDiagnostic(
@@ -312,6 +313,37 @@ export interface ExpressionValidationContext {
   readonly widgetType?: string
 }
 
+const INFIX_OPERATOR_TOKEN_TYPES = new Set<string>([
+  'PLUS',
+  'MINUS',
+  'STAR',
+  'SLASH',
+  'PERCENT',
+  'EQ',
+  'NEQ',
+  'STRICT_EQ',
+  'STRICT_NEQ',
+  'LT',
+  'GT',
+  'LTE',
+  'GTE',
+  'AND',
+  'OR',
+  'ELVIS',
+  'QUESTION',
+])
+
+const OPERAND_END_TOKEN_TYPES = new Set<string>([
+  'NUMBER',
+  'STRING',
+  'BOOLEAN',
+  'NULL',
+  'IDENTIFIER',
+  'RPAREN',
+  'RBRACKET',
+  'RBRACE',
+])
+
 export function validateExpression(
   exprText: string,
   catalog: SpecCatalog = getSpecCatalog(),
@@ -416,16 +448,157 @@ export function validateExpression(
       }
     }
 
-    // BX1030: Prohibited Unary Negation on Compound Expressions (-(...))
-    if (tok.type === 'MINUS' && i + 1 < tokens.length && tokens[i + 1]!.type === 'LPAREN') {
+    // BX1030: Prohibited Unary Prefix on Compound Expressions (-(...), +(...) and !(...))
+    if ((tok.type === 'MINUS' || tok.type === 'PLUS' || tok.type === 'BANG') && i + 1 < tokens.length && tokens[i + 1]!.type === 'LPAREN') {
       const isPrefix = i === 0 || ['LPAREN', 'COMMA', 'COLON', 'QUESTION', 'ELVIS', 'PLUS', 'MINUS', 'STAR', 'SLASH', 'PERCENT', 'EQ', 'NEQ', 'STRICT_EQ', 'STRICT_NEQ', 'LT', 'GT', 'LTE', 'GTE', 'AND', 'OR', 'BANG'].includes(tokens[i - 1]!.type)
       if (isPrefix) {
-        pushDiagnostic(diagnostics, catalog, 'BX1030', fakeToken, {
-          attribute: context?.attributeName,
-          start: baseStart + tok.start.offset,
-          end: baseStart + tokens[i + 1]!.end.offset,
-          message: `Unary negation '-' cannot be applied to parenthesized compound expressions; use (0 - (...)) instead.`,
-        })
+        let parenDepth = 0
+        let closeParenIndex = -1
+        for (let j = i + 1; j < tokens.length; j++) {
+          if (tokens[j]!.type === 'LPAREN') {
+            parenDepth++
+          }
+          else if (tokens[j]!.type === 'RPAREN') {
+            parenDepth--
+            if (parenDepth === 0) {
+              closeParenIndex = j
+              break
+            }
+          }
+        }
+
+        if (closeParenIndex !== -1) {
+          const innerTokens = tokens.slice(i + 2, closeParenIndex)
+
+          // 1. Discard functional calls with multiple arguments (e.g. -(-1, 5) or +(1, 2) or -(a, b))
+          let innerNesting = 0
+          let hasRootComma = false
+          let hasRootInfixOp = false
+          let prevAtDepth0: Token | null = null
+
+          for (const it of innerTokens) {
+            if (it.type === 'LPAREN' || it.type === 'LBRACKET' || it.type === 'LBRACE') {
+              innerNesting++
+              continue
+            }
+            if (it.type === 'RPAREN' || it.type === 'RBRACKET' || it.type === 'RBRACE') {
+              innerNesting--
+              if (innerNesting === 0) {
+                prevAtDepth0 = it
+              }
+              continue
+            }
+            if (innerNesting === 0) {
+              if (it.type === 'COMMA') {
+                hasRootComma = true
+                break
+              }
+
+              const isInfixToken = INFIX_OPERATOR_TOKEN_TYPES.has(it.type) || (
+                it.type === 'IDENTIFIER' && (it.value.toLowerCase() === 'and' || it.value.toLowerCase() === 'or')
+              )
+
+              const prevCanBeOperandEnd = prevAtDepth0 != null && OPERAND_END_TOKEN_TYPES.has(prevAtDepth0.type)
+
+              if (isInfixToken && prevCanBeOperandEnd) {
+                hasRootInfixOp = true
+              }
+
+              prevAtDepth0 = it
+            }
+          }
+
+          if (!hasRootComma) {
+            // BX1044: Empty call -() causes an unhandled backend crash (HTTP 500)
+            if (tok.type === 'MINUS' && innerTokens.length === 0) {
+              pushDiagnostic(diagnostics, catalog, 'BX1044', fakeToken, {
+                attribute: context?.attributeName,
+                start: baseStart + tok.start.offset,
+                end: baseStart + tokens[closeParenIndex]!.end.offset,
+                message: `Invoking '-()' with 0 arguments triggers an unhandled backend crash (HTTP 500) on Blogger template engine.`,
+              })
+            }
+            else {
+              // 2. Validate only compound binary/logical/conditional expressions
+              let isCompound = hasRootInfixOp
+              const innerSlice = unescaped.slice(tokens[i + 1]!.end.offset, tokens[closeParenIndex]!.start.offset).trim()
+
+              if (innerSlice) {
+                try {
+                  const ast = parseExpression(innerSlice, { catalog, tolerant: true })
+                  if (
+                    ast.type === 'BinaryExpression'
+                    || ast.type === 'LogicalExpression'
+                    || ast.type === 'ConditionalExpression'
+                  ) {
+                    isCompound = true
+                  }
+                }
+                catch {
+                  // If parsing threw, rely on hasRootInfixOp
+                }
+              }
+
+              if (isCompound) {
+                pushDiagnostic(diagnostics, catalog, 'BX1030', fakeToken, {
+                  attribute: context?.attributeName,
+                  start: baseStart + tok.start.offset,
+                  end: baseStart + tokens[closeParenIndex]!.end.offset,
+                  message: `Unary prefix operator '${tok.value}' cannot be applied to parenthesized compound expressions; evaluate operands separately or use native operators.`,
+                })
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // BX1044: Fatal Operator Arity (eq() with fewer than 2 arguments triggers backend crash)
+    if (
+      ((tok.type === 'IDENTIFIER' && tok.value.toLowerCase() === 'eq') || tok.type === 'EQ')
+      && i + 1 < tokens.length
+      && tokens[i + 1]!.type === 'LPAREN'
+    ) {
+      let parenDepth = 0
+      let closeParenIndex = -1
+      for (let j = i + 1; j < tokens.length; j++) {
+        if (tokens[j]!.type === 'LPAREN') {
+          parenDepth++
+        }
+        else if (tokens[j]!.type === 'RPAREN') {
+          parenDepth--
+          if (parenDepth === 0) {
+            closeParenIndex = j
+            break
+          }
+        }
+      }
+
+      if (closeParenIndex !== -1) {
+        const innerTokens = tokens.slice(i + 2, closeParenIndex)
+        let innerNesting = 0
+        let hasRootComma = false
+        for (const it of innerTokens) {
+          if (it.type === 'LPAREN' || it.type === 'LBRACKET' || it.type === 'LBRACE') {
+            innerNesting++
+          }
+          else if (it.type === 'RPAREN' || it.type === 'RBRACKET' || it.type === 'RBRACE') {
+            innerNesting--
+          }
+          else if (innerNesting === 0 && it.type === 'COMMA') {
+            hasRootComma = true
+            break
+          }
+        }
+
+        if (!hasRootComma) {
+          pushDiagnostic(diagnostics, catalog, 'BX1044', fakeToken, {
+            attribute: context?.attributeName,
+            start: baseStart + tok.start.offset,
+            end: baseStart + tokens[closeParenIndex]!.end.offset,
+            message: `Invoking equality operator 'eq()' with fewer than 2 arguments triggers an unhandled backend crash (HTTP 500) on Blogger template engine.`,
+          })
+        }
       }
     }
 

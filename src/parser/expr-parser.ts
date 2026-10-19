@@ -240,7 +240,7 @@ export class ExpressionParser {
           const args = this.parseArgumentList()
           if (this.check('RPAREN')) {
             const closeParen = this.advance() // ')'
-            if (args.length > 1) {
+            if (args.length !== 1) {
               const node: BloggerCallExpressionNode = {
                 type: 'CallExpression',
                 callee: '-',
@@ -249,16 +249,14 @@ export class ExpressionParser {
               }
               return node
             }
-            if (args.length === 1) {
-              const node: BloggerUnaryExpressionNode = {
-                type: 'UnaryExpression',
-                operator: '-',
-                argument: args[0]!,
-                prefix: true,
-                loc: makeLoc(opTok.start, closeParen.end),
-              }
-              return node
+            const node: BloggerUnaryExpressionNode = {
+              type: 'UnaryExpression',
+              operator: '-',
+              argument: args[0]!,
+              prefix: true,
+              loc: makeLoc(opTok.start, closeParen.end),
             }
+            return node
           }
           this.current = savedPos
         }
@@ -345,12 +343,23 @@ export class ExpressionParser {
       case 'GTE':
       case 'AND':
       case 'OR':
-      case 'ELVIS': {
+      case 'ELVIS':
+      case 'QUESTION': {
         const opToken = this.advance()
         if (this.check('LPAREN')) {
           this.advance() // '('
           const args = this.parseArgumentList()
           const closeParen = this.consume('RPAREN', 'Expected \')\' after functional operator arguments')
+          if (opToken.type === 'QUESTION' && args.length === 3) {
+            const node: BloggerConditionalExpressionNode = {
+              type: 'ConditionalExpression',
+              test: args[0]!,
+              consequent: args[1]!,
+              alternate: args[2]!,
+              loc: makeLoc(opToken.start, closeParen.end),
+            }
+            return node
+          }
           const node: BloggerCallExpressionNode = {
             type: 'CallExpression',
             callee: opToken.value,

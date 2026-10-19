@@ -1201,6 +1201,7 @@ describe('catalogs and store formal verification suite', () => {
 
       const notOp = getOperatorSnippet('not')
       expect(notOp).toBe('not ${1:operand}$0')
+      expect(getOperatorSnippet('not', { syntax: 'functional' })).toBe('not(${1:operand})$0')
 
       const bangOp = getOperatorSnippet('!')
       expect(bangOp).toBe('!${1:operand}$0')

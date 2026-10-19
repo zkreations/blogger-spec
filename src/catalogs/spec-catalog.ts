@@ -1252,7 +1252,9 @@ export class SpecCatalog {
 
     const isSymbolic = !/^[a-z_]/i.test(operatorName)
     const preferredSyntax = options?.syntax
-      ?? (op.syntax?.supports_functional && !isSymbolic ? 'functional' : (op.syntax?.supports_infix ? 'infix' : 'functional'))
+      ?? (op.operands?.length === 1
+        ? (op.syntax?.supports_infix ? 'infix' : 'functional')
+        : (op.syntax?.supports_functional && !isSymbolic ? 'functional' : (op.syntax?.supports_infix ? 'infix' : 'functional')))
 
     if (preferredSyntax === 'functional' && op.syntax?.supports_functional) {
       const fnName = op.syntax.functional_identifier ?? operatorName

@@ -908,6 +908,26 @@
         "stage": "linter"
       },
       "verified_at": "2026-10-18"
+    },
+    {
+      "id": "diagnostics/negative_syntax/fatal-operator-arity",
+      "title": "Fatal Operator Arity Crashing Backend",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1044"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "eq(5)"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1044"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-19"
     }
   ]
 }
