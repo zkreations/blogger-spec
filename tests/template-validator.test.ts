@@ -126,6 +126,16 @@ describe('helpers & canonical structure validation suite', () => {
       expect(validateDirectiveNesting('b:switch', 'b:case')).toBeNull()
       expect(validateDirectiveNesting('b:if', 'b:else')).toBeNull()
       expect(validateDirectiveNesting('b:message', 'b:param')).toBeNull()
+      expect(validateDirectiveNesting('html', 'b:include')).toBeNull()
+      expect(validateDirectiveNesting('b:if', 'b:skin')).toBeNull()
+      expect(validateDirectiveNesting('b:if', 'b:template-skin')).toBeNull()
+      expect(validateDirectiveNesting('html', 'b:skin')).toBeNull()
+      expect(validateDirectiveNesting('html', 'b:template-skin')).toBeNull()
+      expect(validateDirectiveNesting('head', 'b:skin')).toBeNull()
+      expect(validateDirectiveNesting('body', 'b:skin')).toBeNull()
+      expect(validateDirectiveNesting('b:includable', 'b:skin')).toBeNull()
+      expect(validateDirectiveNesting('b:widget', 'b:skin')?.code).toBe('BX1023')
+      expect(validateDirectiveNesting('b:section', 'b:skin')?.code).toBe('BX1023')
     })
 
     it('validates strictly scoped styling directives (Group and Variable)', () => {
@@ -415,6 +425,45 @@ describe('helpers & canonical structure validation suite', () => {
       `
       const diags = validateTemplateStructure(xml)
       expect(diags.some(d => d.code === 'BX1022')).toBe(false)
+    })
+
+    it('permits flexible XML structure (b:include under html, b:skin and b:template-skin under b:if)', () => {
+      const xml1 = '<html><b:include name="foo"/></html>'
+      expect(validateTemplateStructure(xml1)).toEqual([])
+
+      const xml2 = '<html><head><b:if cond="true"><b:skin><![CDATA[/* */]]></b:skin></b:if></head></html>'
+      expect(validateTemplateStructure(xml2)).toEqual([])
+
+      const xml3 = '<html><head><b:if cond="true"><b:template-skin><![CDATA[/* */]]></b:template-skin></b:if></head></html>'
+      expect(validateTemplateStructure(xml3)).toEqual([])
+
+      const xml4 = '<html><b:skin><![CDATA[/* */]]></b:skin><b:template-skin><![CDATA[/* */]]></b:template-skin></html>'
+      expect(validateTemplateStructure(xml4)).toEqual([])
+    })
+
+    it('rejects b:skin and b:template-skin inside widgets with strip action (BX1023)', () => {
+      const xml1 = '<b:section id="main"><b:widget id="Blog1" type="Blog"><b:includable id="main"><b:skin><![CDATA[/* */]]></b:skin></b:includable></b:widget></b:section>'
+      const diags1 = validateTemplateStructure(xml1)
+      expect(diags1.some(d => d.code === 'BX1023')).toBe(true)
+      expect(diags1[0]?.message).toContain('widgets')
+
+      const xml2 = '<b:section id="main"><b:widget id="Blog1" type="Blog"><b:includable id="main"><b:if cond="true"><b:skin><![CDATA[/* */]]></b:skin></b:if></b:includable></b:widget></b:section>'
+      const diags2 = validateTemplateStructure(xml2)
+      expect(diags2.some(d => d.code === 'BX1023')).toBe(true)
+      expect(diags2[0]?.message).toContain('widgets')
+    })
+
+    it('permits b:skin inside b:includable when declared under b:defaultmarkups', () => {
+      const xml = `
+        <b:defaultmarkups>
+          <b:defaultmarkup type='Common'>
+            <b:includable id='@skin'>
+              <b:skin><![CDATA[ body { color: red; } ]]></b:skin>
+            </b:includable>
+          </b:defaultmarkup>
+        </b:defaultmarkups>
+      `
+      expect(validateTemplateStructure(xml)).toEqual([])
     })
 
     it('operates identically when passed pre-scanned tokens', () => {

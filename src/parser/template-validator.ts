@@ -102,6 +102,19 @@ function validateNestingRules(
     return
   }
 
+  const isSkin = token.tagName === 'b:skin' || token.tagName === 'b:template-skin'
+  if (isSkin && tagStack.some(t => t.tagName === 'b:widget')) {
+    const violation = validateDirectiveNesting('b:widget', token.tagName, catalog)
+      ?? catalog.validateNesting('b:widget', token.tagName)
+    if (violation) {
+      pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
+        rule: violation.rule,
+        message: `Tag <${token.tagName}> cannot be placed inside widgets (Blogger formats it as self-closing <${token.tagName}/> and strips its content).`,
+      })
+      return
+    }
+  }
+
   if (parentToken) {
     const violation = validateDirectiveNesting(parentToken.tagName, token.tagName, catalog)
     if (violation) {

@@ -242,6 +242,9 @@ export class SpecCatalog {
       return true
     }
     const lower = tag.toLowerCase()
+    if (allowedSet.has(lower)) {
+      return true
+    }
     if (!this.isDirective(tag) && lower !== 'head' && lower !== 'html' && lower !== 'body' && allowedSet.has('html:*')) {
       return true
     }

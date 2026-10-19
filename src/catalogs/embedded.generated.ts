@@ -169,7 +169,20 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
         "b:section",
         "b:widget",
         "body",
-        "head"
+        "head",
+        "html"
+      ],
+      "@theme_containers": [
+        "html",
+        "head",
+        "body",
+        "html:*",
+        "b:if",
+        "b:with",
+        "b:switch",
+        "b:tag",
+        "b:comment",
+        "b:includable"
       ]
     }
   },
@@ -460,7 +473,9 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "b:defaultmarkup"
         ],
         "valid_children": [
-          "@flow_content"
+          "@flow_content",
+          "b:skin",
+          "b:template-skin"
         ],
         "invalid_nesting_policy": {
           "on_invalid_parent": {
@@ -808,7 +823,9 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "@any_container"
         ],
         "valid_children": [
-          "@flow_content"
+          "@flow_content",
+          "b:skin",
+          "b:template-skin"
         ]
       },
       "attributes": {
@@ -855,7 +872,9 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
         "valid_children": [
           "@flow_content",
           "b:elseif",
-          "b:else"
+          "b:else",
+          "b:skin",
+          "b:template-skin"
         ]
       },
       "attributes": {
@@ -985,7 +1004,9 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
         "valid_children": [
           "b:case",
           "b:default",
-          "@flow_content"
+          "@flow_content",
+          "b:skin",
+          "b:template-skin"
         ]
       },
       "attributes": {
@@ -1478,7 +1499,7 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
       "description": "Required theme component that encapsulates CSS declarations and skin variables used to customize the blog's appearance.",
       "grammar": {
         "valid_parents": [
-          "head"
+          "@theme_containers"
         ],
         "valid_children": [
           "CDATA",
@@ -1489,13 +1510,19 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "Group",
           "Variable",
           "CSS declarations"
-        ]
+        ],
+        "invalid_nesting_policy": {
+          "on_invalid_parent": {
+            "diagnostic": "BX1023",
+            "action": "strip"
+          }
+        }
       },
       "attributes": {},
       "constraints": {
         "nesting": {
-          "status": "forbidden",
-          "reason": "b:skin cannot be nested inside sections, widgets, or other skin tags."
+          "status": "forbidden_in_widgets",
+          "reason": "b:skin cannot be nested inside sections, widgets, or includables. Blogger formats it as <b:skin/> and strips its CDATA contents upon saving."
         },
         "cdata": {
           "status": "required",
@@ -1504,7 +1531,6 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
         "multiplicity": {
           "min": 1,
           "max": 1,
-          "per_parent": "head",
           "description": "Exactly one b:skin element is permitted per theme."
         }
       },
@@ -1518,20 +1544,26 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
       "description": "Theme component used for styles specifically applicable to the Layout tab of the Blogger dashboard.",
       "grammar": {
         "valid_parents": [
-          "head"
+          "@theme_containers"
         ],
         "valid_children": [
           "CDATA"
         ],
         "cdata_content": [
           "CSS declarations"
-        ]
+        ],
+        "invalid_nesting_policy": {
+          "on_invalid_parent": {
+            "diagnostic": "BX1023",
+            "action": "strip"
+          }
+        }
       },
       "attributes": {},
       "constraints": {
         "nesting": {
-          "status": "forbidden",
-          "reason": "b:template-skin cannot be nested inside sections or widgets."
+          "status": "forbidden_in_widgets",
+          "reason": "b:template-skin cannot be nested inside sections, widgets, or includables. Blogger formats it as <b:template-skin/> and strips its CDATA contents upon saving."
         },
         "cdata": {
           "status": "required",
@@ -1545,7 +1577,6 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
         "multiplicity": {
           "min": 0,
           "max": 1,
-          "per_parent": "head",
           "description": "At most one b:template-skin element is permitted per theme."
         }
       },
