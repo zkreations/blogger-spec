@@ -33,6 +33,123 @@ export function unescapeXmlEntities(text: string): string {
   })
 }
 
+export interface EntityReplacement {
+  rawStart: number
+  rawEnd: number
+  unescapedStart: number
+  unescapedEnd: number
+}
+
+export interface UnescapedXmlSourceMap {
+  unescaped: string
+  mapOffset: (offset: number) => number
+}
+
+export function unescapeXmlEntitiesWithSourceMap(rawText: string): UnescapedXmlSourceMap {
+  if (!rawText.includes('&')) {
+    return {
+      unescaped: rawText,
+      mapOffset: (offset: number) => offset,
+    }
+  }
+
+  const replacements: EntityReplacement[] = []
+  let unescaped = ''
+  let lastRawIndex = 0
+
+  const regex = /&(?:(quot|apos|lt|gt|amp)|#(?:(\d+)|x([\da-f]+)));/gi
+
+  for (const match of rawText.matchAll(regex)) {
+    const rawMatchStart = match.index
+    const rawMatchText = match[0]
+    const rawMatchEnd = rawMatchStart + rawMatchText.length
+
+    if (rawMatchStart > lastRawIndex) {
+      unescaped += rawText.slice(lastRawIndex, rawMatchStart)
+    }
+
+    const named = match[1]
+    const dec = match[2]
+    const hex = match[3]
+    let decoded = rawMatchText
+
+    if (named) {
+      decoded = PREDEFINED_XML_ENTITIES[named.toLowerCase()] ?? rawMatchText
+    }
+    else if (dec) {
+      const code = Number.parseInt(dec, 10)
+      if (Number.isFinite(code) && code > 0) {
+        decoded = String.fromCodePoint(code)
+      }
+    }
+    else if (hex) {
+      const code = Number.parseInt(hex, 16)
+      if (Number.isFinite(code) && code > 0) {
+        decoded = String.fromCodePoint(code)
+      }
+    }
+
+    const unescapedMatchStart = unescaped.length
+    unescaped += decoded
+    const unescapedMatchEnd = unescaped.length
+
+    if (decoded !== rawMatchText) {
+      replacements.push({
+        rawStart: rawMatchStart,
+        rawEnd: rawMatchEnd,
+        unescapedStart: unescapedMatchStart,
+        unescapedEnd: unescapedMatchEnd,
+      })
+    }
+
+    lastRawIndex = rawMatchEnd
+  }
+
+  if (lastRawIndex < rawText.length) {
+    unescaped += rawText.slice(lastRawIndex)
+  }
+
+  const mapOffset = (offset: number): number => {
+    if (offset <= 0) {
+      return 0
+    }
+    if (replacements.length === 0) {
+      return offset
+    }
+
+    let lastRepBefore: EntityReplacement | null = null
+
+    for (const rep of replacements) {
+      if (offset < rep.unescapedStart) {
+        break
+      }
+      if (offset <= rep.unescapedEnd) {
+        if (offset === rep.unescapedStart) {
+          return rep.rawStart
+        }
+        if (offset === rep.unescapedEnd) {
+          return rep.rawEnd
+        }
+        const span = rep.unescapedEnd - rep.unescapedStart
+        if (span > 0) {
+          const progress = (offset - rep.unescapedStart) / span
+          return Math.round(rep.rawStart + progress * (rep.rawEnd - rep.rawStart))
+        }
+        return rep.rawStart
+      }
+      lastRepBefore = rep
+    }
+
+    if (lastRepBefore) {
+      return lastRepBefore.rawEnd + (offset - lastRepBefore.unescapedEnd)
+    }
+
+    return offset
+  }
+
+  return { unescaped, mapOffset }
+}
+
 export type TokenType
   = | 'NUMBER'
     | 'STRING'

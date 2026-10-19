@@ -11,7 +11,7 @@ import { getSpecCatalog } from '../catalogs/index.js'
 import { evaluateExpressionBudget } from '../quota.js'
 import { scanDirectiveTokens } from './directive-scanner.js'
 import { parseExpression } from './expr-parser.js'
-import { flattenMultilineExpression, tokenize, unescapeXmlEntities } from './lexer.js'
+import { tokenize, unescapeXmlEntitiesWithSourceMap } from './lexer.js'
 
 function pushDiagnostic(
   diagnostics: BloggerStructureDiagnostic[],
@@ -367,7 +367,7 @@ export function validateExpression(
     attributes: {},
   }
 
-  const unescaped = unescapeXmlEntities(flattenMultilineExpression(exprText))
+  const { unescaped, mapOffset } = unescapeXmlEntitiesWithSourceMap(exprText)
   const trimmed = unescaped.trim()
   if (!trimmed) {
     return diagnostics
@@ -410,8 +410,8 @@ export function validateExpression(
     if (tok.type === 'STRICT_EQ' || tok.type === 'STRICT_NEQ') {
       pushDiagnostic(diagnostics, catalog, 'BX1018', fakeToken, {
         attribute: context?.attributeName,
-        start: baseStart + tok.start.offset,
-        end: baseStart + tok.end.offset,
+        start: baseStart + mapOffset(tok.start.offset),
+        end: baseStart + mapOffset(tok.end.offset),
         message: `Strict equality operator '${tok.value}' is prohibited in Blogger expressions; use == or !=.`,
       })
     }
@@ -420,8 +420,8 @@ export function validateExpression(
     if (tok.type === 'NULL') {
       pushDiagnostic(diagnostics, catalog, 'BX1020', fakeToken, {
         attribute: context?.attributeName,
-        start: baseStart + tok.start.offset,
-        end: baseStart + tok.end.offset,
+        start: baseStart + mapOffset(tok.start.offset),
+        end: baseStart + mapOffset(tok.end.offset),
         message: `Literal 'null' is not supported in Blogger expressions.`,
       })
     }
@@ -433,8 +433,8 @@ export function validateExpression(
       if (next1.type === 'IDENTIFIER' && next2.type === 'LPAREN') {
         pushDiagnostic(diagnostics, catalog, 'BX1017', fakeToken, {
           attribute: context?.attributeName,
-          start: baseStart + tok.start.offset,
-          end: baseStart + next2.end.offset,
+          start: baseStart + mapOffset(tok.start.offset),
+          end: baseStart + mapOffset(next2.end.offset),
           message: `JavaScript method call '.${next1.value}()' is prohibited in Blogger expressions. Use native operators and helpers.`,
         })
       }
@@ -449,8 +449,8 @@ export function validateExpression(
           if (nextTok.type === 'IDENTIFIER' && nextTok.value === paramName) {
             pushDiagnostic(diagnostics, catalog, 'BX1019', fakeToken, {
               attribute: context?.attributeName,
-              start: baseStart + tokens[j]!.start.offset,
-              end: baseStart + nextTok.end.offset,
+              start: baseStart + mapOffset(tokens[j]!.start.offset),
+              end: baseStart + mapOffset(nextTok.end.offset),
               message: `Using 'data:' prefix on lambda iterator property 'data:${paramName}' is redundant. Access properties directly (${paramName}.prop).`,
             })
           }
@@ -458,8 +458,8 @@ export function validateExpression(
       }
     }
 
-    // BX1030: Prohibited Unary Prefix on Compound Expressions (-(...), +(...) and !(...))
-    if ((tok.type === 'MINUS' || tok.type === 'PLUS' || tok.type === 'BANG') && i + 1 < tokens.length && tokens[i + 1]!.type === 'LPAREN') {
+    // BX1030: Prohibited Unary Minus on Compound Expressions (-(...))
+    if (tok.type === 'MINUS' && i + 1 < tokens.length && tokens[i + 1]!.type === 'LPAREN') {
       const isPrefix = i === 0 || ['LPAREN', 'COMMA', 'COLON', 'QUESTION', 'ELVIS', 'PLUS', 'MINUS', 'STAR', 'SLASH', 'PERCENT', 'EQ', 'NEQ', 'STRICT_EQ', 'STRICT_NEQ', 'LT', 'GT', 'LTE', 'GTE', 'AND', 'OR', 'BANG'].includes(tokens[i - 1]!.type)
       if (isPrefix) {
         let parenDepth = 0
@@ -480,7 +480,7 @@ export function validateExpression(
         if (closeParenIndex !== -1) {
           const innerTokens = tokens.slice(i + 2, closeParenIndex)
 
-          // 1. Discard functional calls with multiple arguments (e.g. -(-1, 5) or +(1, 2) or -(a, b))
+          // 1. Discard functional calls with multiple arguments (e.g. -(-1, 5) or -(a, b))
           let innerNesting = 0
           let hasRootComma = false
           let hasRootInfixOp = false
@@ -523,8 +523,8 @@ export function validateExpression(
             if (tok.type === 'MINUS' && innerTokens.length === 0) {
               pushDiagnostic(diagnostics, catalog, 'BX1044', fakeToken, {
                 attribute: context?.attributeName,
-                start: baseStart + tok.start.offset,
-                end: baseStart + tokens[closeParenIndex]!.end.offset,
+                start: baseStart + mapOffset(tok.start.offset),
+                end: baseStart + mapOffset(tokens[closeParenIndex]!.end.offset),
                 message: `Invoking '-()' with 0 arguments triggers an unhandled backend crash (HTTP 500) on Blogger template engine.`,
               })
             }
@@ -552,9 +552,9 @@ export function validateExpression(
               if (isCompound) {
                 pushDiagnostic(diagnostics, catalog, 'BX1030', fakeToken, {
                   attribute: context?.attributeName,
-                  start: baseStart + tok.start.offset,
-                  end: baseStart + tokens[closeParenIndex]!.end.offset,
-                  message: `Unary prefix operator '${tok.value}' cannot be applied to parenthesized compound expressions; evaluate operands separately or use native operators.`,
+                  start: baseStart + mapOffset(tok.start.offset),
+                  end: baseStart + mapOffset(tokens[closeParenIndex]!.end.offset),
+                  message: `Unary prefix operator '-' cannot be applied to parenthesized compound expressions; evaluate operands separately or use native operators.`,
                 })
               }
             }
@@ -604,8 +604,8 @@ export function validateExpression(
         if (!hasRootComma) {
           pushDiagnostic(diagnostics, catalog, 'BX1044', fakeToken, {
             attribute: context?.attributeName,
-            start: baseStart + tok.start.offset,
-            end: baseStart + tokens[closeParenIndex]!.end.offset,
+            start: baseStart + mapOffset(tok.start.offset),
+            end: baseStart + mapOffset(tokens[closeParenIndex]!.end.offset),
             message: `Invoking equality operator 'eq()' with fewer than 2 arguments triggers an unhandled backend crash (HTTP 500) on Blogger template engine.`,
           })
         }
@@ -620,8 +620,8 @@ export function validateExpression(
         if (val === 'true' || val === 'false' || val === 'yes' || val === 'no') {
           pushDiagnostic(diagnostics, catalog, 'BX1038', fakeToken, {
             attribute: context?.attributeName,
-            start: baseStart + nextTok.start.offset,
-            end: baseStart + nextTok.end.offset,
+            start: baseStart + mapOffset(nextTok.start.offset),
+            end: baseStart + mapOffset(nextTok.end.offset),
             message: `Comparing against a quoted boolean string literal ('${nextTok.value}') in expression. Use boolean literals true or false directly.`,
           })
         }

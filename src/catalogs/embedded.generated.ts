@@ -11031,7 +11031,7 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "name": "PROHIBITED_UNARY_EXPRESSION_NEGATION",
       "category": "expressions",
       "severity": "error",
-      "message": "Unary prefix operators ('-', '+', '!') cannot be applied to parenthesized compound expressions (e.g. -(a - b), +(a - b), !(a - b)) and trigger 'Invalid expression' compiler error. Blogger expression engine only permits unary operators on simple literals or variables.",
+      "message": "Unary prefix '-' cannot be applied to parenthesized compound expressions (e.g. -(a - b)) and triggers 'Invalid expression' compiler error. Blogger expression engine only permits unary negation on simple literals or variables.",
       "replacement": "(0 - (a - b))",
       "evidence": "observed",
       "verified_at": "2026-10-19"

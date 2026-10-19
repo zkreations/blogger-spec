@@ -8,6 +8,7 @@ import {
 import * as RootExports from '../src/index.js'
 import {
   scanDirectiveTokens,
+  unescapeXmlEntitiesWithSourceMap,
   validateDirectiveNesting,
   validateExpression,
   validateTemplateExpressions,
@@ -676,15 +677,18 @@ describe('helpers & canonical structure validation suite', () => {
       expect(validateExpression('-(data:a - data:b)').some(d => d.code === 'BX1030')).toBe(true)
       expect(validateExpression('-(10 - 3)').some(d => d.code === 'BX1030')).toBe(true)
       expect(validateExpression('-(a + b)').some(d => d.code === 'BX1030')).toBe(true)
-      expect(validateExpression('+(10 - 3)').some(d => d.code === 'BX1030')).toBe(true)
-      expect(validateExpression('!(10 - 3)').some(d => d.code === 'BX1030')).toBe(true)
       expect(validateExpression('-(a and b)').some(d => d.code === 'BX1030')).toBe(true)
       expect(validateExpression('-(a ?: b)').some(d => d.code === 'BX1030')).toBe(true)
       expect(validateExpression('-(a ? b : c)').some(d => d.code === 'BX1030')).toBe(true)
       expect(validateExpression('-((10 - 3))').some(d => d.code === 'BX1030')).toBe(true)
     })
 
-    it('does not emit BX1030 on functional minus calls or simple parenthesized values', () => {
+    it('does not emit BX1030 on logical negation (!) over compound expressions or functional minus', () => {
+      // Logical negation is valid on compound expressions in Blogger
+      expect(validateExpression('!(a and b)').some(d => d.code === 'BX1030')).toBe(false)
+      expect(validateExpression('!(items contains item)').some(d => d.code === 'BX1030')).toBe(false)
+      expect(validateExpression('!(10 - 3)').some(d => d.code === 'BX1030')).toBe(false)
+
       // Functional minus syntax -(a, b)
       expect(validateExpression('-(-1, 5)').some(d => d.code === 'BX1030')).toBe(false)
       expect(validateExpression('-(20, 10)').some(d => d.code === 'BX1030')).toBe(false)
@@ -750,6 +754,49 @@ describe('helpers & canonical structure validation suite', () => {
 
       const withExpressions = validateTemplateStructure(xml, undefined, { validateExpressions: true })
       expect(withExpressions.some(d => d.code === 'BX1018')).toBe(true)
+    })
+
+    it('correctly maps diagnostic offsets without drift when XML entities (&quot;) are present', () => {
+      // 8 occurrences of &quot; inside expression
+      const expr = '-(item in [&quot;header&quot;, &quot;Filters&quot;, &quot;footer-upper&quot;, &quot;footer-lower&quot;])'
+      const xml = `<b:eval expr='${expr}'/>`
+      const diags = validateTemplateExpressions(xml)
+
+      const bx1030 = diags.find(d => d.code === 'BX1030')
+      expect(bx1030).toBeDefined()
+      expect(bx1030?.tagStart).toBeDefined()
+      expect(bx1030?.tagEnd).toBeDefined()
+
+      // The sliced range from the XML document MUST exactly match the raw expression
+      const sliced = xml.slice(bx1030!.tagStart, bx1030!.tagEnd)
+      expect(sliced).toBe(expr)
+    })
+
+    it('accurately maps offsets for string boolean comparisons containing XML entities', () => {
+      const expr = 'data:view.isPost == &quot;true&quot;'
+      const xml = `<b:eval expr='${expr}'/>`
+      const diags = validateTemplateExpressions(xml)
+
+      const bx1038 = diags.find(d => d.code === 'BX1038')
+      expect(bx1038).toBeDefined()
+      const sliced = xml.slice(bx1038!.tagStart, bx1038!.tagEnd)
+      expect(sliced).toBe('&quot;true&quot;')
+    })
+
+    it('unescapeXmlEntitiesWithSourceMap maps positions accurately across mixed content', () => {
+      const raw = '1 + &quot;hello&quot; + 2'
+      const { unescaped, mapOffset } = unescapeXmlEntitiesWithSourceMap(raw)
+      expect(unescaped).toBe('1 + "hello" + 2')
+
+      // Start of "hello" in unescaped is index 4, in raw is index 4
+      expect(mapOffset(4)).toBe(4)
+      // End of "hello" in unescaped is index 11, in raw is index 21
+      expect(mapOffset(11)).toBe(21)
+      expect(raw.slice(mapOffset(4), mapOffset(11))).toBe('&quot;hello&quot;')
+
+      // "+ 2" at unescaped 11..15 maps to raw 21..25
+      expect(mapOffset(15)).toBe(25)
+      expect(raw.slice(mapOffset(11), mapOffset(15))).toBe(' + 2')
     })
   })
 })
