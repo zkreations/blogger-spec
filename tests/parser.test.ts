@@ -252,6 +252,31 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect(formatNode.type).toBe('BinaryExpression')
       expect(formatNode.operator).toBe('format')
     })
+
+    it('parses composite negated operators (not in, not contains)', () => {
+      const notContainsNode = parseExpression('["a", "b"] not contains "c"') as BloggerBinaryExpressionNode
+      expect(notContainsNode.type).toBe('BinaryExpression')
+      expect(notContainsNode.operator).toBe('not contains')
+      expect(notContainsNode.left.type).toBe('ArrayExpression')
+      expect((notContainsNode.right as BloggerLiteralNode).value).toBe('c')
+      expect(notContainsNode.precedence).toBe(6)
+
+      const notInNode = parseExpression('"prefix" not in data:post.labels') as BloggerBinaryExpressionNode
+      expect(notInNode.type).toBe('BinaryExpression')
+      expect(notInNode.operator).toBe('not in')
+      expect((notInNode.left as BloggerLiteralNode).value).toBe('prefix')
+      expect(notInNode.right.type).toBe('DataPath')
+      expect(notInNode.precedence).toBe(6)
+
+      const complexAnd = parseExpression('and((data:str contains "{"), (data:str not contains "}"))') as BloggerCallExpressionNode
+      expect(complexAnd.type).toBe('CallExpression')
+      expect(complexAnd.callee).toBe('and')
+      expect(complexAnd.arguments).toHaveLength(2)
+      expect(complexAnd.arguments[0]?.type).toBe('BinaryExpression')
+      expect((complexAnd.arguments[0] as BloggerBinaryExpressionNode).operator).toBe('contains')
+      expect(complexAnd.arguments[1]?.type).toBe('BinaryExpression')
+      expect((complexAnd.arguments[1] as BloggerBinaryExpressionNode).operator).toBe('not contains')
+    })
   })
 
   describe('logical expressions & unary operations', () => {

@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-19",
   "metrics": {
-    "totalFixtures": 256,
-    "positiveFixtures": 211,
+    "totalFixtures": 258,
+    "positiveFixtures": 213,
     "negativeFixtures": 45,
-    "coveredSpecEntities": 203
+    "coveredSpecEntities": 205
   },
   "fixtures": [
     {
@@ -2323,6 +2323,44 @@
       "expected": {
         "outcome": "value",
         "value": "Post"
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/composite-not-in",
+      "title": "Composite Negated Membership (not in)",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:not in"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"prefix\" not in [\"other\", \"items\"]",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "expressions/logical_and_comparisons/composite-not-contains",
+      "title": "Composite Negated Containment (not contains)",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:logical_and_comparisons",
+        "operator:not contains"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "[\"a\", \"b\"] not contains \"c\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
       },
       "verified_at": "2026-10-19"
     },

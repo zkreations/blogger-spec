@@ -2110,7 +2110,9 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         "associativity": "left-to-right",
         "operators": [
           "in",
-          "contains"
+          "contains",
+          "not in",
+          "not contains"
         ]
       },
       {
@@ -2267,7 +2269,8 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
           6
         ],
         "operators": [
-          "in"
+          "in",
+          "not in"
         ]
       },
       "content": {
@@ -2277,7 +2280,8 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
           6
         ],
         "operators": [
-          "contains"
+          "contains",
+          "not contains"
         ]
       },
       "collection": {
@@ -3175,11 +3179,11 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
       "family": "logical",
       "description": "Logical inversion negating truthiness.",
       "syntax": {
-        "supports_infix": true,
+        "supports_infix": false,
         "supports_functional": true,
         "functional_identifier": "not",
         "variadic": false,
-        "infix": "not a",
+        "infix": null,
         "functional": "not(a)"
       },
       "precedence_level": 7,
@@ -3405,6 +3409,98 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
       "doc_aliases": [],
       "evidence": "official",
       "verified_at": "2026-10-10"
+    },
+    "not in": {
+      "family": "membership",
+      "description": "Negated membership test; returns true if item is absent from collection or substring is absent from parent string.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "item not in array",
+        "functional": null
+      },
+      "precedence_level": 6,
+      "operands": [
+        {
+          "name": "item",
+          "types": [
+            "any",
+            "scalar"
+          ],
+          "required": true,
+          "description": "Target element or substring"
+        },
+        {
+          "name": "collection",
+          "types": [
+            "array",
+            "string"
+          ],
+          "required": true,
+          "description": "Array collection or parent string"
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [],
+      "examples": [
+        {
+          "expression": "\"featured\" not in data:post.labels",
+          "result": "false",
+          "description": "Negated membership in array"
+        }
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-19"
+    },
+    "not contains": {
+      "family": "content",
+      "description": "Negated containment test; returns true if container does not contain element or substring.",
+      "syntax": {
+        "supports_infix": true,
+        "supports_functional": false,
+        "functional_identifier": null,
+        "variadic": false,
+        "infix": "container not contains item",
+        "functional": null
+      },
+      "precedence_level": 6,
+      "operands": [
+        {
+          "name": "haystack",
+          "types": [
+            "string",
+            "array"
+          ],
+          "required": true,
+          "description": "Container string or array"
+        },
+        {
+          "name": "needle",
+          "types": [
+            "string",
+            "any"
+          ],
+          "required": true,
+          "description": "Sub-element or search term"
+        }
+      ],
+      "return_type": "boolean",
+      "aliases": [],
+      "examples": [
+        {
+          "expression": "[\"a\", \"b\"] not contains \"c\"",
+          "result": "true",
+          "description": "Negated containment in array"
+        }
+      ],
+      "grammar_aliases": [],
+      "doc_aliases": [],
+      "evidence": "official",
+      "verified_at": "2026-10-19"
     },
     "take": {
       "family": "collection",

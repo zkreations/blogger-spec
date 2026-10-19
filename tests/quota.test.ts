@@ -87,6 +87,26 @@ describe('compiler token quota suite (BX1021)', () => {
     expect(countExpressionTokens('data:test[(data:index + 1 - 1)].a')).toBe(1)
   })
 
+  it('counts composite operators (not in, not contains) as single operators', () => {
+    expect(countExpressionTokens('["a", "b"] not contains "c"')).toBe(5)
+    expect(countExpressionTokens('"prefix" not in data:post.labels')).toBe(3)
+
+    // Empirical boundary validation (in vs not in parity at 40 and 41 tokens)
+    const expr40In = '4 in [1, 2, 3, 4, 5, 6] ? (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14) : 5000'
+    const expr40NotIn = '4 not in [1, 2, 3, 4, 5, 6] ? (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14) : 5000'
+    expect(countExpressionTokens(expr40In)).toBe(40)
+    expect(countExpressionTokens(expr40NotIn)).toBe(40)
+    expect(evaluateExpressionBudget(expr40In).isValid).toBe(true)
+    expect(evaluateExpressionBudget(expr40NotIn).isValid).toBe(true)
+
+    const expr41In = '4 in [1, 2, 3, 4, 5, 6, 7] ? (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14) : 5000'
+    const expr41NotIn = '4 not in [1, 2, 3, 4, 5, 6, 7] ? (1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14) : 5000'
+    expect(countExpressionTokens(expr41In)).toBe(41)
+    expect(countExpressionTokens(expr41NotIn)).toBe(41)
+    expect(evaluateExpressionBudget(expr41In).isValid).toBe(false)
+    expect(evaluateExpressionBudget(expr41NotIn).isValid).toBe(false)
+  })
+
   it('counts lambda and collection transformations correctly', () => {
     expect(countExpressionTokens('[1] map (x => x + 1)')).toBe(8)
     expect(countExpressionTokens('[1] map (x => x + 1 + 5)')).toBe(10)

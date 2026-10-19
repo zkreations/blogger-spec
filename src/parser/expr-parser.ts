@@ -41,6 +41,7 @@ interface InfixOpInfo {
   isTernary?: boolean
   isMemberDot?: boolean
   isMemberBracket?: boolean
+  isComposite?: boolean
 }
 
 const INFIX_TOKEN_SYMBOLS: Partial<Record<TokenType, string>> = {
@@ -518,7 +519,13 @@ export class ExpressionParser {
     }
 
     // 7. General binary expressions (arithmetic, relational, transforms, slices)
-    this.advance()
+    if (opInfo.isComposite) {
+      this.advance() // consume 'not'
+      this.advance() // consume 'in' or 'contains'
+    }
+    else {
+      this.advance()
+    }
     const nextBp = opInfo.isRightAssociative ? opInfo.bindingPower - 1 : opInfo.bindingPower
     const right = this.parseExpression(nextBp)
     const endLoc = right.loc ? { line: right.loc.end.line, column: right.loc.end.column, offset: right.loc.end.offset ?? 0 } : this.peek().end
@@ -732,6 +739,26 @@ export class ExpressionParser {
 
     if (token.type === 'IDENTIFIER') {
       const lower = token.value.toLowerCase()
+
+      if (lower === 'not') {
+        const next = this.tokens[this.current + 1]
+        if (next && next.type === 'IDENTIFIER') {
+          const nextLower = next.value.toLowerCase()
+          if (nextLower === 'in' || nextLower === 'contains') {
+            const compositeName = `not ${nextLower}`
+            const bp = this.catalog.getOperatorBindingPower(compositeName) ?? this.catalog.getOperatorBindingPower(nextLower) ?? 40
+            const precLevel = this.catalog.getOperatorPrecedence(compositeName) ?? this.catalog.getOperatorPrecedence(nextLower) ?? 6
+            return {
+              name: compositeName,
+              bindingPower: bp,
+              catalogLevel: precLevel,
+              isComposite: true,
+            }
+          }
+        }
+        // Solitary 'not' is never infix in Blogger
+        return null
+      }
 
       if (this.catalog.getLambdaKeywords().has(lower)) {
         const bp = this.catalog.getOperatorBindingPower(lower) ?? this.catalog.getLevelBindingPower(10) ?? 10

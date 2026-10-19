@@ -430,6 +430,22 @@ export function forEachExpressionToken(
         continue
       }
 
+      if (token.value.toLowerCase() === 'not' && nextToken?.type === 'IDENTIFIER') {
+        const nextLower = nextToken.value.toLowerCase()
+        if (nextLower === 'in' || nextLower === 'contains') {
+          const compositeVal = `${token.value} ${nextToken.value}`
+          const compositeOp = catalog.getOperator(`not ${nextLower}`)
+          emit({
+            value: compositeVal,
+            tokenType: 'OPERATOR_MEMBERSHIP',
+            tokensConsumed: compositeOp?.token_cost ?? 1,
+            pos: token.start.offset,
+          })
+          i += 2
+          continue
+        }
+      }
+
       const opDef = catalog.getOperator(token.value)
       const isPrefixContext
         = tokenCount === 0
