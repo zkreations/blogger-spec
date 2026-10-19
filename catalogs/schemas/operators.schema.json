@@ -93,6 +93,9 @@
                 },
                 "diagnostic": {
                   "$ref": "common.schema.json#/$defs/diagnosticCode"
+                },
+                "warning_diagnostic": {
+                  "$ref": "common.schema.json#/$defs/diagnosticCode"
                 }
               },
               "additionalProperties": false

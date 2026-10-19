@@ -373,14 +373,24 @@ export function validateExpression(
     return diagnostics
   }
 
-  // 1. Compiler token quota budget check (BX1021)
+  // 1. Compiler token quota budget check (BX1021 / BX1045)
   const budget = evaluateExpressionBudget(unescaped, catalog)
   if (budget.status === 'EXCEEDED') {
-    pushDiagnostic(diagnostics, catalog, 'BX1021', fakeToken, {
+    const diagCode = catalog.getExpressionQuotaDiagnostic() || 'BX1021'
+    pushDiagnostic(diagnostics, catalog, diagCode, fakeToken, {
       attribute: context?.attributeName,
       start: baseStart,
       end: baseEnd,
       message: `Expression consumes ${budget.totalTokens} tokens, exceeding the compiler limit of ${catalog.getExpressionQuotaLimit()}.`,
+    })
+  }
+  else if (budget.status === 'WARNING') {
+    const warnDiagCode = catalog.getExpressionQuotaWarningDiagnostic() || 'BX1045'
+    pushDiagnostic(diagnostics, catalog, warnDiagCode, fakeToken, {
+      attribute: context?.attributeName,
+      start: baseStart,
+      end: baseEnd,
+      message: `Expression consumes ${budget.totalTokens} tokens, approaching the compiler ceiling of ${catalog.getExpressionQuotaLimit()} (warning threshold is ${catalog.getExpressionQuotaWarning()}).`,
     })
   }
 

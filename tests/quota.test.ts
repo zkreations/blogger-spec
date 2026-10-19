@@ -25,7 +25,7 @@ import * as QuotaExports from '../src/quota.js'
 describe('compiler token quota suite (BX1021)', () => {
   it('exposes quota constants and helpers from root and submodules', () => {
     expect(COMPILER_QUOTA_LIMIT).toBe(40)
-    expect(COMPILER_QUOTA_WARNING).toBe(36)
+    expect(COMPILER_QUOTA_WARNING).toBe(34)
     expect(COMPILER_NESTING_LIMIT).toBe(50)
 
     expect(RootExports.countExpressionTokens).toBe(countExpressionTokens)

@@ -221,7 +221,7 @@
       "code": "BX1021",
       "name": "EXPRESSION_TOKEN_QUOTA_EXCEEDED",
       "category": "quota",
-      "severity": "warning",
+      "severity": "error",
       "message": "Expression exceeds the 40-token compiler ceiling and will abort evaluation in production.",
       "evidence": "observed",
       "verified_at": "2026-10-10"
@@ -438,6 +438,15 @@
       "category": "runtime",
       "severity": "error",
       "message": "Invoking operator with fatal arity (such as eq() with fewer than 2 arguments or -() with 0 arguments) triggers an unhandled backend crash (HTTP 500) on Blogger template engine.",
+      "evidence": "observed",
+      "verified_at": "2026-10-19"
+    },
+    "BX1045": {
+      "code": "BX1045",
+      "name": "EXPRESSION_TOKEN_QUOTA_APPROACHING",
+      "category": "quota",
+      "severity": "warning",
+      "message": "Expression token count is approaching the 40-token compiler ceiling.",
       "evidence": "observed",
       "verified_at": "2026-10-19"
     }

@@ -659,7 +659,17 @@ describe('helpers & canonical structure validation suite', () => {
     it('detects compiler token quota exceeded (BX1021)', () => {
       const longExpr = '1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17 + 18 + 19 + 20 + 21'
       const diags = validateExpression(longExpr)
-      expect(diags.some(d => d.code === 'BX1021')).toBe(true)
+      const exceededDiag = diags.find(d => d.code === 'BX1021')
+      expect(exceededDiag).toBeDefined()
+      expect(exceededDiag?.severity).toBe('error')
+    })
+
+    it('detects compiler token quota approaching warning (BX1045)', () => {
+      const warningExpr = '1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17 + 18'
+      const diags = validateExpression(warningExpr)
+      const warningDiag = diags.find(d => d.code === 'BX1045')
+      expect(warningDiag).toBeDefined()
+      expect(warningDiag?.severity).toBe('warning')
     })
 
     it('detects unary minus on compound expressions (BX1030)', () => {

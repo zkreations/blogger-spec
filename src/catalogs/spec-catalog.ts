@@ -1077,6 +1077,14 @@ export class SpecCatalog {
     return warning
   }
 
+  getExpressionQuotaDiagnostic(): BloggerDiagnosticCode | undefined {
+    return this.getCompilerQuotas()?.diagnostic
+  }
+
+  getExpressionQuotaWarningDiagnostic(): BloggerDiagnosticCode | undefined {
+    return this.getCompilerQuotas()?.warning_diagnostic
+  }
+
   getLambdaKeywords(): ReadonlySet<string> {
     const result = new Set<string>()
     for (const [opKey, opDef] of this.operatorMap.entries()) {
@@ -1496,6 +1504,14 @@ export function getExpressionQuotaLimit(catalog: SpecCatalog = getSpecCatalog())
 
 export function getExpressionQuotaWarning(catalog: SpecCatalog = getSpecCatalog()): number {
   return catalog.getExpressionQuotaWarning()
+}
+
+export function getExpressionQuotaDiagnostic(catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticCode | undefined {
+  return catalog.getExpressionQuotaDiagnostic()
+}
+
+export function getExpressionQuotaWarningDiagnostic(catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticCode | undefined {
+  return catalog.getExpressionQuotaWarningDiagnostic()
 }
 
 export function getLambdaKeywords(catalog: SpecCatalog = getSpecCatalog()): ReadonlySet<string> {

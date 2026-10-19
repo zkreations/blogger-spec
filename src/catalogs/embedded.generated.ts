@@ -2177,8 +2177,9 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
       ],
       "compiler_quotas": {
         "max_expression_tokens": 40,
-        "warning_expression_tokens": 36,
+        "warning_expression_tokens": 34,
         "diagnostic": "BX1021",
+        "warning_diagnostic": "BX1045",
         "token_cost_rules": "1 token per operator (2 for ternary ? :), 1 per literal/operand (including unary negative numbers), 1 per data path (including static and dynamic bracket indexing), 1 per array/object container, 1 per grouping parentheses pair ( ... ), 0 for argument parentheses in function calls/lambdas, and 0 for object property keys and delimiters (, and :)"
       },
       "default_allowed_contexts": [
@@ -10848,7 +10849,7 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "code": "BX1021",
       "name": "EXPRESSION_TOKEN_QUOTA_EXCEEDED",
       "category": "quota",
-      "severity": "warning",
+      "severity": "error",
       "message": "Expression exceeds the 40-token compiler ceiling and will abort evaluation in production.",
       "evidence": "observed",
       "verified_at": "2026-10-10"
@@ -11065,6 +11066,15 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "runtime",
       "severity": "error",
       "message": "Invoking operator with fatal arity (such as eq() with fewer than 2 arguments or -() with 0 arguments) triggers an unhandled backend crash (HTTP 500) on Blogger template engine.",
+      "evidence": "observed",
+      "verified_at": "2026-10-19"
+    },
+    "BX1045": {
+      "code": "BX1045",
+      "name": "EXPRESSION_TOKEN_QUOTA_APPROACHING",
+      "category": "quota",
+      "severity": "warning",
+      "message": "Expression token count is approaching the 40-token compiler ceiling.",
       "evidence": "observed",
       "verified_at": "2026-10-19"
     }
@@ -13176,6 +13186,9 @@ export const embeddedSchemas: Record<string, any> = {
                     "type": "string"
                   },
                   "diagnostic": {
+                    "$ref": "common.schema.json#/$defs/diagnosticCode"
+                  },
+                  "warning_diagnostic": {
                     "$ref": "common.schema.json#/$defs/diagnosticCode"
                   }
                 },

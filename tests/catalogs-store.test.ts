@@ -31,8 +31,10 @@ import {
   getDirectiveNestingLimit,
   getDirectives,
   getDirectiveSnippet,
+  getExpressionQuotaDiagnostic,
   getExpressionQuotaLimit,
   getExpressionQuotaWarning,
+  getExpressionQuotaWarningDiagnostic,
   getFalsyStringLiterals,
   getGlobal,
   getGlobals,
@@ -608,13 +610,19 @@ describe('catalogs and store formal verification suite', () => {
         const quotas = getCompilerQuotas()
         expect(quotas).toBeDefined()
         expect(quotas?.max_expression_tokens).toBe(40)
-        expect(quotas?.warning_expression_tokens).toBe(36)
+        expect(quotas?.warning_expression_tokens).toBe(34)
+        expect(quotas?.diagnostic).toBe('BX1021')
+        expect(quotas?.warning_diagnostic).toBe('BX1045')
         expect(getExpressionQuotaLimit()).toBe(40)
-        expect(getExpressionQuotaWarning()).toBe(36)
+        expect(getExpressionQuotaWarning()).toBe(34)
+        expect(getExpressionQuotaDiagnostic()).toBe('BX1021')
+        expect(getExpressionQuotaWarningDiagnostic()).toBe('BX1045')
 
         const customSpec = new SpecCatalog()
         expect(customSpec.getExpressionQuotaLimit()).toBe(40)
-        expect(customSpec.getExpressionQuotaWarning()).toBe(36)
+        expect(customSpec.getExpressionQuotaWarning()).toBe(34)
+        expect(customSpec.getExpressionQuotaDiagnostic()).toBe('BX1021')
+        expect(customSpec.getExpressionQuotaWarningDiagnostic()).toBe('BX1045')
       })
 
       it('extracts lambda operator keywords and grammar aliases dynamically', () => {

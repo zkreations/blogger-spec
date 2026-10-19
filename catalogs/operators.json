@@ -145,8 +145,9 @@
       ],
       "compiler_quotas": {
         "max_expression_tokens": 40,
-        "warning_expression_tokens": 36,
+        "warning_expression_tokens": 34,
         "diagnostic": "BX1021",
+        "warning_diagnostic": "BX1045",
         "token_cost_rules": "1 token per operator (2 for ternary ? :), 1 per literal/operand (including unary negative numbers), 1 per data path (including static and dynamic bracket indexing), 1 per array/object container, 1 per grouping parentheses pair ( ... ), 0 for argument parentheses in function calls/lambdas, and 0 for object property keys and delimiters (, and :)"
       },
       "default_allowed_contexts": [

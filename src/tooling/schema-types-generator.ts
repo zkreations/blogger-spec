@@ -372,6 +372,8 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('  max_expression_tokens: number;')
   lines.push('  warning_expression_tokens: number;')
   lines.push('  token_cost_rules?: string;')
+  lines.push('  diagnostic?: BloggerDiagnosticCode;')
+  lines.push('  warning_diagnostic?: BloggerDiagnosticCode;')
   lines.push('}')
   lines.push('')
   lines.push('export interface BloggerEvaluationContexts {')

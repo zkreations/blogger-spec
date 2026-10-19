@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-19",
   "metrics": {
-    "totalFixtures": 255,
+    "totalFixtures": 256,
     "positiveFixtures": 211,
-    "negativeFixtures": 44,
-    "coveredSpecEntities": 202
+    "negativeFixtures": 45,
+    "coveredSpecEntities": 203
   },
   "fixtures": [
     {
@@ -5426,6 +5426,27 @@
         "stage": "quota"
       },
       "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/expression-token-quota-approaching",
+      "title": "Expression Token Quota Approaching Warning",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1045"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17 + 18",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1045"
+        ],
+        "stage": "quota"
+      },
+      "verified_at": "2026-10-19"
     },
     {
       "id": "diagnostics/negative_syntax/mandatory-attribute-missing",
