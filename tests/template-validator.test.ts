@@ -466,6 +466,23 @@ describe('helpers & canonical structure validation suite', () => {
       expect(validateTemplateStructure(xml)).toEqual([])
     })
 
+    it('accepts native expression reverse and expr:reverse in b:loop without BX1043', () => {
+      const xml = `
+        <b:with value='true' var='order'>
+          <b:loop expr:reverse='data:order' values='[1, 2, 3, 4]' var='number'>
+            <b:eval expr='data:number'/>
+          </b:loop>
+          <b:loop reverse='data:order' values='[1, 2, 3, 4]' var='number'>
+            <b:eval expr='data:number'/>
+          </b:loop>
+          <b:loop expr:reverse='"data:" + "order"' values='[1, 2, 3, 4]' var='number'>
+            <b:eval expr='data:number'/>
+          </b:loop>
+        </b:with>
+      `
+      expect(validateTemplateStructure(xml)).toEqual([])
+    })
+
     it('operates identically when passed pre-scanned tokens', () => {
       const xml = '<b:section id="s1"><b:section id="s2"/></b:section>'
       const tokens = scanDirectiveTokens(xml)

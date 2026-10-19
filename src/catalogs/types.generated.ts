@@ -897,7 +897,7 @@ export interface BloggerLoopDirectiveAttributes {
   index?: string;
   /** Dynamic expression for `index` */
   "expr:index"?: BloggerExpression;
-  /** Reverses iteration order when true (or 'yes'). Values: 'true' / 'yes', 'false' / 'no'. Defaults to false. Does not reverse index numbering. */
+  /** Reverses iteration order when expression evaluates to true (or truthy). Evaluates boolean literals, data paths, or dynamic expressions natively or with expr: prefix. Defaults to false. Does not reverse index numbering. */
   reverse?: boolean;
   /** Dynamic expression for `reverse` */
   "expr:reverse"?: BloggerExpression;

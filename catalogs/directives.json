@@ -768,16 +768,10 @@
         },
         "reverse": {
           "type": "boolean",
-          "description": "Reverses iteration order when true (or 'yes'). Values: 'true' / 'yes', 'false' / 'no'. Defaults to false. Does not reverse index numbering.",
+          "description": "Reverses iteration order when expression evaluates to true (or truthy). Evaluates boolean literals, data paths, or dynamic expressions natively or with expr: prefix. Defaults to false. Does not reverse index numbering.",
           "default": false,
-          "attribute_kind": "prefixed_expression",
-          "expr": true,
-          "allowed_values": [
-            "yes",
-            "no",
-            "true",
-            "false"
-          ]
+          "attribute_kind": "native_expression",
+          "expr": true
         }
       },
       "constraints": {
