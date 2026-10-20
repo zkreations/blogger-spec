@@ -898,5 +898,80 @@ describe('helpers & canonical structure validation suite', () => {
       const diags = validateTemplateStructure(xml)
       expect(diags).toHaveLength(0)
     })
+
+    it('detects scalar primitive payload in b:include data attribute (BX1031)', () => {
+      const stringXml = '<b:include data="\'scalar string\'" name="sub"/>'
+      expect(validateTemplateStructure(stringXml).some(d => d.code === 'BX1031')).toBe(true)
+
+      const numXml = '<b:include expr:data="123" name="sub"/>'
+      expect(validateTemplateStructure(numXml).some(d => d.code === 'BX1031')).toBe(true)
+
+      const boolXml = '<b:include data="true" name="sub"/>'
+      expect(validateTemplateStructure(boolXml).some(d => d.code === 'BX1031')).toBe(true)
+
+      const validObject = '<b:include data="{ key: \'val\' }" name="sub"/>'
+      expect(validateTemplateStructure(validObject).filter(d => d.code === 'BX1031')).toHaveLength(0)
+
+      const validRef = '<b:include data="post" name="sub"/>'
+      expect(validateTemplateStructure(validRef).filter(d => d.code === 'BX1031')).toHaveLength(0)
+    })
+
+    it('detects direct parameterized message invocation (BX1027)', () => {
+      const byAuthorXml = '<data:messages.byAuthor/>'
+      const byAuthorDiags = validateTemplateStructure(byAuthorXml)
+      expect(byAuthorDiags.some(d => d.code === 'BX1027')).toBe(true)
+
+      const numCommentsXml = '<data:messages.numberOfComments/>'
+      const numCommentsDiags = validateTemplateStructure(numCommentsXml)
+      expect(numCommentsDiags.some(d => d.code === 'BX1027')).toBe(true)
+
+      const validMessage = '<data:messages.home/>'
+      expect(validateTemplateStructure(validMessage).filter(d => d.code === 'BX1027')).toHaveLength(0)
+    })
+
+    it('detects missing name on plural message child b:param (BX1028)', () => {
+      const invalidPlural = '<b:message name="messages.numberOfComments"><b:param value="5"/></b:message>'
+      const diags = validateTemplateStructure(invalidPlural)
+      expect(diags.some(d => d.code === 'BX1028')).toBe(true)
+
+      const validPlural = '<b:message name="messages.numberOfComments"><b:param name="numComments" value="5"/></b:message>'
+      expect(validateTemplateStructure(validPlural).filter(d => d.code === 'BX1028')).toHaveLength(0)
+    })
+
+    it('detects inline concatenated b:param tags without whitespace (BX1029)', () => {
+      const concatenated = '<b:message name="messages.templateImagesByLink"><b:param value="url"/><b:param value="Jane"/></b:message>'
+      const diags = validateTemplateStructure(concatenated)
+      expect(diags.some(d => d.code === 'BX1029')).toBe(true)
+
+      const spaced = '<b:message name="messages.templateImagesByLink"><b:param value="url"/> <b:param value="Jane"/></b:message>'
+      expect(validateTemplateStructure(spaced).filter(d => d.code === 'BX1029')).toHaveLength(0)
+    })
+
+    it('detects missing whitespace after colon in object literals (BX1049)', () => {
+      const exprNoSpace = '{ key:"val" }'
+      const diags = validateExpression(exprNoSpace)
+      expect(diags.some(d => d.code === 'BX1049')).toBe(true)
+
+      const exprWithSpace = '{ key: "val" }'
+      expect(validateExpression(exprWithSpace).filter(d => d.code === 'BX1049')).toHaveLength(0)
+
+      const templateXml = '<b:eval expr="{ a:1 }"/>'
+      const tplDiags = validateTemplateStructure(templateXml, undefined, { validateExpressions: true })
+      expect(tplDiags.some(d => d.code === 'BX1049')).toBe(true)
+    })
+
+    it('detects deprecated server inclusions on b:include (BX1024)', () => {
+      const quickeditXml = '<b:include name="quickedit"/>'
+      expect(validateTemplateStructure(quickeditXml).some(d => d.code === 'BX1024')).toBe(true)
+
+      const superQuickeditXml = '<b:include name="super.quickedit"/>'
+      expect(validateTemplateStructure(superQuickeditXml).some(d => d.code === 'BX1024')).toBe(true)
+
+      const gplusXml = '<b:include name="googlePlusIcon"/>'
+      expect(validateTemplateStructure(gplusXml).some(d => d.code === 'BX1024')).toBe(true)
+
+      const validInclusion = '<b:include name="openGraphMetaData"/>'
+      expect(validateTemplateStructure(validInclusion).filter(d => d.code === 'BX1024')).toHaveLength(0)
+    })
   })
 })

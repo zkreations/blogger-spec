@@ -337,6 +337,60 @@ function validateVariableElement(
   }
 }
 
+function isPrimitiveScalarLiteral(val: string): boolean {
+  const trimmed = val.trim()
+  if (/^"(?:[^"\\]|\\.)*"$/.test(trimmed) || /^'(?:[^'\\]|\\.)*'$/.test(trimmed)) {
+    return true
+  }
+  if (/^-?\d+(?:\.\d+)?$/.test(trimmed)) {
+    return true
+  }
+  if (trimmed === 'true' || trimmed === 'false') {
+    return true
+  }
+  return false
+}
+
+function validateIncludeElement(
+  token: BloggerDirectiveToken,
+  catalog: SpecCatalog,
+  diagnostics: BloggerStructureDiagnostic[],
+): void {
+  if (token.tagName !== 'b:include') {
+    return
+  }
+
+  // 1. BX1031: Non-object scalar payload in data attribute
+  const dataAttr = token.attributes.data || token.attributes['expr:data']
+  if (dataAttr && isPrimitiveScalarLiteral(dataAttr.value)) {
+    const diagCode = (catalog.getStandardDiagnostic('non_object_include_data_payload') || 'BX1031') as BloggerDiagnosticCode
+    const diagRule = catalog.getDiagnostic(diagCode)
+    pushDiagnostic(diagnostics, catalog, diagCode, token, {
+      attribute: dataAttr.name,
+      start: dataAttr.start,
+      end: dataAttr.end,
+      message: diagRule?.message ?? 'The \'data\' attribute of <b:include> strictly requires an object reference or object literal { ... }; passing primitive scalars is prohibited.',
+    })
+  }
+
+  // 2. BX1024: Deprecated server inclusion
+  const nameAttr = token.attributes.name
+  if (nameAttr?.value) {
+    const rawName = nameAttr.value.trim()
+    const incName = rawName.startsWith('super.') ? rawName.slice('super.'.length) : rawName
+    const incDef = catalog.getInclusion(incName)
+    if (incDef?.deprecated) {
+      const diagCode = (catalog.getStandardDiagnostic('deprecated_attribute') || 'BX1024') as BloggerDiagnosticCode
+      pushDiagnostic(diagnostics, catalog, diagCode, token, {
+        attribute: 'name',
+        start: nameAttr.start,
+        end: nameAttr.end,
+        message: `Server inclusion '${incName}' is deprecated. ${incDef.deprecated.reason ?? ''}`.trim(),
+      })
+    }
+  }
+}
+
 function validateDataElement(
   token: BloggerDirectiveToken,
   catalog: SpecCatalog,
@@ -346,12 +400,27 @@ function validateDataElement(
     return
   }
 
+  // 1. BX1027: Direct parameterized message invocation (<data:messages.byAuthor/>)
+  if (token.tagName.startsWith('data:messages.')) {
+    const messageKey = token.tagName.slice('data:messages.'.length)
+    const msgDef = catalog.getMessage(messageKey)
+    if (msgDef && msgDef.direct_invocation === false) {
+      const diagCode = (msgDef.diagnostic || 'BX1027') as BloggerDiagnosticCode
+      const diagRule = catalog.getDiagnostic(diagCode)
+      pushDiagnostic(diagnostics, catalog, diagCode, token, {
+        start: token.tagStart,
+        end: token.tagEnd,
+        message: diagRule?.message ?? `Parameterized message '${messageKey}' cannot be evaluated via direct tag invocation (<data:messages.${messageKey}/>). Use <b:message name='messages.${messageKey}'> with child <b:param> tags.`,
+      })
+    }
+  }
+
   const rawTail = token.attributesText ? token.attributesText.trim() : ''
   if (!rawTail) {
     return
   }
 
-  // 1. BX1032: Direct bracket indexing in data:* tag (<data:items[0]/>)
+  // 2. BX1032: Direct bracket indexing in data:* tag (<data:items[0]/>)
   if (rawTail.includes('[') || rawTail.includes(']')) {
     const bracketIndex = token.attributesText.indexOf('[')
     const start = bracketIndex !== -1 ? token.attributesOffset + bracketIndex : token.attributesOffset
@@ -365,7 +434,7 @@ function validateDataElement(
     return
   }
 
-  // 2. BX1048: Expression operators in data:* tag (<data:post.title ?: 'Default'/>)
+  // 3. BX1048: Expression operators in data:* tag (<data:post.title ?: 'Default'/>)
   const hasOperator = /[?:+\-*%!=<>&|/]|\b(?:and|or|not|in|contains)\b/.test(rawTail) || /["']/.test(rawTail)
   if (hasOperator) {
     const diagCode = (catalog.getStandardDiagnostic('prohibited_operator_in_data_tag') || 'BX1048') as BloggerDiagnosticCode
@@ -377,7 +446,7 @@ function validateDataElement(
     return
   }
 
-  // 3. Regular attributes on data:* tag (<data:post.title class="x"/>)
+  // 4. Regular attributes on data:* tag (<data:post.title class="x"/>)
   if (Object.keys(token.attributes).length > 0) {
     for (const [attrName, attrToken] of Object.entries(token.attributes)) {
       const diagCode = (catalog.getStandardDiagnostic('unknown_directive') || 'BX1025') as BloggerDiagnosticCode
@@ -738,6 +807,22 @@ export function validateExpression(
           message: diagRule?.message ?? 'Using curly braces \'{ ... }\' for array/set collections is non-standard in Blogger. Use bracket notation \'[ ... ]\' instead to ensure future compatibility.',
         })
       }
+
+      if (node.type === 'ObjectExpression') {
+        for (const prop of node.properties) {
+          if (prop.hasWhitespaceAfterColon === false) {
+            const diagRule = catalog.getDiagnostic('BX1049')
+            const colonOffset = prop.colonLoc?.start.offset ?? node.loc?.start.offset ?? 0
+            const colonEndOffset = prop.colonLoc?.end.offset ?? colonOffset + 1
+            pushDiagnostic(diagnostics, catalog, 'BX1049', fakeToken, {
+              attribute: context?.attributeName,
+              start: baseStart + mapOffset(colonOffset),
+              end: baseStart + mapOffset(colonEndOffset),
+              message: diagRule?.message ?? 'Whitespace is required after colons in object literals { key: value } to avoid namespace collisions.',
+            })
+          }
+        }
+      }
     })
   }
   catch {
@@ -861,10 +946,70 @@ export function validateTemplateStructure(
   const globalSectionWidgetIds = new Map<string, BloggerDirectiveToken>()
   const containerIncludableIds = new Map<BloggerDirectiveToken, Set<string>>()
 
+  interface ActiveMessageContext {
+    readonly token: BloggerDirectiveToken
+    readonly messageKey?: string
+    readonly isPlural: boolean
+    lastParamToken?: BloggerDirectiveToken
+  }
+  const messageStack: ActiveMessageContext[] = []
+
   for (const token of tokens) {
     if (token.isClosing) {
+      if (token.tagName.toLowerCase() === 'b:message' && messageStack.length > 0) {
+        messageStack.pop()
+      }
       handleClosingTag(token, tagStack, catalog, diagnostics)
       continue
+    }
+
+    if (token.tagName === 'b:message' && !token.isSelfClosing) {
+      const rawName = token.attributes.name?.value?.trim() ?? ''
+      const msgKey = rawName.startsWith('messages.') ? rawName.slice('messages.'.length) : rawName
+      const msgDef = catalog.getMessage(msgKey)
+      const isPlural = Boolean(msgDef?.pattern && /\{[^{}]+,\s*plural\s*,/.test(msgDef.pattern))
+      messageStack.push({ token, messageKey: msgKey, isPlural })
+    }
+
+    if (token.tagName === 'b:param') {
+      const currentMsg = messageStack.length > 0 ? messageStack[messageStack.length - 1] : undefined
+      if (currentMsg) {
+        if (currentMsg.lastParamToken) {
+          const prevEnd = currentMsg.lastParamToken.tagEnd
+          const currStart = token.tagStart
+          let isConcatenatedWithoutWhitespace = false
+          if (typeof tokensOrXml === 'string') {
+            const gap = tokensOrXml.slice(prevEnd, currStart)
+            isConcatenatedWithoutWhitespace = !/\s/.test(gap)
+          }
+          else {
+            isConcatenatedWithoutWhitespace = currStart <= prevEnd
+          }
+
+          if (isConcatenatedWithoutWhitespace) {
+            const diagCode = 'BX1029' as BloggerDiagnosticCode
+            pushDiagnostic(diagnostics, catalog, diagCode, token, {
+              start: token.tagStart,
+              end: token.tagEnd,
+              message: 'Multiple <b:param> tags must be separated by whitespace to avoid parameter parsing errors.',
+            })
+          }
+        }
+
+        if (currentMsg.isPlural) {
+          const nameAttr = token.attributes.name
+          if (!nameAttr || !nameAttr.value.trim()) {
+            const diagCode = 'BX1028' as BloggerDiagnosticCode
+            pushDiagnostic(diagnostics, catalog, diagCode, token, {
+              start: token.tagStart,
+              end: token.tagEnd,
+              message: `Pluralized ICU message '${currentMsg.messageKey}' requires the 'name' attribute on child <b:param> tags.`,
+            })
+          }
+        }
+
+        currentMsg.lastParamToken = token
+      }
     }
 
     validateNestingRules(token, tagStack, catalog, diagnostics)
@@ -873,6 +1018,7 @@ export function validateTemplateStructure(
     validateWidgetElement(token, catalog, diagnostics)
     validateVariableElement(token, catalog, diagnostics)
     validateDataElement(token, catalog, diagnostics)
+    validateIncludeElement(token, catalog, diagnostics)
 
     if (!token.isSelfClosing) {
       tagStack.push(token)

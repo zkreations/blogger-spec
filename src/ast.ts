@@ -92,6 +92,8 @@ export interface BloggerPropertyNode extends BloggerNodeBase {
   readonly type: 'Property'
   readonly key: string
   readonly value: BloggerExpressionNode
+  readonly colonLoc?: BloggerSourceLocation
+  readonly hasWhitespaceAfterColon?: boolean
 }
 
 export interface BloggerObjectExpressionNode extends BloggerNodeBase {

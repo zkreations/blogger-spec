@@ -454,6 +454,15 @@
       "message": "Expression operators are not permitted inside <data:...> tags. Use <b:eval expr='...'/> for expressions and computations.",
       "evidence": "observed",
       "verified_at": "2026-10-20"
+    },
+    "BX1049": {
+      "code": "BX1049",
+      "name": "OBJECT_LITERAL_COLON_WHITESPACE_MISSING",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Whitespace is required after colons in object literals { key: value } to avoid namespace collisions.",
+      "evidence": "observed",
+      "verified_at": "2026-10-20"
     }
   }
 }

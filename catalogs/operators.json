@@ -2183,6 +2183,9 @@
           "description": "Query params set"
         }
       ],
+      "diagnostics": {
+        "object_literal_colon_whitespace_missing": "BX1049"
+      },
       "grammar_aliases": [],
       "doc_aliases": [],
       "evidence": "official",

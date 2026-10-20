@@ -56,6 +56,12 @@
       "description": "Renders the administrative wrench icon allowing authenticated blog owners to configure the current widget directly from the published page.",
       "evidence": "official",
       "widget_version": 1,
+      "deprecated": {
+        "status": "obsolete",
+        "action": "remove",
+        "reason": "Administrative quickedit wrench icon is obsolete in Layouts v3 and does not render.",
+        "replacement": null
+      },
       "verified_at": "2026-10-10",
       "layout_versions": [
         1,

@@ -1012,6 +1012,26 @@
         "stage": "parser"
       },
       "verified_at": "2026-10-20"
+    },
+    {
+      "id": "diagnostics/negative_syntax/object-literal-colon-whitespace-missing",
+      "title": "Missing Whitespace After Colon in Object Literal",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1049"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "{key:\"value\"}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1049"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-20"
     }
   ]
 }

@@ -4224,6 +4224,9 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
           "description": "Query params set"
         }
       ],
+      "diagnostics": {
+        "object_literal_colon_whitespace_missing": "BX1049"
+      },
       "grammar_aliases": [],
       "doc_aliases": [],
       "evidence": "official",
@@ -11182,6 +11185,15 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "message": "Expression operators are not permitted inside <data:...> tags. Use <b:eval expr='...'/> for expressions and computations.",
       "evidence": "observed",
       "verified_at": "2026-10-20"
+    },
+    "BX1049": {
+      "code": "BX1049",
+      "name": "OBJECT_LITERAL_COLON_WHITESPACE_MISSING",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Whitespace is required after colons in object literals { key: value } to avoid namespace collisions.",
+      "evidence": "observed",
+      "verified_at": "2026-10-20"
     }
   }
 } as unknown as BloggerDiagnosticsCatalog;
@@ -11244,6 +11256,12 @@ export const embeddedInclusionsCatalog: BloggerInclusionsCatalog = {
       "description": "Renders the administrative wrench icon allowing authenticated blog owners to configure the current widget directly from the published page.",
       "evidence": "official",
       "widget_version": 1,
+      "deprecated": {
+        "status": "obsolete",
+        "action": "remove",
+        "reason": "Administrative quickedit wrench icon is obsolete in Layouts v3 and does not render.",
+        "replacement": null
+      },
       "verified_at": "2026-10-10",
       "layout_versions": [
         1,

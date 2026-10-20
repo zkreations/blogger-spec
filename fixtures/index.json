@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-20",
   "metrics": {
-    "totalFixtures": 261,
+    "totalFixtures": 262,
     "positiveFixtures": 213,
-    "negativeFixtures": 48,
-    "coveredSpecEntities": 208
+    "negativeFixtures": 49,
+    "coveredSpecEntities": 209
   },
   "fixtures": [
     {
@@ -6005,6 +6005,26 @@
         "outcome": "rejected",
         "diagnosticCodes": [
           "BX1048"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-20"
+    },
+    {
+      "id": "diagnostics/negative_syntax/object-literal-colon-whitespace-missing",
+      "title": "Missing Whitespace After Colon in Object Literal",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1049"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "{key:\"value\"}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1049"
         ],
         "stage": "parser"
       },
