@@ -991,6 +991,27 @@
         "stage": "linter"
       },
       "verified_at": "2026-10-19"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-operator-in-data-tag",
+      "title": "Prohibited Expression Operator in data:* Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1048"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:post.title ?: 'Default'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1048"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-20"
     }
   ]
 }

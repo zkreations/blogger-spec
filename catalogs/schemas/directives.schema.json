@@ -111,6 +111,9 @@
             },
             "prohibited_bracket_indexing_in_data_tag": {
               "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "prohibited_operator_in_data_tag": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             }
           },
           "additionalProperties": false

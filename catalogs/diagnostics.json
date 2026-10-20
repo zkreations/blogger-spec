@@ -445,6 +445,15 @@
       "message": "Widget identifier does not conform to the required pattern. Blogger requires <b:widget> 'id' to start with its declared 'type' followed by an integer from 1 to 999 (e.g. 'Blog1', 'Header1').",
       "evidence": "official",
       "verified_at": "2026-10-19"
+    },
+    "BX1048": {
+      "code": "BX1048",
+      "name": "PROHIBITED_OPERATOR_IN_DATA_TAG",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Expression operators are not permitted inside <data:...> tags. Use <b:eval expr='...'/> for expressions and computations.",
+      "evidence": "observed",
+      "verified_at": "2026-10-20"
     }
   }
 }

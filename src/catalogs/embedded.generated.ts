@@ -55,7 +55,8 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
       "unknown_directive": "BX1025",
       "unresolved_inclusion": "BX1037",
       "non_object_include_data_payload": "BX1031",
-      "prohibited_bracket_indexing_in_data_tag": "BX1032"
+      "prohibited_bracket_indexing_in_data_tag": "BX1032",
+      "prohibited_operator_in_data_tag": "BX1048"
     },
     "html_void_elements": [
       "area",
@@ -1363,6 +1364,11 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "status": "forbidden",
           "diagnostic": "BX1032",
           "reason": "Array data cannot be extracted by index with a data:* tag."
+        },
+        "expression_operators": {
+          "status": "forbidden",
+          "diagnostic": "BX1048",
+          "reason": "Expression operators cannot be used in a data:* tag."
         }
       },
       "syntax_patterns": {
@@ -11167,6 +11173,15 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "message": "Widget identifier does not conform to the required pattern. Blogger requires <b:widget> 'id' to start with its declared 'type' followed by an integer from 1 to 999 (e.g. 'Blog1', 'Header1').",
       "evidence": "official",
       "verified_at": "2026-10-19"
+    },
+    "BX1048": {
+      "code": "BX1048",
+      "name": "PROHIBITED_OPERATOR_IN_DATA_TAG",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Expression operators are not permitted inside <data:...> tags. Use <b:eval expr='...'/> for expressions and computations.",
+      "evidence": "observed",
+      "verified_at": "2026-10-20"
     }
   }
 } as unknown as BloggerDiagnosticsCatalog;
@@ -12216,6 +12231,9 @@ export const embeddedSchemas: Record<string, any> = {
                 "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "prohibited_bracket_indexing_in_data_tag": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
+              },
+              "prohibited_operator_in_data_tag": {
                 "$ref": "common.schema.json#/$defs/diagnosticCode"
               }
             },

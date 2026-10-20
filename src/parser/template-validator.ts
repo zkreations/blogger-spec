@@ -337,6 +337,60 @@ function validateVariableElement(
   }
 }
 
+function validateDataElement(
+  token: BloggerDirectiveToken,
+  catalog: SpecCatalog,
+  diagnostics: BloggerStructureDiagnostic[],
+): void {
+  if (!token.tagName.startsWith('data:')) {
+    return
+  }
+
+  const rawTail = token.attributesText ? token.attributesText.trim() : ''
+  if (!rawTail) {
+    return
+  }
+
+  // 1. BX1032: Direct bracket indexing in data:* tag (<data:items[0]/>)
+  if (rawTail.includes('[') || rawTail.includes(']')) {
+    const bracketIndex = token.attributesText.indexOf('[')
+    const start = bracketIndex !== -1 ? token.attributesOffset + bracketIndex : token.attributesOffset
+    const end = token.tagEnd
+    const diagCode = (catalog.getStandardDiagnostic('prohibited_bracket_indexing_in_data_tag') || 'BX1032') as BloggerDiagnosticCode
+    pushDiagnostic(diagnostics, catalog, diagCode, token, {
+      start,
+      end,
+      message: `Direct bracket indexing is forbidden in <${token.tagName}> tags. Use <b:eval expr='...'/> to index collections.`,
+    })
+    return
+  }
+
+  // 2. BX1048: Expression operators in data:* tag (<data:post.title ?: 'Default'/>)
+  const hasOperator = /[?:+\-*%!=<>&|/]|\b(?:and|or|not|in|contains)\b/.test(rawTail) || /["']/.test(rawTail)
+  if (hasOperator) {
+    const diagCode = (catalog.getStandardDiagnostic('prohibited_operator_in_data_tag') || 'BX1048') as BloggerDiagnosticCode
+    pushDiagnostic(diagnostics, catalog, diagCode, token, {
+      start: token.attributesOffset,
+      end: token.tagEnd,
+      message: `Expression operators are not permitted inside <${token.tagName}> tags. Use <b:eval expr='...'/> for expressions and computations.`,
+    })
+    return
+  }
+
+  // 3. Regular attributes on data:* tag (<data:post.title class="x"/>)
+  if (Object.keys(token.attributes).length > 0) {
+    for (const [attrName, attrToken] of Object.entries(token.attributes)) {
+      const diagCode = (catalog.getStandardDiagnostic('unknown_directive') || 'BX1025') as BloggerDiagnosticCode
+      pushDiagnostic(diagnostics, catalog, diagCode, token, {
+        attribute: attrName,
+        start: attrToken.start,
+        end: attrToken.end,
+        message: `Tag <${token.tagName}> does not accept attributes (found '${attrName}').`,
+      })
+    }
+  }
+}
+
 export function validateDirectiveNesting(
   parentTag: string,
   childTag: string,
@@ -818,6 +872,7 @@ export function validateTemplateStructure(
     validateIdentifierUniqueness(token, globalSectionWidgetIds, containerIncludableIds, tagStack, catalog, diagnostics)
     validateWidgetElement(token, catalog, diagnostics)
     validateVariableElement(token, catalog, diagnostics)
+    validateDataElement(token, catalog, diagnostics)
 
     if (!token.isSelfClosing) {
       tagStack.push(token)

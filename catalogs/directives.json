@@ -35,7 +35,8 @@
       "unknown_directive": "BX1025",
       "unresolved_inclusion": "BX1037",
       "non_object_include_data_payload": "BX1031",
-      "prohibited_bracket_indexing_in_data_tag": "BX1032"
+      "prohibited_bracket_indexing_in_data_tag": "BX1032",
+      "prohibited_operator_in_data_tag": "BX1048"
     },
     "html_void_elements": [
       "area",
@@ -1343,6 +1344,11 @@
           "status": "forbidden",
           "diagnostic": "BX1032",
           "reason": "Array data cannot be extracted by index with a data:* tag."
+        },
+        "expression_operators": {
+          "status": "forbidden",
+          "diagnostic": "BX1048",
+          "reason": "Expression operators cannot be used in a data:* tag."
         }
       },
       "syntax_patterns": {

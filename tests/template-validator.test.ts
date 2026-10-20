@@ -880,5 +880,23 @@ describe('helpers & canonical structure validation suite', () => {
       const diags = validateTemplateStructure(xml)
       expect(diags.some(d => d.code === 'BX1023' && d.message.includes('Tag <b:section> cannot be placed inside <b:widget>'))).toBe(true)
     })
+
+    it('detects prohibited bracket indexing in data:* tags (BX1032)', () => {
+      const xml = '<data:items[0]/>'
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1032')).toBe(true)
+    })
+
+    it('detects prohibited expression operators in data:* tags (BX1048)', () => {
+      const xml = '<data:post.title ?: "Default"/>'
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1048')).toBe(true)
+    })
+
+    it('allows valid scalar data:* tags without diagnostics', () => {
+      const xml = '<data:post.title/><data:blog.url/><data:messages.older/>'
+      const diags = validateTemplateStructure(xml)
+      expect(diags).toHaveLength(0)
+    })
   })
 })
