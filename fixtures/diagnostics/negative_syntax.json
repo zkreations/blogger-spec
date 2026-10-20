@@ -970,6 +970,27 @@
         "stage": "linter"
       },
       "verified_at": "2026-10-19"
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-widget-id-schema",
+      "title": "Invalid Widget ID Not Matching Type And Index",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1047"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:widget id='global_collision_id' type='Blog'/></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1047"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-19"
     }
   ]
 }

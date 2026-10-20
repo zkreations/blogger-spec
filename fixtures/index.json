@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-20",
   "metrics": {
-    "totalFixtures": 259,
+    "totalFixtures": 260,
     "positiveFixtures": 213,
-    "negativeFixtures": 46,
-    "coveredSpecEntities": 206
+    "negativeFixtures": 47,
+    "coveredSpecEntities": 207
   },
   "fixtures": [
     {
@@ -5962,6 +5962,27 @@
         "outcome": "rejected",
         "diagnosticCodes": [
           "BX1046"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-widget-id-schema",
+      "title": "Invalid Widget ID Not Matching Type And Index",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1047"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:widget id='global_collision_id' type='Blog'/></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1047"
         ],
         "stage": "linter"
       },

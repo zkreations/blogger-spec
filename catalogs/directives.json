@@ -343,7 +343,8 @@
           "description": "Unique widget identifier consisting of the widget type followed by an integer from 1 to 999.",
           "required": true,
           "attribute_kind": "static_literal",
-          "expr": false
+          "expr": false,
+          "diagnostic": "BX1047"
         },
         "type": {
           "type": "string",

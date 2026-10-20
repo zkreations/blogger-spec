@@ -363,7 +363,8 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "description": "Unique widget identifier consisting of the widget type followed by an integer from 1 to 999.",
           "required": true,
           "attribute_kind": "static_literal",
-          "expr": false
+          "expr": false,
+          "diagnostic": "BX1047"
         },
         "type": {
           "type": "string",
@@ -11186,6 +11187,15 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "severity": "warning",
       "message": "Using curly braces '{ ... }' for array/set collections is non-standard in Blogger. Use bracket notation '[ ... ]' instead to ensure future compatibility.",
       "evidence": "observed",
+      "verified_at": "2026-10-19"
+    },
+    "BX1047": {
+      "code": "BX1047",
+      "name": "INVALID_WIDGET_ID_SCHEMA",
+      "category": "structure",
+      "severity": "error",
+      "message": "Widget identifier does not conform to the required pattern. Blogger requires <b:widget> 'id' to start with its declared 'type' followed by an integer from 1 to 999 (e.g. 'Blog1', 'Header1').",
+      "evidence": "official",
       "verified_at": "2026-10-19"
     }
   }

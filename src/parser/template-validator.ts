@@ -286,6 +286,34 @@ function validateIdentifierUniqueness(
   }
 }
 
+function validateWidgetElement(
+  token: BloggerDirectiveToken,
+  catalog: SpecCatalog,
+  diagnostics: BloggerStructureDiagnostic[],
+): void {
+  if (token.tagName !== 'b:widget') {
+    return
+  }
+
+  const typeAttr = token.attributes.type
+  const idAttr = token.attributes.id
+  if (typeAttr?.value && idAttr?.value) {
+    const type = typeAttr.value.trim()
+    const id = idAttr.value.trim()
+    if (type && id) {
+      const escapedType = type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+      const pattern = new RegExp(`^${escapedType}[1-9][0-9]{0,2}$`)
+      if (!pattern.test(id)) {
+        pushDiagnostic(diagnostics, catalog, 'BX1047', token, {
+          start: idAttr.start,
+          end: idAttr.end,
+          message: `Widget id '${id}' is invalid for type '${type}'. Expected '${type}' followed by a number between 1 and 999 (e.g. '${type}1').`,
+        })
+      }
+    }
+  }
+}
+
 function validateVariableElement(
   token: BloggerDirectiveToken,
   catalog: SpecCatalog,
@@ -788,6 +816,7 @@ export function validateTemplateStructure(
     validateNestingRules(token, tagStack, catalog, diagnostics)
     validateDirectiveAttributeRules(token, catalog, diagnostics)
     validateIdentifierUniqueness(token, globalSectionWidgetIds, containerIncludableIds, tagStack, catalog, diagnostics)
+    validateWidgetElement(token, catalog, diagnostics)
     validateVariableElement(token, catalog, diagnostics)
 
     if (!token.isSelfClosing) {

@@ -294,15 +294,40 @@ describe('helpers & canonical structure validation suite', () => {
     it('detects duplicate element id across sections and widgets (BX1033)', () => {
       const xml = `
         <b:section id='main'>
-          <b:widget id='duplicate_id' type='Blog'/>
+          <b:widget id='Blog1' type='Blog'/>
         </b:section>
-        <b:section id='duplicate_id'>
+        <b:section id='Blog1'>
         </b:section>
       `
       const diags = validateTemplateStructure(xml)
       expect(diags.some(d => d.code === 'BX1033')).toBe(true)
       const diag = diags.find(d => d.code === 'BX1033')
-      expect(diag?.message).toContain('duplicate_id')
+      expect(diag?.message).toContain('Blog1')
+    })
+
+    it('detects invalid widget id format for declared type (BX1047)', () => {
+      const xml = `
+        <b:section id='main'>
+          <b:widget id='global_collision_id' type='Blog'/>
+        </b:section>
+      `
+      const diags = validateTemplateStructure(xml)
+      const invalidId = diags.find(d => d.code === 'BX1047')
+      expect(invalidId).toBeDefined()
+      expect(invalidId?.message).toContain('global_collision_id')
+      expect(invalidId?.message).toContain('Blog')
+    })
+
+    it('accepts valid widget id matching type and numeric suffix (1-999)', () => {
+      const xml = `
+        <b:section id='main'>
+          <b:widget id='Blog1' type='Blog'/>
+          <b:widget id='Header999' type='Header'/>
+          <b:widget id='HTML12' type='HTML'/>
+        </b:section>
+      `
+      const diags = validateTemplateStructure(xml)
+      expect(diags.filter(d => d.code === 'BX1047')).toHaveLength(0)
     })
 
     it('detects duplicate <b:includable> id inside the same widget (BX1036)', () => {
