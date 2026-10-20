@@ -10749,7 +10749,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "hallucination",
       "severity": "error",
       "message": "<b:for> is hallucinated; Blogger uses <b:loop values='...'>.",
-      "replacement": "<b:loop values='...'>",
       "evidence": "observed",
       "verified_at": "2026-10-10"
     },
@@ -10759,7 +10758,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "hallucination",
       "severity": "error",
       "message": "<b:each> is hallucinated; Blogger uses <b:loop values='...'>.",
-      "replacement": "<b:loop values='...'>",
       "evidence": "observed",
       "verified_at": "2026-10-10"
     },
@@ -10769,7 +10767,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "hallucination",
       "severity": "error",
       "message": "<b:set> is hallucinated; Blogger uses <b:with value='...' var='...'>.",
-      "replacement": "<b:with value='...' var='...'>",
       "evidence": "observed",
       "verified_at": "2026-10-10"
     },
@@ -10779,7 +10776,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "hallucination",
       "severity": "error",
       "message": "<b:var> is hallucinated; Blogger uses <b:with value='...' var='...'>.",
-      "replacement": "<b:with value='...' var='...'>",
       "evidence": "observed",
       "verified_at": "2026-10-10"
     },
@@ -10789,7 +10785,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "hallucination",
       "severity": "error",
       "message": "<b:let> is hallucinated; Blogger uses <b:with value='...' var='...'>.",
-      "replacement": "<b:with value='...' var='...'>",
       "evidence": "observed",
       "verified_at": "2026-10-10"
     },
@@ -10799,7 +10794,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "syntax",
       "severity": "error",
       "message": "<b:else-if> is invalid; Blogger uses <b:elseif cond='...'>.",
-      "replacement": "<b:elseif cond='...'>",
       "evidence": "official",
       "verified_at": "2026-10-10"
     },
@@ -10809,7 +10803,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "hallucination",
       "severity": "error",
       "message": "<b:choose> is XSL/JSTL; Blogger uses <b:switch var='...'> or <b:if>.",
-      "replacement": "<b:switch var='...'>",
       "evidence": "observed",
       "verified_at": "2026-10-10"
     },
@@ -10819,7 +10812,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "hallucination",
       "severity": "error",
       "message": "<b:when> is XSL/JSTL; Blogger uses <b:case value='...'>.",
-      "replacement": "<b:case value='...'>",
       "evidence": "observed",
       "verified_at": "2026-10-10"
     },
@@ -10839,7 +10831,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "hallucination",
       "severity": "error",
       "message": "<b:template> is hallucinated; Blogger uses <b:includable id='...'>.",
-      "replacement": "<b:includable id='...'>",
       "evidence": "observed",
       "verified_at": "2026-10-10"
     },
@@ -10849,7 +10840,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "hallucination",
       "severity": "error",
       "message": "<b:macro> is hallucinated; Blogger uses <b:includable id='...'>.",
-      "replacement": "<b:includable id='...'>",
       "evidence": "observed",
       "verified_at": "2026-10-10"
     },
@@ -10859,7 +10849,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "hallucination",
       "severity": "error",
       "message": "<b:function> is hallucinated; Blogger uses <b:includable id='...'>.",
-      "replacement": "<b:includable id='...'>",
       "evidence": "observed",
       "verified_at": "2026-10-10"
     },
@@ -10878,7 +10867,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "syntax",
       "severity": "error",
       "message": "<b:switch> requires the 'var' attribute (e.g. <b:switch var='...'>), not 'expr'.",
-      "replacement": "var='...'",
       "evidence": "official",
       "verified_at": "2026-10-10"
     },
@@ -10888,7 +10876,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "syntax",
       "severity": "error",
       "message": "<b:includable> requires 'id' attribute, not 'name'.",
-      "replacement": "id='...'",
       "evidence": "official",
       "verified_at": "2026-10-10"
     },
@@ -10898,7 +10885,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "syntax",
       "severity": "error",
       "message": "<b:include> requires 'name' attribute, not 'id'.",
-      "replacement": "name='...'",
       "evidence": "official",
       "verified_at": "2026-10-10"
     },
@@ -10990,7 +10976,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "expressions",
       "severity": "error",
       "message": "Direct relational comparison (<, >, <=, >=) on Date objects or date strings is not supported in Blogger expressions. Relational operators are strictly numeric; evaluate dates using numeric modifiers (.year, .month, .day, .dayOfYear).",
-      "replacement": "data:date.year >= 2026",
       "evidence": "observed",
       "verified_at": "2026-10-12"
     },
@@ -11000,7 +10985,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "runtime",
       "severity": "warning",
       "message": "Parameterized message tokens cannot be evaluated via direct tag invocation (<data:messages.key/>) and output raw un-interpolated template strings. Use <b:message name='...'> with child <b:param> tags.",
-      "replacement": "<b:message name='messages.key'><b:param .../></b:message>",
       "evidence": "observed",
       "verified_at": "2026-10-14"
     },
@@ -11010,7 +10994,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "syntax",
       "severity": "error",
       "message": "Pluralized ICU messages require the 'name' attribute on child <b:param> tags matching the plural identifier (e.g. <b:param name='numComments' value='...'/>); omitting 'name' aborts template compilation.",
-      "replacement": "<b:param name='...' value='...'/>",
       "evidence": "observed",
       "verified_at": "2026-10-14"
     },
@@ -11020,7 +11003,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "runtime",
       "severity": "error",
       "message": "Multiple <b:param> tags concatenated inline without intervening whitespace (<b:param .../><b:param .../>) cause Blogger runtime error 'Invalid parameters for message'. Sibling <b:param> tags must be separated by whitespace or placed on separate lines.",
-      "replacement": "<b:param .../>\n  <b:param .../>",
       "evidence": "observed",
       "verified_at": "2026-10-14"
     },
@@ -11030,7 +11012,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "expressions",
       "severity": "error",
       "message": "Unary prefix '-' cannot be applied to parenthesized compound expressions (e.g. -(a - b)) and triggers 'Invalid expression' compiler error. Blogger expression engine only permits unary negation on simple literals or variables.",
-      "replacement": "(0 - (a - b))",
       "evidence": "observed",
       "verified_at": "2026-10-19"
     },
@@ -11040,7 +11021,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "runtime",
       "severity": "error",
       "message": "The 'data' attribute of <b:include> strictly requires an object reference or object literal { ... }; passing primitive scalars (string, number, boolean) aborts execution with runtime error 'Error during evaluation of <name>'.",
-      "replacement": "{ value: ... }",
       "evidence": "observed",
       "verified_at": "2026-10-14"
     },
@@ -11050,7 +11030,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "syntax",
       "severity": "error",
       "message": "Direct bracket indexing (e.g. <data:items[0]/>) is forbidden in <data:...> tags and causes template compilation error. Use <b:eval expr='data:items[0]'/> to index collections.",
-      "replacement": "<b:eval expr='data:items[0]'/>",
       "evidence": "observed",
       "verified_at": "2026-10-14"
     },
@@ -11105,7 +11084,6 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "expressions",
       "severity": "warning",
       "message": "Comparing against a quoted boolean string literal ('true' / 'false') in expression. Use boolean literals true or false directly.",
-      "replacement": "true",
       "evidence": "observed",
       "verified_at": "2026-10-15"
     },
