@@ -215,7 +215,7 @@ export class ExpressionParser {
       }
 
       case 'LBRACE': {
-        return this.parseObjectExpression()
+        return this.parseBracedExpression()
       }
 
       case 'MINUS': {
@@ -625,25 +625,72 @@ export class ExpressionParser {
     }
   }
 
-  private parseObjectExpression(): BloggerObjectExpressionNode {
+  private parseBracedExpression(): BloggerObjectExpressionNode | BloggerArrayExpressionNode {
     const startTok = this.advance() // '{'
+
+    if (this.check('RBRACE')) {
+      const closeBrace = this.advance() // '}'
+      return {
+        type: 'ObjectExpression',
+        properties: [],
+        loc: makeLoc(startTok.start, closeBrace.end),
+      }
+    }
+
+    if (this.isBracedObject()) {
+      return this.parseObjectExpressionRest(startTok)
+    }
+
+    return this.parseBracedArrayExpressionRest(startTok)
+  }
+
+  private isBracedObject(): boolean {
+    const firstTok = this.peek()
+    const isPotentialKey = firstTok.type === 'IDENTIFIER' || firstTok.type === 'STRING' || firstTok.type === 'BOOLEAN' || firstTok.type === 'NULL'
+    if (!isPotentialKey) {
+      return false
+    }
+    const nextTok = this.tokens[this.current + 1]
+    return nextTok !== undefined && nextTok.type === 'COLON'
+  }
+
+  private parseObjectExpressionRest(startTok: Token): BloggerObjectExpressionNode {
     const properties: BloggerPropertyNode[] = []
 
-    if (!this.check('RBRACE')) {
-      properties.push(this.parseProperty())
-      while (this.check('COMMA')) {
-        this.advance() // ','
-        if (this.check('RBRACE')) {
-          break
-        }
-        properties.push(this.parseProperty())
+    properties.push(this.parseProperty())
+    while (this.check('COMMA')) {
+      this.advance() // ','
+      if (this.check('RBRACE')) {
+        break
       }
+      properties.push(this.parseProperty())
     }
 
     const closeBrace = this.consume('RBRACE', 'Expected \'}\' closing object literal')
     return {
       type: 'ObjectExpression',
       properties,
+      loc: makeLoc(startTok.start, closeBrace.end),
+    }
+  }
+
+  private parseBracedArrayExpressionRest(startTok: Token): BloggerArrayExpressionNode {
+    const elements: BloggerExpressionNode[] = []
+
+    elements.push(this.parseExpression(0))
+    while (this.check('COMMA')) {
+      this.advance() // ','
+      if (this.check('RBRACE')) {
+        break
+      }
+      elements.push(this.parseExpression(0))
+    }
+
+    const closeBrace = this.consume('RBRACE', 'Expected \'}\' closing collection literal')
+    return {
+      type: 'ArrayExpression',
+      elements,
+      isBraced: true,
       loc: makeLoc(startTok.start, closeBrace.end),
     }
   }

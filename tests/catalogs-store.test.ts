@@ -849,10 +849,10 @@ describe('catalogs and store formal verification suite', () => {
         expect(diags1.some(d => (d.code as string) === 'BX9991')).toBe(true)
 
         // Prohibited nesting without explicit policy should emit fallback prohibited_nesting code BX9992
-        const violation = customSpec.validateDirectiveNesting('b:tag', 'b:section')
+        const violation = customSpec.validateDirectiveNesting('b:loop', 'b:section')
         expect((violation?.code as string)).toBe('BX9992')
 
-        const prohibitedXml = '<b:tag name="div"><b:section id="test"/></b:tag>'
+        const prohibitedXml = '<b:loop values="data:items" var="i"><b:section id="test"/></b:loop>'
         const diags2 = RootExports.validateTemplateStructure(prohibitedXml, customSpec)
         expect(diags2.some(d => (d.code as string) === 'BX9992')).toBe(true)
       })

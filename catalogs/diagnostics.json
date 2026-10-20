@@ -449,6 +449,15 @@
       "message": "Expression token count is approaching the 40-token compiler ceiling.",
       "evidence": "observed",
       "verified_at": "2026-10-19"
+    },
+    "BX1046": {
+      "code": "BX1046",
+      "name": "NON_STANDARD_BRACED_COLLECTION",
+      "category": "deprecation",
+      "severity": "warning",
+      "message": "Using curly braces '{ ... }' for array/set collections is non-standard in Blogger. Use bracket notation '[ ... ]' instead to ensure future compatibility.",
+      "evidence": "observed",
+      "verified_at": "2026-10-19"
     }
   }
 }

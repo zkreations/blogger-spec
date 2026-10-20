@@ -1,11 +1,11 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-10-19",
+  "generatedAt": "2026-10-20",
   "metrics": {
-    "totalFixtures": 258,
+    "totalFixtures": 259,
     "positiveFixtures": 213,
-    "negativeFixtures": 45,
-    "coveredSpecEntities": 205
+    "negativeFixtures": 46,
+    "coveredSpecEntities": 206
   },
   "fixtures": [
     {
@@ -5943,6 +5943,27 @@
           "BX1044"
         ],
         "stage": "compiler"
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "diagnostics/negative_syntax/non-standard-braced-collection",
+      "title": "Non-Standard Braced Collection In Expression",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1046"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.pageType in {\"index\", \"archive\"}'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1046"
+        ],
+        "stage": "linter"
       },
       "verified_at": "2026-10-19"
     }

@@ -102,6 +102,7 @@ export interface BloggerObjectExpressionNode extends BloggerNodeBase {
 export interface BloggerArrayExpressionNode extends BloggerNodeBase {
   readonly type: 'ArrayExpression'
   readonly elements: BloggerExpressionNode[]
+  readonly isBraced?: boolean
 }
 
 export interface BloggerMemberExpressionNode extends BloggerNodeBase {

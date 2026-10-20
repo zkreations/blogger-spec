@@ -174,7 +174,8 @@
       "grammar": {
         "valid_parents": [
           "body",
-          "html:*"
+          "html:*",
+          "b:tag"
         ],
         "valid_children": [
           "b:widget"
@@ -1105,7 +1106,8 @@
           "@any_container"
         ],
         "valid_children": [
-          "@flow_content"
+          "@flow_content",
+          "b:section"
         ],
         "arbitrary_attributes": true
       },
@@ -1119,7 +1121,7 @@
         },
         "cond": {
           "type": "boolean",
-          "description": "Render condition. If false, the tag and its children are omitted.",
+          "description": "Render condition. If false, the tag wrapper is omitted but its child contents are preserved.",
           "attribute_kind": "native_expression",
           "expr": true
         }

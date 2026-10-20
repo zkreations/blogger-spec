@@ -786,4 +786,48 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect(objExpr.type).toBe('ObjectExpression')
     })
   })
+
+  describe('braced collections ({ ... }) and object expressions', () => {
+    it('parses string, number and single-element collections with curly braces as ArrayExpression with isBraced: true', () => {
+      const strings = parseExpression('{ "footer-1", "footer-2", "footer-3" }') as any
+      expect(strings.type).toBe('ArrayExpression')
+      expect(strings.isBraced).toBe(true)
+      expect(strings.elements).toHaveLength(3)
+      expect(strings.elements[0].value).toBe('footer-1')
+
+      const numbers = parseExpression('{ 1, 2, 3 }') as any
+      expect(numbers.type).toBe('ArrayExpression')
+      expect(numbers.isBraced).toBe(true)
+      expect(numbers.elements).toHaveLength(3)
+      expect(numbers.elements[0].value).toBe(1)
+
+      const single = parseExpression('{ "only" }') as any
+      expect(single.type).toBe('ArrayExpression')
+      expect(single.isBraced).toBe(true)
+      expect(single.elements).toHaveLength(1)
+      expect(single.elements[0].value).toBe('only')
+    })
+
+    it('parses empty braces and key-value pairs as ObjectExpression', () => {
+      const empty = parseExpression('{}') as any
+      expect(empty.type).toBe('ObjectExpression')
+      expect(empty.properties).toHaveLength(0)
+
+      const obj = parseExpression('{ "title": "Blogger", id: 10 }') as any
+      expect(obj.type).toBe('ObjectExpression')
+      expect(obj.properties).toHaveLength(2)
+      expect(obj.properties[0].key).toBe('title')
+      expect(obj.properties[1].key).toBe('id')
+    })
+
+    it('parses membership expression with braced collection', () => {
+      const expr = parseExpression('data:widgets any (w => w.sectionId in {"footer-1", "footer-2"})') as any
+      expect(expr.type).toBe('LambdaExpression')
+      expect(expr.operator).toBe('any')
+      expect(expr.body.type).toBe('BinaryExpression')
+      expect(expr.body.operator).toBe('in')
+      expect(expr.body.right.type).toBe('ArrayExpression')
+      expect(expr.body.right.isBraced).toBe(true)
+    })
+  })
 })

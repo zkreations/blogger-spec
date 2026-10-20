@@ -12,7 +12,7 @@ export type BloggerDirectiveName = 'CDATA' | 'Group' | 'Variable' | 'b:attr' | '
 
 export type BloggerWidgetType = 'AdSense' | 'Attribution' | 'Blog' | 'BlogArchive' | 'BlogList' | 'BlogSearch' | 'BloggerButton' | 'ContactForm' | 'FeaturedPost' | 'Feed' | 'Followers' | 'HTML' | 'Header' | 'Image' | 'Label' | 'LinkList' | 'PageList' | 'PopularPosts' | 'Profile' | 'ReportAbuse' | 'Stats' | 'Subscribe' | 'Text' | 'TextList' | 'Translate' | 'Wikipedia';
 
-export type BloggerDiagnosticCode = 'BX1001' | 'BX1002' | 'BX1003' | 'BX1004' | 'BX1005' | 'BX1006' | 'BX1007' | 'BX1008' | 'BX1009' | 'BX1010' | 'BX1011' | 'BX1012' | 'BX1013' | 'BX1014' | 'BX1015' | 'BX1016' | 'BX1017' | 'BX1018' | 'BX1019' | 'BX1020' | 'BX1021' | 'BX1022' | 'BX1023' | 'BX1024' | 'BX1025' | 'BX1026' | 'BX1027' | 'BX1028' | 'BX1029' | 'BX1030' | 'BX1031' | 'BX1032' | 'BX1033' | 'BX1034' | 'BX1035' | 'BX1036' | 'BX1037' | 'BX1038' | 'BX1039' | 'BX1040' | 'BX1041' | 'BX1042' | 'BX1043' | 'BX1044' | 'BX1045';
+export type BloggerDiagnosticCode = 'BX1001' | 'BX1002' | 'BX1003' | 'BX1004' | 'BX1005' | 'BX1006' | 'BX1007' | 'BX1008' | 'BX1009' | 'BX1010' | 'BX1011' | 'BX1012' | 'BX1013' | 'BX1014' | 'BX1015' | 'BX1016' | 'BX1017' | 'BX1018' | 'BX1019' | 'BX1020' | 'BX1021' | 'BX1022' | 'BX1023' | 'BX1024' | 'BX1025' | 'BX1026' | 'BX1027' | 'BX1028' | 'BX1029' | 'BX1030' | 'BX1031' | 'BX1032' | 'BX1033' | 'BX1034' | 'BX1035' | 'BX1036' | 'BX1037' | 'BX1038' | 'BX1039' | 'BX1040' | 'BX1041' | 'BX1042' | 'BX1043' | 'BX1044' | 'BX1045' | 'BX1046';
 
 export type BloggerOperatorName = "!=" | "%" | "*" | "+" | "-" | "/" | "<" | "<=" | "==" | ">" | ">=" | "? :" | "?:" | "all" | "and" | "any" | "appendParams" | "contains" | "count" | "filter" | "first" | "format" | "fragment" | "in" | "map" | "none" | "not" | "not contains" | "not in" | "or" | "params" | "path" | "resizeImage" | "skip" | "snippet" | "sourceSet" | "take" | "to";
 
@@ -975,7 +975,7 @@ export interface BloggerSwitchDirectiveAttributes {
 
 /** Attributes for directive `<b:tag>` */
 export interface BloggerTagDirectiveAttributes {
-  /** Render condition. If false, the tag and its children are omitted. */
+  /** Render condition. If false, the tag wrapper is omitted but its child contents are preserved. */
   cond?: boolean;
   /** Dynamic expression for `cond` */
   "expr:cond"?: BloggerExpression;

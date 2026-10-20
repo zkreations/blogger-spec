@@ -194,7 +194,8 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
       "grammar": {
         "valid_parents": [
           "body",
-          "html:*"
+          "html:*",
+          "b:tag"
         ],
         "valid_children": [
           "b:widget"
@@ -1125,7 +1126,8 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "@any_container"
         ],
         "valid_children": [
-          "@flow_content"
+          "@flow_content",
+          "b:section"
         ],
         "arbitrary_attributes": true
       },
@@ -1139,7 +1141,7 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
         },
         "cond": {
           "type": "boolean",
-          "description": "Render condition. If false, the tag and its children are omitted.",
+          "description": "Render condition. If false, the tag wrapper is omitted but its child contents are preserved.",
           "attribute_kind": "native_expression",
           "expr": true
         }
@@ -3308,6 +3310,9 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
           "description": "Membership in array"
         }
       ],
+      "diagnostics": {
+        "non_standard_braced_collection": "BX1046"
+      },
       "grammar_aliases": [],
       "doc_aliases": [],
       "evidence": "official",
@@ -11171,6 +11176,15 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "category": "quota",
       "severity": "warning",
       "message": "Expression token count is approaching the 40-token compiler ceiling.",
+      "evidence": "observed",
+      "verified_at": "2026-10-19"
+    },
+    "BX1046": {
+      "code": "BX1046",
+      "name": "NON_STANDARD_BRACED_COLLECTION",
+      "category": "deprecation",
+      "severity": "warning",
+      "message": "Using curly braces '{ ... }' for array/set collections is non-standard in Blogger. Use bracket notation '[ ... ]' instead to ensure future compatibility.",
       "evidence": "observed",
       "verified_at": "2026-10-19"
     }

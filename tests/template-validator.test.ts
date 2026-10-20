@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  canNest,
   getThemeDesignerDescriptions,
   getVariableTypeAttributes,
   validateDirectiveAttributes,
@@ -797,6 +798,48 @@ describe('helpers & canonical structure validation suite', () => {
       // "+ 2" at unescaped 11..15 maps to raw 21..25
       expect(mapOffset(15)).toBe(25)
       expect(raw.slice(mapOffset(11), mapOffset(15))).toBe(' + 2')
+    })
+
+    it('emits BX1046 warning with exact start and end offsets for braced collections', () => {
+      const xml = '<b:if cond=\'data:widgets any (w => w.sectionId in {"footer-1", "footer-2"})\'/>'
+      const diags = validateTemplateExpressions(xml)
+      const bx1046 = diags.find(d => d.code === 'BX1046')
+      expect(bx1046).toBeDefined()
+      expect(bx1046?.rule.severity).toBe('warning')
+      expect(bx1046?.attribute).toBe('cond')
+      const target = xml.slice(bx1046!.tagStart, bx1046!.tagEnd)
+      expect(target).toBe('{"footer-1", "footer-2"}')
+    })
+  })
+
+  describe('b:section inside b:tag structural nesting', () => {
+    it('permits b:section inside b:tag at top level', () => {
+      expect(canNest('b:tag', 'b:section')).toBe(true)
+      expect(validateDirectiveNesting('b:tag', 'b:section')).toBeNull()
+
+      const xml = `
+        <b:tag class='tools' name='div' cond='data:view.isLayoutMode'>
+          <b:section id='tools' class='none' maxwidgets='2' showaddelement='false'>
+            <b:widget id='Header1' type='Header'/>
+          </b:section>
+        </b:tag>
+      `
+      const diags = validateTemplateStructure(xml)
+      expect(diags.filter(d => d.code === 'BX1023')).toHaveLength(0)
+    })
+
+    it('prohibits b:section inside b:tag when wrapped inside a widget or includable', () => {
+      const xml = `
+        <b:widget id='Blog1' type='Blog'>
+          <b:includable id='main'>
+            <b:tag name='div'>
+              <b:section id='sub'/>
+            </b:tag>
+          </b:includable>
+        </b:widget>
+      `
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1023' && d.message.includes('Tag <b:section> cannot be placed inside <b:widget>'))).toBe(true)
     })
   })
 })

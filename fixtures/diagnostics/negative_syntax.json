@@ -949,6 +949,27 @@
         "stage": "compiler"
       },
       "verified_at": "2026-10-19"
+    },
+    {
+      "id": "diagnostics/negative_syntax/non-standard-braced-collection",
+      "title": "Non-Standard Braced Collection In Expression",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1046"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.pageType in {\"index\", \"archive\"}'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1046"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-19"
     }
   ]
 }

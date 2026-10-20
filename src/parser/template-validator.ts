@@ -1,3 +1,4 @@
+import type { BloggerExpressionNode } from '../ast.js'
 import type { SpecCatalog } from '../catalogs/index.js'
 import type {
   BloggerDiagnosticCode,
@@ -101,6 +102,19 @@ function validateNestingRules(
       })
     }
     return
+  }
+
+  if (isSection) {
+    const invalidAncestor = tagStack.find(t =>
+      t.tagName === 'b:widget' || t.tagName === 'b:includable' || t.tagName === 'b:defaultmarkup' || t.tagName === 'head',
+    )
+    if (invalidAncestor) {
+      const defaultProhibited = (catalog.getStandardDiagnostic('prohibited_nesting') ?? 'BX1023') as BloggerDiagnosticCode
+      pushDiagnostic(diagnostics, catalog, defaultProhibited, token, {
+        message: `Tag <b:section> cannot be placed inside <${invalidAncestor.tagName}>.`,
+      })
+      return
+    }
   }
 
   const isSkin = token.tagName === 'b:skin' || token.tagName === 'b:template-skin'
@@ -629,7 +643,72 @@ export function validateExpression(
     }
   }
 
+  // 3. Structural AST checks (BX1046: Non-standard braced collections)
+  try {
+    const ast = parseExpression(unescaped, { catalog, tolerant: true })
+    walkExpressionAst(ast, (node) => {
+      if (node.type === 'ArrayExpression' && node.isBraced && node.loc) {
+        const diagRule = catalog.getDiagnostic('BX1046')
+        pushDiagnostic(diagnostics, catalog, 'BX1046', fakeToken, {
+          attribute: context?.attributeName,
+          start: baseStart + mapOffset(node.loc.start.offset ?? 0),
+          end: baseStart + mapOffset(node.loc.end.offset ?? 0),
+          message: diagRule?.message ?? 'Using curly braces \'{ ... }\' for array/set collections is non-standard in Blogger. Use bracket notation \'[ ... ]\' instead to ensure future compatibility.',
+        })
+      }
+    })
+  }
+  catch {
+    // Tolerant parsing fallback
+  }
+
   return diagnostics
+}
+
+function walkExpressionAst(node: BloggerExpressionNode, visitor: (n: BloggerExpressionNode) => void): void {
+  visitor(node)
+  switch (node.type) {
+    case 'UnaryExpression':
+      walkExpressionAst(node.argument, visitor)
+      break
+    case 'BinaryExpression':
+    case 'LogicalExpression':
+      walkExpressionAst(node.left, visitor)
+      walkExpressionAst(node.right, visitor)
+      break
+    case 'ConditionalExpression':
+      walkExpressionAst(node.test, visitor)
+      walkExpressionAst(node.consequent, visitor)
+      if (node.alternate) {
+        walkExpressionAst(node.alternate, visitor)
+      }
+      break
+    case 'CallExpression':
+      for (const arg of node.arguments) {
+        walkExpressionAst(arg, visitor)
+      }
+      break
+    case 'LambdaExpression':
+      walkExpressionAst(node.callee, visitor)
+      walkExpressionAst(node.body, visitor)
+      break
+    case 'ObjectExpression':
+      for (const prop of node.properties) {
+        walkExpressionAst(prop.value, visitor)
+      }
+      break
+    case 'ArrayExpression':
+      for (const elem of node.elements) {
+        walkExpressionAst(elem, visitor)
+      }
+      break
+    case 'MemberExpression':
+      walkExpressionAst(node.object, visitor)
+      if (node.property.type !== 'Identifier') {
+        walkExpressionAst(node.property, visitor)
+      }
+      break
+  }
 }
 
 export function validateTemplateExpressions(

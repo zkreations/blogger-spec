@@ -1276,6 +1276,9 @@
           "description": "Membership in array"
         }
       ],
+      "diagnostics": {
+        "non_standard_braced_collection": "BX1046"
+      },
       "grammar_aliases": [],
       "doc_aliases": [],
       "evidence": "official",
