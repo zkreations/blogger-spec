@@ -156,7 +156,7 @@ function validateDirectiveAttributeRules(
   catalog: SpecCatalog,
   diagnostics: BloggerStructureDiagnostic[],
 ): void {
-  if (!catalog.isDirective(token.tagName) || token.tagName === 'Variable') {
+  if (!catalog.isDirective(token.tagName)) {
     return
   }
 

@@ -348,13 +348,27 @@ describe('helpers & canonical structure validation suite', () => {
     it('detects invalid <Variable> attributes (BX1040)', () => {
       const xml = `
         <b:skin><![CDATA[
-          <Variable name="theme.color" type="color" red="100" default="#ff0000"/>
+          <Variable name="theme.color" description="Theme Color" type="color" value="#ff0000" red="100" default="#ff0000"/>
         ]]></b:skin>
       `
       const diags = validateTemplateStructure(xml)
       expect(diags.some(d => d.code === 'BX1040')).toBe(true)
       const diag = diags.find(d => d.code === 'BX1040')
       expect(diag?.message).toContain('red')
+    })
+
+    it('detects missing mandatory attributes on <Variable> (BX1022)', () => {
+      const xml = `
+        <b:skin><![CDATA[
+          <Group description="Theme Colors">
+            <Variable name="primaryColor" description="Primary Brand Color" default="#ffffff" value="#ffffff"/>
+          </Group>
+        ]]></b:skin>
+      `
+      const diags = validateTemplateStructure(xml)
+      const missingType = diags.find(d => d.code === 'BX1022' && d.message.includes('\'type\''))
+      expect(missingType).toBeDefined()
+      expect(missingType?.tagName).toBe('Variable')
     })
 
     it('detects missing mandatory directive attributes (BX1022)', () => {
