@@ -2184,20 +2184,21 @@
       "verified_at": "2026-10-12"
     },
     {
-      "id": "expressions/logical_and_comparisons/formatted-date-relational-comparison",
-      "title": "Relational Comparison Over Formatted Date String",
+      "id": "expressions/logical_and_comparisons/date-year-relational-comparison",
+      "title": "Relational Comparison Over Date Year Modifier",
       "evidence": "observed",
       "covers": [
         "subsystem:logical_and_comparisons",
-        "operator:<",
-        "operator:format"
+        "operator:<"
       ],
       "input": {
         "kind": "expression",
-        "source": "(data:post.date format \"yyyyMMdd\") < \"20990101\"",
+        "source": "data:post.date.year < 2099",
         "context": {
           "post": {
-            "date": "2026-08-29T14:48:00-05:00"
+            "date": {
+              "year": 2026
+            }
           }
         }
       },

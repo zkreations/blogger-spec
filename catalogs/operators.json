@@ -832,7 +832,7 @@
     },
     "<": {
       "family": "comparison",
-      "description": "Less than relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
+      "description": "Less than relational comparison. Operands are strictly restricted to scalar numbers. Strings and unformatted Date objects cannot be compared directly with relational operators and abort with a compiler error; use numeric Date modifiers (.year, .month, .day, .dayOfYear) or numeric comparisons instead.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -846,16 +846,14 @@
         {
           "name": "left",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         },
         {
           "name": "right",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         }
@@ -865,7 +863,7 @@
         "lt"
       ],
       "anti_patterns": [
-        "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date < data:post.date); format to string or use date.iso8601."
+        "Do not compare strings or Date objects directly with relational operators (e.g. data:post.date < data:post.date); use numeric modifiers (.year, .month, .day, .dayOfYear) or numeric values."
       ],
       "diagnostics": {
         "prohibited_date_relational_comparison": "BX1026"
@@ -886,7 +884,7 @@
     },
     ">": {
       "family": "comparison",
-      "description": "Greater than relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
+      "description": "Greater than relational comparison. Operands are strictly restricted to scalar numbers. Strings and unformatted Date objects cannot be compared directly with relational operators and abort with a compiler error; use numeric Date modifiers (.year, .month, .day, .dayOfYear) or numeric comparisons instead.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -900,16 +898,14 @@
         {
           "name": "left",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         },
         {
           "name": "right",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         }
@@ -919,7 +915,7 @@
         "gt"
       ],
       "anti_patterns": [
-        "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date > data:post.date); format to string or use date.iso8601."
+        "Do not compare strings or Date objects directly with relational operators (e.g. data:post.date > data:post.date); use numeric modifiers (.year, .month, .day, .dayOfYear) or numeric values."
       ],
       "examples": [
         {
@@ -937,7 +933,7 @@
     },
     "<=": {
       "family": "comparison",
-      "description": "Less than or equal relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
+      "description": "Less than or equal relational comparison. Operands are strictly restricted to scalar numbers. Strings and unformatted Date objects cannot be compared directly with relational operators and abort with a compiler error; use numeric Date modifiers (.year, .month, .day, .dayOfYear) or numeric comparisons instead.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -951,16 +947,14 @@
         {
           "name": "left",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         },
         {
           "name": "right",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         }
@@ -970,7 +964,7 @@
         "lte"
       ],
       "anti_patterns": [
-        "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date <= data:post.date); format to string or use date.iso8601."
+        "Do not compare strings or Date objects directly with relational operators (e.g. data:post.date <= data:post.date); use numeric modifiers (.year, .month, .day, .dayOfYear) or numeric values."
       ],
       "examples": [
         {
@@ -988,7 +982,7 @@
     },
     ">=": {
       "family": "comparison",
-      "description": "Greater than or equal relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
+      "description": "Greater than or equal relational comparison. Operands are strictly restricted to scalar numbers. Strings and unformatted Date objects cannot be compared directly with relational operators and abort with a compiler error; use numeric Date modifiers (.year, .month, .day, .dayOfYear) or numeric comparisons instead.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -1002,16 +996,14 @@
         {
           "name": "left",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         },
         {
           "name": "right",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         }
@@ -1021,7 +1013,7 @@
         "gte"
       ],
       "anti_patterns": [
-        "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date >= data:post.date); format to string or use date.iso8601."
+        "Do not compare strings or Date objects directly with relational operators (e.g. data:post.date >= data:post.date); use numeric modifiers (.year, .month, .day, .dayOfYear) or numeric values."
       ],
       "examples": [
         {

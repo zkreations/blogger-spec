@@ -2867,7 +2867,7 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
     },
     "<": {
       "family": "comparison",
-      "description": "Less than relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
+      "description": "Less than relational comparison. Operands are strictly restricted to scalar numbers. Strings and unformatted Date objects cannot be compared directly with relational operators and abort with a compiler error; use numeric Date modifiers (.year, .month, .day, .dayOfYear) or numeric comparisons instead.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2881,16 +2881,14 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         {
           "name": "left",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         },
         {
           "name": "right",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         }
@@ -2900,7 +2898,7 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         "lt"
       ],
       "anti_patterns": [
-        "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date < data:post.date); format to string or use date.iso8601."
+        "Do not compare strings or Date objects directly with relational operators (e.g. data:post.date < data:post.date); use numeric modifiers (.year, .month, .day, .dayOfYear) or numeric values."
       ],
       "diagnostics": {
         "prohibited_date_relational_comparison": "BX1026"
@@ -2921,7 +2919,7 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
     },
     ">": {
       "family": "comparison",
-      "description": "Greater than relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
+      "description": "Greater than relational comparison. Operands are strictly restricted to scalar numbers. Strings and unformatted Date objects cannot be compared directly with relational operators and abort with a compiler error; use numeric Date modifiers (.year, .month, .day, .dayOfYear) or numeric comparisons instead.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2935,16 +2933,14 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         {
           "name": "left",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         },
         {
           "name": "right",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         }
@@ -2954,7 +2950,7 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         "gt"
       ],
       "anti_patterns": [
-        "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date > data:post.date); format to string or use date.iso8601."
+        "Do not compare strings or Date objects directly with relational operators (e.g. data:post.date > data:post.date); use numeric modifiers (.year, .month, .day, .dayOfYear) or numeric values."
       ],
       "examples": [
         {
@@ -2972,7 +2968,7 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
     },
     "<=": {
       "family": "comparison",
-      "description": "Less than or equal relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
+      "description": "Less than or equal relational comparison. Operands are strictly restricted to scalar numbers. Strings and unformatted Date objects cannot be compared directly with relational operators and abort with a compiler error; use numeric Date modifiers (.year, .month, .day, .dayOfYear) or numeric comparisons instead.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2986,16 +2982,14 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         {
           "name": "left",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         },
         {
           "name": "right",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         }
@@ -3005,7 +2999,7 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         "lte"
       ],
       "anti_patterns": [
-        "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date <= data:post.date); format to string or use date.iso8601."
+        "Do not compare strings or Date objects directly with relational operators (e.g. data:post.date <= data:post.date); use numeric modifiers (.year, .month, .day, .dayOfYear) or numeric values."
       ],
       "examples": [
         {
@@ -3023,7 +3017,7 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
     },
     ">=": {
       "family": "comparison",
-      "description": "Greater than or equal relational comparison. Operands are strictly restricted to scalar numbers or strings. Unformatted Date objects (such as data:post.date) cannot be compared directly with relational operators and abort with a compiler error; format dates to strings using the format operator or compare their date.iso8601 string representation instead.",
+      "description": "Greater than or equal relational comparison. Operands are strictly restricted to scalar numbers. Strings and unformatted Date objects cannot be compared directly with relational operators and abort with a compiler error; use numeric Date modifiers (.year, .month, .day, .dayOfYear) or numeric comparisons instead.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -3037,16 +3031,14 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         {
           "name": "left",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         },
         {
           "name": "right",
           "types": [
-            "number",
-            "string"
+            "number"
           ],
           "required": true
         }
@@ -3056,7 +3048,7 @@ export const embeddedOperatorsCatalog: BloggerOperatorsCatalog = {
         "gte"
       ],
       "anti_patterns": [
-        "Do not compare unformatted Date objects directly with relational operators (e.g. data:post.date >= data:post.date); format to string or use date.iso8601."
+        "Do not compare strings or Date objects directly with relational operators (e.g. data:post.date >= data:post.date); use numeric modifiers (.year, .month, .day, .dayOfYear) or numeric values."
       ],
       "examples": [
         {
@@ -10997,8 +10989,8 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "name": "PROHIBITED_DATE_RELATIONAL_COMPARISON",
       "category": "expressions",
       "severity": "error",
-      "message": "Direct relational comparison (<, >, <=, >=) on Date objects is not supported in Blogger expressions. Format the date to string or use date.iso8601.",
-      "replacement": "(data:date format 'yyyyMMdd') < '...'",
+      "message": "Direct relational comparison (<, >, <=, >=) on Date objects or date strings is not supported in Blogger expressions. Relational operators are strictly numeric; evaluate dates using numeric modifiers (.year, .month, .day, .dayOfYear).",
+      "replacement": "data:date.year >= 2026",
       "evidence": "observed",
       "verified_at": "2026-10-12"
     },
