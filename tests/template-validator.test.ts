@@ -996,5 +996,36 @@ describe('helpers & canonical structure validation suite', () => {
       const validInclusion = '<b:include name="openGraphMetaData"/>'
       expect(validateTemplateStructure(validInclusion).filter(d => d.code === 'BX1024')).toHaveLength(0)
     })
+
+    it('detects prohibited date relational comparisons (BX1026)', () => {
+      const exprDiags = validateExpression('data:post.date < data:post.date')
+      expect(exprDiags.some(d => d.code === 'BX1026')).toBe(true)
+
+      const validExpr = validateExpression('data:post.date.year < 2027')
+      expect(validExpr.some(d => d.code === 'BX1026')).toBe(false)
+    })
+
+    it('detects unresolved inclusions in widgets (BX1037)', () => {
+      const invalidXml = `
+        <b:widget id='Blog1' type='Blog'>
+          <b:includable id='main'>
+            <b:include name='nonExistentIncludable'/>
+          </b:includable>
+        </b:widget>
+      `
+      expect(validateTemplateStructure(invalidXml).some(d => d.code === 'BX1037')).toBe(true)
+
+      const validXml = `
+        <b:widget id='Blog1' type='Blog'>
+          <b:includable id='main'>
+            <b:include name='existingSub'/>
+          </b:includable>
+          <b:includable id='existingSub'>
+            <span>Hello</span>
+          </b:includable>
+        </b:widget>
+      `
+      expect(validateTemplateStructure(validXml).some(d => d.code === 'BX1037')).toBe(false)
+    })
   })
 })

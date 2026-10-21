@@ -2,7 +2,9 @@ import type { BloggerFixture, BloggerFixturesManifest } from '../src/types.js'
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { getDiagnostics } from '../src/catalogs/index.js'
+import { parseExpression, validateExpression, validateTemplateStructure } from '../src/parser/index.js'
 import { getWorkspacePaths, setCustomWorkspaceRoot } from '../src/paths.js'
+import { evaluateExpressionBudget } from '../src/quota.js'
 import { runConformance, runSpecConformance } from '../src/runner.js'
 import { verifyArtifactsFreshness } from '../src/tooling/compiler.js'
 import { validateSpec } from '../src/tooling/validator.js'
@@ -10,11 +12,13 @@ import { validateSpec } from '../src/tooling/validator.js'
 describe('blogger-spec Integrity & Deep Modules Suite', () => {
   describe('specValidator and catalogs', () => {
     it('validates all schemas and freshness via SpecValidator', () => {
+      const manifest = JSON.parse(readFileSync(getWorkspacePaths().fixturesManifest, 'utf-8')) as BloggerFixturesManifest
       const report = validateSpec()
       expect(report.valid).toBe(true)
       expect(report.errors).toEqual([])
       expect(report.metrics.schemasChecked).toBe(10)
-      expect(report.metrics.fixturesChecked).toBeGreaterThanOrEqual(118)
+      expect(report.metrics.fixturesChecked).toBe(manifest.fixtures.length)
+      expect(report.metrics.fixturesChecked).toBeGreaterThanOrEqual(250)
     })
 
     it('covers 100% of canonical diagnostic rules across fixtures', () => {
@@ -47,29 +51,26 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
 
   describe('conformance engine', () => {
     it('runs conformance harness with default manifest and custom adapter', () => {
+      const manifest = JSON.parse(readFileSync(getWorkspacePaths().fixturesManifest, 'utf-8')) as BloggerFixturesManifest
+      const sampleExprFixture = manifest.fixtures.find(f => f.input.kind === 'expression' && f.expected.outcome === 'value')
+      const sampleDiagFixture = manifest.fixtures.find(f => f.input.kind === 'template' && f.expected.outcome === 'rejected' && f.expected.diagnosticCodes?.length)
+
       const report = runSpecConformance({
         evaluateExpression(expr) {
-          if (expr === '10 + 5')
-            return 15
-          if (expr === '10 + "10"')
-            return '1010'
-          if (expr === '10 + data:numString')
-            return 20
-          return null
+          if (sampleExprFixture && expr === sampleExprFixture.input.source)
+            return sampleExprFixture.expected.value
+          return '__UNMATCHED_VALUE__'
         },
         analyze(source) {
-          if (source.includes('<b:for')) {
-            return [{ code: 'BX1001' }]
-          }
-          if (source.includes('<b:set')) {
-            return [{ code: 'BX1003' }]
+          if (sampleDiagFixture && source === sampleDiagFixture.input.source) {
+            return sampleDiagFixture.expected.diagnosticCodes!.map(c => ({ code: c }))
           }
           return []
         },
       })
 
-      expect(report.total).toBeGreaterThanOrEqual(63)
-      expect(report.passed).toBe(5)
+      expect(report.total).toBe(manifest.fixtures.length)
+      expect(report.passed).toBeGreaterThanOrEqual(2)
       expect(report.skipped).toBeGreaterThan(0)
       expect(report.failed).toBeGreaterThan(0)
     })
@@ -80,7 +81,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
         title: 'Mock addition',
         evidence: 'official',
         verified_at: '2026-10-10',
-        covers: ['operators:addition'],
+        covers: ['operator:+'],
         input: { kind: 'expression', source: '2 + 2', context: { multiplier: 2 } },
         expected: { outcome: 'value', value: 4 },
       },
@@ -89,7 +90,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
         title: 'Mock template',
         evidence: 'observed',
         verified_at: '2026-10-10',
-        covers: ['directives:eval'],
+        covers: ['tag:b:eval'],
         input: { kind: 'template', source: '<b:eval expr="2 + 2"/>' },
         expected: { outcome: 'html', html: '<div>4</div>' },
       },
@@ -98,9 +99,9 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
         title: 'Mock diagnostic rejection',
         evidence: 'official',
         verified_at: '2026-10-10',
-        covers: ['diagnostics:syntax'],
+        covers: ['rule:BX1025'],
         input: { kind: 'template', source: '<b:unknown/>' },
-        expected: { outcome: 'rejected', diagnosticCodes: ['BX9999'] },
+        expected: { outcome: 'rejected', diagnosticCodes: ['BX1025'] },
       },
     ]
 
@@ -113,7 +114,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
             return 4
           },
           renderTemplate: () => '<div>4</div>',
-          analyze: () => [{ code: 'BX9999' }],
+          analyze: () => [{ code: 'BX1025' }],
         },
         { fixtures: mockFixtures },
       )
@@ -134,7 +135,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
 
       const byCovers = runConformance(
         { renderTemplate: () => '<div>4</div>' },
-        { fixtures: mockFixtures, filter: { covers: ['directives:eval'] } },
+        { fixtures: mockFixtures, filter: { covers: ['tag:b:eval'] } },
       )
       expect(byCovers.total).toBe(1)
       expect(byCovers.results[0]?.id).toBe('mock-tpl-1')
@@ -238,7 +239,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
         { fixtures: [mockFixtures[2]!] },
       )
       expect(missingCodeReport.failed).toBe(1)
-      expect(missingCodeReport.results[0]?.message).toContain('Missing expected diagnostic code(s): BX9999')
+      expect(missingCodeReport.results[0]?.message).toContain('Missing expected diagnostic code(s): BX1025')
 
       const throwReport = runConformance(
         {
@@ -298,6 +299,40 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       expect(freshness.allValid).toBe(true)
       expect(freshness.items.length).toBeGreaterThanOrEqual(2)
       expect(freshness.items.every(i => i.valid)).toBe(true)
+    })
+  })
+
+  describe('self-conformance against parser and validator engine', () => {
+    const manifest = JSON.parse(readFileSync(getWorkspacePaths().fixturesManifest, 'utf-8')) as BloggerFixturesManifest
+
+    it('parses all positive expression fixtures without syntax errors and within budget', () => {
+      const positiveExprs = manifest.fixtures.filter(f => f.input.kind === 'expression' && f.expected.outcome === 'value')
+      expect(positiveExprs.length).toBeGreaterThan(100)
+
+      for (const f of positiveExprs) {
+        expect(() => parseExpression(f.input.source)).not.toThrow()
+        const budget = evaluateExpressionBudget(f.input.source)
+        expect(budget.isValid, `Expression '${f.input.source}' in fixture '${f.id}' exceeded quota budget`).toBe(true)
+      }
+    })
+
+    it('validates negative syntax fixtures and produces expected diagnostics', () => {
+      const negativeFixtures = manifest.fixtures.filter(f => f.expected.outcome === 'rejected' && f.expected.diagnosticCodes)
+      expect(negativeFixtures.length).toBeGreaterThan(40)
+
+      for (const f of negativeFixtures) {
+        let diags: Array<{ code: string }> = []
+        if (f.input.kind === 'expression') {
+          diags = validateExpression(f.input.source)
+        }
+        else {
+          diags = validateTemplateStructure(f.input.source, undefined, { validateExpressions: true })
+        }
+        const actualCodes = new Set(diags.map(d => d.code))
+        for (const expectedCode of f.expected.diagnosticCodes || []) {
+          expect(actualCodes.has(expectedCode), `Fixture '${f.id}' expected diagnostic '${expectedCode}' but got [${Array.from(actualCodes).join(', ')}]`).toBe(true)
+        }
+      }
     })
   })
 })

@@ -1,6 +1,7 @@
 import type { CatalogStore } from '../catalogs/store.js'
 import type { BloggerCatalogName } from '../types.js'
-import { readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import addFormats from 'ajv-formats'
 import Ajv2020 from 'ajv/dist/2020.js'
 import { FsCatalogStore } from '../catalogs/fs-store.js'
@@ -571,7 +572,66 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
     }
     const validCoverPrefixes = new Set(['tag', 'operator', 'rule', 'type', 'modifier', 'subsystem', 'semantics'])
 
+    // Direct validation of individual fixture suite files in paths.fixtures
+    const fixturePaths = getWorkspacePaths().fixtures
+    if (existsSync(fixturePaths)) {
+      const suiteCategories = readdirSync(fixturePaths, { withFileTypes: true })
+        .filter(d => d.isDirectory())
+        .map(d => d.name)
+
+      for (const cat of suiteCategories) {
+        const catDir = join(fixturePaths, cat)
+        const suiteFiles = readdirSync(catDir).filter(f => f.endsWith('.json'))
+        for (const file of suiteFiles) {
+          const filePath = join(catDir, file)
+          const relPath = `${cat}/${file}`
+          try {
+            const suiteData = JSON.parse(readFileSync(filePath, 'utf-8'))
+            if (!suiteData || typeof suiteData !== 'object') {
+              errors.push(`Suite file '${relPath}' must contain a valid JSON object.`)
+              continue
+            }
+            if (!suiteData.subsystem || typeof suiteData.subsystem !== 'string') {
+              errors.push(`Suite file '${relPath}' is missing mandatory string property 'subsystem'.`)
+            }
+            else if (!knownSubsystems.has(suiteData.subsystem)) {
+              errors.push(`Suite file '${relPath}' declares unknown subsystem '${suiteData.subsystem}'.`)
+            }
+            if (!Array.isArray(suiteData.fixtures)) {
+              errors.push(`Suite file '${relPath}' is missing mandatory array property 'fixtures'.`)
+            }
+          }
+          catch (err: any) {
+            errors.push(`Suite file '${relPath}' failed to parse: ${err.message}`)
+          }
+        }
+      }
+    }
+
+    const seenIds = new Set<string>()
+    const seenInputs = new Map<string, { id: string, outcome: string }>()
+
     for (const fixture of manifest.fixtures || []) {
+      if (seenIds.has(fixture.id)) {
+        errors.push(`Duplicate fixture ID detected: '${fixture.id}'.`)
+      }
+      else {
+        seenIds.add(fixture.id)
+      }
+
+      if ((fixture as any).input?.kind && (fixture as any).input?.source) {
+        const inputKey = `${(fixture as any).input.kind}::${(fixture as any).input.source}::${JSON.stringify((fixture as any).input.context || {})}`
+        const existing = seenInputs.get(inputKey)
+        if (existing) {
+          if (existing.outcome !== fixture.expected?.outcome) {
+            errors.push(`Contradictory fixtures detected for identical input ('${(fixture as any).input.source}'): '${existing.id}' (${existing.outcome}) vs '${fixture.id}' (${fixture.expected?.outcome}).`)
+          }
+        }
+        else if (fixture.expected?.outcome) {
+          seenInputs.set(inputKey, { id: fixture.id, outcome: fixture.expected.outcome })
+        }
+      }
+
       if (!fixtureValidate(fixture)) {
         for (const err of fixtureValidate.errors || []) {
           errors.push(`Fixture '${fixture.id}': ${err.instancePath || '/'} ${err.message}`)

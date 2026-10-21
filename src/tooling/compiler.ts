@@ -58,13 +58,18 @@ export function buildDts(): void {
 export function generateFixturesManifest(): BloggerFixturesManifest {
   const paths = getWorkspacePaths()
   const allFixtures: any[] = []
-  const categories = ['expressions', 'templates', 'diagnostics']
+  const categories = existsSync(paths.fixtures)
+    ? readdirSync(paths.fixtures, { withFileTypes: true })
+        .filter(d => d.isDirectory())
+        .map(d => d.name)
+        .sort()
+    : []
 
   for (const cat of categories) {
     const catDir = join(paths.fixtures, cat)
     if (!existsSync(catDir))
       continue
-    const files = readdirSync(catDir).filter((f: string) => f.endsWith('.json'))
+    const files = readdirSync(catDir).filter((f: string) => f.endsWith('.json')).sort()
     for (const f of files) {
       const data = JSON.parse(readFileSync(join(catDir, f), 'utf-8'))
       if (Array.isArray(data.fixtures)) {
@@ -77,15 +82,19 @@ export function generateFixturesManifest(): BloggerFixturesManifest {
   const negative = allFixtures.filter(f => f.expected.outcome === 'rejected')
 
   const coversSet = new Set<string>()
+  let latestVerifiedAt = '2026-01-01'
   for (const f of allFixtures) {
     for (const c of f.covers || []) {
       coversSet.add(c)
+    }
+    if (f.verified_at && f.verified_at > latestVerifiedAt) {
+      latestVerifiedAt = f.verified_at
     }
   }
 
   return {
     version: '1.0.0',
-    generatedAt: new Date().toISOString().split('T')[0],
+    generatedAt: latestVerifiedAt,
     metrics: {
       totalFixtures: allFixtures.length,
       positiveFixtures: positive.length,
@@ -346,7 +355,8 @@ export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): Veri
       const freshManifest = generateFixturesManifest()
       const count = currentManifest.fixtures?.length || 0
       const fixturesMatch = JSON.stringify(currentManifest.fixtures) === JSON.stringify(freshManifest.fixtures)
-      const valid = fixturesMatch && count > 0
+      const metricsMatch = JSON.stringify(currentManifest.metrics) === JSON.stringify(freshManifest.metrics)
+      const valid = fixturesMatch && metricsMatch && count > 0
       items.push({
         name: 'fixtures/index.json',
         valid,

@@ -9,6 +9,7 @@ import type {
 } from '../types.js'
 import type { Token } from './lexer.js'
 import { getSpecCatalog } from '../catalogs/index.js'
+import { resolveDataPath } from '../data-path.js'
 import { evaluateExpressionBudget } from '../quota.js'
 import { scanDirectiveTokens } from './directive-scanner.js'
 import { parseExpression } from './expr-parser.js'
@@ -99,6 +100,17 @@ function validateNestingRules(
     const diagCode = catalog.getHallucinatedDirectiveDiagnostic(token.tagName)
       ?? catalog.getStandardDiagnostic('prohibited_nesting')
     pushDiagnostic(diagnostics, catalog, diagCode, token)
+    return
+  }
+
+  const lowerTag = token.tagName.toLowerCase()
+  if (lowerTag.startsWith('b:') && !catalog.isDirective(token.tagName) && !catalog.isDirective(lowerTag)) {
+    const diagCode = (catalog.getStandardDiagnostic('unknown_directive') || 'BX1025') as BloggerDiagnosticCode
+    const diagRule = catalog.getDiagnostic(diagCode)
+    pushDiagnostic(diagnostics, catalog, diagCode, token, {
+      rule: diagRule,
+      message: diagRule?.message ?? `Unknown directive '<${token.tagName}>' in Blogger 'b:' XML namespace.`,
+    })
     return
   }
 
@@ -810,10 +822,27 @@ export function validateExpression(
     }
   }
 
-  // 3. Structural AST checks (BX1046: Non-standard braced collections)
+  // 3. Structural AST checks (BX1046: Non-standard braced collections, BX1026: Prohibited Date Relational Comparison)
   try {
     const ast = parseExpression(unescaped, { catalog, tolerant: true })
     walkExpressionAst(ast, (node) => {
+      if (node.type === 'BinaryExpression') {
+        const relOps = new Set(['<', '<=', '>', '>=', 'lt', 'lte', 'gt', 'gte'])
+        if (relOps.has(node.operator)) {
+          if (isDateExpressionNode(node.left, catalog) || isDateExpressionNode(node.right, catalog)) {
+            const diagRule = catalog.getDiagnostic('BX1026')
+            const startOffset = node.loc?.start.offset ?? 0
+            const endOffset = node.loc?.end.offset ?? startOffset + 1
+            pushDiagnostic(diagnostics, catalog, 'BX1026', fakeToken, {
+              attribute: context?.attributeName,
+              start: baseStart + mapOffset(startOffset),
+              end: baseStart + mapOffset(endOffset),
+              message: diagRule?.message ?? 'Direct relational comparison (<, <=, >, >=) on date objects is prohibited in Blogger expressions. Compare numeric timestamp or formatted string modifiers instead.',
+            })
+          }
+        }
+      }
+
       if (node.type === 'ArrayExpression' && node.isBraced && node.loc) {
         const diagRule = catalog.getDiagnostic('BX1046')
         pushDiagnostic(diagnostics, catalog, 'BX1046', fakeToken, {
@@ -894,6 +923,58 @@ function walkExpressionAst(node: BloggerExpressionNode, visitor: (n: BloggerExpr
   }
 }
 
+function getExpressionPath(node: BloggerExpressionNode): string | undefined {
+  if (node.type === 'Identifier') {
+    return node.name
+  }
+  if (node.type === 'MemberExpression' && !node.computed && node.property.type === 'Identifier') {
+    const objPath = getExpressionPath(node.object)
+    return objPath ? `${objPath}.${node.property.name}` : node.property.name
+  }
+  return undefined
+}
+
+function isDateExpressionNode(node: BloggerExpressionNode, catalog: SpecCatalog): boolean {
+  if (node.type === 'DataPath') {
+    const raw = (node as any).raw || ''
+    const cleanPath = raw.startsWith('data:') ? raw.slice(5) : raw
+    if (cleanPath.endsWith('.date') || cleanPath === 'date') {
+      return true
+    }
+    const lastMember = (node as any).members?.[(node as any).members?.length - 1]
+    if (lastMember && typeof lastMember.property === 'string') {
+      const p = lastMember.property.toLowerCase()
+      if (p === 'date' || p === 'published' || p === 'lastmodified') {
+        return true
+      }
+    }
+    const resolved = resolveDataPath(cleanPath, { catalog })
+    if (resolved?.type === 'date') {
+      return true
+    }
+    return false
+  }
+
+  if (node.type === 'MemberExpression' && !node.computed && node.property.type === 'Identifier') {
+    const propName = node.property.name.toLowerCase()
+    if (propName === 'date' || propName === 'published' || propName === 'lastmodified' || propName === 'timestamp') {
+      return true
+    }
+  }
+  const fullPath = getExpressionPath(node)
+  if (fullPath) {
+    const cleanPath = fullPath.startsWith('data:') ? fullPath.slice(5) : fullPath
+    if (cleanPath.endsWith('.date') || cleanPath === 'date') {
+      return true
+    }
+    const resolved = resolveDataPath(cleanPath, { catalog })
+    if (resolved?.type === 'date') {
+      return true
+    }
+  }
+  return false
+}
+
 export function validateTemplateExpressions(
   tokensOrXml: readonly BloggerDirectiveToken[] | string,
   catalog: SpecCatalog = getSpecCatalog(),
@@ -961,6 +1042,8 @@ export function validateTemplateStructure(
   const tagStack: BloggerDirectiveToken[] = []
   const globalSectionWidgetIds = new Map<string, BloggerDirectiveToken>()
   const containerIncludableIds = new Map<BloggerDirectiveToken, Set<string>>()
+  const pendingIncludes: Array<{ token: BloggerDirectiveToken, container: BloggerDirectiveToken }> = []
+  const defaultMarkupIncludableIds = new Set<string>()
 
   interface ActiveMessageContext {
     readonly token: BloggerDirectiveToken
@@ -1036,8 +1119,48 @@ export function validateTemplateStructure(
     validateDataElement(token, catalog, diagnostics)
     validateIncludeElement(token, catalog, diagnostics)
 
+    if (token.tagName === 'b:includable' && !token.isClosing) {
+      if (tagStack.some(t => t.tagName === 'b:defaultmarkup')) {
+        const idVal = token.attributes.id?.value?.trim()
+        if (idVal) {
+          defaultMarkupIncludableIds.add(idVal)
+        }
+      }
+    }
+
+    if (token.tagName === 'b:include' && !token.isClosing) {
+      const enclosingWidget = tagStack.slice().reverse().find(t => t.tagName === 'b:widget')
+      if (enclosingWidget) {
+        pendingIncludes.push({ token, container: enclosingWidget })
+      }
+    }
+
     if (!token.isSelfClosing) {
       tagStack.push(token)
+    }
+  }
+
+  for (const { token, container } of pendingIncludes) {
+    const nameAttr = token.attributes.name
+    if (nameAttr?.value) {
+      const name = nameAttr.value.trim()
+      const isSuper = name.startsWith('super.')
+      const isDynamic = name.includes('{') || name.startsWith('data:')
+      const isServerInclusion = Boolean(catalog.getInclusion(name))
+      const widgetIncludables = containerIncludableIds.get(container)
+      const isInWidget = widgetIncludables?.has(name) ?? false
+      const isInDefaultMarkup = defaultMarkupIncludableIds.has(name)
+
+      if (!isSuper && !isDynamic && !isServerInclusion && !isInWidget && !isInDefaultMarkup) {
+        const diagCode = (catalog.getStandardDiagnostic('unresolved_inclusion') || 'BX1037') as BloggerDiagnosticCode
+        const diagRule = catalog.getDiagnostic(diagCode)
+        pushDiagnostic(diagnostics, catalog, diagCode, token, {
+          attribute: nameAttr.name,
+          start: nameAttr.start,
+          end: nameAttr.end,
+          message: diagRule?.message ?? `Referenced includable '${name}' was not found within the current widget, parent widget, or default markup.`,
+        })
+      }
     }
   }
 

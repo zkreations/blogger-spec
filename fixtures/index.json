@@ -1,13 +1,1045 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-10-21",
+  "generatedAt": "2026-10-20",
   "metrics": {
-    "totalFixtures": 256,
-    "positiveFixtures": 207,
+    "totalFixtures": 254,
+    "positiveFixtures": 205,
     "negativeFixtures": 49,
     "coveredSpecEntities": 210
   },
   "fixtures": [
+    {
+      "id": "diagnostics/negative_syntax/prohibited-for-tag",
+      "title": "Prohibited <b:for> Loop Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1001"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:for each='i in [1, 2, 3]'><data:i/></b:for>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1001"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-10"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-set-tag",
+      "title": "Prohibited <b:set> Assignment Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1003"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:set var='foo' value='123'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1003"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-10"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-hyphen-elseif",
+      "title": "Prohibited Hyphenated <b:else-if>",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1006"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.isPost'><p>A</p><b:else-if cond='data:view.isPage'/><p>B</p></b:if>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1006"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-10"
+    },
+    {
+      "id": "diagnostics/negative_syntax/inverted-includable-attributes",
+      "title": "Inverted Includable Name and Include Id",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1015",
+        "rule:BX1016"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:includable name='mainWidget'><b:include id='mainWidget'/></b:includable>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1015",
+          "BX1016"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-10"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-javascript-array-methods",
+      "title": "Prohibited JavaScript Array Filter And Slice Methods",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1017"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts.filter(p => p.id).slice(0, 5)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1017"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-10"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-javascript-strict-equality",
+      "title": "Prohibited JavaScript Strict Equality Operator",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1018"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:view.pageType === \"item\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1018"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-10"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-lambda-data-prefix",
+      "title": "Prohibited Lambda Iterator Data Prefix",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1019"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:posts count (p => data:p.numberOfComments > 0)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1019"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-11"
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-null-literal",
+      "title": "Prohibited Literal Null Comparison In Expression",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1020"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.author == null",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1020"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-10"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-closing-eval-delimiter",
+      "title": "Prohibited Closing Tag For Self-Closing b:eval Directive",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1013"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:eval expr='data:blog.title'></b:eval>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1013"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-11"
+    },
+    {
+      "id": "diagnostics/negative_syntax/switch-uses-expr-instead-of-var",
+      "title": "b:switch Directive Using expr Instead of var",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1014"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:switch expr='data:view.pageType'><b:case value='item'/>A<b:default/>B</b:switch>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1014"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-10"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-date-relational-comparison",
+      "title": "Prohibited Direct Date Relational Comparison",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1026"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:post.date < data:post.date",
+        "context": {
+          "post": {
+            "date": "2026-08-29T14:48:00-05:00"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1026"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-12"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-literal-null-empty-comparison",
+      "title": "Prohibited Literal Null Equality With Empty String",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1020"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "null == \"\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1020"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-12"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-each-tag",
+      "title": "Prohibited <b:each> Loop Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1002"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:each var='i' in='[1, 2, 3]'><data:i/></b:each>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1002"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-var-tag",
+      "title": "Prohibited <b:var> Variable Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1004"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:var name='foo' value='123'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1004"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-let-tag",
+      "title": "Prohibited <b:let> Variable Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1005"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:let name='foo' value='123'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1005"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-choose-tag",
+      "title": "Prohibited <b:choose> Conditional Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1007"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:choose><b:when test='data:view.isPost'>A</b:when></b:choose>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1007"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-when-tag",
+      "title": "Prohibited <b:when> Branch Tag In Switch",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1008"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:switch var='data:view.pageType'><b:when value='item'>A</b:when></b:switch>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1008"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-otherwise-tag",
+      "title": "Prohibited <b:otherwise> Default Tag In Switch",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1009"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:switch var='data:view.pageType'><b:case value='item'/>A<b:otherwise>B</b:otherwise></b:switch>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1009"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-template-tag",
+      "title": "Prohibited <b:template> Subroutine Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1010"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:template name='main'><div>Content</div></b:template>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1010"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-macro-tag",
+      "title": "Prohibited <b:macro> Helper Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1011"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:macro name='snippet'><div>Content</div></b:macro>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1011"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-function-tag",
+      "title": "Prohibited <b:function> Definition Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1012"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:function name='calc'><div>Content</div></b:function>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1012"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/expression-token-quota-exceeded",
+      "title": "Expression Token Quota Exceeded (40 Token Limit)",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1021"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17 + 18 + 19 + 20 + 21",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1021"
+        ],
+        "stage": "quota"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/expression-token-quota-approaching",
+      "title": "Expression Token Quota Approaching Warning",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1045"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17 + 18",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1045"
+        ],
+        "stage": "quota"
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "diagnostics/negative_syntax/mandatory-attribute-missing",
+      "title": "Mandatory Directive Attribute Missing In b:loop",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1022"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:loop var='i'><data:i/></b:loop>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1022"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-directive-nesting",
+      "title": "Prohibited Directive Nesting (b:includable outside b:widget)",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1023"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:includable id='main'><div>Content</div></b:includable></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1023"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/deprecated-directive-attribute",
+      "title": "Deprecated Directive Attribute In Layouts V3",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1024"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Header1' type='Header' mobile='yes'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1024"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/unknown-directive-in-blogger-namespace",
+      "title": "Unknown Directive In Blogger Namespace",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1025"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:unknownDirective var='test'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1025"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/direct-parameterized-message-invocation",
+      "title": "Direct Parameterized Message Invocation Warning",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1027"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:messages.byAuthor/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1027"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/plural-message-param-missing-name",
+      "title": "Plural Message Param Missing Name Attribute",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1028"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.numberOfComments'><b:param value='5'/></b:message>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1028"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/inline-concatenated-message-params",
+      "title": "Inline Concatenated Message Params Without Whitespace",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1029"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.templateImagesByLink'><b:param value='https://example.com/designer'/><b:param value='Jane Designer'/></b:message>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1029"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-unary-expression-negation",
+      "title": "Prohibited Unary Negation on Compound Parenthesized Expression",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1030"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "-(10 - 3)"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1030"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/non-object-include-data-payload",
+      "title": "Non-Object Scalar Payload Passed to b:include data Attribute",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1031"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='sub' var='p'><data:p/></b:includable></b:defaultmarkup></b:defaultmarkups><b:include data='\"scalar string\"' name='sub'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1031"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-bracket-indexing-in-data-tag",
+      "title": "Prohibited Direct Bracket Indexing in data:* Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1032"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:items[0]/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1032"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-14"
+    },
+    {
+      "id": "diagnostics/negative_syntax/duplicate-element-id",
+      "title": "Duplicate Section or Widget Identifier",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1033"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'/><b:section id='main'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1033"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-15"
+    },
+    {
+      "id": "diagnostics/negative_syntax/widget-outside-section",
+      "title": "Widget Declared Outside Section",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1034"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Header1' type='Header'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1034"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-15"
+    },
+    {
+      "id": "diagnostics/negative_syntax/nested-section",
+      "title": "Nested Section Container Prohibited",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1035"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='outer'><b:section id='inner'/></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1035"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-15"
+    },
+    {
+      "id": "diagnostics/negative_syntax/duplicate-includable-id",
+      "title": "Duplicate Includable Identifier in Widget",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1036"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Blog1' type='Blog'><b:includable id='main'/><b:includable id='main'/></b:widget>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1036"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-15"
+    },
+    {
+      "id": "diagnostics/negative_syntax/unresolved-inclusion",
+      "title": "Unresolved Includable Reference in b:include",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1037"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Blog1' type='Blog'><b:includable id='main'><b:include name='nonExistentIncludable'/></b:includable></b:widget>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1037"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-15"
+    },
+    {
+      "id": "diagnostics/negative_syntax/string-boolean-in-expression",
+      "title": "String Quoted Boolean Literal in Expression",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1038"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.isPost == \"true\"'><p>Post</p></b:if>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1038"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-15"
+    },
+    {
+      "id": "diagnostics/negative_syntax/empty-required-attribute",
+      "title": "Empty Required Attribute on Directive",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1039"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id=''/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1039"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-15"
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-variable-type-attribute",
+      "title": "Invalid Attribute for Variable Type",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1040"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<Variable name='bg' description='Color' type='color' min='10px' default='#fff' value='#fff'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1040"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-15"
+    },
+    {
+      "id": "diagnostics/negative_syntax/mismatched-or-unclosed-tag",
+      "title": "Mismatched or Unclosed XML Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1041"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:widget id='Blog1'></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1041"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "diagnostics/negative_syntax/disallowed-expression-attribute",
+      "title": "Disallowed Expression on Static Attribute",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1042"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section expr:id='data:blog.id'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1042"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-16"
+    },
+    {
+      "id": "diagnostics/negative_syntax/disallowed-attribute-value",
+      "title": "Disallowed Directive Attribute Value",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1043"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main' tag='notAValidTag'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1043"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-18"
+    },
+    {
+      "id": "diagnostics/negative_syntax/fatal-operator-arity",
+      "title": "Fatal Operator Arity Crashing Backend",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1044"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "eq(5)"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1044"
+        ],
+        "stage": "compiler"
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "diagnostics/negative_syntax/non-standard-braced-collection",
+      "title": "Non-Standard Braced Collection In Expression",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1046"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.pageType in {\"index\", \"archive\"}'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1046"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-widget-id-schema",
+      "title": "Invalid Widget ID Not Matching Type And Index",
+      "evidence": "official",
+      "covers": [
+        "rule:BX1047"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:widget id='global_collision_id' type='Blog'/></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1047"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-19"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-operator-in-data-tag",
+      "title": "Prohibited Expression Operator in data:* Tag",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1048"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:post.title ?: 'Default'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1048"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-20"
+    },
+    {
+      "id": "diagnostics/negative_syntax/object-literal-colon-whitespace-missing",
+      "title": "Missing Whitespace After Colon in Object Literal",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1049"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "{key:\"value\"}"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1049"
+        ],
+        "stage": "parser"
+      },
+      "verified_at": "2026-10-20"
+    },
     {
       "id": "expressions/arithmetic/addition-integers",
       "title": "Addition Integers",
@@ -1921,26 +2953,6 @@
       "verified_at": "2026-10-10"
     },
     {
-      "id": "expressions/logical_and_comparisons/elvis-fallback-empty-string",
-      "title": "Elvis Fallback Empty String",
-      "evidence": "observed",
-      "covers": [
-        "subsystem:logical_and_comparisons"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "data:emptyTitle ?: \"Untitled\"",
-        "context": {
-          "emptyTitle": ""
-        }
-      },
-      "expected": {
-        "outcome": "value",
-        "value": ""
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
       "id": "expressions/logical_and_comparisons/ternary-conditional",
       "title": "Ternary Conditional",
       "evidence": "official",
@@ -2005,25 +3017,6 @@
         "value": "FALLBACK"
       },
       "verified_at": "2026-10-10"
-    },
-    {
-      "id": "expressions/logical_and_comparisons/elvis-fallback-number-zero",
-      "title": "Elvis Fallback Does Not Trigger On Numeric Zero",
-      "evidence": "observed",
-      "covers": [
-        "subsystem:logical_and_comparisons",
-        "operator:?:"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "0 ?: \"FALLBACK\"",
-        "context": {}
-      },
-      "expected": {
-        "outcome": "value",
-        "value": 0
-      },
-      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/logical_and_comparisons/elvis-fallback-boolean-false",
@@ -4805,1038 +5798,6 @@
         "canonicalDom": true
       },
       "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-for-tag",
-      "title": "Prohibited <b:for> Loop Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1001"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:for each='i in [1, 2, 3]'><data:i/></b:for>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1001"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-set-tag",
-      "title": "Prohibited <b:set> Assignment Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1003"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:set var='foo' value='123'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1003"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-hyphen-elseif",
-      "title": "Prohibited Hyphenated <b:else-if>",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1006"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:if cond='data:view.isPost'><p>A</p><b:else-if cond='data:view.isPage'/><p>B</p></b:if>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1006"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "diagnostics/negative_syntax/inverted-includable-attributes",
-      "title": "Inverted Includable Name and Include Id",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1015",
-        "rule:BX1016"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:includable name='mainWidget'><b:include id='mainWidget'/></b:includable>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1015",
-          "BX1016"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-javascript-array-methods",
-      "title": "Prohibited JavaScript Array Filter And Slice Methods",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1017"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "data:posts.filter(p => p.id).slice(0, 5)",
-        "context": {}
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1017"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-javascript-strict-equality",
-      "title": "Prohibited JavaScript Strict Equality Operator",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1018"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "data:view.pageType === \"item\"",
-        "context": {}
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1018"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-lambda-data-prefix",
-      "title": "Prohibited Lambda Iterator Data Prefix",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1019"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "data:posts count (p => data:p.numberOfComments > 0)",
-        "context": {}
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1019"
-        ],
-        "stage": "linter"
-      },
-      "verified_at": "2026-10-11"
-    },
-    {
-      "id": "diagnostics/negative_syntax/invalid-null-literal",
-      "title": "Prohibited Literal Null Comparison In Expression",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1020"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "data:post.author == null",
-        "context": {}
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1020"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-closing-eval-delimiter",
-      "title": "Prohibited Closing Tag For Self-Closing b:eval Directive",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1013"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:eval expr='data:blog.title'></b:eval>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1013"
-        ],
-        "stage": "linter"
-      },
-      "verified_at": "2026-10-11"
-    },
-    {
-      "id": "diagnostics/negative_syntax/switch-uses-expr-instead-of-var",
-      "title": "b:switch Directive Using expr Instead of var",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1014"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:switch expr='data:view.pageType'><b:case value='item'/>A<b:default/>B</b:switch>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1014"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-date-relational-comparison",
-      "title": "Prohibited Direct Date Relational Comparison",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1026"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "data:post.date < data:post.date",
-        "context": {
-          "post": {
-            "date": "2026-08-29T14:48:00-05:00"
-          }
-        }
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1026"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-12"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-literal-null-empty-comparison",
-      "title": "Prohibited Literal Null Equality With Empty String",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1020"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "null == \"\"",
-        "context": {}
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1020"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-12"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-each-tag",
-      "title": "Prohibited <b:each> Loop Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1002"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:each var='i' in='[1, 2, 3]'><data:i/></b:each>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1002"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-var-tag",
-      "title": "Prohibited <b:var> Variable Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1004"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:var name='foo' value='123'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1004"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-let-tag",
-      "title": "Prohibited <b:let> Variable Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1005"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:let name='foo' value='123'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1005"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-choose-tag",
-      "title": "Prohibited <b:choose> Conditional Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1007"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:choose><b:when test='data:view.isPost'>A</b:when></b:choose>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1007"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-when-tag",
-      "title": "Prohibited <b:when> Branch Tag In Switch",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1008"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:switch var='data:view.pageType'><b:when value='item'>A</b:when></b:switch>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1008"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-otherwise-tag",
-      "title": "Prohibited <b:otherwise> Default Tag In Switch",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1009"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:switch var='data:view.pageType'><b:case value='item'/>A<b:otherwise>B</b:otherwise></b:switch>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1009"
-        ],
-        "stage": "linter"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-template-tag",
-      "title": "Prohibited <b:template> Subroutine Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1010"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:template name='main'><div>Content</div></b:template>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1010"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-macro-tag",
-      "title": "Prohibited <b:macro> Helper Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1011"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:macro name='snippet'><div>Content</div></b:macro>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1011"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-function-tag",
-      "title": "Prohibited <b:function> Definition Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1012"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:function name='calc'><div>Content</div></b:function>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1012"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/expression-token-quota-exceeded",
-      "title": "Expression Token Quota Exceeded (40 Token Limit)",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1021"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17 + 18 + 19 + 20 + 21",
-        "context": {}
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1021"
-        ],
-        "stage": "quota"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/expression-token-quota-approaching",
-      "title": "Expression Token Quota Approaching Warning",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1045"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10 + 11 + 12 + 13 + 14 + 15 + 16 + 17 + 18",
-        "context": {}
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1045"
-        ],
-        "stage": "quota"
-      },
-      "verified_at": "2026-10-19"
-    },
-    {
-      "id": "diagnostics/negative_syntax/mandatory-attribute-missing",
-      "title": "Mandatory Directive Attribute Missing In b:loop",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1022"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:loop var='i'><data:i/></b:loop>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1022"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-directive-nesting",
-      "title": "Prohibited Directive Nesting (b:includable outside b:widget)",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1023"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:section id='main'><b:includable id='main'><div>Content</div></b:includable></b:section>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1023"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/deprecated-directive-attribute",
-      "title": "Deprecated Directive Attribute In Layouts V3",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1024"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:widget id='Header1' type='Header' mobile='yes'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1024"
-        ],
-        "stage": "linter"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/unknown-directive-in-blogger-namespace",
-      "title": "Unknown Directive In Blogger Namespace",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1025"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:unknownDirective var='test'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1025"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/direct-parameterized-message-invocation",
-      "title": "Direct Parameterized Message Invocation Warning",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1027"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<data:messages.byAuthor/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1027"
-        ],
-        "stage": "linter"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/plural-message-param-missing-name",
-      "title": "Plural Message Param Missing Name Attribute",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1028"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:message name='messages.numberOfComments'><b:param value='5'/></b:message>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1028"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/inline-concatenated-message-params",
-      "title": "Inline Concatenated Message Params Without Whitespace",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1029"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:message name='messages.templateImagesByLink'><b:param value='https://example.com/designer'/><b:param value='Jane Designer'/></b:message>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1029"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-unary-expression-negation",
-      "title": "Prohibited Unary Negation on Compound Parenthesized Expression",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1030"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "-(10 - 3)"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1030"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/non-object-include-data-payload",
-      "title": "Non-Object Scalar Payload Passed to b:include data Attribute",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1031"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='sub' var='p'><data:p/></b:includable></b:defaultmarkup></b:defaultmarkups><b:include data='\"scalar string\"' name='sub'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1031"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-bracket-indexing-in-data-tag",
-      "title": "Prohibited Direct Bracket Indexing in data:* Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1032"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<data:items[0]/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1032"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-14"
-    },
-    {
-      "id": "diagnostics/negative_syntax/duplicate-element-id",
-      "title": "Duplicate Section or Widget Identifier",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1033"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:section id='main'/><b:section id='main'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1033"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-15"
-    },
-    {
-      "id": "diagnostics/negative_syntax/widget-outside-section",
-      "title": "Widget Declared Outside Section",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1034"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:widget id='Header1' type='Header'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1034"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-15"
-    },
-    {
-      "id": "diagnostics/negative_syntax/nested-section",
-      "title": "Nested Section Container Prohibited",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1035"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:section id='outer'><b:section id='inner'/></b:section>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1035"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-15"
-    },
-    {
-      "id": "diagnostics/negative_syntax/duplicate-includable-id",
-      "title": "Duplicate Includable Identifier in Widget",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1036"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:widget id='Blog1' type='Blog'><b:includable id='main'/><b:includable id='main'/></b:widget>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1036"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-15"
-    },
-    {
-      "id": "diagnostics/negative_syntax/unresolved-inclusion",
-      "title": "Unresolved Includable Reference in b:include",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1037"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:widget id='Blog1' type='Blog'><b:includable id='main'><b:include name='nonExistentIncludable'/></b:includable></b:widget>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1037"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-15"
-    },
-    {
-      "id": "diagnostics/negative_syntax/string-boolean-in-expression",
-      "title": "String Quoted Boolean Literal in Expression",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1038"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:if cond='data:view.isPost == \"true\"'><p>Post</p></b:if>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1038"
-        ],
-        "stage": "linter"
-      },
-      "verified_at": "2026-10-15"
-    },
-    {
-      "id": "diagnostics/negative_syntax/empty-required-attribute",
-      "title": "Empty Required Attribute on Directive",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1039"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:section id=''/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1039"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-15"
-    },
-    {
-      "id": "diagnostics/negative_syntax/invalid-variable-type-attribute",
-      "title": "Invalid Attribute for Variable Type",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1040"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<Variable name='bg' description='Color' type='color' min='10px' default='#fff' value='#fff'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1040"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-15"
-    },
-    {
-      "id": "diagnostics/negative_syntax/mismatched-or-unclosed-tag",
-      "title": "Mismatched or Unclosed XML Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1041"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:section id='main'><b:widget id='Blog1'></b:section>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1041"
-        ],
-        "stage": "linter"
-      },
-      "verified_at": "2026-10-16"
-    },
-    {
-      "id": "diagnostics/negative_syntax/disallowed-expression-attribute",
-      "title": "Disallowed Expression on Static Attribute",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1042"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:section expr:id='data:blog.id'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1042"
-        ],
-        "stage": "linter"
-      },
-      "verified_at": "2026-10-16"
-    },
-    {
-      "id": "diagnostics/negative_syntax/disallowed-attribute-value",
-      "title": "Disallowed Directive Attribute Value",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1043"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:section id='main' tag='notAValidTag'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1043"
-        ],
-        "stage": "linter"
-      },
-      "verified_at": "2026-10-18"
-    },
-    {
-      "id": "diagnostics/negative_syntax/fatal-operator-arity",
-      "title": "Fatal Operator Arity Crashing Backend",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1044"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "eq(5)"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1044"
-        ],
-        "stage": "compiler"
-      },
-      "verified_at": "2026-10-19"
-    },
-    {
-      "id": "diagnostics/negative_syntax/non-standard-braced-collection",
-      "title": "Non-Standard Braced Collection In Expression",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1046"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:if cond='data:view.pageType in {\"index\", \"archive\"}'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1046"
-        ],
-        "stage": "linter"
-      },
-      "verified_at": "2026-10-19"
-    },
-    {
-      "id": "diagnostics/negative_syntax/invalid-widget-id-schema",
-      "title": "Invalid Widget ID Not Matching Type And Index",
-      "evidence": "official",
-      "covers": [
-        "rule:BX1047"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<b:section id='main'><b:widget id='global_collision_id' type='Blog'/></b:section>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1047"
-        ],
-        "stage": "linter"
-      },
-      "verified_at": "2026-10-19"
-    },
-    {
-      "id": "diagnostics/negative_syntax/prohibited-operator-in-data-tag",
-      "title": "Prohibited Expression Operator in data:* Tag",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1048"
-      ],
-      "input": {
-        "kind": "template",
-        "source": "<data:post.title ?: 'Default'/>",
-        "mode": "fragment"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1048"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-20"
-    },
-    {
-      "id": "diagnostics/negative_syntax/object-literal-colon-whitespace-missing",
-      "title": "Missing Whitespace After Colon in Object Literal",
-      "evidence": "observed",
-      "covers": [
-        "rule:BX1049"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "{key:\"value\"}"
-      },
-      "expected": {
-        "outcome": "rejected",
-        "diagnosticCodes": [
-          "BX1049"
-        ],
-        "stage": "parser"
-      },
-      "verified_at": "2026-10-20"
     }
   ]
 }

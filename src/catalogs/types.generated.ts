@@ -2198,3 +2198,47 @@ export interface BloggerCatalogMap {
   types: BloggerTypesCatalog;
   widgets: BloggerWidgetsCatalog;
 }
+
+// =========================================================================
+// Conformance Fixtures & Manifest Models
+// =========================================================================
+
+export interface BloggerFixtureInput {
+  kind: 'expression' | 'template';
+  source: string;
+  mode?: 'fragment' | 'full_document';
+  context?: Record<string, any>;
+}
+
+export interface BloggerFixtureExpected {
+  outcome: 'value' | 'html' | 'rejected';
+  value?: any;
+  html?: string;
+  canonicalDom?: boolean;
+  diagnosticCodes?: BloggerDiagnosticCode[];
+  stage?: 'parser' | 'compiler' | 'quota' | 'linter';
+}
+
+export interface BloggerFixture {
+  id: string;
+  title: string;
+  evidence: BloggerEvidenceLevel;
+  verified_at: string;
+  covers: string[];
+  input: BloggerFixtureInput;
+  expected: BloggerFixtureExpected;
+}
+
+export interface BloggerFixturesManifestMetrics {
+  totalFixtures: number;
+  positiveFixtures: number;
+  negativeFixtures: number;
+  coveredSpecEntities: number;
+}
+
+export interface BloggerFixturesManifest {
+  version: string;
+  generatedAt: string;
+  metrics: BloggerFixturesManifestMetrics;
+  fixtures: BloggerFixture[];
+}
