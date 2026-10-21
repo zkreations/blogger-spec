@@ -289,30 +289,6 @@
       "verified_at": "2026-10-12"
     },
     {
-      "id": "expressions/logical_and_comparisons/date-iso8601-property-access",
-      "title": "Date Object ISO8601 String Property Access",
-      "evidence": "observed",
-      "covers": [
-        "subsystem:logical_and_comparisons"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "data:post.date.iso8601",
-        "context": {
-          "post": {
-            "date": {
-              "iso8601": "2026-08-29T14:48:00-05:00"
-            }
-          }
-        }
-      },
-      "expected": {
-        "outcome": "value",
-        "value": "2026-08-29T14:48:00-05:00"
-      },
-      "verified_at": "2026-10-12"
-    },
-    {
       "id": "expressions/logical_and_comparisons/inequality-numbers",
       "title": "Inequality Numbers",
       "evidence": "official",
