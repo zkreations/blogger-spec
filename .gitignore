@@ -1,6 +1,7 @@
 .codegraph
 node_modules/
 dist/
+audit/
 *.log
 .DS_Store
 .cache/
