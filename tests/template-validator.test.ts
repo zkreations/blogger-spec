@@ -975,6 +975,12 @@ describe('helpers & canonical structure validation suite', () => {
       const diags = validateExpression(exprNoSpace)
       expect(diags.some(d => d.code === 'BX1049')).toBe(true)
 
+      const exprNoSpaceParen = '{ m:("1") }'
+      expect(validateExpression(exprNoSpaceParen).some(d => d.code === 'BX1049')).toBe(true)
+
+      const exprWithSpaceParen = '{ m: ("1") }'
+      expect(validateExpression(exprWithSpaceParen).filter(d => d.code === 'BX1049')).toHaveLength(0)
+
       const exprWithSpace = '{ key: "val" }'
       expect(validateExpression(exprWithSpace).filter(d => d.code === 'BX1049')).toHaveLength(0)
 

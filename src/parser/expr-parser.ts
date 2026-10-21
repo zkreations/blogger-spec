@@ -716,12 +716,13 @@ export class ExpressionParser {
     }
 
     const colonTok = this.consume('COLON', 'Expected \':\' after object property key')
+    const nextTok = this.peek()
+    const hasWhitespaceAfterColon = (nextTok.start?.offset !== undefined && colonTok.end?.offset !== undefined)
+      ? nextTok.start.offset > colonTok.end.offset
+      : true
+
     const value = this.parseExpression(0)
     const endLoc = value.loc ? { line: value.loc.end.line, column: value.loc.end.column, offset: value.loc.end.offset ?? 0 } : this.peek().end
-
-    const hasWhitespaceAfterColon = (value.loc?.start?.offset !== undefined && colonTok.end.offset !== undefined)
-      ? value.loc.start.offset > colonTok.end.offset
-      : true
 
     return {
       type: 'Property',

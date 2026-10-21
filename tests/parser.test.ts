@@ -535,7 +535,15 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect(obj.type).toBe('ObjectExpression')
       expect(obj.properties.length).toBe(2)
       expect(obj.properties[0]?.key).toBe('length')
+      expect(obj.properties[0]?.hasWhitespaceAfterColon).toBe(true)
       expect(obj.properties[1]?.key).toBe('links')
+      expect(obj.properties[1]?.hasWhitespaceAfterColon).toBe(true)
+
+      const objNoSpaceParenthesized = parseExpression('{ m:("1") }') as any
+      expect(objNoSpaceParenthesized.properties[0]?.hasWhitespaceAfterColon).toBe(false)
+
+      const objWithSpaceParenthesized = parseExpression('{ m: ("1") }') as any
+      expect(objWithSpaceParenthesized.properties[0]?.hasWhitespaceAfterColon).toBe(true)
     })
 
     it('parses member access on identifiers and parenthesized expressions', () => {
