@@ -7,13 +7,14 @@
       "evidence": "official",
       "covers": [
         "subsystem:widget_rendering",
+        "tag:b:section",
         "tag:b:widget",
         "tag:b:includable",
         "tag:data:*"
       ],
       "input": {
         "kind": "template",
-        "source": "<b:widget id='Header1' title='Blog Posts' type='Header' version='2'><b:includable id='main'><h1><data:title/></h1></b:includable></b:widget>",
+        "source": "<b:section id='main'><b:widget id='Header1' title='Blog Posts' type='Header' version='2'><b:includable id='main'><h1><data:title/></h1></b:includable></b:widget></b:section>",
         "mode": "fragment",
         "context": {
           "title": "My Tech Blog"
@@ -21,7 +22,7 @@
       },
       "expected": {
         "outcome": "html",
-        "html": "<div class=\"widget Header\" data-version=\"2\" id=\"Header1\"><h1>My Tech Blog</h1></div>",
+        "html": "<div class=\"section\" id=\"main\"><div class=\"widget Header\" data-version=\"2\" id=\"Header1\"><h1>My Tech Blog</h1></div></div>",
         "canonicalDom": true
       },
       "verified_at": "2026-10-10"
@@ -146,6 +147,7 @@
       "evidence": "observed",
       "covers": [
         "subsystem:widget_rendering",
+        "tag:b:section",
         "tag:b:widget",
         "tag:b:includable",
         "tag:b:class",
@@ -153,13 +155,13 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:widget id='Header2' locked='false' title='Header' type='Header' version='2'><b:includable id='main'><b:class name='header-widget-mutated'/><b:attr name='data-header-wrapper-attr' value='header-wrapper-ok'/><h1>Title</h1></b:includable></b:widget>",
+        "source": "<b:section id='main'><b:widget id='Header2' locked='false' title='Header' type='Header' version='2'><b:includable id='main'><b:class name='header-widget-mutated'/><b:attr name='data-header-wrapper-attr' value='header-wrapper-ok'/><h1>Title</h1></b:includable></b:widget></b:section>",
         "mode": "fragment",
         "context": {}
       },
       "expected": {
         "outcome": "html",
-        "html": "<div class=\"widget Header header-widget-mutated\" data-header-wrapper-attr=\"header-wrapper-ok\" data-version=\"2\" id=\"Header2\"><h1>Title</h1></div>",
+        "html": "<div class=\"section\" id=\"main\"><div class=\"widget Header header-widget-mutated\" data-header-wrapper-attr=\"header-wrapper-ok\" data-version=\"2\" id=\"Header2\"><h1>Title</h1></div></div>",
         "canonicalDom": true
       },
       "verified_at": "2026-10-12"
@@ -170,6 +172,7 @@
       "evidence": "observed",
       "covers": [
         "subsystem:widget_rendering",
+        "tag:b:section",
         "tag:b:widget",
         "tag:b:include",
         "tag:b:includable",
@@ -178,13 +181,13 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><div class='box-wrapper'><b:include name='sub'/></div></b:includable><b:includable id='sub'><b:class name='mutated-from-sub'/><b:attr name='data-sub' value='ok'/><span>Sub Content</span></b:includable></b:widget>",
+        "source": "<b:section id='main'><b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><div class='box-wrapper'><b:include name='sub'/></div></b:includable><b:includable id='sub'><b:class name='mutated-from-sub'/><b:attr name='data-sub' value='ok'/><span>Sub Content</span></b:includable></b:widget></b:section>",
         "mode": "fragment",
         "context": {}
       },
       "expected": {
         "outcome": "html",
-        "html": "<div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><div class=\"box-wrapper mutated-from-sub\" data-sub=\"ok\"><span>Sub Content</span></div></div>",
+        "html": "<div class=\"section\" id=\"main\"><div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><div class=\"box-wrapper mutated-from-sub\" data-sub=\"ok\"><span>Sub Content</span></div></div></div>",
         "canonicalDom": true
       },
       "verified_at": "2026-10-12"
@@ -266,6 +269,7 @@
       "evidence": "observed",
       "covers": [
         "subsystem:widget_rendering",
+        "tag:b:section",
         "tag:b:widget",
         "tag:b:widget-settings",
         "tag:b:widget-setting",
@@ -273,7 +277,7 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:widget id='Followers1' title='Followers' type='Followers' version='2'><b:widget-settings><b:widget-setting name='borderColorTransparent'>true</b:widget-setting><b:widget-setting name='useTemplateDefaultStyles'>true</b:widget-setting></b:widget-settings><b:includable id='main'><h2><data:title/></h2></b:includable></b:widget>",
+        "source": "<b:section id='main'><b:widget id='Followers1' title='Followers' type='Followers' version='2'><b:widget-settings><b:widget-setting name='borderColorTransparent'>true</b:widget-setting><b:widget-setting name='useTemplateDefaultStyles'>true</b:widget-setting></b:widget-settings><b:includable id='main'><h2><data:title/></h2></b:includable></b:widget></b:section>",
         "mode": "fragment",
         "context": {
           "title": "Followers"
@@ -281,7 +285,7 @@
       },
       "expected": {
         "outcome": "html",
-        "html": "<div class=\"widget Followers\" data-version=\"2\" id=\"Followers1\"><h2>Followers</h2></div>",
+        "html": "<div class=\"section\" id=\"main\"><div class=\"widget Followers\" data-version=\"2\" id=\"Followers1\"><h2>Followers</h2></div></div>",
         "canonicalDom": true
       },
       "verified_at": "2026-10-14"
