@@ -18,8 +18,6 @@
               "name": "Spanish (Spain)",
               "language": "es",
               "country": "ES",
-              "variant": "",
-              "script": "",
               "languageDirection": "ltr",
               "languageAlignment": "left"
             }
@@ -50,8 +48,6 @@
               "name": "English (United States)",
               "language": "en",
               "country": "US",
-              "variant": "",
-              "script": "",
               "languageDirection": "ltr",
               "languageAlignment": "left"
             }
@@ -251,8 +247,6 @@
               "name": "Spanish (Spain)",
               "language": "es",
               "country": "ES",
-              "variant": "",
-              "script": "",
               "languageDirection": "ltr",
               "languageAlignment": "left"
             }
@@ -282,8 +276,6 @@
               "name": "English (United States)",
               "language": "en",
               "country": "US",
-              "variant": "",
-              "script": "",
               "languageDirection": "ltr",
               "languageAlignment": "left"
             }
