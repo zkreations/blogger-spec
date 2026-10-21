@@ -57,12 +57,24 @@ function handleClosingTag(
   const lower = token.tagName.toLowerCase()
   const top = tagStack[tagStack.length - 1]
   if (!top || top.tagName.toLowerCase() !== lower) {
-    const code = catalog.getStandardDiagnostic('mismatched_or_unclosed_tag')
-    const rule = catalog.getDiagnostic(code)
-    pushDiagnostic(diagnostics, catalog, code, token, {
-      rule,
-      message: rule?.message ?? `Closing tag </${token.tagName}> does not match the currently open tag.`,
-    })
+    const directive = catalog.getDirective(token.tagName)
+    const invalidChildDiag = directive?.grammar?.invalid_nesting_policy?.on_invalid_child?.diagnostic
+    if (invalidChildDiag === 'BX1013' || lower === 'b:eval') {
+      const code = 'BX1013'
+      const rule = catalog.getDiagnostic(code)
+      pushDiagnostic(diagnostics, catalog, code, token, {
+        rule,
+        message: rule?.message ?? `Closing tag </${token.tagName}> is prohibited for self-closing directive <${token.tagName}/>.`,
+      })
+    }
+    else {
+      const code = catalog.getStandardDiagnostic('mismatched_or_unclosed_tag')
+      const rule = catalog.getDiagnostic(code)
+      pushDiagnostic(diagnostics, catalog, code, token, {
+        rule,
+        message: rule?.message ?? `Closing tag </${token.tagName}> does not match the currently open tag.`,
+      })
+    }
   }
 
   let matchIdx = -1

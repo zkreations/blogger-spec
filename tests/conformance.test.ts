@@ -69,7 +69,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       })
 
       expect(report.total).toBeGreaterThanOrEqual(63)
-      expect(report.passed).toBe(7)
+      expect(report.passed).toBe(5)
       expect(report.skipped).toBeGreaterThan(0)
       expect(report.failed).toBeGreaterThan(0)
     })

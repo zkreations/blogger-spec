@@ -417,6 +417,11 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diags.some(d => d.code === 'BX1041')).toBe(true)
     })
 
+    it('detects prohibited closing tag on self-closing <b:eval> (BX1013)', () => {
+      const diags = validateTemplateStructure('<b:eval expr="data:blog.title"></b:eval>')
+      expect(diags.some(d => d.code === 'BX1013')).toBe(true)
+    })
+
     it('detects inverted <b:includable> and <b:include> attributes (BX1015 / BX1016)', () => {
       const xml = `
         <b:section id='main'>

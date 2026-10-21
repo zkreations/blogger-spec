@@ -10746,7 +10746,9 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "loop_rendering",
       "loop_shadowing",
       "message_rendering",
+      "runtime_coercion",
       "subtype_modifiers",
+      "types",
       "widget_rendering",
       "with_nesting"
     ]

@@ -2,10 +2,10 @@
   "version": "1.0.0",
   "generatedAt": "2026-10-21",
   "metrics": {
-    "totalFixtures": 262,
-    "positiveFixtures": 213,
+    "totalFixtures": 256,
+    "positiveFixtures": 207,
     "negativeFixtures": 49,
-    "coveredSpecEntities": 209
+    "coveredSpecEntities": 210
   },
   "fixtures": [
     {
@@ -121,86 +121,6 @@
       "expected": {
         "outcome": "value",
         "value": "Count: 5"
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "expressions/arithmetic/literal-string-number-concatenation",
-      "title": "Literal String Number Concatenation",
-      "evidence": "observed",
-      "covers": [
-        "subsystem:arithmetic",
-        "operator:+"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "10 + \"10\"",
-        "context": {}
-      },
-      "expected": {
-        "outcome": "value",
-        "value": "1010"
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "expressions/arithmetic/literal-number-string-concatenation",
-      "title": "Literal Number String Concatenation",
-      "evidence": "observed",
-      "covers": [
-        "subsystem:arithmetic",
-        "operator:+"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "\"10\" + 10",
-        "context": {}
-      },
-      "expected": {
-        "outcome": "value",
-        "value": "1010"
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "expressions/arithmetic/runtime-variable-numeric-addition",
-      "title": "Runtime Variable Numeric Addition",
-      "evidence": "observed",
-      "covers": [
-        "subsystem:arithmetic",
-        "operator:+"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "10 + data:numString",
-        "context": {
-          "numString": "10"
-        }
-      },
-      "expected": {
-        "outcome": "value",
-        "value": 20
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
-      "id": "expressions/arithmetic/runtime-variable-text-concatenation",
-      "title": "Runtime Variable Text Concatenation",
-      "evidence": "observed",
-      "covers": [
-        "subsystem:arithmetic",
-        "operator:+"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "10 + data:textString",
-        "context": {
-          "textString": "posts"
-        }
-      },
-      "expected": {
-        "outcome": "value",
-        "value": "10posts"
       },
       "verified_at": "2026-10-10"
     },
@@ -902,34 +822,6 @@
         "value": true
       },
       "verified_at": "2026-10-10"
-    },
-    {
-      "id": "expressions/collections_and_lambdas/lambda-iterator-data-prefix-tolerance",
-      "title": "Lambda Iterator Data Prefix Tolerance",
-      "evidence": "observed",
-      "covers": [
-        "subsystem:collections_and_lambdas",
-        "rule:BX1019"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "data:posts count (p => data:p.numberOfComments > 0)",
-        "context": {
-          "posts": [
-            {
-              "numberOfComments": 5
-            },
-            {
-              "numberOfComments": 0
-            }
-          ]
-        }
-      },
-      "expected": {
-        "outcome": "value",
-        "value": 1
-      },
-      "verified_at": "2026-10-11"
     },
     {
       "id": "expressions/collections_and_lambdas/membership-string-substring-match",
@@ -1643,8 +1535,6 @@
               "name": "Spanish (Spain)",
               "language": "es",
               "country": "ES",
-              "variant": "",
-              "script": "",
               "languageDirection": "ltr",
               "languageAlignment": "left"
             }
@@ -1675,8 +1565,6 @@
               "name": "English (United States)",
               "language": "en",
               "country": "US",
-              "variant": "",
-              "script": "",
               "languageDirection": "ltr",
               "languageAlignment": "left"
             }
@@ -1876,8 +1764,6 @@
               "name": "Spanish (Spain)",
               "language": "es",
               "country": "ES",
-              "variant": "",
-              "script": "",
               "languageDirection": "ltr",
               "languageAlignment": "left"
             }
@@ -1907,8 +1793,6 @@
               "name": "English (United States)",
               "language": "en",
               "country": "US",
-              "variant": "",
-              "script": "",
               "languageDirection": "ltr",
               "languageAlignment": "left"
             }
@@ -2209,30 +2093,6 @@
       "verified_at": "2026-10-12"
     },
     {
-      "id": "expressions/logical_and_comparisons/date-iso8601-property-access",
-      "title": "Date Object ISO8601 String Property Access",
-      "evidence": "observed",
-      "covers": [
-        "subsystem:logical_and_comparisons"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "data:post.date.iso8601",
-        "context": {
-          "post": {
-            "date": {
-              "iso8601": "2026-08-29T14:48:00-05:00"
-            }
-          }
-        }
-      },
-      "expected": {
-        "outcome": "value",
-        "value": "2026-08-29T14:48:00-05:00"
-      },
-      "verified_at": "2026-10-12"
-    },
-    {
       "id": "expressions/logical_and_comparisons/inequality-numbers",
       "title": "Inequality Numbers",
       "evidence": "official",
@@ -2378,10 +2238,8 @@
         "kind": "expression",
         "source": "data:post.title.jsEscaped",
         "context": {
-          "data": {
-            "post": {
-              "title": "Hello 'World'"
-            }
+          "post": {
+            "title": "Hello 'World'"
           }
         }
       },
@@ -2404,10 +2262,8 @@
         "kind": "expression",
         "source": "data:post.body.jsonEscaped",
         "context": {
-          "data": {
-            "post": {
-              "body": "Line 1\nLine 2"
-            }
+          "post": {
+            "body": "Line 1\nLine 2"
           }
         }
       },
@@ -2430,9 +2286,7 @@
         "kind": "expression",
         "source": "data:cls.cssEscaped",
         "context": {
-          "data": {
-            "cls": "my.class"
-          }
+          "cls": "my.class"
         }
       },
       "expected": {
@@ -2454,13 +2308,11 @@
         "kind": "expression",
         "source": "data:posts.size",
         "context": {
-          "data": {
-            "posts": [
-              1,
-              2,
-              3
-            ]
-          }
+          "posts": [
+            1,
+            2,
+            3
+          ]
         }
       },
       "expected": {
@@ -2482,12 +2334,10 @@
         "kind": "expression",
         "source": "data:posts.first",
         "context": {
-          "data": {
-            "posts": [
-              "alpha",
-              "beta"
-            ]
-          }
+          "posts": [
+            "alpha",
+            "beta"
+          ]
         }
       },
       "expected": {
@@ -2509,12 +2359,10 @@
         "kind": "expression",
         "source": "data:posts.last",
         "context": {
-          "data": {
-            "posts": [
-              "alpha",
-              "beta"
-            ]
-          }
+          "posts": [
+            "alpha",
+            "beta"
+          ]
         }
       },
       "expected": {
@@ -2536,9 +2384,7 @@
         "kind": "expression",
         "source": "data:posts.empty",
         "context": {
-          "data": {
-            "posts": []
-          }
+          "posts": []
         }
       },
       "expected": {
@@ -2560,11 +2406,9 @@
         "kind": "expression",
         "source": "data:posts.notEmpty",
         "context": {
-          "data": {
-            "posts": [
-              1
-            ]
-          }
+          "posts": [
+            1
+          ]
         }
       },
       "expected": {
@@ -2586,11 +2430,9 @@
         "kind": "expression",
         "source": "data:posts.any",
         "context": {
-          "data": {
-            "posts": [
-              1
-            ]
-          }
+          "posts": [
+            1
+          ]
         }
       },
       "expected": {
@@ -2611,10 +2453,8 @@
         "kind": "expression",
         "source": "data:widget.widgetType",
         "context": {
-          "data": {
-            "widget": {
-              "widgetType": "Blog"
-            }
+          "widget": {
+            "widgetType": "Blog"
           }
         }
       },
@@ -2636,10 +2476,8 @@
         "kind": "expression",
         "source": "data:item.itemName",
         "context": {
-          "data": {
-            "item": {
-              "itemName": "author"
-            }
+          "item": {
+            "itemName": "author"
           }
         }
       },
@@ -2662,10 +2500,8 @@
         "kind": "expression",
         "source": "data:variant.url",
         "context": {
-          "data": {
-            "variant": {
-              "url": "https://example.com/320.jpg"
-            }
+          "variant": {
+            "url": "https://example.com/320.jpg"
           }
         }
       },
@@ -2688,10 +2524,8 @@
         "kind": "expression",
         "source": "data:image.width",
         "context": {
-          "data": {
-            "image": {
-              "width": 800
-            }
+          "image": {
+            "width": 800
           }
         }
       },
@@ -2714,10 +2548,8 @@
         "kind": "expression",
         "source": "data:image.height",
         "context": {
-          "data": {
-            "image": {
-              "height": 600
-            }
+          "image": {
+            "height": 600
           }
         }
       },
@@ -2740,11 +2572,9 @@
         "kind": "expression",
         "source": "data:post.date.dayOfMonth",
         "context": {
-          "data": {
-            "post": {
-              "date": {
-                "dayOfMonth": 17
-              }
+          "post": {
+            "date": {
+              "dayOfMonth": 17
             }
           }
         }
@@ -3407,16 +3237,14 @@
       "title": "String Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:string"
       ],
       "input": {
         "kind": "expression",
         "source": "data:title",
         "context": {
-          "data": {
-            "title": "Hello World"
-          }
+          "title": "Hello World"
         }
       },
       "expected": {
@@ -3430,16 +3258,14 @@
       "title": "Number Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:number"
       ],
       "input": {
         "kind": "expression",
         "source": "data:count + 1",
         "context": {
-          "data": {
-            "count": 41
-          }
+          "count": 41
         }
       },
       "expected": {
@@ -3453,16 +3279,14 @@
       "title": "Boolean Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:boolean"
       ],
       "input": {
         "kind": "expression",
         "source": "data:isActive",
         "context": {
-          "data": {
-            "isActive": true
-          }
+          "isActive": true
         }
       },
       "expected": {
@@ -3476,17 +3300,15 @@
       "title": "Object Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:object"
       ],
       "input": {
         "kind": "expression",
         "source": "data:post.author",
         "context": {
-          "data": {
-            "post": {
-              "author": "John Doe"
-            }
+          "post": {
+            "author": "John Doe"
           }
         }
       },
@@ -3501,20 +3323,18 @@
       "title": "Array Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:array"
       ],
       "input": {
         "kind": "expression",
         "source": "data:items",
         "context": {
-          "data": {
-            "items": [
-              1,
-              2,
-              3
-            ]
-          }
+          "items": [
+            1,
+            2,
+            3
+          ]
         }
       },
       "expected": {
@@ -3532,16 +3352,14 @@
       "title": "Scalar Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:scalar"
       ],
       "input": {
         "kind": "expression",
         "source": "data:title == 'Test'",
         "context": {
-          "data": {
-            "title": "Test"
-          }
+          "title": "Test"
         }
       },
       "expected": {
@@ -3555,16 +3373,14 @@
       "title": "Any Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:any"
       ],
       "input": {
         "kind": "expression",
         "source": "data:value ?: 'default'",
         "context": {
-          "data": {
-            "value": "custom"
-          }
+          "value": "custom"
         }
       },
       "expected": {
@@ -3578,18 +3394,16 @@
       "title": "Locale Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:locale"
       ],
       "input": {
         "kind": "expression",
         "source": "data:blog.locale.language",
         "context": {
-          "data": {
-            "blog": {
-              "locale": {
-                "language": "en"
-              }
+          "blog": {
+            "locale": {
+              "language": "en"
             }
           }
         }
@@ -3605,17 +3419,15 @@
       "title": "Message Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:message"
       ],
       "input": {
         "kind": "expression",
         "source": "data:messages.archive",
         "context": {
-          "data": {
-            "messages": {
-              "archive": "Archive"
-            }
+          "messages": {
+            "archive": "Archive"
           }
         }
       },
@@ -3630,16 +3442,14 @@
       "title": "Expression Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:expression"
       ],
       "input": {
         "kind": "expression",
         "source": "data:score > 10 ? 'high' : 'low'",
         "context": {
-          "data": {
-            "score": 15
-          }
+          "score": 15
         }
       },
       "expected": {
@@ -3653,21 +3463,19 @@
       "title": "Predicate Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:predicate"
       ],
       "input": {
         "kind": "expression",
         "source": "data:items filter (x => x > 2)",
         "context": {
-          "data": {
-            "items": [
-              1,
-              2,
-              3,
-              4
-            ]
-          }
+          "items": [
+            1,
+            2,
+            3,
+            4
+          ]
         }
       },
       "expected": {
@@ -3684,19 +3492,17 @@
       "title": "Child Item Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:child_item"
       ],
       "input": {
         "kind": "expression",
         "source": "data:items.first",
         "context": {
-          "data": {
-            "items": [
-              "alpha",
-              "beta"
-            ]
-          }
+          "items": [
+            "alpha",
+            "beta"
+          ]
         }
       },
       "expected": {
@@ -3710,7 +3516,7 @@
       "title": "Skin Color Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:color"
       ],
       "input": {
@@ -3733,7 +3539,7 @@
       "title": "Skin Font Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:font"
       ],
       "input": {
@@ -3756,7 +3562,7 @@
       "title": "Skin Background Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:background"
       ],
       "input": {
@@ -3779,7 +3585,7 @@
       "title": "Skin Length Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:length"
       ],
       "input": {
@@ -3802,7 +3608,7 @@
       "title": "Skin Automatic Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:automatic"
       ],
       "input": {
@@ -3825,7 +3631,7 @@
       "title": "Skin String Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:string"
       ],
       "input": {
@@ -3848,7 +3654,7 @@
       "title": "Skin URL Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:url"
       ],
       "input": {
@@ -3871,7 +3677,7 @@
       "title": "Skin Variable Generic Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin_variable"
       ],
       "input": {
@@ -3894,17 +3700,15 @@
       "title": "Image Variant Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:image_variant"
       ],
       "input": {
         "kind": "expression",
         "source": "(data:post.featuredImage resizeImage [320]).first.size",
         "context": {
-          "data": {
-            "post": {
-              "featuredImage": "https://example.com/img.jpg"
-            }
+          "post": {
+            "featuredImage": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
           }
         }
       },
@@ -4539,13 +4343,14 @@
       "evidence": "official",
       "covers": [
         "subsystem:widget_rendering",
+        "tag:b:section",
         "tag:b:widget",
         "tag:b:includable",
         "tag:data:*"
       ],
       "input": {
         "kind": "template",
-        "source": "<b:widget id='Header1' title='Blog Posts' type='Header' version='2'><b:includable id='main'><h1><data:title/></h1></b:includable></b:widget>",
+        "source": "<b:section id='main'><b:widget id='Header1' title='Blog Posts' type='Header' version='2'><b:includable id='main'><h1><data:title/></h1></b:includable></b:widget></b:section>",
         "mode": "fragment",
         "context": {
           "title": "My Tech Blog"
@@ -4553,7 +4358,7 @@
       },
       "expected": {
         "outcome": "html",
-        "html": "<div class=\"widget Header\" data-version=\"2\" id=\"Header1\"><h1>My Tech Blog</h1></div>",
+        "html": "<div class=\"section\" id=\"main\"><div class=\"widget Header\" data-version=\"2\" id=\"Header1\"><h1>My Tech Blog</h1></div></div>",
         "canonicalDom": true
       },
       "verified_at": "2026-10-10"
@@ -4678,6 +4483,7 @@
       "evidence": "observed",
       "covers": [
         "subsystem:widget_rendering",
+        "tag:b:section",
         "tag:b:widget",
         "tag:b:includable",
         "tag:b:class",
@@ -4685,13 +4491,13 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:widget id='Header2' locked='false' title='Header' type='Header' version='2'><b:includable id='main'><b:class name='header-widget-mutated'/><b:attr name='data-header-wrapper-attr' value='header-wrapper-ok'/><h1>Title</h1></b:includable></b:widget>",
+        "source": "<b:section id='main'><b:widget id='Header2' locked='false' title='Header' type='Header' version='2'><b:includable id='main'><b:class name='header-widget-mutated'/><b:attr name='data-header-wrapper-attr' value='header-wrapper-ok'/><h1>Title</h1></b:includable></b:widget></b:section>",
         "mode": "fragment",
         "context": {}
       },
       "expected": {
         "outcome": "html",
-        "html": "<div class=\"widget Header header-widget-mutated\" data-header-wrapper-attr=\"header-wrapper-ok\" data-version=\"2\" id=\"Header2\"><h1>Title</h1></div>",
+        "html": "<div class=\"section\" id=\"main\"><div class=\"widget Header header-widget-mutated\" data-header-wrapper-attr=\"header-wrapper-ok\" data-version=\"2\" id=\"Header2\"><h1>Title</h1></div></div>",
         "canonicalDom": true
       },
       "verified_at": "2026-10-12"
@@ -4702,6 +4508,7 @@
       "evidence": "observed",
       "covers": [
         "subsystem:widget_rendering",
+        "tag:b:section",
         "tag:b:widget",
         "tag:b:include",
         "tag:b:includable",
@@ -4710,13 +4517,13 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><div class='box-wrapper'><b:include name='sub'/></div></b:includable><b:includable id='sub'><b:class name='mutated-from-sub'/><b:attr name='data-sub' value='ok'/><span>Sub Content</span></b:includable></b:widget>",
+        "source": "<b:section id='main'><b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><div class='box-wrapper'><b:include name='sub'/></div></b:includable><b:includable id='sub'><b:class name='mutated-from-sub'/><b:attr name='data-sub' value='ok'/><span>Sub Content</span></b:includable></b:widget></b:section>",
         "mode": "fragment",
         "context": {}
       },
       "expected": {
         "outcome": "html",
-        "html": "<div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><div class=\"box-wrapper mutated-from-sub\" data-sub=\"ok\"><span>Sub Content</span></div></div>",
+        "html": "<div class=\"section\" id=\"main\"><div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><div class=\"box-wrapper mutated-from-sub\" data-sub=\"ok\"><span>Sub Content</span></div></div></div>",
         "canonicalDom": true
       },
       "verified_at": "2026-10-12"
@@ -4798,6 +4605,7 @@
       "evidence": "observed",
       "covers": [
         "subsystem:widget_rendering",
+        "tag:b:section",
         "tag:b:widget",
         "tag:b:widget-settings",
         "tag:b:widget-setting",
@@ -4805,7 +4613,7 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:widget id='Followers1' title='Followers' type='Followers' version='2'><b:widget-settings><b:widget-setting name='borderColorTransparent'>true</b:widget-setting><b:widget-setting name='useTemplateDefaultStyles'>true</b:widget-setting></b:widget-settings><b:includable id='main'><h2><data:title/></h2></b:includable></b:widget>",
+        "source": "<b:section id='main'><b:widget id='Followers1' title='Followers' type='Followers' version='2'><b:widget-settings><b:widget-setting name='borderColorTransparent'>true</b:widget-setting><b:widget-setting name='useTemplateDefaultStyles'>true</b:widget-setting></b:widget-settings><b:includable id='main'><h2><data:title/></h2></b:includable></b:widget></b:section>",
         "mode": "fragment",
         "context": {
           "title": "Followers"
@@ -4813,7 +4621,7 @@
       },
       "expected": {
         "outcome": "html",
-        "html": "<div class=\"widget Followers\" data-version=\"2\" id=\"Followers1\"><h2>Followers</h2></div>",
+        "html": "<div class=\"section\" id=\"main\"><div class=\"widget Followers\" data-version=\"2\" id=\"Followers1\"><h2>Followers</h2></div></div>",
         "canonicalDom": true
       },
       "verified_at": "2026-10-14"

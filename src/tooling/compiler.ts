@@ -345,12 +345,13 @@ export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): Veri
       const currentManifest = JSON.parse(readFileSync(paths.fixturesManifest, 'utf-8'))
       const freshManifest = generateFixturesManifest()
       const count = currentManifest.fixtures?.length || 0
-      const valid = count === freshManifest.fixtures?.length && count > 0
+      const fixturesMatch = JSON.stringify(currentManifest.fixtures) === JSON.stringify(freshManifest.fixtures)
+      const valid = fixturesMatch && count > 0
       items.push({
         name: 'fixtures/index.json',
         valid,
         count,
-        error: valid ? undefined : `fixtures/index.json is out of date (${count} vs ${freshManifest.fixtures?.length} fixtures).`,
+        error: valid ? undefined : `fixtures/index.json is out of date. Run \`pnpm run build\` to synchronize.`,
       })
     }
     catch (err: any) {
