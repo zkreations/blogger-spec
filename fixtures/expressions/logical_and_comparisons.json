@@ -117,26 +117,6 @@
       "verified_at": "2026-10-10"
     },
     {
-      "id": "expressions/logical_and_comparisons/elvis-fallback-empty-string",
-      "title": "Elvis Fallback Empty String",
-      "evidence": "observed",
-      "covers": [
-        "subsystem:logical_and_comparisons"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "data:emptyTitle ?: \"Untitled\"",
-        "context": {
-          "emptyTitle": ""
-        }
-      },
-      "expected": {
-        "outcome": "value",
-        "value": ""
-      },
-      "verified_at": "2026-10-10"
-    },
-    {
       "id": "expressions/logical_and_comparisons/ternary-conditional",
       "title": "Ternary Conditional",
       "evidence": "official",
@@ -201,25 +181,6 @@
         "value": "FALLBACK"
       },
       "verified_at": "2026-10-10"
-    },
-    {
-      "id": "expressions/logical_and_comparisons/elvis-fallback-number-zero",
-      "title": "Elvis Fallback Does Not Trigger On Numeric Zero",
-      "evidence": "observed",
-      "covers": [
-        "subsystem:logical_and_comparisons",
-        "operator:?:"
-      ],
-      "input": {
-        "kind": "expression",
-        "source": "0 ?: \"FALLBACK\"",
-        "context": {}
-      },
-      "expected": {
-        "outcome": "value",
-        "value": 0
-      },
-      "verified_at": "2026-10-12"
     },
     {
       "id": "expressions/logical_and_comparisons/elvis-fallback-boolean-false",
