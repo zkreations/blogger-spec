@@ -7,6 +7,8 @@ import type {
   BloggerDiagnosticRule,
   BloggerDiagnosticSeverity,
   BloggerEvidenceLevel,
+  BloggerFixture,
+  BloggerFixturesManifest,
   BloggerLayoutVersion,
   BloggerOperatorDefinition,
   DirectiveNestingAction,
@@ -123,40 +125,6 @@ export interface BloggerDirectiveToken {
 export interface ScanDirectiveOptions {
   stopAtOffset?: number
   catalog?: any
-}
-
-export interface BloggerFixture {
-  id: string
-  title: string
-  evidence: BloggerEvidenceLevel
-  verified_at: string
-  covers: string[]
-  input: {
-    kind: 'expression' | 'template'
-    source: string
-    mode?: 'fragment' | 'full_document'
-    context?: Record<string, any>
-  }
-  expected: {
-    outcome: 'value' | 'html' | 'rejected'
-    value?: any
-    html?: string
-    canonicalDom?: boolean
-    diagnosticCodes?: string[]
-    stage?: 'parser' | 'compiler' | 'quota' | 'linter'
-  }
-}
-
-export interface BloggerFixturesManifest {
-  version: string
-  generatedAt: string
-  metrics: {
-    totalFixtures: number
-    positiveFixtures: number
-    negativeFixtures: number
-    coveredSpecEntities: number
-  }
-  fixtures: BloggerFixture[]
 }
 
 export interface TemplateVersionResult {
