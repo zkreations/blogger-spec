@@ -1,21 +1,19 @@
 {
-  "subsystem": "subtype_modifiers",
+  "subsystem": "types",
   "fixtures": [
     {
       "id": "expressions/types/string",
       "title": "String Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:string"
       ],
       "input": {
         "kind": "expression",
         "source": "data:title",
         "context": {
-          "data": {
-            "title": "Hello World"
-          }
+          "title": "Hello World"
         }
       },
       "expected": {
@@ -29,16 +27,14 @@
       "title": "Number Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:number"
       ],
       "input": {
         "kind": "expression",
         "source": "data:count + 1",
         "context": {
-          "data": {
-            "count": 41
-          }
+          "count": 41
         }
       },
       "expected": {
@@ -52,16 +48,14 @@
       "title": "Boolean Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:boolean"
       ],
       "input": {
         "kind": "expression",
         "source": "data:isActive",
         "context": {
-          "data": {
-            "isActive": true
-          }
+          "isActive": true
         }
       },
       "expected": {
@@ -75,17 +69,15 @@
       "title": "Object Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:object"
       ],
       "input": {
         "kind": "expression",
         "source": "data:post.author",
         "context": {
-          "data": {
-            "post": {
-              "author": "John Doe"
-            }
+          "post": {
+            "author": "John Doe"
           }
         }
       },
@@ -100,21 +92,27 @@
       "title": "Array Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:array"
       ],
       "input": {
         "kind": "expression",
         "source": "data:items",
         "context": {
-          "data": {
-            "items": [1, 2, 3]
-          }
+          "items": [
+            1,
+            2,
+            3
+          ]
         }
       },
       "expected": {
         "outcome": "value",
-        "value": [1, 2, 3]
+        "value": [
+          1,
+          2,
+          3
+        ]
       },
       "verified_at": "2026-10-17"
     },
@@ -123,16 +121,14 @@
       "title": "Scalar Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:scalar"
       ],
       "input": {
         "kind": "expression",
         "source": "data:title == 'Test'",
         "context": {
-          "data": {
-            "title": "Test"
-          }
+          "title": "Test"
         }
       },
       "expected": {
@@ -146,16 +142,14 @@
       "title": "Any Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:any"
       ],
       "input": {
         "kind": "expression",
         "source": "data:value ?: 'default'",
         "context": {
-          "data": {
-            "value": "custom"
-          }
+          "value": "custom"
         }
       },
       "expected": {
@@ -169,18 +163,16 @@
       "title": "Locale Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:locale"
       ],
       "input": {
         "kind": "expression",
         "source": "data:blog.locale.language",
         "context": {
-          "data": {
-            "blog": {
-              "locale": {
-                "language": "en"
-              }
+          "blog": {
+            "locale": {
+              "language": "en"
             }
           }
         }
@@ -196,17 +188,15 @@
       "title": "Message Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:message"
       ],
       "input": {
         "kind": "expression",
         "source": "data:messages.archive",
         "context": {
-          "data": {
-            "messages": {
-              "archive": "Archive"
-            }
+          "messages": {
+            "archive": "Archive"
           }
         }
       },
@@ -221,16 +211,14 @@
       "title": "Expression Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:expression"
       ],
       "input": {
         "kind": "expression",
         "source": "data:score > 10 ? 'high' : 'low'",
         "context": {
-          "data": {
-            "score": 15
-          }
+          "score": 15
         }
       },
       "expected": {
@@ -244,21 +232,27 @@
       "title": "Predicate Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:predicate"
       ],
       "input": {
         "kind": "expression",
         "source": "data:items filter (x => x > 2)",
         "context": {
-          "data": {
-            "items": [1, 2, 3, 4]
-          }
+          "items": [
+            1,
+            2,
+            3,
+            4
+          ]
         }
       },
       "expected": {
         "outcome": "value",
-        "value": [3, 4]
+        "value": [
+          3,
+          4
+        ]
       },
       "verified_at": "2026-10-17"
     },
@@ -267,16 +261,17 @@
       "title": "Child Item Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:child_item"
       ],
       "input": {
         "kind": "expression",
         "source": "data:items.first",
         "context": {
-          "data": {
-            "items": ["alpha", "beta"]
-          }
+          "items": [
+            "alpha",
+            "beta"
+          ]
         }
       },
       "expected": {
@@ -290,7 +285,7 @@
       "title": "Skin Color Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:color"
       ],
       "input": {
@@ -313,7 +308,7 @@
       "title": "Skin Font Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:font"
       ],
       "input": {
@@ -336,7 +331,7 @@
       "title": "Skin Background Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:background"
       ],
       "input": {
@@ -359,7 +354,7 @@
       "title": "Skin Length Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:length"
       ],
       "input": {
@@ -382,7 +377,7 @@
       "title": "Skin Automatic Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:automatic"
       ],
       "input": {
@@ -405,7 +400,7 @@
       "title": "Skin String Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:string"
       ],
       "input": {
@@ -428,7 +423,7 @@
       "title": "Skin URL Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin:url"
       ],
       "input": {
@@ -451,7 +446,7 @@
       "title": "Skin Variable Generic Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:skin_variable"
       ],
       "input": {
@@ -474,17 +469,15 @@
       "title": "Image Variant Type Conformance",
       "evidence": "official",
       "covers": [
-        "subsystem:subtype_modifiers",
+        "subsystem:types",
         "type:image_variant"
       ],
       "input": {
         "kind": "expression",
         "source": "(data:post.featuredImage resizeImage [320]).first.size",
         "context": {
-          "data": {
-            "post": {
-              "featuredImage": "https://example.com/img.jpg"
-            }
+          "post": {
+            "featuredImage": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
           }
         }
       },
