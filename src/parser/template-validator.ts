@@ -207,6 +207,10 @@ function validateDirectiveAttributeRules(
   const emptyDiag = catalog.getStandardDiagnostic('empty_required_attribute')
   const allowedAttrs = catalog.getDirectiveAttributes(token.tagName) || {}
   for (const [attrName, meta] of Object.entries(allowedAttrs)) {
+    if (token.tagName === 'Variable' && attrName === 'value' && token.attributes.type?.value?.trim().toLowerCase() === 'string') {
+      continue
+    }
+
     if (meta.required && !meta.allow_empty) {
       const attrToken = token.attributes[attrName] || token.attributes[`expr:${attrName}`]
       if (attrToken && !attrToken.value.trim()) {

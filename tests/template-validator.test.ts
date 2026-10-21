@@ -577,6 +577,24 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diags.some(d => d.code === 'BX1039')).toBe(false)
     })
 
+    it('exempts <Variable type="string" value=""/> from BX1039 but enforces non-empty value on other variable types', () => {
+      const validStringVariable = `
+        <b:skin><![CDATA[
+          <Variable name="d.favicon" description="HD favicon" type="string" value=""/>
+        ]]></b:skin>
+      `
+      const validDiags = validateTemplateStructure(validStringVariable)
+      expect(validDiags.filter(d => d.code === 'BX1039')).toHaveLength(0)
+
+      const invalidColorVariable = `
+        <b:skin><![CDATA[
+          <Variable name="theme.color" description="Theme Color" type="color" value="" default="#ffffff"/>
+        ]]></b:skin>
+      `
+      const invalidDiags = validateTemplateStructure(invalidColorVariable)
+      expect(invalidDiags.some(d => d.code === 'BX1039')).toBe(true)
+    })
+
     it('allows <b:with expr:var="..."> dynamic variable alias declaration', () => {
       const result = validateDirectiveAttributes('b:with', ['expr:var', 'value'])
       expect(result.valid).toBe(true)
