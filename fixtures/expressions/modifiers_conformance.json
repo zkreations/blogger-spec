@@ -14,10 +14,8 @@
         "kind": "expression",
         "source": "data:post.title.jsEscaped",
         "context": {
-          "data": {
-            "post": {
-              "title": "Hello 'World'"
-            }
+          "post": {
+            "title": "Hello 'World'"
           }
         }
       },
@@ -40,10 +38,8 @@
         "kind": "expression",
         "source": "data:post.body.jsonEscaped",
         "context": {
-          "data": {
-            "post": {
-              "body": "Line 1\nLine 2"
-            }
+          "post": {
+            "body": "Line 1\nLine 2"
           }
         }
       },
@@ -66,9 +62,7 @@
         "kind": "expression",
         "source": "data:cls.cssEscaped",
         "context": {
-          "data": {
-            "cls": "my.class"
-          }
+          "cls": "my.class"
         }
       },
       "expected": {
@@ -90,9 +84,11 @@
         "kind": "expression",
         "source": "data:posts.size",
         "context": {
-          "data": {
-            "posts": [1, 2, 3]
-          }
+          "posts": [
+            1,
+            2,
+            3
+          ]
         }
       },
       "expected": {
@@ -114,9 +110,10 @@
         "kind": "expression",
         "source": "data:posts.first",
         "context": {
-          "data": {
-            "posts": ["alpha", "beta"]
-          }
+          "posts": [
+            "alpha",
+            "beta"
+          ]
         }
       },
       "expected": {
@@ -138,9 +135,10 @@
         "kind": "expression",
         "source": "data:posts.last",
         "context": {
-          "data": {
-            "posts": ["alpha", "beta"]
-          }
+          "posts": [
+            "alpha",
+            "beta"
+          ]
         }
       },
       "expected": {
@@ -162,9 +160,7 @@
         "kind": "expression",
         "source": "data:posts.empty",
         "context": {
-          "data": {
-            "posts": []
-          }
+          "posts": []
         }
       },
       "expected": {
@@ -186,9 +182,9 @@
         "kind": "expression",
         "source": "data:posts.notEmpty",
         "context": {
-          "data": {
-            "posts": [1]
-          }
+          "posts": [
+            1
+          ]
         }
       },
       "expected": {
@@ -210,9 +206,9 @@
         "kind": "expression",
         "source": "data:posts.any",
         "context": {
-          "data": {
-            "posts": [1]
-          }
+          "posts": [
+            1
+          ]
         }
       },
       "expected": {
@@ -233,10 +229,8 @@
         "kind": "expression",
         "source": "data:widget.widgetType",
         "context": {
-          "data": {
-            "widget": {
-              "widgetType": "Blog"
-            }
+          "widget": {
+            "widgetType": "Blog"
           }
         }
       },
@@ -258,10 +252,8 @@
         "kind": "expression",
         "source": "data:item.itemName",
         "context": {
-          "data": {
-            "item": {
-              "itemName": "author"
-            }
+          "item": {
+            "itemName": "author"
           }
         }
       },
@@ -284,10 +276,8 @@
         "kind": "expression",
         "source": "data:variant.url",
         "context": {
-          "data": {
-            "variant": {
-              "url": "https://example.com/320.jpg"
-            }
+          "variant": {
+            "url": "https://example.com/320.jpg"
           }
         }
       },
@@ -310,10 +300,8 @@
         "kind": "expression",
         "source": "data:image.width",
         "context": {
-          "data": {
-            "image": {
-              "width": 800
-            }
+          "image": {
+            "width": 800
           }
         }
       },
@@ -336,10 +324,8 @@
         "kind": "expression",
         "source": "data:image.height",
         "context": {
-          "data": {
-            "image": {
-              "height": 600
-            }
+          "image": {
+            "height": 600
           }
         }
       },
@@ -362,11 +348,9 @@
         "kind": "expression",
         "source": "data:post.date.dayOfMonth",
         "context": {
-          "data": {
-            "post": {
-              "date": {
-                "dayOfMonth": 17
-              }
+          "post": {
+            "date": {
+              "dayOfMonth": 17
             }
           }
         }
