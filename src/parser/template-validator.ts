@@ -230,12 +230,20 @@ function validateDirectiveAttributeRules(
 
   const emptyDiag = catalog.getStandardDiagnostic('empty_required_attribute')
   const allowedAttrs = catalog.getDirectiveAttributes(token.tagName) || {}
+  const directive = catalog.getDirective(token.tagName)
+  const rawTypeVal = token.attributes.type?.value
+  const subTypeValue = typeof rawTypeVal === 'string' ? rawTypeVal.trim().toLowerCase() : undefined
+  const subtypeMeta = (directive?.type_attributes && subTypeValue)
+    ? directive.type_attributes[subTypeValue]
+    : undefined
+
   for (const [attrName, meta] of Object.entries(allowedAttrs)) {
-    if (token.tagName === 'Variable' && attrName === 'value' && token.attributes.type?.value?.trim().toLowerCase() === 'string') {
+    if (token.tagName === 'Variable' && attrName === 'value' && subTypeValue === 'string') {
       continue
     }
 
-    if (meta.required && !meta.allow_empty) {
+    const isRequired = subtypeMeta?.required ? subtypeMeta.required.includes(attrName) : Boolean(meta.required)
+    if (isRequired && !meta.allow_empty) {
       const attrToken = token.attributes[attrName] || token.attributes[`expr:${attrName}`]
       if (attrToken && !attrToken.value.trim()) {
         pushDiagnostic(diagnostics, catalog, emptyDiag, token, {

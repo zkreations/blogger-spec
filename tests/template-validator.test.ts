@@ -396,6 +396,27 @@ describe('helpers & canonical structure validation suite', () => {
       expect(missingType?.tagName).toBe('Variable')
     })
 
+    it('does not report missing value on <Variable type="automatic"> (BX1022)', () => {
+      const xml = `
+        <b:skin><![CDATA[
+          <Variable name="startSide" description="Start side in blog language" type="automatic" default="left" hideEditor="true"/>
+        ]]></b:skin>
+      `
+      const diags = validateTemplateStructure(xml)
+      expect(diags.filter(d => d.code === 'BX1022')).toHaveLength(0)
+    })
+
+    it('reports missing default on <Variable type="automatic"> (BX1022)', () => {
+      const xml = `
+        <b:skin><![CDATA[
+          <Variable name="startSide" description="Start side in blog language" type="automatic" hideEditor="true"/>
+        ]]></b:skin>
+      `
+      const diags = validateTemplateStructure(xml)
+      const missingDefault = diags.find(d => d.code === 'BX1022' && d.message.includes('\'default\''))
+      expect(missingDefault).toBeDefined()
+    })
+
     it('detects missing mandatory directive attributes (BX1022)', () => {
       const xml = '<b:loop var="i"><data:i/></b:loop>'
       const diags = validateTemplateStructure(xml)
@@ -685,6 +706,30 @@ describe('helpers & canonical structure validation suite', () => {
         expect(result.disallowedValues).toEqual([])
         expect(result.violations.filter(v => v.code === 'BX1043')).toEqual([])
       }
+    })
+
+    it('honors type_attributes when validating <Variable> directly', () => {
+      const autoRes = validateDirectiveAttributes('Variable', ['name', 'description', 'type="automatic"', 'default'])
+      expect(autoRes.valid).toBe(true)
+      expect(autoRes.missingRequired).toEqual([])
+
+      const autoResObj = validateDirectiveAttributes('Variable', {
+        name: { value: 'startSide' },
+        description: { value: 'Start side' },
+        type: { value: 'automatic' },
+        default: { value: 'left' },
+      })
+      expect(autoResObj.valid).toBe(true)
+      expect(autoResObj.missingRequired).toEqual([])
+
+      const autoMissingDefault = validateDirectiveAttributes('Variable', {
+        name: { value: 'startSide' },
+        description: { value: 'Start side' },
+        type: { value: 'automatic' },
+      })
+      expect(autoMissingDefault.valid).toBe(false)
+      expect(autoMissingDefault.missingRequired).toContain('default')
+      expect(autoMissingDefault.missingRequired).not.toContain('value')
     })
   })
 

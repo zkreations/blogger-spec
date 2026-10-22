@@ -545,9 +545,19 @@ export class SpecCatalog {
     if (typeof target === 'string') {
       tagName = target
       if (Array.isArray(attributesOrCatalog)) {
-        presentAttributes = attributesOrCatalog
-        for (const attr of presentAttributes) {
-          attributesRecord[attr] = {}
+        presentAttributes = []
+        for (const attr of attributesOrCatalog) {
+          const eqIdx = attr.indexOf('=')
+          if (eqIdx !== -1) {
+            const attrName = attr.slice(0, eqIdx).trim()
+            const val = attr.slice(eqIdx + 1).replace(/^["']|["']$/g, '').trim()
+            attributesRecord[attrName] = { value: val }
+            presentAttributes.push(attrName)
+          }
+          else {
+            attributesRecord[attr] = {}
+            presentAttributes.push(attr)
+          }
         }
       }
       else if (attributesOrCatalog && typeof attributesOrCatalog === 'object' && !('getAllDirectives' in attributesOrCatalog)) {
@@ -558,14 +568,30 @@ export class SpecCatalog {
     else {
       tagName = target.tagName
       if (Array.isArray(target.attributes)) {
-        presentAttributes = target.attributes
-        for (const attr of presentAttributes) {
-          attributesRecord[attr] = {}
+        presentAttributes = []
+        for (const attr of target.attributes) {
+          const eqIdx = attr.indexOf('=')
+          if (eqIdx !== -1) {
+            const attrName = attr.slice(0, eqIdx).trim()
+            const val = attr.slice(eqIdx + 1).replace(/^["']|["']$/g, '').trim()
+            attributesRecord[attrName] = { value: val }
+            presentAttributes.push(attrName)
+          }
+          else {
+            attributesRecord[attr] = {}
+            presentAttributes.push(attr)
+          }
         }
       }
       else if (target.attributes && typeof target.attributes === 'object') {
         attributesRecord = target.attributes as any
         presentAttributes = Object.keys(attributesRecord)
+      }
+    }
+
+    for (const [k, v] of Object.entries(attributesRecord as Record<string, any>)) {
+      if (typeof v === 'string') {
+        attributesRecord[k] = { value: v }
       }
     }
 
@@ -706,25 +732,34 @@ export class SpecCatalog {
       }
     }
 
+    const rawTypeVal = attributesRecord.type?.value
+    const subTypeValue = typeof rawTypeVal === 'string' ? rawTypeVal.trim().toLowerCase() : undefined
+    const subtypeMeta = (directive.type_attributes && subTypeValue)
+      ? directive.type_attributes[subTypeValue]
+      : undefined
+
     const missingRequired: string[] = []
-    for (const [attrName, meta] of Object.entries(allowedAttrs)) {
-      if (meta.required) {
-        if (inverted.some(inv => inv.expected === attrName)) {
-          continue
-        }
+    const requiredAttrsToCheck = subtypeMeta?.required
+      ? subtypeMeta.required
+      : Object.entries(allowedAttrs).filter(([_, meta]) => meta.required).map(([name]) => name)
 
-        const hasLiteral = presentAttributes.includes(attrName)
-        const allowsExpr = meta.expr !== false && meta.attribute_kind !== 'static_literal'
-        const hasExpr = allowsExpr && presentAttributes.includes(`expr:${attrName}`)
+    for (const attrName of requiredAttrsToCheck) {
+      if (inverted.some(inv => inv.expected === attrName)) {
+        continue
+      }
 
-        if (!hasLiteral && !hasExpr) {
-          missingRequired.push(attrName)
-          violations.push({
-            attribute: attrName,
-            code: 'BX1022' as BloggerDiagnosticCode,
-            message: `Mandatory attribute '${attrName}' is missing on <${tagName}>.`,
-          })
-        }
+      const meta = allowedAttrs[attrName]
+      const hasLiteral = presentAttributes.includes(attrName)
+      const allowsExpr = meta ? (meta.expr !== false && meta.attribute_kind !== 'static_literal') : false
+      const hasExpr = allowsExpr && presentAttributes.includes(`expr:${attrName}`)
+
+      if (!hasLiteral && !hasExpr) {
+        missingRequired.push(attrName)
+        violations.push({
+          attribute: attrName,
+          code: 'BX1022' as BloggerDiagnosticCode,
+          message: `Mandatory attribute '${attrName}' is missing on <${tagName}>.`,
+        })
       }
     }
 
