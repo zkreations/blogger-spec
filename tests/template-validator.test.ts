@@ -185,6 +185,17 @@ describe('helpers & canonical structure validation suite', () => {
       expect(vSet).not.toBeNull()
       expect(vSet?.code).toBe('BX1023')
     })
+
+    it('permits <b:template-script> inside <b:includable>, head, and body, but forbids inside <b:section>', () => {
+      expect(validateDirectiveNesting('b:includable', 'b:template-script')).toBeNull()
+      expect(validateDirectiveNesting('head', 'b:template-script')).toBeNull()
+      expect(validateDirectiveNesting('body', 'b:template-script')).toBeNull()
+      expect(validateDirectiveNesting('div', 'b:template-script')).toBeNull()
+
+      const vSection = validateDirectiveNesting('b:section', 'b:template-script')
+      expect(vSection).not.toBeNull()
+      expect(vSection?.code).toBe('BX1023')
+    })
   })
 
   describe('template structure validator', () => {
@@ -730,6 +741,29 @@ describe('helpers & canonical structure validation suite', () => {
       expect(autoMissingDefault.valid).toBe(false)
       expect(autoMissingDefault.missingRequired).toContain('default')
       expect(autoMissingDefault.missingRequired).not.toContain('value')
+    })
+
+    it('validates <b:template-script> attributes including inline and async', () => {
+      const validRes = validateDirectiveAttributes('b:template-script', ['name', 'inline="true"', 'async="true"'])
+      expect(validRes.valid).toBe(true)
+      expect(validRes.missingRequired).toEqual([])
+
+      const invalidBoolean = validateDirectiveAttributes('b:template-script', ['name', 'inline="invalidVal"'])
+      expect(invalidBoolean.valid).toBe(false)
+      expect(invalidBoolean.disallowedValues).toHaveLength(1)
+      expect(invalidBoolean.disallowedValues[0]?.attribute).toBe('inline')
+
+      const templateXml = `
+        <b:section id='main'>
+          <b:widget id='Blog1' type='Blog'>
+            <b:includable id='threadedCommentJs' var='post'>
+              <b:template-script inline='true' name='threaded_comments'/>
+            </b:includable>
+          </b:widget>
+        </b:section>
+      `
+      const diags = validateTemplateStructure(templateXml)
+      expect(diags).toHaveLength(0)
     })
   })
 

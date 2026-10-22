@@ -987,6 +987,10 @@ export interface BloggerTagDirectiveAttributes {
 
 /** Attributes for directive `<b:template-script>` */
 export interface BloggerTemplateScriptDirectiveAttributes {
+  /** When true or yes, sets the async attribute on the generated script tag to load the bundle asynchronously. */
+  async?: boolean;
+  /** When true or yes, the script contents are embedded inline in the document rather than linked via external src. */
+  inline?: boolean;
   /** Internal asset identifier corresponding to the theme's official script bundle. */
   name: string;
 }

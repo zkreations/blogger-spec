@@ -144,6 +144,7 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
         "b:include",
         "b:message",
         "b:comment",
+        "b:template-script",
         "data:*"
       ],
       "@template_markup": [
@@ -1942,7 +1943,8 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
       "grammar": {
         "valid_parents": [
           "head",
-          "body"
+          "body",
+          "@flow_containers"
         ],
         "valid_children": []
       },
@@ -1953,6 +1955,32 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "required": true,
           "attribute_kind": "static_literal",
           "expr": false
+        },
+        "inline": {
+          "type": "boolean",
+          "description": "When true or yes, the script contents are embedded inline in the document rather than linked via external src.",
+          "required": false,
+          "attribute_kind": "static_literal",
+          "expr": false,
+          "allowed_values": [
+            "yes",
+            "no",
+            "true",
+            "false"
+          ]
+        },
+        "async": {
+          "type": "boolean",
+          "description": "When true or yes, sets the async attribute on the generated script tag to load the bundle asynchronously.",
+          "required": false,
+          "attribute_kind": "static_literal",
+          "expr": false,
+          "allowed_values": [
+            "yes",
+            "no",
+            "true",
+            "false"
+          ]
         }
       },
       "constraints": {
