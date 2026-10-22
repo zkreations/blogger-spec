@@ -21,6 +21,163 @@
       "b:macro": "BX1011",
       "b:function": "BX1012"
     },
+    "hallucinated_directive_transforms": {
+      "BX1001": {
+        "targetTag": "b:loop",
+        "attrMap": {
+          "each": "var",
+          "item": "var",
+          "as": "var",
+          "var": "var",
+          "in": "values",
+          "of": "values",
+          "items": "values",
+          "collection": "values",
+          "values": "values",
+          "index": "index"
+        },
+        "requiredAttrs": [
+          "values"
+        ]
+      },
+      "BX1002": {
+        "targetTag": "b:loop",
+        "attrMap": {
+          "each": "var",
+          "item": "var",
+          "as": "var",
+          "var": "var",
+          "in": "values",
+          "of": "values",
+          "items": "values",
+          "collection": "values",
+          "values": "values",
+          "index": "index"
+        },
+        "requiredAttrs": [
+          "values"
+        ]
+      },
+      "BX1003": {
+        "targetTag": "b:with",
+        "attrMap": {
+          "name": "var",
+          "var": "var",
+          "id": "var",
+          "key": "var",
+          "value": "value",
+          "val": "value",
+          "expr": "value"
+        },
+        "requiredAttrs": [
+          "value",
+          "var"
+        ]
+      },
+      "BX1004": {
+        "targetTag": "b:with",
+        "attrMap": {
+          "name": "var",
+          "var": "var",
+          "id": "var",
+          "key": "var",
+          "value": "value",
+          "val": "value",
+          "expr": "value"
+        },
+        "requiredAttrs": [
+          "value",
+          "var"
+        ]
+      },
+      "BX1005": {
+        "targetTag": "b:with",
+        "attrMap": {
+          "name": "var",
+          "var": "var",
+          "id": "var",
+          "key": "var",
+          "value": "value",
+          "val": "value",
+          "expr": "value"
+        },
+        "requiredAttrs": [
+          "value",
+          "var"
+        ]
+      },
+      "BX1006": {
+        "targetTag": "b:elseif",
+        "attrMap": {
+          "cond": "cond",
+          "test": "cond",
+          "expr": "cond"
+        },
+        "requiredAttrs": [
+          "cond"
+        ]
+      },
+      "BX1007": {
+        "targetTag": "b:switch",
+        "attrMap": {
+          "var": "var",
+          "expr": "var",
+          "value": "var"
+        }
+      },
+      "BX1008": {
+        "targetTag": "b:case",
+        "attrMap": {
+          "value": "value",
+          "val": "value",
+          "test": "value",
+          "expr": "value",
+          "cond": "value"
+        },
+        "requiredAttrs": [
+          "value"
+        ]
+      },
+      "BX1009": {
+        "targetTag": "b:default",
+        "attrMap": {}
+      },
+      "BX1010": {
+        "targetTag": "b:includable",
+        "attrMap": {
+          "id": "id",
+          "name": "id"
+        },
+        "requiredAttrs": [
+          "id"
+        ]
+      },
+      "BX1011": {
+        "targetTag": "b:includable",
+        "attrMap": {
+          "id": "id",
+          "name": "id"
+        },
+        "requiredAttrs": [
+          "id"
+        ]
+      },
+      "BX1012": {
+        "targetTag": "b:includable",
+        "attrMap": {
+          "id": "id",
+          "name": "id"
+        },
+        "requiredAttrs": [
+          "id"
+        ]
+      }
+    },
+    "inverted_attribute_maps": {
+      "BX1014": "var",
+      "BX1015": "id",
+      "BX1016": "name"
+    },
     "standard_diagnostics": {
       "missing_required_attribute": "BX1022",
       "deprecated_attribute": "BX1024",
@@ -36,7 +193,12 @@
       "unresolved_inclusion": "BX1037",
       "non_object_include_data_payload": "BX1031",
       "prohibited_bracket_indexing_in_data_tag": "BX1032",
-      "prohibited_operator_in_data_tag": "BX1048"
+      "prohibited_operator_in_data_tag": "BX1048",
+      "deprecated_data_property": "BX1050",
+      "hallucinated_data_property": "BX1051",
+      "invalid_skin_variable_syntax": "BX1052",
+      "unresolved_skin_variable": "BX1053",
+      "invalid_skin_var_data_path": "BX1054"
     },
     "html_void_elements": [
       "area",
