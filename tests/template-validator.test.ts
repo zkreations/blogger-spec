@@ -1,3 +1,7 @@
+import type {
+  BloggerStructureDiagnostic,
+  DirectiveNestingViolation,
+} from '../src/parser/index.js'
 import { describe, expect, it } from 'vitest'
 import {
   canNest,
@@ -1183,6 +1187,13 @@ describe('helpers & canonical structure validation suite', () => {
         </b:widget>
       `
       expect(validateTemplateStructure(validXml).some(d => d.code === 'BX1037')).toBe(false)
+    })
+
+    it('re-exports BloggerStructureDiagnostic and DirectiveNestingViolation types from parser', () => {
+      const diags: BloggerStructureDiagnostic[] = validateExpression('data:post.isFirst == "true"')
+      expect(diags.length).toBeGreaterThan(0)
+      const violation: DirectiveNestingViolation | null = validateDirectiveNesting('head', 'b:section')
+      expect(violation).toBeDefined()
     })
   })
 })

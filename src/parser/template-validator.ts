@@ -15,6 +15,11 @@ import { scanDirectiveTokens } from './directive-scanner.js'
 import { parseExpression } from './expr-parser.js'
 import { tokenize, unescapeXmlEntitiesWithSourceMap } from './lexer.js'
 
+export type {
+  BloggerStructureDiagnostic,
+  DirectiveNestingViolation,
+}
+
 function pushDiagnostic(
   diagnostics: BloggerStructureDiagnostic[],
   catalog: SpecCatalog,
