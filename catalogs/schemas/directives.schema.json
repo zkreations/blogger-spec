@@ -54,6 +54,42 @@
             "$ref": "common.schema.json#/$defs/diagnosticCode"
           }
         },
+        "hallucinated_directive_transforms": {
+          "type": "object",
+          "description": "Rules for transforming hallucinated directives into canonical Blogger directives.",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "targetTag",
+              "attrMap"
+            ],
+            "properties": {
+              "targetTag": {
+                "type": "string"
+              },
+              "attrMap": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              },
+              "requiredAttrs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "inverted_attribute_maps": {
+          "type": "object",
+          "description": "Mapping from diagnostic code or inverted attribute to canonical attribute name.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
         "standard_diagnostics": {
           "type": "object",
           "description": "Standard diagnostic codes associated with template syntax and structural violations.",
@@ -113,6 +149,21 @@
               "$ref": "common.schema.json#/$defs/diagnosticCode"
             },
             "prohibited_operator_in_data_tag": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "deprecated_data_property": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "hallucinated_data_property": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "invalid_skin_variable_syntax": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "unresolved_skin_variable": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "invalid_skin_var_data_path": {
               "$ref": "common.schema.json#/$defs/diagnosticCode"
             }
           },
