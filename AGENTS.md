@@ -32,7 +32,7 @@ pnpm.cmd run test         # Vitest conformance suite
 - **Directive scanning**: Tokenizer (`directive-scanner.ts`) maintains exact byte offsets by whitespace-masking comments and non-variable CDATA blocks in a unified single pass without heap string cloning.
 - **Parser recursion limit**: Expression parser (`expr-parser.ts`) enforces `maxDepth: 50` preventing call stack exhaustion (`RangeError`) on deeply nested expressions in strict and tolerant modes.
 - **Directive nesting**: Rules reside in `catalogs/directives.json` (`valid_parents`, `valid_children`, `invalid_nesting_policy`). Content models map via `@flow_instructions`, `@flow_containers`, `@template_markup`, `@any_container`. Validation returns `DirectiveNestingViolation` with recovery actions (`reject`, `strip`, `ignore`).
-- **Section parents**: `<b:section>` is permitted only under `<body>`, `<b:tag>`, and structural HTML containers (`html:*`); forbidden under `<head>`, widgets, or nested sections (`BX1035`).
+- **Section parents**: `<b:section>` is permitted only under `<body>`, `<b:tag>`, structural HTML containers (`html:*`), and conditional/scoping containers (`<b:if>`, `<b:with>`, `<b:switch>`); forbidden under `<head>`, widgets, loops, or nested sections (`BX1035`).
 - **Skin variables**: Theme Designer tags (`<Variable>`, `<Group>`) reside strictly within `<b:skin>` CDATA; forbidden in `<b:template-skin>`, generic CDATA, or `<body>` (`BX1023`).
 - **Boolean values**: Exactly 4 valid values: `yes`, `no`, `true`, `false` (`yes`/`true` = truthy; `no`/`false` = falsy). Boolean attributes accept only these four.
 - **Data path navigation**: `resolveDataPath` provides canonical deep member traversal across globals, widgets, types, modifiers, and variables without editor AST coupling.
