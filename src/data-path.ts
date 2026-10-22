@@ -116,8 +116,20 @@ export function resolveDataPath(
   else {
     const globalKey = first.startsWith('data:') ? first : `data:${first}`
     const globalDef = catalog.getGlobal(globalKey)
+    const widget = catalog.getWidget(widgetType)
+    const widgetPropKey = first.startsWith('data:') ? first.slice(5) : first
+    const widgetProp = widget?.canonical?.[widgetPropKey]
+    const widgetDep = widget?.deprecated?.[widgetPropKey]
 
-    if (globalDef) {
+    if (!first.startsWith('data:') && widgetProp) {
+      sourceCatalog = 'widgets'
+      currentDef = widgetProp
+      currentType = widgetProp.type
+      isCollection = widgetProp.type.startsWith('array') || Boolean(widgetProp.item_properties)
+      itemType = widgetProp.item_type ?? (widgetProp.type.startsWith('array[') ? widgetProp.type.slice(6, -1) : undefined)
+      isDeprecated = false
+    }
+    else if (globalDef) {
       sourceCatalog = 'globals'
       currentDef = globalDef
       if (globalDef.cardinality === 'collection') {
@@ -130,34 +142,27 @@ export function resolveDataPath(
         isCollection = false
       }
     }
+    else if (widgetProp) {
+      sourceCatalog = 'widgets'
+      currentDef = widgetProp
+      currentType = widgetProp.type
+      isCollection = widgetProp.type.startsWith('array') || Boolean(widgetProp.item_properties)
+      itemType = widgetProp.item_type ?? (widgetProp.type.startsWith('array[') ? widgetProp.type.slice(6, -1) : undefined)
+      isDeprecated = false
+    }
+    else if (widgetDep) {
+      sourceCatalog = 'widgets'
+      currentDef = widgetDep
+      currentType = widgetDep.type ?? 'unknown'
+      isDeprecated = true
+    }
+    else if (first === 'messages' || first === 'data:messages') {
+      sourceCatalog = 'messages'
+      currentType = 'object'
+      currentDef = { type: 'object', description: 'Universal localized UI messages dictionary.' }
+    }
     else {
-      const widget = catalog.getWidget(widgetType)
-      const widgetPropKey = first.startsWith('data:') ? first.slice(5) : first
-      const widgetProp = widget?.canonical?.[widgetPropKey]
-      const widgetDep = widget?.deprecated?.[widgetPropKey]
-
-      if (widgetProp) {
-        sourceCatalog = 'widgets'
-        currentDef = widgetProp
-        currentType = widgetProp.type
-        isCollection = widgetProp.type.startsWith('array') || Boolean(widgetProp.item_properties)
-        itemType = widgetProp.item_type ?? (widgetProp.type.startsWith('array[') ? widgetProp.type.slice(6, -1) : undefined)
-        isDeprecated = false
-      }
-      else if (widgetDep) {
-        sourceCatalog = 'widgets'
-        currentDef = widgetDep
-        currentType = widgetDep.type ?? 'unknown'
-        isDeprecated = true
-      }
-      else if (first === 'messages' || first === 'data:messages') {
-        sourceCatalog = 'messages'
-        currentType = 'object'
-        currentDef = { type: 'object', description: 'Universal localized UI messages dictionary.' }
-      }
-      else {
-        return undefined
-      }
+      return undefined
     }
   }
 
@@ -180,6 +185,20 @@ export function resolveDataPath(
     const seg = segments[i]!
 
     if (sourceCatalog === 'messages' || first === 'messages' || first === 'data:messages') {
+      const strippedFirst = first.startsWith('data:') ? first.slice(5) : first
+      const widget = catalog.getWidget(widgetType)
+      const widgetSubProp = currentDef?.properties?.[seg] ?? widget?.canonical?.[strippedFirst]?.properties?.[seg]
+
+      if (widgetSubProp) {
+        currentType = widgetSubProp.type ?? 'string'
+        currentDef = widgetSubProp
+        sourceCatalog = 'widgets'
+        isCollection = widgetSubProp.type?.startsWith('array') || Boolean(widgetSubProp.item_properties)
+        itemType = widgetSubProp.item_type ?? (widgetSubProp.type?.startsWith('array[') ? widgetSubProp.type.slice(6, -1) : undefined)
+        isDeprecated = Boolean(widgetSubProp.deprecated)
+        continue
+      }
+
       const msgDef = catalog.getMessage(seg)
       currentType = 'string'
       currentDef = msgDef ?? { type: 'string', description: `Localized message for '${seg}'` }

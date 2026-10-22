@@ -139,6 +139,16 @@
           "type": "string",
           "description": "Link color hexadecimal code from theme settings."
         },
+        "messages": {
+          "type": "object",
+          "description": "Blog comment system custom configuration messages dictionary.",
+          "properties": {
+            "blogComment": {
+              "type": "string",
+              "description": "Comment form message configured by blog administrators in dashboard settings; empty string if unconfigured."
+            }
+          }
+        },
         "navMessage": {
           "type": "string",
           "description": "Status banner message displayed on search/archive views."
@@ -815,8 +825,8 @@
           "status": "deprecated_in_widget_v2",
           "type": "string",
           "action": "migrate",
-          "replacement": "data:messages.postAComment",
-          "reason": "Replaced by localized string data:messages.postAComment."
+          "replacement": "data:messages.blogComment",
+          "reason": "Replaced by comment form message data:messages.blogComment."
         },
         "blogTeamBlogMessage": {
           "status": "deprecated_in_widget_v2",

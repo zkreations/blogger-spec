@@ -484,7 +484,12 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
         const repl = (v as any).replacement
         if (typeof repl === 'string' && repl.startsWith('data:messages.')) {
           const key = repl.replace(/^data:messages\./, '')
-          if (key !== '*' && !knownMessageKeys.has(key)) {
+          const isWidgetMessage = loc.startsWith('widgets.') && (() => {
+            const widgetType = loc.split('.')[1]
+            const widgetDef = (widgetsCatalog.widgets as any)?.[widgetType]
+            return Boolean(widgetDef?.canonical?.messages?.properties?.[key])
+          })()
+          if (key !== '*' && !knownMessageKeys.has(key) && !isWidgetMessage) {
             errors.push(`Property '${loc}' specifies replacement to unknown message '${repl}'.`)
           }
         }

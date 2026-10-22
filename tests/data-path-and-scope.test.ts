@@ -94,6 +94,40 @@ describe('dataPath Navigator (resolveDataPath)', () => {
     expect(msg?.sourceCatalog).toBe('messages')
   })
 
+  it('resolves Blog widget canonical messages.blogComment without colliding with global messages', () => {
+    const blogComment = resolveDataPath('data:messages.blogComment', { widgetType: 'Blog' })
+    expect(blogComment).toBeDefined()
+    expect(blogComment?.name).toBe('blogComment')
+    expect(blogComment?.type).toBe('string')
+    expect(blogComment?.sourceCatalog).toBe('widgets')
+
+    const blogCommentUnprefixed = resolveDataPath('messages.blogComment', { widgetType: 'Blog' })
+    expect(blogCommentUnprefixed).toBeDefined()
+    expect(blogCommentUnprefixed?.name).toBe('blogComment')
+    expect(blogCommentUnprefixed?.type).toBe('string')
+    expect(blogCommentUnprefixed?.sourceCatalog).toBe('widgets')
+
+    const globalMsg = resolveDataPath('data:messages.newerPosts', { widgetType: 'Blog' })
+    expect(globalMsg).toBeDefined()
+    expect(globalMsg?.name).toBe('newerPosts')
+    expect(globalMsg?.type).toBe('string')
+    expect(globalMsg?.sourceCatalog).toBe('messages')
+
+    const env = new ScopeEnvironment()
+    env.pushScope('widget', { widgetType: 'Blog' })
+    const scopeBlogComment = resolveDataPath('data:messages.blogComment', { scope: env })
+    expect(scopeBlogComment).toBeDefined()
+    expect(scopeBlogComment?.name).toBe('blogComment')
+    expect(scopeBlogComment?.type).toBe('string')
+    expect(scopeBlogComment?.sourceCatalog).toBe('widgets')
+
+    const scopeGlobalMsg = resolveDataPath('data:messages.newerPosts', { scope: env })
+    expect(scopeGlobalMsg).toBeDefined()
+    expect(scopeGlobalMsg?.name).toBe('newerPosts')
+    expect(scopeGlobalMsg?.type).toBe('string')
+    expect(scopeGlobalMsg?.sourceCatalog).toBe('messages')
+  })
+
   it('resolves variables supplied in context', () => {
     const authorName = resolveDataPath('author.name', {
       variables: {

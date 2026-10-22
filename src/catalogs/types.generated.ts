@@ -1530,6 +1530,8 @@ export interface BloggerBlogWidgetData {
   languageCode?: string;
   /** Link color hexadecimal code from theme settings. */
   linkColor?: string;
+  /** Blog comment system custom configuration messages dictionary. */
+  messages?: Record<string, any>;
   /** Status banner message displayed on search/archive views. */
   navMessage?: string;
   /** Target URL for newer posts page in multi-item views. */
