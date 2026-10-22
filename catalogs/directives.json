@@ -177,7 +177,10 @@
         "valid_parents": [
           "body",
           "html:*",
-          "b:tag"
+          "b:tag",
+          "b:if",
+          "b:with",
+          "b:switch"
         ],
         "valid_children": [
           "b:widget"
@@ -801,6 +804,7 @@
           "@any_container"
         ],
         "valid_children": [
+          "b:section",
           "@flow_content",
           "b:skin",
           "b:template-skin"
@@ -848,6 +852,7 @@
           "@any_container"
         ],
         "valid_children": [
+          "b:section",
           "@flow_content",
           "b:elseif",
           "b:else",
@@ -982,6 +987,7 @@
         "valid_children": [
           "b:case",
           "b:default",
+          "b:section",
           "@flow_content",
           "b:skin",
           "b:template-skin"

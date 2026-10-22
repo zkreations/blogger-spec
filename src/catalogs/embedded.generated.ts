@@ -197,7 +197,10 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
         "valid_parents": [
           "body",
           "html:*",
-          "b:tag"
+          "b:tag",
+          "b:if",
+          "b:with",
+          "b:switch"
         ],
         "valid_children": [
           "b:widget"
@@ -821,6 +824,7 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "@any_container"
         ],
         "valid_children": [
+          "b:section",
           "@flow_content",
           "b:skin",
           "b:template-skin"
@@ -868,6 +872,7 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
           "@any_container"
         ],
         "valid_children": [
+          "b:section",
           "@flow_content",
           "b:elseif",
           "b:else",
@@ -1002,6 +1007,7 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
         "valid_children": [
           "b:case",
           "b:default",
+          "b:section",
           "@flow_content",
           "b:skin",
           "b:template-skin"

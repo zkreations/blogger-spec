@@ -130,7 +130,7 @@ function validateNestingRules(
 
   if (isSection) {
     const invalidAncestor = tagStack.find(t =>
-      t.tagName === 'b:widget' || t.tagName === 'b:includable' || t.tagName === 'b:defaultmarkup' || t.tagName === 'head',
+      t.tagName === 'b:widget' || t.tagName === 'b:includable' || t.tagName === 'b:defaultmarkup' || t.tagName === 'head' || t.tagName === 'b:loop',
     )
     if (invalidAncestor) {
       const defaultProhibited = (catalog.getStandardDiagnostic('prohibited_nesting') ?? 'BX1023') as BloggerDiagnosticCode

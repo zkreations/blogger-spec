@@ -196,6 +196,16 @@ describe('helpers & canonical structure validation suite', () => {
       expect(vSection).not.toBeNull()
       expect(vSection?.code).toBe('BX1023')
     })
+
+    it('permits <b:section> inside conditional and scoping containers (b:if, b:with, b:switch), but forbids inside b:loop', () => {
+      expect(validateDirectiveNesting('b:if', 'b:section')).toBeNull()
+      expect(validateDirectiveNesting('b:with', 'b:section')).toBeNull()
+      expect(validateDirectiveNesting('b:switch', 'b:section')).toBeNull()
+
+      const vLoop = validateDirectiveNesting('b:loop', 'b:section')
+      expect(vLoop).not.toBeNull()
+      expect(vLoop?.code).toBe('BX1023')
+    })
   })
 
   describe('template structure validator', () => {
@@ -225,6 +235,49 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diags.some(d => d.code === 'BX1035')).toBe(true)
       const diag = diags.find(d => d.code === 'BX1035')
       expect(diag?.rule.name).toBe('NESTED_SECTION')
+    })
+
+    it('permits top-level <b:section> wrapped in conditional or scoping directives (b:if, b:with, b:switch)', () => {
+      const xml = `
+        <b:if cond='not data:view.isSingleItem or data:view.isLayoutMode'>
+          <b:section class='sidebar' id='sidebar_feed' name='Sidebar' preferred='yes'/>
+        </b:if>
+        <b:with value='data:blog' var='currentBlog'>
+          <b:section id='mainSec'/>
+        </b:with>
+        <b:switch var='data:view.type'>
+          <b:case value='index'/>
+          <b:section id='indexSec'/>
+        </b:switch>
+      `
+      const diags = validateTemplateStructure(xml)
+      expect(diags.filter(d => d.code === 'BX1023' || d.code === 'BX1035')).toHaveLength(0)
+    })
+
+    it('forbids <b:section> inside <b:loop> at any ancestor nesting depth (BX1023)', () => {
+      const xml = `
+        <b:loop values='data:posts' var='post'>
+          <div>
+            <b:section id='loopSection'/>
+          </div>
+        </b:loop>
+      `
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1023' && d.message.includes('inside <b:loop>'))).toBe(true)
+    })
+
+    it('forbids <b:section> inside <b:if> when nested inside a widget or includable (BX1023)', () => {
+      const xml = `
+        <b:widget id='Blog1' type='Blog'>
+          <b:includable id='main'>
+            <b:if cond='true'>
+              <b:section id='badNestedSection'/>
+            </b:if>
+          </b:includable>
+        </b:widget>
+      `
+      const diags = validateTemplateStructure(xml)
+      expect(diags.some(d => d.code === 'BX1023' && d.message.includes('inside <b:widget>'))).toBe(true)
     })
 
     it('detects <b:widget> outside <b:section> (BX1034)', () => {
