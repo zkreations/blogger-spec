@@ -29,7 +29,7 @@ blogger-spec/
 │   ├── globals.json          # Global data objects (data:blog, data:view, data:skin...)
 │   ├── messages.json         # Localized UI string definitions (data:messages.*)
 │   ├── scopes.json           # Variable scope resolution rules & precedence
-│   ├── diagnostics.json      # Diagnostic compiler/linter rules (BX1001-BX1040)
+│   ├── diagnostics.json      # Diagnostic compiler/linter rules (BX1001-BX1049)
 │   ├── inclusions.json       # System inclusions, layouts versions 1-3, super.* prefix
 │   └── schemas/              # Draft 2020-12 canonical JSON schemas
 ├── fixtures/                 # Empirical conformance test cases

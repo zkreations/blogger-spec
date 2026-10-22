@@ -18,8 +18,8 @@ It is designed to be consumed by external tools — IDE extensions, linters, tem
 - **`blogger-spec/parser`** — Lexical tokenizer and attribute parser for Blogger XML directives (`<b:...>`, `<data:...>`, `<Variable...>`), expressions containing relational operators (`>`), CDATA skin variables, and unclosed tag stack tracking.
 - **`blogger-spec/version`** — Detects Blogger template layout architecture (Layouts v1, v2, v3) from raw XML.
 - **`blogger-spec/quota`** — Token counting and budget evaluation against the Blogger compiler's 40-token ceiling (`BX1021`).
-- **`blogger-spec/type-system`** — Subtype assignability, modifier inheritance, operator compatibility, and expression return type inference with widget scope support.
-- **`blogger-spec/data-path`** — Data path resolution (`resolveDataPath`) across globals, widget dictionaries, platform types, localized messages, and scoped variables, including collection unwrapping (`[0]`, `.first`, `.last`) and type modifiers (`.escaped`, `.canonical`, `.length`).
+- **`blogger-spec/type-system`** — Subtype assignability, modifier inheritance, Theme Designer skin modifiers (`getSkinTypeModifiers`), operator compatibility, and expression return type inference with widget scope support.
+- **`blogger-spec/data-path`** — Data path resolution (`resolveDataPath`) across globals, widget dictionaries, platform types, localized messages, scoped variables, and Theme Designer skin variables (`skinVariables`, `toSkinVarIdentifier`), including collection unwrapping (`[0]`, `.first`, `.last`) and type modifiers (`.escaped`, `.canonical`, `.length`).
 - **`blogger-spec/scope`** — Compiler symbol table and scope stack (`ScopeEnvironment`) with canonical resolution precedence (`lambda` → `loop` → `with` → `includable` → `widget` → `global`) and variable shadowing.
 - **`blogger-spec/catalogs`** — Snippet generators (`getDirectiveSnippet`, `getOperatorSnippet`) with tabstops, enforcing single quotes for template directives and double quotes for skin variables.
 
@@ -40,7 +40,7 @@ blogger-spec/
 │   ├── globals.json          # Global data objects (data:blog, data:view, data:skin...)
 │   ├── messages.json         # Localized UI string definitions (data:messages.*)
 │   ├── scopes.json           # Variable scope resolution rules and precedence
-│   ├── diagnostics.json      # Diagnostic rules (BX1001-BX1042)
+│   ├── diagnostics.json      # Diagnostic rules (BX1001-BX1049)
 │   ├── inclusions.json       # System inclusions, layout versions 1-3, super.* prefix
 │   └── schemas/              # JSON Schemas Draft 2020-12 for each catalog
 ├── fixtures/                 # Test fixtures verified against the production Blogger engine
@@ -102,6 +102,7 @@ import {
   getDirectives,
   getDirectiveSnippet,
   getOperatorSnippet,
+  getSkinTypeModifiers,
   getSpecCatalog,
   inferExpressionType,
   isTypeAssignable,
@@ -109,6 +110,7 @@ import {
   resolveDataPath,
   scanDirectiveTokens,
   ScopeEnvironment,
+  toSkinVarIdentifier,
   validateExpression,
   validateTemplateExpressions,
   validateTemplateStructure,
@@ -118,6 +120,8 @@ import {
 ### Subpath imports
 
 ```typescript
+import type { BloggerStructureDiagnostic, DirectiveNestingViolation } from 'blogger-spec/parser'
+
 // Expression parser and AST types
 import { parseExpression, tokenize } from 'blogger-spec/ast'
 
@@ -132,15 +136,16 @@ import {
   isOperator,
 } from 'blogger-spec/catalogs'
 
-// Data path navigation
-import { resolveDataPath } from 'blogger-spec/data-path'
+// Data path navigation and skin variable normalization
+import { resolveDataPath, toSkinVarIdentifier } from 'blogger-spec/data-path'
 
 // Node.js filesystem catalog store (optional, Node-only)
 import { FsCatalogStore } from 'blogger-spec/node'
-
 // Structural validation, expression auditing, and directive scanning
 import {
+
   canNest,
+
   getNearestUnclosedDirective,
   getUnclosedDirectiveStack,
   isStrictlySelfClosingTag,
@@ -148,7 +153,7 @@ import {
   validateDirectiveNesting,
   validateExpression,
   validateTemplateExpressions,
-  validateTemplateStructure,
+  validateTemplateStructure
 } from 'blogger-spec/parser'
 
 // Token quota calculator (BX1021)
@@ -163,11 +168,12 @@ import { ScopeEnvironment } from 'blogger-spec/scope'
 
 // Type system, modifiers, and type inference
 import {
+  getSkinTypeModifiers,
   getTypeModifiers,
   inferExpressionType,
   isTruthy,
   isTypeAssignable,
-  resolveDataPath,
+  resolveModifierReturnType,
   resolveOperatorReturnType,
 } from 'blogger-spec/type-system'
 
@@ -193,11 +199,11 @@ import types from 'blogger-spec/types' with { type: 'json' }
 | Subpath | Key exports | Description |
 | :--- | :--- | :--- |
 | `blogger-spec/ast` | `parseExpression`, `tokenize`, `ExpressionParser` | Pratt parser and lexer producing expression ASTs (`BloggerExpressionNode`). |
-| `blogger-spec/data-path` | `resolveDataPath` | Member traversal across globals, widget dictionaries, platform types, and variables. |
+| `blogger-spec/data-path` | `resolveDataPath`, `toSkinVarIdentifier` | Member traversal across globals, widget dictionaries, platform types, variables, and Theme Designer skin variables (`data:skin.vars.*`). |
 | `blogger-spec/scope` | `ScopeEnvironment` | Compiler symbol table and scope stack with canonical precedence and variable shadowing. |
-| `blogger-spec/parser` | `scanDirectiveTokens`, `validateTemplateStructure`, `validateTemplateExpressions`, `validateExpression`, `validateDirectiveNesting`, `canNest` | Directive scanner, structural validator, and expression attribute auditor (`BX1017-BX1021`). |
+| `blogger-spec/parser` | `scanDirectiveTokens`, `validateTemplateStructure`, `validateTemplateExpressions`, `validateExpression`, `validateDirectiveNesting`, `canNest`, `BloggerStructureDiagnostic` | Directive scanner, structural validator, expression attribute auditor, and automated QuickFix provider (`BX1001-BX1049`). |
 | `blogger-spec/quota` | `evaluateExpressionBudget`, `countExpressionTokens`, `tokenizeExpression`, `COMPILER_QUOTA_LIMIT` | Token quota calculator and budget evaluator against the 40-token compiler ceiling (`BX1021`). |
-| `blogger-spec/type-system` | `isTypeAssignable`, `getTypeModifiers`, `resolveModifierReturnType`, `resolveOperatorReturnType`, `inferExpressionType`, `resolveDataPath`, `isTruthy` | Type assignability, modifier inheritance, operator return type inference, and expression type deduction. |
+| `blogger-spec/type-system` | `isTypeAssignable`, `getTypeModifiers`, `getSkinTypeModifiers`, `resolveModifierReturnType`, `resolveOperatorReturnType`, `inferExpressionType`, `isTruthy` | Type assignability, modifier inheritance, Theme Designer skin modifiers, operator return type inference, and expression type deduction. |
 | `blogger-spec/version` | `detectTemplateVersion`, `getLayoutVersionsSpec` | Template layout architecture detector (v1, v2, v3). |
 | `blogger-spec/catalogs` | `getSpecCatalog`, `SpecCatalog`, `MemoryCatalogStore`, `getDirectiveSnippet`, `getOperatorSnippet`, `isDirective`, `isOperator`, `getDiagnostic` | Specification query facade, attribute validation, snippet generators, and in-memory catalog store. |
 | `blogger-spec/runner` | `runSpecConformance`, `runConformance` | Test harness to validate engine conformance against empirical fixtures. |
@@ -239,7 +245,7 @@ console.log(budget)
 ### 3. Type checking and member modifiers
 
 ```typescript
-import { getTypeModifiers, isTypeAssignable } from 'blogger-spec/type-system'
+import { getSkinTypeModifiers, getTypeModifiers, isTypeAssignable } from 'blogger-spec/type-system'
 
 isTypeAssignable('image', 'string') // true
 const imageMods = getTypeModifiers('image')
@@ -249,6 +255,10 @@ const imageMods = getTypeModifiers('image')
 isTypeAssignable('skin:color', 'string') // false
 const colorMods = getTypeModifiers('skin:color')
 // { red: ..., green: ..., blue: ..., alpha: ... }
+
+// Resolve Theme Designer tag attribute types directly:
+const fontMods = getSkinTypeModifiers('font')
+// { family: ..., size: ... }
 ```
 
 ### 4. Scanning directives and tracking unclosed tags
@@ -319,7 +329,7 @@ const diagnostics = validateTemplateStructure(`
 ### 7. Data path navigation (`resolveDataPath`)
 
 ```typescript
-import { resolveDataPath } from 'blogger-spec/data-path'
+import { resolveDataPath, toSkinVarIdentifier } from 'blogger-spec/data-path'
 
 resolveDataPath('data:blog.url.canonical')
 // { name: 'canonical', type: 'url', sourceCatalog: 'types', ... }
@@ -329,6 +339,14 @@ resolveDataPath('data:widgets.Blog1.posts[0].title')
 
 resolveDataPath('data:view.isMobile')
 // { name: 'isMobile', type: 'boolean', isDeprecated: true, ... }
+
+// With Theme Designer skin variables:
+toSkinVarIdentifier('admin.name') // 'admin_name'
+
+resolveDataPath('data:skin.vars.body_font.family', {
+  skinVariables: { 'body.font': { type: 'font' } },
+})
+// { name: 'family', type: 'string', sourceCatalog: 'types', ... }
 ```
 
 ### 8. Scope tree and variable shadowing (`ScopeEnvironment`)
@@ -357,12 +375,14 @@ import { validateTemplateExpressions } from 'blogger-spec/parser'
 const xml = `
   <b:if cond='data:posts === null'>
     <b:eval expr='data:posts.slice(0, 5)'/>
+    <b:eval expr='data:view.isPost == "true"'/>
   </b:if>
 `
 const diagnostics = validateTemplateExpressions(xml)
-// - BX1018: JS strict equality (===) not allowed; use ==
+// - BX1018: JS strict equality (===) not allowed; suggestedReplacement: '=='
 // - BX1020: Prohibited 'null' literal
 // - BX1017: Prohibited JavaScript native method invocation (.slice)
+// - BX1038: String boolean in expression; suggestedReplacement: 'true'
 ```
 
 ### 10. Snippet generation
