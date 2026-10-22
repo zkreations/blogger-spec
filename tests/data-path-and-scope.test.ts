@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { resolveDataPath } from '../src/data-path.js'
+import { resolveDataPath, toSkinVarIdentifier } from '../src/data-path.js'
 import { ScopeEnvironment } from '../src/scope.js'
 
 describe('dataPath Navigator (resolveDataPath)', () => {
@@ -125,6 +125,62 @@ describe('dataPath Navigator (resolveDataPath)', () => {
     expect(resolveDataPath('data:nonExistentGlobal.prop')).toBeUndefined()
     expect(resolveDataPath('data:blog.nonExistentField')).toBeUndefined()
     expect(resolveDataPath('')).toBeUndefined()
+  })
+
+  it('normalizes skin variable names with toSkinVarIdentifier', () => {
+    expect(toSkinVarIdentifier('admin.name')).toBe('admin_name')
+    expect(toSkinVarIdentifier('body.font.family')).toBe('body_font_family')
+    expect(toSkinVarIdentifier('keycolor')).toBe('keycolor')
+  })
+
+  it('resolves Theme Designer skin variables and their modifiers via resolveDataPath', () => {
+    const skinVars = {
+      'body_font': { type: 'font', name: 'body.font' },
+      'keycolor': 'color',
+      'site.title': { type: 'string', name: 'site.title' },
+    }
+
+    // 1. Resolve variable node directly
+    const fontVar = resolveDataPath('data:skin.vars.body_font', { skinVariables: skinVars })
+    expect(fontVar).toBeDefined()
+    expect(fontVar?.name).toBe('body_font')
+    expect(fontVar?.type).toBe('skin:font')
+    expect(fontVar?.sourceCatalog).toBe('variables')
+
+    // 2. Resolve modifier on skin variable (e.g. .family on font)
+    const fontFamily = resolveDataPath('data:skin.vars.body_font.family', { skinVariables: skinVars })
+    expect(fontFamily).toBeDefined()
+    expect(fontFamily?.name).toBe('family')
+    expect(fontFamily?.type).toBe('string')
+    expect(fontFamily?.sourceCatalog).toBe('types')
+
+    // 3. Resolve modifier on color variable (e.g. .red on color)
+    const colorRed = resolveDataPath('data:skin.vars.keycolor.red', { skinVariables: skinVars })
+    expect(colorRed).toBeDefined()
+    expect(colorRed?.name).toBe('red')
+    expect(colorRed?.type).toBe('string')
+    expect(colorRed?.sourceCatalog).toBe('types')
+
+    // 4. Resolve variable defined with dot in name ('site.title' matched via 'site_title')
+    const siteTitle = resolveDataPath('data:skin.vars.site_title', { skinVariables: skinVars })
+    expect(siteTitle).toBeDefined()
+    expect(siteTitle?.name).toBe('site_title')
+    expect(siteTitle?.type).toBe('skin:string')
+
+    // 5. Skin string variables do not have platform string modifiers (.length is invalid)
+    expect(resolveDataPath('data:skin.vars.site_title.length', { skinVariables: skinVars })).toBeUndefined()
+
+    // 6. Works without 'data:' prefix
+    const noPrefixFamily = resolveDataPath('skin.vars.body_font.family', { skinVariables: skinVars })
+    expect(noPrefixFamily).toBeDefined()
+    expect(noPrefixFamily?.name).toBe('family')
+
+    // 7. Unregistered skin variable falls back to generic skin_variable pattern from globals.json
+    const unregVar = resolveDataPath('data:skin.vars.unknown_var')
+    expect(unregVar).toBeDefined()
+    expect(unregVar?.name).toBe('unknown_var')
+    expect(unregVar?.type).toBe('skin_variable')
+    expect(unregVar?.sourceCatalog).toBe('globals')
   })
 })
 

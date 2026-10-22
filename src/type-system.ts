@@ -78,6 +78,15 @@ export function getTypeModifiers(
   }
 }
 
+export function getSkinTypeModifiers(
+  typeOrAttr: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): Record<string, BloggerTypeModifierDefinition> {
+  const trimmed = typeOrAttr.trim().toLowerCase()
+  const normalized = trimmed.startsWith('skin:') ? trimmed : `skin:${trimmed}`
+  return catalog.getType(normalized)?.modifiers ?? {}
+}
+
 export function resolveModifierReturnType(
   targetType: string,
   modifierName: string,

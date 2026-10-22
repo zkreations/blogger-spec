@@ -3,11 +3,24 @@ import type { BloggerScopeSymbol, ScopeEnvironment } from './scope.js'
 import { getSpecCatalog } from './catalogs/index.js'
 import { getTypeModifiers, resolveModifierReturnType } from './type-system.js'
 
+export interface BloggerSkinVariableSymbol {
+  readonly type: string
+  readonly name?: string
+  readonly description?: string
+  readonly default?: string
+  readonly value?: string
+}
+
 export interface ResolveDataPathContext {
   widgetType?: string
   catalog?: SpecCatalog
   variables?: Record<string, string | BloggerScopeSymbol>
   scope?: ScopeEnvironment
+  skinVariables?: Record<string, string | BloggerSkinVariableSymbol>
+}
+
+export function toSkinVarIdentifier(name: string): string {
+  return name.replace(/\./g, '_')
 }
 
 export interface BloggerResolvedProperty {
@@ -224,6 +237,39 @@ export function resolveDataPath(
         currentDef = catalog.getGlobal('data:widgets')?.canonical?.[matchingType] ?? catalog.getWidget(matchingType)
         continue
       }
+    }
+
+    if ((first === 'data:skin' || first === 'skin') && segments[1] === 'vars' && i === 2) {
+      let skinVar = context?.skinVariables?.[seg]
+      if (!skinVar && context?.skinVariables) {
+        for (const [k, v] of Object.entries(context.skinVariables)) {
+          if (toSkinVarIdentifier(k) === seg || (typeof v === 'object' && v.name && toSkinVarIdentifier(v.name) === seg)) {
+            skinVar = v
+            break
+          }
+        }
+      }
+
+      if (skinVar) {
+        const rawType = typeof skinVar === 'string' ? skinVar : (skinVar.type ?? 'skin_variable')
+        const skinType = rawType.startsWith('skin:') ? rawType : (catalog.getType(`skin:${rawType}`) ? `skin:${rawType}` : rawType)
+        currentType = skinType
+        currentDef = typeof skinVar === 'object' ? skinVar : catalog.getType(skinType) ?? { type: skinType }
+        sourceCatalog = 'variables'
+        isCollection = false
+        itemType = undefined
+        isDeprecated = false
+        continue
+      }
+
+      const pattern = catalog.getGlobal('data:skin')?.patterns?.[0]
+      currentType = pattern?.type ?? 'skin_variable'
+      currentDef = pattern ?? { type: currentType, description: 'Theme Designer skin variable.' }
+      sourceCatalog = 'globals'
+      isCollection = false
+      itemType = undefined
+      isDeprecated = false
+      continue
     }
 
     if (currentDef?.properties?.[seg]) {

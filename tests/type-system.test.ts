@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import * as RootExports from '../src/index.js'
 import {
   getCompatibleOperatorNames,
+  getSkinTypeModifiers,
   getTypeDefinition,
   getTypeModifiers,
   isTruthy,
@@ -15,6 +16,7 @@ describe('canonical type system & coercion engine', () => {
   it('exposes type system functions on root and type-system module', () => {
     expect(RootExports.isTypeAssignable).toBe(isTypeAssignable)
     expect(RootExports.getTypeModifiers).toBe(getTypeModifiers)
+    expect(RootExports.getSkinTypeModifiers).toBe(getSkinTypeModifiers)
     expect(RootExports.getCompatibleOperators).toBe(TypeSystemExports.getCompatibleOperators)
     expect(RootExports.resolveOperatorReturnType).toBe(resolveOperatorReturnType)
     expect(RootExports.resolveModifierReturnType).toBe(resolveModifierReturnType)
@@ -22,6 +24,7 @@ describe('canonical type system & coercion engine', () => {
 
     expect(TypeSystemExports.isTypeAssignable).toBe(isTypeAssignable)
     expect(TypeSystemExports.getTypeModifiers).toBe(getTypeModifiers)
+    expect(TypeSystemExports.getSkinTypeModifiers).toBe(getSkinTypeModifiers)
     expect(TypeSystemExports.resolveModifierReturnType).toBe(resolveModifierReturnType)
   })
 
@@ -182,6 +185,33 @@ describe('canonical type system & coercion engine', () => {
       expect(getTypeModifiers('number')).toEqual({})
       expect(getTypeModifiers('boolean')).toEqual({})
       expect(getTypeModifiers('non_existent')).toEqual({})
+    })
+
+    it('resolves skin type modifiers via getSkinTypeModifiers supporting tag attribute values', () => {
+      const colorMods = getSkinTypeModifiers('color')
+      expect(colorMods.red).toBeDefined()
+      expect(colorMods.green).toBeDefined()
+      expect(colorMods.blue).toBeDefined()
+      expect(colorMods.alpha).toBeDefined()
+
+      const fontMods = getSkinTypeModifiers('font')
+      expect(fontMods.family).toBeDefined()
+      expect(fontMods.size).toBeDefined()
+
+      const bgMods = getSkinTypeModifiers('background')
+      expect(bgMods.color).toBeDefined()
+      expect(bgMods.image).toBeDefined()
+
+      const colorWithPrefix = getSkinTypeModifiers('skin:color')
+      expect(colorWithPrefix.red).toBeDefined()
+
+      const stringMods = getSkinTypeModifiers('string')
+      expect(Object.keys(stringMods).length).toBe(0)
+
+      const urlMods = getSkinTypeModifiers('url')
+      expect(Object.keys(urlMods).length).toBe(0)
+
+      expect(getSkinTypeModifiers('unknown')).toEqual({})
     })
   })
 
