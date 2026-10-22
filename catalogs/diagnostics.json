@@ -466,6 +466,51 @@
       "message": "Whitespace is required after colons in object literals { key: value } to avoid namespace collisions.",
       "evidence": "observed",
       "verified_at": "2026-10-20"
+    },
+    "BX1050": {
+      "code": "BX1050",
+      "name": "DEPRECATED_DATA_PROPERTY",
+      "category": "deprecation",
+      "severity": "warning",
+      "message": "Referenced data property is deprecated in Blogger Layouts v3. Use modern structured property replacements.",
+      "evidence": "observed",
+      "verified_at": "2026-10-22"
+    },
+    "BX1051": {
+      "code": "BX1051",
+      "name": "HALLUCINATED_DATA_PROPERTY",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "Referenced data property is not part of canonical Blogger specification and will evaluate to empty/null.",
+      "evidence": "observed",
+      "verified_at": "2026-10-22"
+    },
+    "BX1052": {
+      "code": "BX1052",
+      "name": "INVALID_SKIN_VARIABLE_SYNTAX",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Skin variable identifiers containing dots must use parenthesized syntax $(name) within <b:skin> CSS; direct $name.property causes broken CSS evaluation.",
+      "evidence": "observed",
+      "verified_at": "2026-10-22"
+    },
+    "BX1053": {
+      "code": "BX1053",
+      "name": "UNRESOLVED_SKIN_VARIABLE",
+      "category": "syntax",
+      "severity": "warning",
+      "message": "Referenced skin variable was not declared via a <Variable> tag within the current Theme Designer skin.",
+      "evidence": "observed",
+      "verified_at": "2026-10-22"
+    },
+    "BX1054": {
+      "code": "BX1054",
+      "name": "INVALID_SKIN_VAR_DATA_PATH",
+      "category": "syntax",
+      "severity": "warning",
+      "message": "Skin variable identifiers in template expressions must use underscore notation (data:skin.vars.identifier_name) instead of dot notation.",
+      "evidence": "observed",
+      "verified_at": "2026-10-22"
     }
   }
 }
