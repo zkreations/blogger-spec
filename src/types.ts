@@ -39,6 +39,7 @@ export interface BloggerStructureDiagnostic {
   attribute?: string
   tagStart?: number
   tagEnd?: number
+  suggestedReplacement?: string
 }
 
 export interface DirectiveNestingViolation {
