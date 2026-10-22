@@ -30,6 +30,18 @@ export function isBloggerBoolean(value: unknown): boolean {
   return false
 }
 
+export interface BloggerTextEdit {
+  readonly start: number
+  readonly end: number
+  readonly newText: string
+}
+
+export interface BloggerDiagnosticFix {
+  readonly title: string
+  readonly isPreferred?: boolean
+  readonly edits: readonly BloggerTextEdit[]
+}
+
 export interface BloggerStructureDiagnostic {
   code: BloggerDiagnosticCode
   rule: BloggerDiagnosticRule
@@ -40,6 +52,41 @@ export interface BloggerStructureDiagnostic {
   tagStart?: number
   tagEnd?: number
   suggestedReplacement?: string
+  fixes?: readonly BloggerDiagnosticFix[]
+}
+
+export interface BloggerMemberInfo {
+  readonly name: string
+  readonly type: string
+  readonly sourceCatalog: 'globals' | 'widgets' | 'types' | 'messages' | 'variables' | 'settings'
+  readonly isModifier?: boolean
+  readonly isCollection?: boolean
+  readonly itemType?: string
+  readonly isDeprecated?: boolean
+  readonly description?: string
+  readonly deprecationReason?: string
+  readonly replacement?: string
+}
+
+export interface BloggerCursorContext {
+  readonly offset: number
+  readonly expectedKind: 'member' | 'operator' | 'expression' | 'lambda_param' | 'lambda_arrow' | 'none'
+  readonly leftOperand?: string
+  readonly partialMember?: string
+  readonly partialOperator?: string
+  readonly memberChain?: readonly string[]
+  readonly enclosingLambda?: {
+    readonly paramName?: string
+    readonly isWaitingForArrow?: boolean
+    readonly isWaitingParam?: boolean
+    readonly collectionOperand?: string
+  }
+}
+
+export interface HallucinatedDirectiveConfig {
+  readonly targetTag: string
+  readonly attrMap: Readonly<Record<string, string>>
+  readonly requiredAttrs?: readonly string[]
 }
 
 export interface DirectiveNestingViolation {

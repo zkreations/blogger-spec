@@ -2,14 +2,16 @@ import type { BloggerExpressionNode } from '../ast.js'
 import type { SpecCatalog } from '../catalogs/index.js'
 import type {
   BloggerDiagnosticCode,
+  BloggerDiagnosticFix,
   BloggerDiagnosticRule,
   BloggerDirectiveToken,
   BloggerStructureDiagnostic,
+  BloggerTextEdit,
   DirectiveNestingViolation,
 } from '../types.js'
 import type { Token } from './lexer.js'
 import { getSpecCatalog } from '../catalogs/index.js'
-import { resolveDataPath } from '../data-path.js'
+import { resolveDataPath, toSkinVarIdentifier } from '../data-path.js'
 import { evaluateExpressionBudget } from '../quota.js'
 import { scanDirectiveTokens } from './directive-scanner.js'
 import { parseExpression } from './expr-parser.js'
@@ -32,6 +34,7 @@ function pushDiagnostic(
     start?: number
     end?: number
     suggestedReplacement?: string
+    fixes?: readonly BloggerDiagnosticFix[]
   },
 ): void {
   const rule = options?.rule ?? catalog.getDiagnostic(code)
@@ -53,6 +56,7 @@ function pushDiagnostic(
     tagStart: options?.start ?? token.tagStart,
     tagEnd: options?.end ?? token.tagEnd,
     suggestedReplacement: options?.suggestedReplacement,
+    fixes: options?.fixes,
   })
 }
 
@@ -97,16 +101,111 @@ function handleClosingTag(
   }
 }
 
+function buildHallucinatedDirectiveFixes(
+  token: BloggerDirectiveToken,
+  diagCode: BloggerDiagnosticCode,
+  catalog: SpecCatalog,
+  tokens?: readonly BloggerDirectiveToken[],
+): BloggerDiagnosticFix[] {
+  const transform = catalog.getHallucinatedDirectiveTransform(diagCode)
+  if (!transform) {
+    return []
+  }
+
+  const edits: BloggerTextEdit[] = []
+  const targetTag = transform.targetTag
+  const isStrictlySelfClosing = targetTag === 'b:case' || targetTag === 'b:default'
+
+  const attrParts: string[] = []
+  const providedCanonicalAttrs = new Set<string>()
+
+  for (const [rawAttrName, attrTok] of Object.entries(token.attributes)) {
+    const isExpr = rawAttrName.startsWith('expr:')
+    const baseName = isExpr ? rawAttrName.slice(5) : rawAttrName
+    const mappedBase = transform.attrMap[baseName] ?? baseName
+    const canonicalName = isExpr ? `expr:${mappedBase}` : mappedBase
+    providedCanonicalAttrs.add(mappedBase)
+
+    const quote = attrTok.quote ?? '\''
+    attrParts.push(`${canonicalName}=${quote}${attrTok.value}${quote}`)
+  }
+
+  if (transform.requiredAttrs) {
+    for (const req of transform.requiredAttrs) {
+      if (!providedCanonicalAttrs.has(req)) {
+        attrParts.push(`${req}=''`)
+      }
+    }
+  }
+
+  const attrsString = attrParts.length > 0 ? ` ${attrParts.join(' ')}` : ''
+  const openTagText = isStrictlySelfClosing ? `<${targetTag}${attrsString}/>` : `<${targetTag}${attrsString}>`
+
+  edits.push({
+    start: token.tagStart,
+    end: token.tagEnd,
+    newText: openTagText,
+  })
+
+  if (!token.isSelfClosing && tokens) {
+    const lower = token.tagName.toLowerCase()
+    let depth = 1
+    const idx = tokens.indexOf(token)
+    if (idx !== -1) {
+      for (let i = idx + 1; i < tokens.length; i++) {
+        const nextTok = tokens[i]!
+        if (nextTok.tagName.toLowerCase() === lower) {
+          if (nextTok.isClosing) {
+            depth--
+            if (depth === 0) {
+              if (isStrictlySelfClosing) {
+                edits.push({
+                  start: nextTok.tagStart,
+                  end: nextTok.tagEnd,
+                  newText: '',
+                })
+              }
+              else {
+                edits.push({
+                  start: nextTok.tagStart,
+                  end: nextTok.tagEnd,
+                  newText: `</${targetTag}>`,
+                })
+              }
+              break
+            }
+          }
+          else if (!nextTok.isSelfClosing) {
+            depth++
+          }
+        }
+      }
+    }
+  }
+
+  return [{
+    title: `Convert <${token.tagName}> to <${targetTag}>`,
+    isPreferred: true,
+    edits,
+  }]
+}
+
 function validateNestingRules(
   token: BloggerDirectiveToken,
   tagStack: readonly BloggerDirectiveToken[],
   catalog: SpecCatalog,
   diagnostics: BloggerStructureDiagnostic[],
+  allTokens?: readonly BloggerDirectiveToken[],
 ): void {
   if (catalog.isHallucinatedDirective(token.tagName)) {
     const diagCode = catalog.getHallucinatedDirectiveDiagnostic(token.tagName)
       ?? catalog.getStandardDiagnostic('prohibited_nesting')
-    pushDiagnostic(diagnostics, catalog, diagCode, token)
+    const fixes = buildHallucinatedDirectiveFixes(token, diagCode, catalog, allTokens)
+    const transform = catalog.getHallucinatedDirectiveTransform(diagCode)
+    pushDiagnostic(diagnostics, catalog, diagCode, token, {
+      suggestedReplacement: transform ? `<${transform.targetTag}>` : undefined,
+      fixes: fixes.length > 0 ? fixes : undefined,
+    })
     return
   }
 
@@ -194,9 +293,25 @@ function validateDirectiveAttributeRules(
   const attrValidation = catalog.validateDirectiveAttributes(token)
 
   for (const inv of attrValidation.inverted) {
+    const canonicalAttr = catalog.getInvertedAttribute(inv.code)
+    const fixes: BloggerDiagnosticFix[] = []
+    if (canonicalAttr && inv.start !== undefined) {
+      fixes.push({
+        title: `Change '${inv.attribute}' to '${canonicalAttr}'`,
+        isPreferred: true,
+        edits: [{
+          start: inv.start,
+          end: inv.start + inv.attribute.length,
+          newText: canonicalAttr,
+        }],
+      })
+    }
     pushDiagnostic(diagnostics, catalog, inv.code as BloggerDiagnosticCode, token, {
       start: inv.start ?? token.tagStart,
       end: inv.end ?? token.tagEnd,
+      attribute: inv.attribute,
+      suggestedReplacement: canonicalAttr,
+      fixes: fixes.length > 0 ? fixes : undefined,
     })
   }
 
@@ -209,10 +324,25 @@ function validateDirectiveAttributeRules(
 
   const deprecatedDiag = catalog.getStandardDiagnostic('deprecated_attribute')
   for (const dep of attrValidation.deprecated) {
+    const fixes: BloggerDiagnosticFix[] = []
+    if (dep.replacement && dep.start !== undefined) {
+      fixes.push({
+        title: `Migrate '${dep.name}' to '${dep.replacement}'`,
+        isPreferred: true,
+        edits: [{
+          start: dep.start,
+          end: dep.start + dep.name.length,
+          newText: dep.replacement,
+        }],
+      })
+    }
     pushDiagnostic(diagnostics, catalog, deprecatedDiag, token, {
       message: `Attribute '${dep.name}' on <${token.tagName}> is deprecated. ${dep.reason || ''}`.trim(),
       start: dep.start ?? token.tagStart,
       end: dep.end ?? token.tagEnd,
+      attribute: dep.name,
+      suggestedReplacement: dep.replacement ?? undefined,
+      fixes: fixes.length > 0 ? fixes : undefined,
     })
   }
 
@@ -458,6 +588,45 @@ function validateDataElement(
     }
   }
 
+  // BX1054: Dot syntax in <data:skin.vars.admin.name/>
+  if (token.tagName.startsWith('data:skin.vars.')) {
+    const idPart = token.tagName.slice('data:skin.vars.'.length)
+    if (idPart.includes('.')) {
+      const normalized = `data:skin.vars.${toSkinVarIdentifier(idPart)}`
+      pushDiagnostic(diagnostics, catalog, 'BX1054', token, {
+        start: token.tagStart,
+        end: token.tagEnd,
+        suggestedReplacement: `<${normalized}/>`,
+        fixes: [{
+          title: `Normalize to '<${normalized}/>'`,
+          isPreferred: true,
+          edits: [{ start: token.tagStart, end: token.tagEnd, newText: `<${normalized}/>` }],
+        }],
+        message: `Skin variable tag '<${token.tagName}/>' must use underscore notation '<${normalized}/>' instead of dots.`,
+      })
+    }
+  }
+
+  // BX1050: Deprecated data property on <data:.../>
+  const resolved = resolveDataPath(token.tagName, { catalog })
+  if (resolved?.isDeprecated) {
+    const replacement = resolved.definition?.replacement as string | undefined
+    const fixes = replacement
+      ? [{
+          title: `Replace with '<${replacement}/>'`,
+          isPreferred: true,
+          edits: [{ start: token.tagStart, end: token.tagEnd, newText: `<${replacement}/>` }],
+        }]
+      : undefined
+    pushDiagnostic(diagnostics, catalog, 'BX1050', token, {
+      start: token.tagStart,
+      end: token.tagEnd,
+      suggestedReplacement: replacement ? `<${replacement}/>` : undefined,
+      fixes,
+      message: `Tag '<${token.tagName}/>' is deprecated in Layouts v3.${resolved.description ? ` ${resolved.description}` : ''}`,
+    })
+  }
+
   const rawTail = token.attributesText ? token.attributesText.trim() : ''
   if (!rawTail) {
     return
@@ -616,11 +785,19 @@ export function validateExpression(
 
     // BX1018: Strict equality operator (===, !==)
     if (tok.type === 'STRICT_EQ' || tok.type === 'STRICT_NEQ') {
+      const replacement = tok.type === 'STRICT_EQ' ? '==' : '!='
+      const start = baseStart + mapOffset(tok.start.offset)
+      const end = baseStart + mapOffset(tok.end.offset)
       pushDiagnostic(diagnostics, catalog, 'BX1018', fakeToken, {
         attribute: context?.attributeName,
-        start: baseStart + mapOffset(tok.start.offset),
-        end: baseStart + mapOffset(tok.end.offset),
-        suggestedReplacement: tok.type === 'STRICT_EQ' ? '==' : '!=',
+        start,
+        end,
+        suggestedReplacement: replacement,
+        fixes: [{
+          title: `Replace '${tok.value}' with '${replacement}'`,
+          isPreferred: true,
+          edits: [{ start, end, newText: replacement }],
+        }],
         message: `Strict equality operator '${tok.value}' is prohibited in Blogger expressions; use == or !=.`,
       })
     }
@@ -829,11 +1006,18 @@ export function validateExpression(
         const val = nextTok.value.toLowerCase()
         if (val === 'true' || val === 'false' || val === 'yes' || val === 'no') {
           const replacement = (val === 'true' || val === 'yes') ? 'true' : 'false'
+          const start = baseStart + mapOffset(nextTok.start.offset)
+          const end = baseStart + mapOffset(nextTok.end.offset)
           pushDiagnostic(diagnostics, catalog, 'BX1038', fakeToken, {
             attribute: context?.attributeName,
-            start: baseStart + mapOffset(nextTok.start.offset),
-            end: baseStart + mapOffset(nextTok.end.offset),
+            start,
+            end,
             suggestedReplacement: replacement,
+            fixes: [{
+              title: `Replace '${nextTok.value}' with ${replacement}`,
+              isPreferred: true,
+              edits: [{ start, end, newText: replacement }],
+            }],
             message: `Comparing against a quoted boolean string literal ('${nextTok.value}') in expression. Use boolean literals true or false directly.`,
           })
         }
@@ -886,6 +1070,87 @@ export function validateExpression(
               message: diagRule?.message ?? 'Whitespace is required after colons in object literals { key: value } to avoid namespace collisions.',
             })
           }
+        }
+      }
+
+      if (node.type === 'DataPath') {
+        const raw = (node as any).raw || ''
+        const startOffset = node.loc?.start.offset ?? 0
+        const endOffset = node.loc?.end.offset ?? startOffset + raw.length
+        const baseAbsStart = baseStart + mapOffset(startOffset)
+        const baseAbsEnd = baseStart + mapOffset(endOffset)
+
+        // BX1054: Dot syntax in data:skin.vars.
+        if (raw.startsWith('data:skin.vars.') || raw.startsWith('skin.vars.')) {
+          const varPart = raw.startsWith('data:') ? raw.slice(15) : raw.slice(10)
+          if (varPart.includes('.')) {
+            const normalized = raw.replace(/(?:data:)?skin\.vars\.(.+)/, (_: string, id: string) => `data:skin.vars.${toSkinVarIdentifier(id)}`)
+            pushDiagnostic(diagnostics, catalog, 'BX1054', fakeToken, {
+              attribute: context?.attributeName,
+              start: baseAbsStart,
+              end: baseAbsEnd,
+              suggestedReplacement: normalized,
+              fixes: [{
+                title: `Normalize to '${normalized}'`,
+                isPreferred: true,
+                edits: [{ start: baseAbsStart, end: baseAbsEnd, newText: normalized }],
+              }],
+              message: `Skin variable data path '${raw}' must use underscore notation '${normalized}' instead of dots.`,
+            })
+          }
+        }
+
+        // BX1050: Deprecated data properties
+        const resolved = resolveDataPath(raw, { catalog, widgetType: context?.widgetType })
+        if (resolved?.isDeprecated) {
+          const replacement = resolved.definition?.replacement as string | undefined
+          const fixes = replacement
+            ? [{
+                title: `Replace with '${replacement}'`,
+                isPreferred: true,
+                edits: [{ start: baseAbsStart, end: baseAbsEnd, newText: replacement }],
+              }]
+            : undefined
+
+          pushDiagnostic(diagnostics, catalog, 'BX1050', fakeToken, {
+            attribute: context?.attributeName,
+            start: baseAbsStart,
+            end: baseAbsEnd,
+            suggestedReplacement: replacement,
+            fixes,
+            message: `Data property '${raw}' is deprecated in Layouts v3.${resolved.description ? ` ${resolved.description}` : ''}`,
+          })
+        }
+
+        // BX1051: Hallucinated data properties
+        const lowerRaw = raw.toLowerCase()
+        let hallucinatedFix: { replacement: string, reason: string } | undefined
+        if (lowerRaw.includes('categories')) {
+          hallucinatedFix = { replacement: raw.replace(/categories/i, 'labels'), reason: 'Blogger uses \'labels\', not \'categories\'.' }
+        }
+        else if (lowerRaw.includes('headertitle')) {
+          hallucinatedFix = { replacement: raw.replace(/headerTitle/i, 'title'), reason: 'Blogger Header widget uses \'title\'.' }
+        }
+        else if (lowerRaw.includes('logourl')) {
+          hallucinatedFix = { replacement: raw.replace(/logoUrl/i, 'image'), reason: 'Blogger Header widget uses \'image\'.' }
+        }
+        else if (lowerRaw.includes('author.photo.url') || lowerRaw.includes('authorphoto.url')) {
+          hallucinatedFix = { replacement: raw.replace(/photo\.url|authorPhoto\.url/i, 'authorPhoto.image'), reason: 'Author photo URL resides under authorPhoto.image.' }
+        }
+
+        if (hallucinatedFix) {
+          pushDiagnostic(diagnostics, catalog, 'BX1051', fakeToken, {
+            attribute: context?.attributeName,
+            start: baseAbsStart,
+            end: baseAbsEnd,
+            suggestedReplacement: hallucinatedFix.replacement,
+            fixes: [{
+              title: `Use '${hallucinatedFix.replacement}'`,
+              isPreferred: true,
+              edits: [{ start: baseAbsStart, end: baseAbsEnd, newText: hallucinatedFix.replacement }],
+            }],
+            message: `Property in '${raw}' is hallucinated. ${hallucinatedFix.reason}`,
+          })
         }
       }
     })
@@ -1064,6 +1329,7 @@ export function validateTemplateStructure(
   const containerIncludableIds = new Map<BloggerDirectiveToken, Set<string>>()
   const pendingIncludes: Array<{ token: BloggerDirectiveToken, container: BloggerDirectiveToken }> = []
   const defaultMarkupIncludableIds = new Set<string>()
+  const declaredSkinVars = new Set<string>()
 
   interface ActiveMessageContext {
     readonly token: BloggerDirectiveToken
@@ -1131,13 +1397,20 @@ export function validateTemplateStructure(
       }
     }
 
-    validateNestingRules(token, tagStack, catalog, diagnostics)
+    validateNestingRules(token, tagStack, catalog, diagnostics, tokens)
     validateDirectiveAttributeRules(token, catalog, diagnostics)
     validateIdentifierUniqueness(token, globalSectionWidgetIds, containerIncludableIds, tagStack, catalog, diagnostics)
     validateWidgetElement(token, catalog, diagnostics)
     validateVariableElement(token, catalog, diagnostics)
     validateDataElement(token, catalog, diagnostics)
     validateIncludeElement(token, catalog, diagnostics)
+
+    if (token.tagName === 'Variable') {
+      const nameVal = token.attributes.name?.value?.trim()
+      if (nameVal) {
+        declaredSkinVars.add(nameVal)
+      }
+    }
 
     if (token.tagName === 'b:includable' && !token.isClosing) {
       if (tagStack.some(t => t.tagName === 'b:defaultmarkup')) {
@@ -1193,10 +1466,105 @@ export function validateTemplateStructure(
     })
   }
 
+  if (typeof tokensOrXml === 'string') {
+    validateSkinStyles(tokensOrXml, declaredSkinVars, catalog, diagnostics)
+  }
+
   if (options?.validateExpressions) {
     const exprDiags = validateTemplateExpressions(tokens, catalog)
     diagnostics.push(...exprDiags)
   }
 
   return diagnostics
+}
+
+function validateSkinStyles(
+  xmlText: string,
+  declaredVars: ReadonlySet<string>,
+  catalog: SpecCatalog,
+  diagnostics: BloggerStructureDiagnostic[],
+): void {
+  const skinRegex = /<b:(?:template-)?skin\b[^>]*>([\s\S]*?)<\/b:(?:template-)?skin>/gi
+  for (const match of xmlText.matchAll(skinRegex)) {
+    const fullTag = match[0]
+    const tagStart = match.index ?? 0
+    const fakeToken: BloggerDirectiveToken = {
+      tagName: 'b:skin',
+      tagStart,
+      tagEnd: tagStart + fullTag.length,
+      isClosing: false,
+      isSelfClosing: false,
+      hasSelfClosingSlash: false,
+      attributesText: '',
+      rawAttributesText: '',
+      attributesOffset: tagStart,
+      attributes: {},
+    }
+
+    const cdataStart = fullTag.indexOf('<![CDATA[')
+    if (cdataStart === -1) {
+      continue
+    }
+    const cdataEnd = fullTag.indexOf(']]>', cdataStart)
+    if (cdataEnd === -1) {
+      continue
+    }
+
+    const cdataContent = fullTag.slice(cdataStart + 9, cdataEnd)
+    const baseOffset = tagStart + cdataStart + 9
+
+    const maskedContent = cdataContent.replace(/<[^>]+>/g, m => ' '.repeat(m.length))
+
+    // 1. BX1052: $var.name outside parentheses
+    const dottedSkinVarRegex = /(?<![\w$])\$([a-z_]\w*\.[a-z_][\w.-]*)/gi
+    for (const dMatch of maskedContent.matchAll(dottedSkinVarRegex)) {
+      const varName = dMatch[1]!
+      const start = baseOffset + (dMatch.index ?? 0)
+      const end = start + dMatch[0].length
+      const replacement = `$(${varName})`
+      pushDiagnostic(diagnostics, catalog, 'BX1052', fakeToken, {
+        start,
+        end,
+        suggestedReplacement: replacement,
+        fixes: [{
+          title: `Convert to '${replacement}'`,
+          isPreferred: true,
+          edits: [{ start, end, newText: replacement }],
+        }],
+        message: `Skin variable reference '${dMatch[0]}' with dots requires parenthesized syntax '${replacement}' within <b:skin> CSS.`,
+      })
+    }
+
+    // 2. BX1053: $(varName) or $varName not declared
+    if (declaredVars.size > 0) {
+      const parenSkinVarRegex = /\$\(([a-z_][\w.-]*)\)/gi
+      for (const pMatch of maskedContent.matchAll(parenSkinVarRegex)) {
+        const rawVar = pMatch[1]!
+        const baseVar = rawVar.split('.')[0]!
+        if (!declaredVars.has(rawVar) && !declaredVars.has(baseVar)) {
+          const start = baseOffset + (pMatch.index ?? 0)
+          const end = start + pMatch[0].length
+          pushDiagnostic(diagnostics, catalog, 'BX1053', fakeToken, {
+            start,
+            end,
+            message: `Referenced skin variable '${rawVar}' was not declared in a <Variable> tag within the Theme Designer skin.`,
+          })
+        }
+      }
+
+      const standaloneRegex = /(?<![\w$])\$([a-z_]\w*)\b(?!\.)/gi
+      for (const sMatch of maskedContent.matchAll(standaloneRegex)) {
+        const rawVar = sMatch[1]!
+        if (!declaredVars.has(rawVar)) {
+          const start = baseOffset + (sMatch.index ?? 0)
+          const end = start + sMatch[0].length
+          pushDiagnostic(diagnostics, catalog, 'BX1053', fakeToken, {
+            start,
+            end,
+            message: `Referenced skin variable '${rawVar}' was not declared in a <Variable> tag within the Theme Designer skin.`,
+          })
+        }
+      }
+    }
+  }
 }

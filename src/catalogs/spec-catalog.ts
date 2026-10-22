@@ -35,6 +35,7 @@ import type {
   DirectiveAttributeViolation,
   DirectiveNestingAction,
   DirectiveNestingViolation,
+  HallucinatedDirectiveConfig,
   VariableAttributesValidationResult,
 } from '../types.js'
 import type { CatalogStore } from './store.js'
@@ -146,6 +147,8 @@ export class SpecCatalog {
   private readonly coercionRules: Record<string, any> = {}
   private readonly inclusionMap = new Map<string, BloggerInclusionDefinition>()
   private readonly hallucinatedDirectives = new Map<string, BloggerDiagnosticCode>()
+  private readonly hallucinatedDirectiveTransforms = new Map<string, HallucinatedDirectiveConfig>()
+  private readonly invertedAttributeMaps = new Map<string, string>()
   private readonly standardDiagnostics = new Map<BloggerStandardDiagnosticKey, BloggerDiagnosticCode>()
   private readonly scalarTypes: string[] = []
   private readonly falsyStringLiterals = new Set<string>()
@@ -180,6 +183,16 @@ export class SpecCatalog {
     const hallucinated = dirCatalog.domain_metadata?.hallucinated_directives || {}
     for (const [tag, code] of Object.entries(hallucinated)) {
       this.hallucinatedDirectives.set(tag.toLowerCase(), code as BloggerDiagnosticCode)
+    }
+
+    const transforms = (dirCatalog.domain_metadata as any)?.hallucinated_directive_transforms || {}
+    for (const [code, config] of Object.entries(transforms)) {
+      this.hallucinatedDirectiveTransforms.set(code, config as HallucinatedDirectiveConfig)
+    }
+
+    const inverted = (dirCatalog.domain_metadata as any)?.inverted_attribute_maps || {}
+    for (const [code, attr] of Object.entries(inverted)) {
+      this.invertedAttributeMaps.set(code, attr as string)
     }
 
     const stdDiags = (dirCatalog.domain_metadata?.standard_diagnostics as Record<string, string>) || {}
@@ -1145,6 +1158,14 @@ export class SpecCatalog {
     return this.hallucinatedDirectives.get(tagName.toLowerCase())
   }
 
+  getHallucinatedDirectiveTransform(code: string): HallucinatedDirectiveConfig | undefined {
+    return this.hallucinatedDirectiveTransforms.get(code)
+  }
+
+  getInvertedAttribute(code: string): string | undefined {
+    return this.invertedAttributeMaps.get(code)
+  }
+
   getInclusion(name: string): BloggerInclusionDefinition | undefined {
     return this.inclusionMap.get(name)
   }
@@ -1563,6 +1584,14 @@ export function isHallucinatedDirective(tagName: string, catalog: SpecCatalog = 
 
 export function getHallucinatedDirectiveDiagnostic(tagName: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticCode | undefined {
   return catalog.getHallucinatedDirectiveDiagnostic(tagName)
+}
+
+export function getHallucinatedDirectiveTransform(code: string, catalog: SpecCatalog = getSpecCatalog()): HallucinatedDirectiveConfig | undefined {
+  return catalog.getHallucinatedDirectiveTransform(code)
+}
+
+export function getInvertedAttribute(code: string, catalog: SpecCatalog = getSpecCatalog()): string | undefined {
+  return catalog.getInvertedAttribute(code)
 }
 
 export function getScalarTypes(catalog: SpecCatalog = getSpecCatalog()): readonly string[] {

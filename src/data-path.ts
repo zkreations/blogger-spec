@@ -1,5 +1,6 @@
 import type { SpecCatalog } from './catalogs/index.js'
 import type { BloggerScopeSymbol, ScopeEnvironment } from './scope.js'
+import type { BloggerMemberInfo } from './types.js'
 import { getSpecCatalog } from './catalogs/index.js'
 import { getTypeModifiers, resolveModifierReturnType } from './type-system.js'
 
@@ -391,4 +392,292 @@ export function resolveDataPath(
     itemType,
     description: currentDef?.description ?? currentDef?.reason,
   }
+}
+
+export function getTypeMembers(
+  typeName: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): BloggerMemberInfo[] {
+  const result: BloggerMemberInfo[] = []
+  const seen = new Set<string>()
+
+  let resolvedName = typeName
+  if (typeName.startsWith('array[') && !catalog.getType(typeName)?.modifiers) {
+    resolvedName = 'array'
+  }
+
+  const def = catalog.getType(resolvedName)
+
+  const props = (def as any)?.properties
+  if (props) {
+    for (const [propName, propDef] of Object.entries(props)) {
+      if (!seen.has(propName)) {
+        seen.add(propName)
+        const p = propDef as any
+        result.push({
+          name: propName,
+          type: p.type ?? 'string',
+          sourceCatalog: 'types',
+          isModifier: false,
+          isCollection: p.type?.startsWith('array') || Boolean(p.item_properties),
+          itemType: p.item_type,
+          isDeprecated: Boolean(p.deprecated),
+          description: p.description,
+        })
+      }
+    }
+  }
+
+  const modifiers = getTypeModifiers(resolvedName, catalog)
+  for (const [modName, modDef] of Object.entries(modifiers)) {
+    if (!seen.has(modName)) {
+      seen.add(modName)
+      const outType = resolveModifierReturnType(resolvedName, modName, catalog)
+      result.push({
+        name: modName,
+        type: outType,
+        sourceCatalog: 'types',
+        isModifier: true,
+        isCollection: outType.startsWith('array'),
+        itemType: outType.startsWith('array[') && outType.endsWith(']') ? outType.slice(6, -1) : undefined,
+        description: modDef.description,
+      })
+    }
+  }
+
+  return result
+}
+
+export function getDataPathMembers(
+  path: string | readonly string[],
+  context?: ResolveDataPathContext,
+): BloggerMemberInfo[] {
+  const catalog = context?.catalog ?? getSpecCatalog()
+  const widgetType = context?.widgetType ?? context?.scope?.getActiveWidgetType() ?? 'Blog'
+  const segments = parsePathSegments(path)
+
+  if (segments.length === 0 || (segments.length === 1 && segments[0] === 'data')) {
+    const result: BloggerMemberInfo[] = []
+    const seen = new Set<string>()
+
+    const visibleSymbols = context?.scope ? context.scope.getAllVisibleSymbols() : new Map<string, BloggerScopeSymbol>()
+    for (const [rawName, sym] of visibleSymbols.entries()) {
+      const stripped = rawName.startsWith('data:') ? rawName.slice(5) : rawName
+      if (!seen.has(stripped)) {
+        seen.add(stripped)
+        result.push({
+          name: stripped,
+          type: sym.type ?? 'unknown',
+          sourceCatalog: 'variables',
+          description: (sym.metadata as any)?.description,
+        })
+      }
+    }
+
+    const widget = catalog.getWidget(widgetType)
+    if (widget?.canonical) {
+      for (const [propName, propDef] of Object.entries(widget.canonical)) {
+        if (!seen.has(propName)) {
+          seen.add(propName)
+          result.push({
+            name: propName,
+            type: propDef.type,
+            sourceCatalog: 'widgets',
+            isCollection: propDef.type.startsWith('array') || Boolean(propDef.item_properties),
+            itemType: propDef.item_type,
+            description: propDef.description,
+          })
+        }
+      }
+    }
+
+    const globals = catalog.getAllGlobals()
+    for (const [globalKey, globalDef] of Object.entries(globals)) {
+      const stripped = globalKey.startsWith('data:') ? globalKey.slice(5) : globalKey
+      if (!seen.has(stripped)) {
+        seen.add(stripped)
+        const isCollection = globalDef.cardinality === 'collection'
+        result.push({
+          name: stripped,
+          type: isCollection ? (globalDef.item_type ? `array[${globalDef.item_type}]` : 'array') : 'object',
+          sourceCatalog: 'globals',
+          isCollection,
+          itemType: globalDef.item_type,
+          description: globalDef.description,
+        })
+      }
+    }
+
+    if (!seen.has('messages')) {
+      seen.add('messages')
+      result.push({
+        name: 'messages',
+        type: 'object',
+        sourceCatalog: 'messages',
+        description: 'Universal localized UI messages dictionary.',
+      })
+    }
+
+    return result
+  }
+
+  const first = segments[0]!
+  if ((first === 'messages' || first === 'data:messages') && segments.length === 1) {
+    const result: BloggerMemberInfo[] = []
+    const allMessages = catalog.getAllMessages()
+    for (const [key, msgDef] of Object.entries(allMessages)) {
+      result.push({
+        name: key,
+        type: 'string',
+        sourceCatalog: 'messages',
+        description: msgDef.description,
+      })
+    }
+    return result
+  }
+
+  if ((first === 'data:skin' || first === 'skin') && segments.length === 2 && segments[1] === 'vars') {
+    const result: BloggerMemberInfo[] = []
+    const seen = new Set<string>()
+    if (context?.skinVariables) {
+      for (const [k, v] of Object.entries(context.skinVariables)) {
+        const id = toSkinVarIdentifier(typeof v === 'object' && v.name ? v.name : k)
+        if (!seen.has(id)) {
+          seen.add(id)
+          const rawType = typeof v === 'string' ? v : (v.type ?? 'skin_variable')
+          result.push({
+            name: id,
+            type: rawType,
+            sourceCatalog: 'variables',
+            description: typeof v === 'object' ? v.description : undefined,
+          })
+        }
+      }
+    }
+    return result
+  }
+
+  const resolved = resolveDataPath(segments, context)
+  if (!resolved) {
+    return []
+  }
+
+  const result: BloggerMemberInfo[] = []
+  const seen = new Set<string>()
+  const def = resolved.definition
+
+  const propsObj = def?.properties ?? (def?.canonical && resolved.sourceCatalog === 'globals' ? def.canonical : undefined)
+  if (propsObj && typeof propsObj === 'object') {
+    for (const [propName, propDef] of Object.entries(propsObj)) {
+      if (!seen.has(propName)) {
+        seen.add(propName)
+        const p = propDef as any
+        result.push({
+          name: propName,
+          type: p.type ?? 'string',
+          sourceCatalog: resolved.sourceCatalog,
+          isCollection: p.type?.startsWith('array') || Boolean(p.item_properties),
+          itemType: p.item_type,
+          isDeprecated: Boolean(p.deprecated),
+          description: p.description,
+        })
+      }
+    }
+  }
+
+  if (resolved.isCollection || resolved.type.startsWith('array')) {
+    const arrayModifiers = getTypeModifiers('array', catalog)
+    for (const [modName, modDef] of Object.entries(arrayModifiers)) {
+      if (!seen.has(modName)) {
+        seen.add(modName)
+        const outType = resolveModifierReturnType('array', modName, catalog)
+        result.push({
+          name: modName,
+          type: outType,
+          sourceCatalog: 'types',
+          isModifier: true,
+          isCollection: outType.startsWith('array'),
+          itemType: outType.startsWith('array[') && outType.endsWith(']') ? outType.slice(6, -1) : undefined,
+          description: modDef.description,
+        })
+      }
+    }
+  }
+
+  if (resolved.type && resolved.type !== 'unknown') {
+    const typeModifiers = getTypeModifiers(resolved.type, catalog)
+    for (const [modName, modDef] of Object.entries(typeModifiers)) {
+      if (!seen.has(modName)) {
+        seen.add(modName)
+        const outType = resolveModifierReturnType(resolved.type, modName, catalog)
+        result.push({
+          name: modName,
+          type: outType,
+          sourceCatalog: 'types',
+          isModifier: true,
+          isCollection: outType.startsWith('array'),
+          itemType: outType.startsWith('array[') && outType.endsWith(']') ? outType.slice(6, -1) : undefined,
+          description: modDef.description,
+        })
+      }
+    }
+  }
+
+  if (def?.deprecated && typeof def.deprecated === 'object') {
+    for (const [depName, depDef] of Object.entries(def.deprecated)) {
+      if (!seen.has(depName)) {
+        seen.add(depName)
+        const d = depDef as any
+        result.push({
+          name: depName,
+          type: d.type ?? 'unknown',
+          sourceCatalog: resolved.sourceCatalog,
+          isDeprecated: true,
+          description: d.reason,
+          deprecationReason: d.reason,
+          replacement: d.replacement ?? undefined,
+        })
+      }
+    }
+  }
+
+  const widget = catalog.getWidget(widgetType)
+  if (resolved.type === 'post' || resolved.name === 'post') {
+    const postItemProps = widget?.canonical?.posts?.item_properties
+    if (postItemProps) {
+      for (const [pName, pDef] of Object.entries(postItemProps)) {
+        if (!seen.has(pName)) {
+          seen.add(pName)
+          result.push({
+            name: pName,
+            type: pDef.type,
+            sourceCatalog: 'widgets',
+            isCollection: pDef.type.startsWith('array') || Boolean(pDef.item_properties),
+            itemType: pDef.item_type,
+            description: pDef.description,
+          })
+        }
+      }
+    }
+  }
+  else if (resolved.type === 'author' || resolved.name === 'author') {
+    const authorProps = widget?.canonical?.posts?.item_properties?.author?.properties
+    if (authorProps) {
+      for (const [aName, aDef] of Object.entries(authorProps)) {
+        if (!seen.has(aName)) {
+          seen.add(aName)
+          result.push({
+            name: aName,
+            type: aDef.type,
+            sourceCatalog: 'widgets',
+            isCollection: aDef.type.startsWith('array') || Boolean(aDef.item_properties),
+            itemType: aDef.item_type,
+            description: aDef.description,
+          })
+        }
+      }
+    }
+  }
+
+  return result
 }

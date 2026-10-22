@@ -41,6 +41,163 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
       "b:macro": "BX1011",
       "b:function": "BX1012"
     },
+    "hallucinated_directive_transforms": {
+      "BX1001": {
+        "targetTag": "b:loop",
+        "attrMap": {
+          "each": "var",
+          "item": "var",
+          "as": "var",
+          "var": "var",
+          "in": "values",
+          "of": "values",
+          "items": "values",
+          "collection": "values",
+          "values": "values",
+          "index": "index"
+        },
+        "requiredAttrs": [
+          "values"
+        ]
+      },
+      "BX1002": {
+        "targetTag": "b:loop",
+        "attrMap": {
+          "each": "var",
+          "item": "var",
+          "as": "var",
+          "var": "var",
+          "in": "values",
+          "of": "values",
+          "items": "values",
+          "collection": "values",
+          "values": "values",
+          "index": "index"
+        },
+        "requiredAttrs": [
+          "values"
+        ]
+      },
+      "BX1003": {
+        "targetTag": "b:with",
+        "attrMap": {
+          "name": "var",
+          "var": "var",
+          "id": "var",
+          "key": "var",
+          "value": "value",
+          "val": "value",
+          "expr": "value"
+        },
+        "requiredAttrs": [
+          "value",
+          "var"
+        ]
+      },
+      "BX1004": {
+        "targetTag": "b:with",
+        "attrMap": {
+          "name": "var",
+          "var": "var",
+          "id": "var",
+          "key": "var",
+          "value": "value",
+          "val": "value",
+          "expr": "value"
+        },
+        "requiredAttrs": [
+          "value",
+          "var"
+        ]
+      },
+      "BX1005": {
+        "targetTag": "b:with",
+        "attrMap": {
+          "name": "var",
+          "var": "var",
+          "id": "var",
+          "key": "var",
+          "value": "value",
+          "val": "value",
+          "expr": "value"
+        },
+        "requiredAttrs": [
+          "value",
+          "var"
+        ]
+      },
+      "BX1006": {
+        "targetTag": "b:elseif",
+        "attrMap": {
+          "cond": "cond",
+          "test": "cond",
+          "expr": "cond"
+        },
+        "requiredAttrs": [
+          "cond"
+        ]
+      },
+      "BX1007": {
+        "targetTag": "b:switch",
+        "attrMap": {
+          "var": "var",
+          "expr": "var",
+          "value": "var"
+        }
+      },
+      "BX1008": {
+        "targetTag": "b:case",
+        "attrMap": {
+          "value": "value",
+          "val": "value",
+          "test": "value",
+          "expr": "value",
+          "cond": "value"
+        },
+        "requiredAttrs": [
+          "value"
+        ]
+      },
+      "BX1009": {
+        "targetTag": "b:default",
+        "attrMap": {}
+      },
+      "BX1010": {
+        "targetTag": "b:includable",
+        "attrMap": {
+          "id": "id",
+          "name": "id"
+        },
+        "requiredAttrs": [
+          "id"
+        ]
+      },
+      "BX1011": {
+        "targetTag": "b:includable",
+        "attrMap": {
+          "id": "id",
+          "name": "id"
+        },
+        "requiredAttrs": [
+          "id"
+        ]
+      },
+      "BX1012": {
+        "targetTag": "b:includable",
+        "attrMap": {
+          "id": "id",
+          "name": "id"
+        },
+        "requiredAttrs": [
+          "id"
+        ]
+      }
+    },
+    "inverted_attribute_maps": {
+      "BX1014": "var",
+      "BX1015": "id",
+      "BX1016": "name"
+    },
     "standard_diagnostics": {
       "missing_required_attribute": "BX1022",
       "deprecated_attribute": "BX1024",
@@ -56,7 +213,12 @@ export const embeddedDirectivesCatalog: BloggerDirectivesCatalog = {
       "unresolved_inclusion": "BX1037",
       "non_object_include_data_payload": "BX1031",
       "prohibited_bracket_indexing_in_data_tag": "BX1032",
-      "prohibited_operator_in_data_tag": "BX1048"
+      "prohibited_operator_in_data_tag": "BX1048",
+      "deprecated_data_property": "BX1050",
+      "hallucinated_data_property": "BX1051",
+      "invalid_skin_variable_syntax": "BX1052",
+      "unresolved_skin_variable": "BX1053",
+      "invalid_skin_var_data_path": "BX1054"
     },
     "html_void_elements": [
       "area",
@@ -11241,6 +11403,51 @@ export const embeddedDiagnosticsCatalog: BloggerDiagnosticsCatalog = {
       "message": "Whitespace is required after colons in object literals { key: value } to avoid namespace collisions.",
       "evidence": "observed",
       "verified_at": "2026-10-20"
+    },
+    "BX1050": {
+      "code": "BX1050",
+      "name": "DEPRECATED_DATA_PROPERTY",
+      "category": "deprecation",
+      "severity": "warning",
+      "message": "Referenced data property is deprecated in Blogger Layouts v3. Use modern structured property replacements.",
+      "evidence": "observed",
+      "verified_at": "2026-10-22"
+    },
+    "BX1051": {
+      "code": "BX1051",
+      "name": "HALLUCINATED_DATA_PROPERTY",
+      "category": "hallucination",
+      "severity": "error",
+      "message": "Referenced data property is not part of canonical Blogger specification and will evaluate to empty/null.",
+      "evidence": "observed",
+      "verified_at": "2026-10-22"
+    },
+    "BX1052": {
+      "code": "BX1052",
+      "name": "INVALID_SKIN_VARIABLE_SYNTAX",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Skin variable identifiers containing dots must use parenthesized syntax $(name) within <b:skin> CSS; direct $name.property causes broken CSS evaluation.",
+      "evidence": "observed",
+      "verified_at": "2026-10-22"
+    },
+    "BX1053": {
+      "code": "BX1053",
+      "name": "UNRESOLVED_SKIN_VARIABLE",
+      "category": "syntax",
+      "severity": "warning",
+      "message": "Referenced skin variable was not declared via a <Variable> tag within the current Theme Designer skin.",
+      "evidence": "observed",
+      "verified_at": "2026-10-22"
+    },
+    "BX1054": {
+      "code": "BX1054",
+      "name": "INVALID_SKIN_VAR_DATA_PATH",
+      "category": "syntax",
+      "severity": "warning",
+      "message": "Skin variable identifiers in template expressions must use underscore notation (data:skin.vars.identifier_name) instead of dot notation.",
+      "evidence": "observed",
+      "verified_at": "2026-10-22"
     }
   }
 } as unknown as BloggerDiagnosticsCatalog;
@@ -12240,6 +12447,42 @@ export const embeddedSchemas: Record<string, any> = {
               "$ref": "common.schema.json#/$defs/diagnosticCode"
             }
           },
+          "hallucinated_directive_transforms": {
+            "type": "object",
+            "description": "Rules for transforming hallucinated directives into canonical Blogger directives.",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "targetTag",
+                "attrMap"
+              ],
+              "properties": {
+                "targetTag": {
+                  "type": "string"
+                },
+                "attrMap": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "requiredAttrs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "inverted_attribute_maps": {
+            "type": "object",
+            "description": "Mapping from diagnostic code or inverted attribute to canonical attribute name.",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
           "standard_diagnostics": {
             "type": "object",
             "description": "Standard diagnostic codes associated with template syntax and structural violations.",
@@ -12299,6 +12542,21 @@ export const embeddedSchemas: Record<string, any> = {
                 "$ref": "common.schema.json#/$defs/diagnosticCode"
               },
               "prohibited_operator_in_data_tag": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
+              },
+              "deprecated_data_property": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
+              },
+              "hallucinated_data_property": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
+              },
+              "invalid_skin_variable_syntax": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
+              },
+              "unresolved_skin_variable": {
+                "$ref": "common.schema.json#/$defs/diagnosticCode"
+              },
+              "invalid_skin_var_data_path": {
                 "$ref": "common.schema.json#/$defs/diagnosticCode"
               }
             },

@@ -1,11 +1,11 @@
 {
   "version": "1.0.0",
-  "generatedAt": "2026-10-20",
+  "generatedAt": "2026-10-22",
   "metrics": {
-    "totalFixtures": 254,
+    "totalFixtures": 259,
     "positiveFixtures": 205,
-    "negativeFixtures": 49,
-    "coveredSpecEntities": 210
+    "negativeFixtures": 54,
+    "coveredSpecEntities": 215
   },
   "fixtures": [
     {
@@ -81,7 +81,7 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:includable name='mainWidget'><b:include id='mainWidget'/></b:includable>",
+        "source": "<b:section id='main'><b:widget id='Blog1' type='Blog'><b:includable name='mainWidget'><b:include id='mainWidget'/></b:includable></b:widget></b:section>",
         "mode": "fragment"
       },
       "expected": {
@@ -90,7 +90,7 @@
           "BX1015",
           "BX1016"
         ],
-        "stage": "parser"
+        "stage": "linter"
       },
       "verified_at": "2026-10-10"
     },
@@ -338,7 +338,7 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:choose><b:when test='data:view.isPost'>A</b:when></b:choose>",
+        "source": "<b:choose><div>Content</div></b:choose>",
         "mode": "fragment"
       },
       "expected": {
@@ -548,7 +548,7 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:widget id='Header1' type='Header' mobile='yes'/>",
+        "source": "<b:section id='main'><b:widget id='Header1' type='Header' mobile='yes'/></b:section>",
         "mode": "fragment"
       },
       "expected": {
@@ -778,7 +778,7 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:widget id='Blog1' type='Blog'><b:includable id='main'/><b:includable id='main'/></b:widget>",
+        "source": "<b:section id='main'><b:widget id='Blog1' type='Blog'><b:includable id='main'/><b:includable id='main'/></b:widget></b:section>",
         "mode": "fragment"
       },
       "expected": {
@@ -799,7 +799,7 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:widget id='Blog1' type='Blog'><b:includable id='main'><b:include name='nonExistentIncludable'/></b:includable></b:widget>",
+        "source": "<b:section id='main'><b:widget id='Blog1' type='Blog'><b:includable id='main'><b:include name='nonExistentIncludable'/></b:includable></b:widget></b:section>",
         "mode": "fragment"
       },
       "expected": {
@@ -862,7 +862,7 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<Variable name='bg' description='Color' type='color' min='10px' default='#fff' value='#fff'/>",
+        "source": "<b:skin><![CDATA[ <Variable name=\"bg\" description=\"Color\" type=\"color\" min=\"10px\" default=\"#ffffff\" value=\"#ffffff\"/> ]]></b:skin>",
         "mode": "fragment"
       },
       "expected": {
@@ -883,7 +883,7 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:section id='main'><b:widget id='Blog1'></b:section>",
+        "source": "<b:section id='main'><b:widget id='Blog1' type='Blog'></b:section>",
         "mode": "fragment"
       },
       "expected": {
@@ -904,7 +904,7 @@
       ],
       "input": {
         "kind": "template",
-        "source": "<b:section expr:id='data:blog.id'/>",
+        "source": "<b:section id='main' expr:class='data:title'/>",
         "mode": "fragment"
       },
       "expected": {
@@ -1039,6 +1039,110 @@
         "stage": "parser"
       },
       "verified_at": "2026-10-20"
+    },
+    {
+      "id": "diagnostics/negative_syntax/deprecated-data-property",
+      "title": "Deprecated Data Property in Layouts v3",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1050"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:blog.isMobile/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1050"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-22"
+    },
+    {
+      "id": "diagnostics/negative_syntax/hallucinated-data-property",
+      "title": "Hallucinated Data Property in Template Expression",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1051"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:categories"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1051"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-22"
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-skin-variable-syntax",
+      "title": "Invalid Skin Variable Syntax Without Parentheses",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1052"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:skin><![CDATA[ <Variable name=\"primary.accent\" description=\"Accent\" type=\"color\" default=\"#ffffff\" value=\"#ffffff\"/> body { color: $primary.accent; } ]]></b:skin>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1052"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-22"
+    },
+    {
+      "id": "diagnostics/negative_syntax/unresolved-skin-variable",
+      "title": "Unresolved Skin Variable Reference in Theme Designer Skin",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1053"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:skin><![CDATA[ <Variable name=\"mainColor\" description=\"Main Color\" type=\"color\" default=\"#ffffff\" value=\"#ffffff\"/> body { color: $(missingVar); } ]]></b:skin>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1053"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-22"
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-skin-var-data-path",
+      "title": "Invalid Skin Variable Data Path with Dots",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1054"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:skin.vars.admin.name/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1054"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-22"
     },
     {
       "id": "expressions/arithmetic/addition-integers",
