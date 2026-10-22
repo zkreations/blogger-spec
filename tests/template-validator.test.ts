@@ -833,16 +833,22 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diags.some(d => d.code === 'BX1018')).toBe(true)
       const diag = diags.find(d => d.code === 'BX1018')
       expect(diag?.message).toContain('===')
+      expect(diag?.suggestedReplacement).toBe('==')
 
       const neqDiags = validateExpression('data:view.pageType !== "item"')
       expect(neqDiags.some(d => d.code === 'BX1018')).toBe(true)
+      const neqDiag = neqDiags.find(d => d.code === 'BX1018')
+      expect(neqDiag?.suggestedReplacement).toBe('!=')
     })
 
     it('detects redundant lambda data prefix (BX1019)', () => {
-      const diags = validateExpression('data:posts count (p => data:p.numberOfComments > 0)')
+      const expr = 'data:posts count (p => data:p.numberOfComments > 0)'
+      const diags = validateExpression(expr)
       expect(diags.some(d => d.code === 'BX1019')).toBe(true)
       const diag = diags.find(d => d.code === 'BX1019')
       expect(diag?.message).toContain('data:p')
+      expect(diag?.suggestedReplacement).toBe('p')
+      expect(expr.slice(diag!.tagStart, diag!.tagEnd)).toBe('data:p')
     })
 
     it('detects prohibited literal null in expressions (BX1020)', () => {
@@ -909,6 +915,10 @@ describe('helpers & canonical structure validation suite', () => {
     it('detects boolean strings compared in expressions (BX1038)', () => {
       const diags = validateExpression('data:post.isFirst == "true"')
       expect(diags.some(d => d.code === 'BX1038')).toBe(true)
+      expect(validateExpression('x == "true"').find(d => d.code === 'BX1038')?.suggestedReplacement).toBe('true')
+      expect(validateExpression('x == "yes"').find(d => d.code === 'BX1038')?.suggestedReplacement).toBe('true')
+      expect(validateExpression('x == "false"').find(d => d.code === 'BX1038')?.suggestedReplacement).toBe('false')
+      expect(validateExpression('x == "no"').find(d => d.code === 'BX1038')?.suggestedReplacement).toBe('false')
     })
 
     it('validates expressions across all template attributes via validateTemplateExpressions', () => {
@@ -976,6 +986,10 @@ describe('helpers & canonical structure validation suite', () => {
       expect(bx1038).toBeDefined()
       const sliced = xml.slice(bx1038!.tagStart, bx1038!.tagEnd)
       expect(sliced).toBe('&quot;true&quot;')
+      expect(bx1038?.suggestedReplacement).toBe('true')
+
+      const fixedXml = xml.slice(0, bx1038!.tagStart) + bx1038!.suggestedReplacement + xml.slice(bx1038!.tagEnd)
+      expect(fixedXml).toBe('<b:eval expr=\'data:view.isPost == true\'/>')
     })
 
     it('unescapeXmlEntitiesWithSourceMap maps positions accurately across mixed content', () => {
@@ -1105,7 +1119,12 @@ describe('helpers & canonical structure validation suite', () => {
     it('detects missing whitespace after colon in object literals (BX1049)', () => {
       const exprNoSpace = '{ key:"val" }'
       const diags = validateExpression(exprNoSpace)
-      expect(diags.some(d => d.code === 'BX1049')).toBe(true)
+      const diag = diags.find(d => d.code === 'BX1049')
+      expect(diag).toBeDefined()
+      expect(diag?.suggestedReplacement).toBe(': ')
+      expect(exprNoSpace.slice(diag!.tagStart, diag!.tagEnd)).toBe(':')
+      const fixed = exprNoSpace.slice(0, diag!.tagStart) + diag!.suggestedReplacement + exprNoSpace.slice(diag!.tagEnd)
+      expect(fixed).toBe('{ key: "val" }')
 
       const exprNoSpaceParen = '{ m:("1") }'
       expect(validateExpression(exprNoSpaceParen).some(d => d.code === 'BX1049')).toBe(true)
