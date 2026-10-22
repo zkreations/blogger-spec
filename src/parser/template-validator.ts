@@ -26,6 +26,7 @@ function pushDiagnostic(
     attribute?: string
     start?: number
     end?: number
+    suggestedReplacement?: string
   },
 ): void {
   const rule = options?.rule ?? catalog.getDiagnostic(code)
@@ -46,6 +47,7 @@ function pushDiagnostic(
     attribute: options?.attribute,
     tagStart: options?.start ?? token.tagStart,
     tagEnd: options?.end ?? token.tagEnd,
+    suggestedReplacement: options?.suggestedReplacement,
   })
 }
 
@@ -613,6 +615,7 @@ export function validateExpression(
         attribute: context?.attributeName,
         start: baseStart + mapOffset(tok.start.offset),
         end: baseStart + mapOffset(tok.end.offset),
+        suggestedReplacement: tok.type === 'STRICT_EQ' ? '==' : '!=',
         message: `Strict equality operator '${tok.value}' is prohibited in Blogger expressions; use == or !=.`,
       })
     }
@@ -652,6 +655,7 @@ export function validateExpression(
               attribute: context?.attributeName,
               start: baseStart + mapOffset(tokens[j]!.start.offset),
               end: baseStart + mapOffset(nextTok.end.offset),
+              suggestedReplacement: paramName,
               message: `Using 'data:' prefix on lambda iterator property 'data:${paramName}' is redundant. Access properties directly (${paramName}.prop).`,
             })
           }
@@ -819,10 +823,12 @@ export function validateExpression(
       if (nextTok.type === 'STRING') {
         const val = nextTok.value.toLowerCase()
         if (val === 'true' || val === 'false' || val === 'yes' || val === 'no') {
+          const replacement = (val === 'true' || val === 'yes') ? 'true' : 'false'
           pushDiagnostic(diagnostics, catalog, 'BX1038', fakeToken, {
             attribute: context?.attributeName,
             start: baseStart + mapOffset(nextTok.start.offset),
             end: baseStart + mapOffset(nextTok.end.offset),
+            suggestedReplacement: replacement,
             message: `Comparing against a quoted boolean string literal ('${nextTok.value}') in expression. Use boolean literals true or false directly.`,
           })
         }
@@ -871,6 +877,7 @@ export function validateExpression(
               attribute: context?.attributeName,
               start: baseStart + mapOffset(colonOffset),
               end: baseStart + mapOffset(colonEndOffset),
+              suggestedReplacement: ': ',
               message: diagRule?.message ?? 'Whitespace is required after colons in object literals { key: value } to avoid namespace collisions.',
             })
           }
