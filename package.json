@@ -1,7 +1,7 @@
 {
   "name": "blogger-spec",
   "type": "module",
-  "version": "0.17.0",
+  "version": "0.18.0",
   "packageManager": "pnpm@11.28.5",
   "description": "Canonical single source of truth for the Blogger XML template and expression language specification, types, and conformance fixtures.",
   "author": "Blogger Spec Authors & Contributors",
