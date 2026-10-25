@@ -98,6 +98,7 @@
     "build": "tsx src/tooling/build.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "prepare": "pnpm run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:spec": "tsx src/tooling/validate-spec.ts",

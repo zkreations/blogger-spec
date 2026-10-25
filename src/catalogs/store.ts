@@ -12,20 +12,10 @@ import type {
   BloggerTypesCatalog,
   BloggerWidgetsCatalog,
 } from '../types.js'
+import { CATALOG_NAMES } from './constants.js'
 import { embeddedCatalogs, embeddedSchemas } from './embedded.generated.js'
 
-export const CATALOG_NAMES = [
-  'directives',
-  'operators',
-  'types',
-  'widgets',
-  'settings',
-  'globals',
-  'messages',
-  'scopes',
-  'diagnostics',
-  'inclusions',
-] as const satisfies readonly BloggerCatalogName[]
+export { CATALOG_NAMES } from './constants.js'
 
 export interface CatalogStore {
   getCatalog: <K extends BloggerCatalogName>(name: K) => BloggerCatalogMap[K]

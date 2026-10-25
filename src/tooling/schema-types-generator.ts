@@ -1,16 +1,12 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import {
-  getDiagnostics,
-  getDirectives,
-  getGlobals,
-  getMessages,
-  getOperators,
-  getSettings,
-  getTypes,
-  getWidgets,
-} from '../catalogs/index.js'
 import { getWorkspacePaths } from '../paths.js'
+
+function readCatalog(name: string): any {
+  const paths = getWorkspacePaths()
+  const filePath = join(paths.catalogs, `${name}.json`)
+  return JSON.parse(readFileSync(filePath, 'utf-8'))
+}
 
 function readSchema(name: string): any {
   const paths = getWorkspacePaths()
@@ -59,14 +55,14 @@ export function mapPropertyTypeToTs(type: string, typeDefinitions?: Record<strin
 export function generateCanonicalSchemaTypes(): string {
   const paths = getWorkspacePaths()
   // 1. Read Catalogs for dynamic domain union types and models
-  const directivesData = getDirectives()
-  const operatorsData = getOperators()
-  const diagnosticsData = getDiagnostics()
-  const widgetsData = getWidgets()
-  const settingsData = getSettings()
-  const messagesData = getMessages()
-  const globalsData = getGlobals()
-  const typesData = getTypes()
+  const directivesData = readCatalog('directives')
+  const operatorsData = readCatalog('operators')
+  const diagnosticsData = readCatalog('diagnostics')
+  const widgetsData = readCatalog('widgets')
+  const settingsData = readCatalog('settings')
+  const messagesData = readCatalog('messages')
+  const globalsData = readCatalog('globals')
+  const typesData = readCatalog('types')
 
   const dirNames = Object.keys(directivesData.directives || {}).sort()
   const widgetTypes = Object.keys(widgetsData.widgets || {}).sort()
@@ -547,10 +543,10 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('// =========================================================================')
   lines.push('')
 
-  const typeDefinitions = typesData.types || {}
+  const typeDefinitions: Record<string, any> = typesData.types || {}
   const stringModifiers = typesData.types?.string?.modifiers || {}
   const platformSubtypes = Object.entries(typeDefinitions)
-    .filter(([, definition]) => definition.category === 'subtype')
+    .filter(([, definition]) => (definition as any).category === 'subtype')
     .map(([name]) => name)
     .sort()
 

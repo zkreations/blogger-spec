@@ -3,11 +3,7 @@ import type { BloggerFixturesManifest } from '../types.js'
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import ts from 'typescript'
-import {
-  CATALOG_NAMES,
-  MemoryCatalogStore,
-  setDefaultCatalogStore,
-} from '../catalogs/index.js'
+import { CATALOG_NAMES } from '../catalogs/constants.js'
 import { getWorkspacePaths } from '../paths.js'
 import { generateCanonicalSchemaTypes } from './schema-types-generator.js'
 
@@ -184,22 +180,6 @@ export function buildEmbeddedCatalogs(): void {
   const targetPath = join(paths.root, 'src/catalogs/embedded.generated.ts')
   const content = generateEmbeddedCatalogs()
   writeFileSync(targetPath, content, 'utf-8')
-
-  const catalogs: Record<string, any> = {}
-  for (const name of CATALOG_NAMES) {
-    const filePath = join(paths.catalogs, `${name}.json`)
-    if (existsSync(filePath)) {
-      catalogs[name] = JSON.parse(readFileSync(filePath, 'utf-8'))
-    }
-  }
-  const schemas: Record<string, any> = {}
-  if (existsSync(paths.schemas)) {
-    const schemaFiles = readdirSync(paths.schemas).filter(f => f.endsWith('.schema.json'))
-    for (const f of schemaFiles) {
-      schemas[f] = JSON.parse(readFileSync(join(paths.schemas, f), 'utf-8'))
-    }
-  }
-  setDefaultCatalogStore(new MemoryCatalogStore(catalogs as any, schemas))
 }
 
 export function compileTypescript(): void {

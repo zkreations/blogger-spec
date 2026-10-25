@@ -7,7 +7,7 @@
 ## Core Invariants
 
 1. **Catalogs are the SSOT**: All directive grammar, operator precedence tiers, types, globals, and system inclusion rules live in [`catalogs/<catalog>.json`](catalogs/). Never hardcode domain knowledge in `src/`.
-2. **Never Edit Generated Artifacts Directly**: `dist/`, `fixtures/index.json`, `src/catalogs/embedded.generated.ts`, and `src/catalogs/types.generated.ts` are generated automatically via `pnpm run build`.
+2. **Never Edit Generated Artifacts Directly**: Generated artifacts (`dist/`, `fixtures/index.json`, `src/catalogs/embedded.generated.ts`, and `src/catalogs/types.generated.ts`) are ignored by Git and generated automatically on `pnpm install` (via `prepare`) or `pnpm run build`. Do not edit them manually or force-commit them.
 3. **Zero Runtime Dependencies**: Production exports must strictly maintain `"dependencies": {}` in `package.json`.
 4. **Empirical Verification**: Any spec change or fix requires empirical verification against the Google Blogger production engine and a corresponding test fixture under [`fixtures/`](fixtures/) with evidence attribution (`official` or `observed`).
 5. **Flat Type Hierarchy & Skin Variable Isolation**: Platform subtypes (`url`, `image`, `date`, `locale`, `message`) inherit directly from `string` (1-level depth). Theme variables (`skin:*`) have `parent_type: null` and must remain strictly isolated from template string modifiers (`.length`, `.escaped`).

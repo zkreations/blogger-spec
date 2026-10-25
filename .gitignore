@@ -6,3 +6,7 @@ audit/
 .DS_Store
 .cache/
 
+# Generated artifacts
+src/catalogs/*.generated.ts
+fixtures/index.json
+
