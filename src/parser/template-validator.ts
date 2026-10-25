@@ -1,5 +1,6 @@
 import type { BloggerExpressionNode } from '../ast.js'
 import type { SpecCatalog } from '../catalogs/index.js'
+import type { BloggerSkinVariableSymbol } from '../data-path.js'
 import type {
   BloggerDiagnosticCode,
   BloggerDiagnosticFix,
@@ -13,6 +14,7 @@ import type { Token } from './lexer.js'
 import { getSpecCatalog } from '../catalogs/index.js'
 import { resolveDataPath, toSkinVarIdentifier } from '../data-path.js'
 import { evaluateExpressionBudget } from '../quota.js'
+import { getSkinTypeModifiers } from '../type-system.js'
 import { scanDirectiveTokens } from './directive-scanner.js'
 import { parseExpression } from './expr-parser.js'
 import { tokenize, unescapeXmlEntitiesWithSourceMap } from './lexer.js'
@@ -564,10 +566,126 @@ function validateIncludeElement(
   }
 }
 
+const skinModifiersCache = new WeakMap<SpecCatalog, Set<string>>()
+
+function getAllSkinModifiers(catalog: SpecCatalog): Set<string> {
+  let cached = skinModifiersCache.get(catalog)
+  if (!cached) {
+    cached = new Set<string>()
+    for (const tDef of Object.values(catalog.getAllTypes())) {
+      if (tDef.category === 'skin' && tDef.modifiers) {
+        for (const mod of Object.keys(tDef.modifiers)) {
+          cached.add(mod)
+        }
+      }
+    }
+    skinModifiersCache.set(catalog, cached)
+  }
+  return cached
+}
+
+interface SkinVarValidationResult {
+  readonly isInvalid: boolean
+  readonly normalizedSubpath?: string
+}
+
+function checkSkinVarSubpath(
+  subpath: string,
+  catalog: SpecCatalog,
+  skinVariables?: Record<string, string | BloggerSkinVariableSymbol>,
+): SkinVarValidationResult {
+  if (!subpath.includes('.')) {
+    return { isInvalid: false }
+  }
+
+  const lastDot = subpath.lastIndexOf('.')
+  const prefix = subpath.slice(0, lastDot)
+  const suffix = subpath.slice(lastDot + 1)
+
+  if (skinVariables && Object.keys(skinVariables).length > 0) {
+    let matchedVar: string | BloggerSkinVariableSymbol | undefined = skinVariables[prefix]
+    if (!matchedVar) {
+      const normalizedPrefix = toSkinVarIdentifier(prefix)
+      for (const [k, v] of Object.entries(skinVariables)) {
+        const id = toSkinVarIdentifier(typeof v === 'object' && v.name ? v.name : k)
+        if (id === normalizedPrefix) {
+          matchedVar = v
+          break
+        }
+      }
+    }
+
+    if (matchedVar) {
+      const rawType = typeof matchedVar === 'string' ? matchedVar : (matchedVar.type ?? 'string')
+      const modifiers = getSkinTypeModifiers(rawType, catalog)
+      if (modifiers[suffix]) {
+        if (!prefix.includes('.')) {
+          return { isInvalid: false }
+        }
+        return {
+          isInvalid: true,
+          normalizedSubpath: `${toSkinVarIdentifier(prefix)}.${suffix}`,
+        }
+      }
+    }
+
+    const normalizedSubpath = toSkinVarIdentifier(subpath)
+    for (const [k, v] of Object.entries(skinVariables)) {
+      const origName = typeof v === 'object' && v.name ? v.name : k
+      if (origName === subpath || toSkinVarIdentifier(origName) === normalizedSubpath) {
+        return {
+          isInvalid: true,
+          normalizedSubpath,
+        }
+      }
+    }
+  }
+
+  const allSkinModifiers = getAllSkinModifiers(catalog)
+  if (allSkinModifiers.has(suffix)) {
+    if (!prefix.includes('.')) {
+      return { isInvalid: false }
+    }
+    return {
+      isInvalid: true,
+      normalizedSubpath: `${toSkinVarIdentifier(prefix)}.${suffix}`,
+    }
+  }
+
+  return {
+    isInvalid: true,
+    normalizedSubpath: toSkinVarIdentifier(subpath),
+  }
+}
+
+function collectSkinVariablesFromTokens(tokens: readonly BloggerDirectiveToken[]): Record<string, BloggerSkinVariableSymbol> {
+  const result: Record<string, BloggerSkinVariableSymbol> = {}
+  for (const token of tokens) {
+    if (token.tagName === 'Variable' && !token.isClosing) {
+      const name = token.attributes.name?.value?.trim()
+      if (name) {
+        const type = token.attributes.type?.value?.trim() || 'string'
+        const description = token.attributes.description?.value?.trim()
+        const defaultVal = token.attributes.default?.value?.trim()
+        const value = token.attributes.value?.value?.trim()
+        result[name] = {
+          name,
+          type,
+          description,
+          default: defaultVal,
+          value,
+        }
+      }
+    }
+  }
+  return result
+}
+
 function validateDataElement(
   token: BloggerDirectiveToken,
   catalog: SpecCatalog,
   diagnostics: BloggerStructureDiagnostic[],
+  skinVariables?: Record<string, string | BloggerSkinVariableSymbol>,
 ): void {
   if (!token.tagName.startsWith('data:')) {
     return
@@ -591,8 +709,9 @@ function validateDataElement(
   // BX1054: Dot syntax in <data:skin.vars.admin.name/>
   if (token.tagName.startsWith('data:skin.vars.')) {
     const idPart = token.tagName.slice('data:skin.vars.'.length)
-    if (idPart.includes('.')) {
-      const normalized = `data:skin.vars.${toSkinVarIdentifier(idPart)}`
+    const check = checkSkinVarSubpath(idPart, catalog, skinVariables)
+    if (check.isInvalid && check.normalizedSubpath) {
+      const normalized = `data:skin.vars.${check.normalizedSubpath}`
       pushDiagnostic(diagnostics, catalog, 'BX1054', token, {
         start: token.tagStart,
         end: token.tagEnd,
@@ -608,7 +727,7 @@ function validateDataElement(
   }
 
   // BX1050: Deprecated data property on <data:.../>
-  const resolved = resolveDataPath(token.tagName, { catalog })
+  const resolved = resolveDataPath(token.tagName, { catalog, skinVariables })
   if (resolved?.isDeprecated) {
     const replacement = resolved.definition?.replacement as string | undefined
     const fixes = replacement
@@ -688,6 +807,7 @@ export interface ExpressionValidationContext {
   readonly valueStart?: number
   readonly valueEnd?: number
   readonly widgetType?: string
+  readonly skinVariables?: Record<string, string | BloggerSkinVariableSymbol>
 }
 
 const INFIX_OPERATOR_TOKEN_TYPES = new Set<string>([
@@ -1083,8 +1203,9 @@ export function validateExpression(
         // BX1054: Dot syntax in data:skin.vars.
         if (raw.startsWith('data:skin.vars.') || raw.startsWith('skin.vars.')) {
           const varPart = raw.startsWith('data:') ? raw.slice(15) : raw.slice(10)
-          if (varPart.includes('.')) {
-            const normalized = raw.replace(/(?:data:)?skin\.vars\.(.+)/, (_: string, id: string) => `data:skin.vars.${toSkinVarIdentifier(id)}`)
+          const check = checkSkinVarSubpath(varPart, catalog, context?.skinVariables)
+          if (check.isInvalid && check.normalizedSubpath) {
+            const normalized = `data:skin.vars.${check.normalizedSubpath}`
             pushDiagnostic(diagnostics, catalog, 'BX1054', fakeToken, {
               attribute: context?.attributeName,
               start: baseAbsStart,
@@ -1101,7 +1222,7 @@ export function validateExpression(
         }
 
         // BX1050: Deprecated data properties
-        const resolved = resolveDataPath(raw, { catalog, widgetType: context?.widgetType })
+        const resolved = resolveDataPath(raw, { catalog, widgetType: context?.widgetType, skinVariables: context?.skinVariables })
         if (resolved?.isDeprecated) {
           const replacement = resolved.definition?.replacement as string | undefined
           const fixes = replacement
@@ -1263,11 +1384,13 @@ function isDateExpressionNode(node: BloggerExpressionNode, catalog: SpecCatalog)
 export function validateTemplateExpressions(
   tokensOrXml: readonly BloggerDirectiveToken[] | string,
   catalog: SpecCatalog = getSpecCatalog(),
+  skinVariables?: Record<string, string | BloggerSkinVariableSymbol>,
 ): BloggerStructureDiagnostic[] {
   const tokens = typeof tokensOrXml === 'string'
     ? scanDirectiveTokens(tokensOrXml, { catalog })
     : tokensOrXml
 
+  const effectiveSkinVars = skinVariables ?? collectSkinVariablesFromTokens(tokens)
   const diagnostics: BloggerStructureDiagnostic[] = []
   let currentWidgetType: string | undefined
 
@@ -1301,6 +1424,7 @@ export function validateTemplateExpressions(
         valueStart: attrToken.valueStart,
         valueEnd: attrToken.valueEnd,
         widgetType: currentWidgetType,
+        skinVariables: effectiveSkinVars,
       })
 
       diagnostics.push(...exprDiagnostics)
@@ -1329,7 +1453,8 @@ export function validateTemplateStructure(
   const containerIncludableIds = new Map<BloggerDirectiveToken, Set<string>>()
   const pendingIncludes: Array<{ token: BloggerDirectiveToken, container: BloggerDirectiveToken }> = []
   const defaultMarkupIncludableIds = new Set<string>()
-  const declaredSkinVars = new Set<string>()
+  const skinVariables = collectSkinVariablesFromTokens(tokens)
+  const declaredSkinVars = new Set<string>(Object.keys(skinVariables))
 
   interface ActiveMessageContext {
     readonly token: BloggerDirectiveToken
@@ -1402,7 +1527,7 @@ export function validateTemplateStructure(
     validateIdentifierUniqueness(token, globalSectionWidgetIds, containerIncludableIds, tagStack, catalog, diagnostics)
     validateWidgetElement(token, catalog, diagnostics)
     validateVariableElement(token, catalog, diagnostics)
-    validateDataElement(token, catalog, diagnostics)
+    validateDataElement(token, catalog, diagnostics, skinVariables)
     validateIncludeElement(token, catalog, diagnostics)
 
     if (token.tagName === 'Variable') {
@@ -1471,7 +1596,7 @@ export function validateTemplateStructure(
   }
 
   if (options?.validateExpressions) {
-    const exprDiags = validateTemplateExpressions(tokens, catalog)
+    const exprDiags = validateTemplateExpressions(tokens, catalog, skinVariables)
     diagnostics.push(...exprDiags)
   }
 

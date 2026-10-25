@@ -94,6 +94,53 @@ describe('semantic QuickFixes and Skin Validation Suite', () => {
     expect(bx1054?.fixes?.[0]?.edits[0]?.newText).toBe('data:skin.vars.admin_name')
   })
 
+  it('does not emit BX1054 for canonical skin variable modifiers in expressions', () => {
+    expect(validateExpression('data:skin.vars.primary.red').some(d => d.code === 'BX1054')).toBe(false)
+    expect(validateExpression('data:skin.vars.fuente.family').some(d => d.code === 'BX1054')).toBe(false)
+    expect(validateExpression('data:skin.vars.header_bg.image').some(d => d.code === 'BX1054')).toBe(false)
+  })
+
+  it('does not emit BX1054 for data tags referencing valid skin variable modifiers', () => {
+    const xml = `
+      <b:skin><![CDATA[
+        <Variable name="primary" description="Color" type="color" default="#fff" value="#fff"/>
+        <Variable name="fuente" description="Font" type="font" default="12px Arial" value="12px Arial"/>
+      ]]></b:skin>
+      <data:skin.vars.primary.red/>
+      <data:skin.vars.fuente.family/>
+    `
+    const diags = validateTemplateStructure(xml)
+    expect(diags.filter(d => d.code === 'BX1054')).toHaveLength(0)
+  })
+
+  it('emits BX1054 when property is not a valid modifier on declared skin variable', () => {
+    const xml = `
+      <b:skin><![CDATA[
+        <Variable name="primary" description="Color" type="color" default="#fff" value="#fff"/>
+      ]]></b:skin>
+      <data:skin.vars.primary.invalid/>
+    `
+    const diags = validateTemplateStructure(xml)
+    const bx1054 = diags.find(d => d.code === 'BX1054')
+    expect(bx1054).toBeDefined()
+    expect(bx1054?.suggestedReplacement).toBe('<data:skin.vars.primary_invalid/>')
+  })
+
+  it('emits BX1054 preserving modifier when normalizing compound variable name with dots', () => {
+    const xml = `
+      <b:skin><![CDATA[
+        <Variable name="body.font" description="Font" type="font" default="12px Arial" value="12px Arial"/>
+      ]]></b:skin>
+      <data:skin.vars.body.font.family/>
+      <b:eval expr="data:skin.vars.body.font.family"/>
+    `
+    const diags = validateTemplateStructure(xml, undefined, { validateExpressions: true })
+    const bx1054List = diags.filter(d => d.code === 'BX1054')
+    expect(bx1054List).toHaveLength(2)
+    expect(bx1054List[0]?.suggestedReplacement).toBe('<data:skin.vars.body_font.family/>')
+    expect(bx1054List[1]?.suggestedReplacement).toBe('data:skin.vars.body_font.family')
+  })
+
   it('emits BX1050 with replacement fix for deprecated data property', () => {
     const xml = '<data:blog.isMobile/>'
     const diagnostics = validateTemplateStructure(xml)
