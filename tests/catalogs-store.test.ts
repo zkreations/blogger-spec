@@ -2,7 +2,6 @@ import { rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { embeddedCatalogs, embeddedSchemas } from '../src/catalogs/embedded.generated.js'
 import {
   canBeAtRoot,
   canNest,
@@ -92,6 +91,7 @@ import {
   validateDirectiveAttributes,
   validateNesting,
 } from '../src/catalogs/index.js'
+import { embeddedCatalogs, embeddedSchemas } from '../src/generated/embedded.generated.js'
 import * as RootExports from '../src/index.js'
 import { generateDomainTypes, generateDts } from '../src/tooling/compiler.js'
 import { validateSpec } from '../src/tooling/validator.js'
