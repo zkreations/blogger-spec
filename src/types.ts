@@ -12,9 +12,9 @@ import type {
   BloggerLayoutVersion,
   BloggerOperatorDefinition,
   DirectiveNestingAction,
-} from './catalogs/types.generated.js'
+} from './generated/types.generated.js'
 
-export type * from './catalogs/types.generated.js'
+export type * from './generated/types.generated.js'
 
 export const BLOGGER_BOOLEAN_VALUES = ['yes', 'no', 'true', 'false'] as const
 export type BloggerBooleanValue = typeof BLOGGER_BOOLEAN_VALUES[number]
