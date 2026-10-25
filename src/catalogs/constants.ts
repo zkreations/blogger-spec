@@ -12,4 +12,3 @@ export const CATALOG_NAMES = [
 ] as const
 
 export type BloggerCatalogNameConstant = typeof CATALOG_NAMES[number]
-
