@@ -8,7 +8,7 @@ Zero-runtime-dependency specification authority and execution engine for Blogger
 - `catalogs/schemas/`: Draft 2020-12 canonical validation schemas.
 - `fixtures/`: Empirical test suite (`expressions/`, `templates/`, `diagnostics/`).
 - `src/`: Engine implementation and validation logic.
-- **Generated artifacts**: `dist/`, `fixtures/index.json`, `src/catalogs/*.generated.ts` are gitignored and never edited directly; generated automatically via `pnpm run build` (or `pnpm install` via `prepare`).
+- **Generated artifacts**: `dist/`, `fixtures/index.json`, `src/generated/` are gitignored and never edited directly; generated automatically via `pnpm run build` (or `pnpm install` via `prepare`).
 
 ## Verification Loop
 
