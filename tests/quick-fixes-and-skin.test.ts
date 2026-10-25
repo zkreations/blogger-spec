@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { validateExpression, validateTemplateStructure } from '../src/parser/template-validator.js'
+import { validateExpression, validateSkinStyles, validateTemplateStructure } from '../src/parser/template-validator.js'
 
 describe('semantic QuickFixes and Skin Validation Suite', () => {
   it('generates multi-edit fixes for hallucinated <b:for> converting to <b:loop>', () => {
@@ -77,12 +77,89 @@ describe('semantic QuickFixes and Skin Validation Suite', () => {
     expect(bx1052?.fixes?.[0]?.edits[0]?.newText).toBe('$(primary.accent)')
   })
 
-  it('emits BX1053 for undeclared variable in Theme Designer skin', () => {
+  it('emits BX1053 with error severity for undeclared variable in Theme Designer skin', () => {
     const xml = '<b:skin><![CDATA[ <Variable name="mainColor" description="Main Color" type="color" default="#ffffff" value="#ffffff"/> body { color: $(missingVar); } ]]></b:skin>'
     const diagnostics = validateTemplateStructure(xml)
 
     expect(diagnostics).toHaveLength(1)
     expect(diagnostics[0]?.code).toBe('BX1053')
+    expect(diagnostics[0]?.severity).toBe('error')
+  })
+
+  it('validates dotted skin variables with valid modifiers without false positives', () => {
+    const xml = `
+      <b:skin><![CDATA[
+        <Variable name="primary.accent" description="Primary Accent" type="color" default="#ff0000" value="#ff0000"/>
+        <Variable name="fuente.principal" description="Main Font" type="font" default="14px Arial" value="14px Arial"/>
+        <Variable name="fondo" description="Background" type="background" default="#fff" value="#fff"/>
+        body {
+          color: $(primary.accent);
+          border-color: rgba($(primary.accent.red), $(primary.accent.green), $(primary.accent.blue), $(primary.accent.alpha));
+          font-family: $(fuente.principal.family);
+          font-size: $(fuente.principal.size);
+          background-image: $(fondo.image);
+          background-color: $(fondo.color);
+        }
+      ]]></b:skin>
+    `
+    const diagnostics = validateTemplateStructure(xml)
+    expect(diagnostics.filter(d => d.code === 'BX1053')).toHaveLength(0)
+  })
+
+  it('emits BX1053 for invalid modifiers on declared skin variables', () => {
+    const xml = `
+      <b:skin><![CDATA[
+        <Variable name="fuente" description="Font" type="font" default="12px Arial" value="12px Arial"/>
+        <Variable name="primary" description="Color" type="color" default="#fff" value="#fff"/>
+        body {
+          font: $(fuente.prueba);
+          color: $(primary.family);
+        }
+      ]]></b:skin>
+    `
+    const diagnostics = validateTemplateStructure(xml)
+    const bx1053 = diagnostics.filter(d => d.code === 'BX1053')
+    expect(bx1053).toHaveLength(2)
+    expect(bx1053[0]?.severity).toBe('error')
+    expect(bx1053[0]?.message).toContain('Modifier \'prueba\' is not supported for skin variable \'fuente\' of type \'font\'')
+    expect(bx1053[1]?.message).toContain('Modifier \'family\' is not supported for skin variable \'primary\' of type \'color\'')
+  })
+
+  it('emits BX1053 for spurious multi-segment or nested paths', () => {
+    const xml = `
+      <b:skin><![CDATA[
+        <Variable name="primary" description="Color" type="color" default="#fff" value="#fff"/>
+        <Variable name="fuente" description="Font" type="font" default="12px Arial" value="12px Arial"/>
+        body {
+          color: $(primary.prueba.prueba.red);
+          font: $(fuente.prueba.family);
+        }
+      ]]></b:skin>
+    `
+    const diagnostics = validateTemplateStructure(xml)
+    const bx1053 = diagnostics.filter(d => d.code === 'BX1053')
+    expect(bx1053).toHaveLength(2)
+    expect(bx1053[0]?.severity).toBe('error')
+    expect(bx1053[0]?.message).toContain('Skin variable \'primary\' does not support nested property path \'prueba.prueba.red\'')
+    expect(bx1053[1]?.message).toContain('Skin variable \'fuente\' does not support nested property path \'prueba.family\'')
+  })
+
+  it('validates standalone references and allows direct validateSkinStyles usage', () => {
+    const xml = `
+      <b:skin><![CDATA[
+        <Variable name="primary" description="Color" type="color" default="#fff" value="#fff"/>
+        body {
+          color: $primary;
+          background: $missing;
+        }
+      ]]></b:skin>
+    `
+    const diagnostics = validateSkinStyles(xml, {
+      primary: { name: 'primary', type: 'color' },
+    })
+    const bx1053 = diagnostics.filter(d => d.code === 'BX1053')
+    expect(bx1053).toHaveLength(1)
+    expect(bx1053[0]?.message).toContain('Referenced skin variable \'missing\' was not declared')
   })
 
   it('emits BX1054 with underscore normalization fix for data:skin.vars.admin.name', () => {

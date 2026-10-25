@@ -498,7 +498,7 @@
       "code": "BX1053",
       "name": "UNRESOLVED_SKIN_VARIABLE",
       "category": "syntax",
-      "severity": "warning",
+      "severity": "error",
       "message": "Referenced skin variable was not declared via a <Variable> tag within the current Theme Designer skin.",
       "evidence": "observed",
       "verified_at": "2026-10-22"

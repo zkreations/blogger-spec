@@ -1470,6 +1470,7 @@ export function validateTemplateExpressions(
 
 export interface ValidateTemplateStructureOptions {
   readonly validateExpressions?: boolean
+  readonly skinVariables?: Record<string, string | BloggerSkinVariableSymbol>
 }
 
 export function validateTemplateStructure(
@@ -1487,8 +1488,18 @@ export function validateTemplateStructure(
   const containerIncludableIds = new Map<BloggerDirectiveToken, Set<string>>()
   const pendingIncludes: Array<{ token: BloggerDirectiveToken, container: BloggerDirectiveToken }> = []
   const defaultMarkupIncludableIds = new Set<string>()
-  const skinVariables = collectSkinVariablesFromTokens(tokens)
-  const declaredSkinVars = new Set<string>(Object.keys(skinVariables))
+  const localSkinVars = collectSkinVariablesFromTokens(tokens)
+  const skinVariables: Record<string, BloggerSkinVariableSymbol> = { ...localSkinVars }
+  if (options?.skinVariables) {
+    for (const [k, v] of Object.entries(options.skinVariables)) {
+      if (typeof v === 'string') {
+        skinVariables[k] = { name: k, type: v }
+      }
+      else {
+        skinVariables[k] = v
+      }
+    }
+  }
 
   interface ActiveMessageContext {
     readonly token: BloggerDirectiveToken
@@ -1564,13 +1575,6 @@ export function validateTemplateStructure(
     validateDataElement(token, catalog, diagnostics, skinVariables)
     validateIncludeElement(token, catalog, diagnostics)
 
-    if (token.tagName === 'Variable') {
-      const nameVal = token.attributes.name?.value?.trim()
-      if (nameVal) {
-        declaredSkinVars.add(nameVal)
-      }
-    }
-
     if (token.tagName === 'b:includable' && !token.isClosing) {
       if (tagStack.some(t => t.tagName === 'b:defaultmarkup')) {
         const idVal = token.attributes.id?.value?.trim()
@@ -1626,7 +1630,7 @@ export function validateTemplateStructure(
   }
 
   if (typeof tokensOrXml === 'string') {
-    validateSkinStyles(tokensOrXml, declaredSkinVars, catalog, diagnostics)
+    validateSkinStyles(tokensOrXml, skinVariables, catalog, diagnostics)
   }
 
   if (options?.validateExpressions) {
@@ -1637,12 +1641,70 @@ export function validateTemplateStructure(
   return diagnostics
 }
 
-function validateSkinStyles(
-  xmlText: string,
-  declaredVars: ReadonlySet<string>,
+function validateSkinVariableReference(
+  rawVar: string,
+  skinVariables: Record<string, BloggerSkinVariableSymbol>,
   catalog: SpecCatalog,
-  diagnostics: BloggerStructureDiagnostic[],
-): void {
+): { isValid: true } | { isValid: false, message: string } {
+  if (skinVariables[rawVar]) {
+    return { isValid: true }
+  }
+
+  if (rawVar.includes('.')) {
+    const lastDot = rawVar.lastIndexOf('.')
+    const candidateVar = rawVar.slice(0, lastDot)
+    const candidateMod = rawVar.slice(lastDot + 1)
+
+    const baseVar = skinVariables[candidateVar]
+    if (baseVar) {
+      const varType = baseVar.type || 'string'
+      const modifiers = getSkinTypeModifiers(varType, catalog)
+      if (candidateMod in modifiers) {
+        return { isValid: true }
+      }
+      return {
+        isValid: false,
+        message: `Modifier '${candidateMod}' is not supported for skin variable '${candidateVar}' of type '${varType}'.`,
+      }
+    }
+
+    let dotIdx = rawVar.indexOf('.')
+    let longestPrefixVar: BloggerSkinVariableSymbol | undefined
+    let longestPrefixName = ''
+    while (dotIdx !== -1) {
+      const prefix = rawVar.slice(0, dotIdx)
+      if (skinVariables[prefix]) {
+        longestPrefixVar = skinVariables[prefix]
+        longestPrefixName = prefix
+      }
+      dotIdx = rawVar.indexOf('.', dotIdx + 1)
+    }
+
+    if (longestPrefixVar) {
+      const remainder = rawVar.slice(longestPrefixName.length + 1)
+      return {
+        isValid: false,
+        message: `Skin variable '${longestPrefixName}' does not support nested property path '${remainder}'.`,
+      }
+    }
+  }
+
+  return {
+    isValid: false,
+    message: `Referenced skin variable '${rawVar}' was not declared in a <Variable> tag within the Theme Designer skin.`,
+  }
+}
+
+export function validateSkinStyles(
+  xmlText: string,
+  skinVariables: Record<string, BloggerSkinVariableSymbol> | ReadonlySet<string>,
+  catalog: SpecCatalog = getSpecCatalog(),
+  diagnostics: BloggerStructureDiagnostic[] = [],
+): BloggerStructureDiagnostic[] {
+  const normalizedSkinVars: Record<string, BloggerSkinVariableSymbol> = skinVariables instanceof Set
+    ? Object.fromEntries(Array.from(skinVariables).map(name => [name, { name, type: 'string' }]))
+    : skinVariables
+
   const skinRegex = /<b:(?:template-)?skin\b[^>]*>([\s\S]*?)<\/b:(?:template-)?skin>/gi
   for (const match of xmlText.matchAll(skinRegex)) {
     const fullTag = match[0]
@@ -1694,19 +1756,19 @@ function validateSkinStyles(
       })
     }
 
-    // 2. BX1053: $(varName) or $varName not declared
-    if (declaredVars.size > 0) {
+    // 2. BX1053: $(varName) or $varName not declared / invalid modifier / nested path
+    if (Object.keys(normalizedSkinVars).length > 0) {
       const parenSkinVarRegex = /\$\(([a-z_][\w.-]*)\)/gi
       for (const pMatch of maskedContent.matchAll(parenSkinVarRegex)) {
         const rawVar = pMatch[1]!
-        const baseVar = rawVar.split('.')[0]!
-        if (!declaredVars.has(rawVar) && !declaredVars.has(baseVar)) {
+        const check = validateSkinVariableReference(rawVar, normalizedSkinVars, catalog)
+        if (!check.isValid) {
           const start = baseOffset + (pMatch.index ?? 0)
           const end = start + pMatch[0].length
           pushDiagnostic(diagnostics, catalog, 'BX1053', fakeToken, {
             start,
             end,
-            message: `Referenced skin variable '${rawVar}' was not declared in a <Variable> tag within the Theme Designer skin.`,
+            message: check.message,
           })
         }
       }
@@ -1714,7 +1776,7 @@ function validateSkinStyles(
       const standaloneRegex = /(?<![\w$])\$([a-z_]\w*)\b(?!\.)/gi
       for (const sMatch of maskedContent.matchAll(standaloneRegex)) {
         const rawVar = sMatch[1]!
-        if (!declaredVars.has(rawVar)) {
+        if (!normalizedSkinVars[rawVar]) {
           const start = baseOffset + (sMatch.index ?? 0)
           const end = start + sMatch[0].length
           pushDiagnostic(diagnostics, catalog, 'BX1053', fakeToken, {
@@ -1726,4 +1788,6 @@ function validateSkinStyles(
       }
     }
   }
+
+  return diagnostics
 }
