@@ -845,6 +845,41 @@ describe('helpers & canonical structure validation suite', () => {
       expect(neqDiag?.suggestedReplacement).toBe('!=')
     })
 
+    it('detects unescaped && operator as error and escaped &amp;&amp; as warning (BX1055)', () => {
+      // 1. Unescaped && -> error
+      const unescapedXml = '<b:eval expr=\'(true && true) ? 1 : 0\'/>'
+      const unescapedDiags = validateTemplateStructure(unescapedXml, undefined, { validateExpressions: true })
+      const errorDiag = unescapedDiags.find(d => d.code === 'BX1055')
+      expect(errorDiag).toBeDefined()
+      expect(errorDiag?.severity).toBe('error')
+      expect(errorDiag?.suggestedReplacement).toBe('and')
+      expect(errorDiag?.fixes?.[0]?.edits[0]?.newText).toBe('and')
+      expect(unescapedXml.slice(errorDiag!.tagStart, errorDiag!.tagEnd)).toBe('&&')
+
+      // 2. Escaped &amp;&amp; -> warning
+      const escapedXml = '<b:eval expr=\'(true &amp;&amp; true) ? 1 : 0\'/>'
+      const escapedDiags = validateTemplateStructure(escapedXml, undefined, { validateExpressions: true })
+      const warnDiag = escapedDiags.find(d => d.code === 'BX1055')
+      expect(warnDiag).toBeDefined()
+      expect(warnDiag?.severity).toBe('warning')
+      expect(warnDiag?.suggestedReplacement).toBe('and')
+      expect(warnDiag?.fixes?.[0]?.edits[0]?.newText).toBe('and')
+      expect(escapedXml.slice(warnDiag!.tagStart, warnDiag!.tagEnd)).toBe('&amp;&amp;')
+
+      // 3. Keyword and -> no diagnostics
+      const validXml = '<b:eval expr=\'(true and true) ? 1 : 0\'/>'
+      const validDiags = validateTemplateStructure(validXml, undefined, { validateExpressions: true })
+      expect(validDiags.filter(d => d.code === 'BX1055')).toHaveLength(0)
+
+      // Direct expression validation
+      const exprError = validateExpression('(true && true) ? 1 : 0')
+      expect(exprError.find(d => d.code === 'BX1055')?.severity).toBe('error')
+      const exprWarn = validateExpression('(true &amp;&amp; true) ? 1 : 0')
+      expect(exprWarn.find(d => d.code === 'BX1055')?.severity).toBe('warning')
+      const exprValid = validateExpression('(true and true) ? 1 : 0')
+      expect(exprValid.filter(d => d.code === 'BX1055')).toHaveLength(0)
+    })
+
     it('detects redundant lambda data prefix (BX1019)', () => {
       const expr = 'data:posts count (p => data:p.numberOfComments > 0)'
       const diags = validateExpression(expr)

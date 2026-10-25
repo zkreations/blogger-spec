@@ -1136,6 +1136,48 @@
         "stage": "linter"
       },
       "verified_at": "2026-10-22"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-logical-and-operator-unescaped",
+      "title": "Prohibited Unescaped Logical AND Operator && in Template Expression",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1055"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:eval expr='(true && true) ? 1 : 0'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1055"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-24"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-logical-and-operator-escaped",
+      "title": "Escaped Logical AND Operator &amp;&amp; in Template Expression",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1055"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:eval expr='(true &amp;&amp; true) ? 1 : 0'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1055"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-24"
     }
   ]
 }

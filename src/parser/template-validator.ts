@@ -5,6 +5,7 @@ import type {
   BloggerDiagnosticCode,
   BloggerDiagnosticFix,
   BloggerDiagnosticRule,
+  BloggerDiagnosticSeverity,
   BloggerDirectiveToken,
   BloggerStructureDiagnostic,
   BloggerTextEdit,
@@ -37,22 +38,27 @@ function pushDiagnostic(
     end?: number
     suggestedReplacement?: string
     fixes?: readonly BloggerDiagnosticFix[]
+    severity?: BloggerDiagnosticSeverity
   },
 ): void {
-  const rule = options?.rule ?? catalog.getDiagnostic(code)
+  const baseRule = options?.rule ?? catalog.getDiagnostic(code)
+  const severity = options?.severity ?? baseRule?.severity ?? 'error'
+  const rule = baseRule
+    ? (options?.severity && baseRule.severity !== options.severity ? { ...baseRule, severity } : baseRule)
+    : {
+        code,
+        name: `Diagnostic ${code}`,
+        category: 'syntax' as const,
+        severity,
+        message: options?.message ?? `Diagnostic ${code}`,
+        evidence: 'unknown' as const,
+        verified_at: '2026-01-01',
+      }
   diagnostics.push({
-    code: rule?.code ?? code,
-    rule: rule ?? {
-      code,
-      name: `Diagnostic ${code}`,
-      category: 'syntax',
-      severity: 'error',
-      message: options?.message ?? `Diagnostic ${code}`,
-      evidence: 'unknown',
-      verified_at: '2026-01-01',
-    },
-    message: options?.message ?? rule?.message ?? `Diagnostic ${code}`,
-    severity: rule?.severity ?? 'error',
+    code: rule.code ?? code,
+    rule,
+    message: options?.message ?? rule.message ?? `Diagnostic ${code}`,
+    severity,
     tagName: token.tagName,
     attribute: options?.attribute,
     tagStart: options?.start ?? token.tagStart,
@@ -902,6 +908,34 @@ export function validateExpression(
 
   for (let i = 0; i < tokens.length; i++) {
     const tok = tokens[i]!
+
+    // BX1055: Logical AND operator (&& / &amp;&amp;)
+    if (tok.type === 'AND' && tok.value === '&&') {
+      const rawStart = mapOffset(tok.start.offset)
+      const rawEnd = mapOffset(tok.end.offset)
+      const rawText = exprText.slice(rawStart, rawEnd)
+      const isEscaped = rawText.includes('&amp;') || rawText.includes('&#')
+      const severity: BloggerDiagnosticSeverity = isEscaped ? 'warning' : 'error'
+      const message = isEscaped
+        ? `Logical AND operator '${rawText}' reduces code readability. Use 'and' instead.`
+        : `Logical AND operator '&&' causes XML parsing errors because '&' is not escaped. Use 'and' instead.`
+      const start = baseStart + rawStart
+      const end = baseStart + rawEnd
+
+      pushDiagnostic(diagnostics, catalog, 'BX1055', fakeToken, {
+        attribute: context?.attributeName,
+        start,
+        end,
+        severity,
+        suggestedReplacement: 'and',
+        fixes: [{
+          title: `Replace '${rawText}' with 'and'`,
+          isPreferred: true,
+          edits: [{ start, end, newText: 'and' }],
+        }],
+        message,
+      })
+    }
 
     // BX1018: Strict equality operator (===, !==)
     if (tok.type === 'STRICT_EQ' || tok.type === 'STRICT_NEQ') {

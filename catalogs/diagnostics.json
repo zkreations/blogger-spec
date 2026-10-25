@@ -511,6 +511,15 @@
       "message": "Skin variable identifiers in template expressions must use underscore notation (data:skin.vars.identifier_name) instead of dot notation.",
       "evidence": "observed",
       "verified_at": "2026-10-22"
+    },
+    "BX1055": {
+      "code": "BX1055",
+      "name": "PROHIBITED_LOGICAL_AND_OPERATOR",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Logical AND operator '&&' causes XML parsing errors or readability issues. Use 'and' instead.",
+      "evidence": "observed",
+      "verified_at": "2026-10-24"
     }
   }
 }

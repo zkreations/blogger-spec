@@ -1068,6 +1068,9 @@
       "anti_patterns": [
         "Avoid JavaScript '&&' in XML attributes to prevent XML entity escaping collisions; prefer keyword 'and'."
       ],
+      "diagnostics": {
+        "prohibited_logical_and_operator": "BX1055"
+      },
       "examples": [
         {
           "expression": "data:view.isPost and not data:view.isPreview",
