@@ -12,8 +12,8 @@ import type {
   BloggerTypesCatalog,
   BloggerWidgetsCatalog,
 } from '../types.js'
+import { embeddedCatalogs, embeddedSchemas } from '../generated/embedded.generated.js'
 import { CATALOG_NAMES } from './constants.js'
-import { embeddedCatalogs, embeddedSchemas } from './embedded.generated.js'
 
 export { CATALOG_NAMES } from './constants.js'
 
