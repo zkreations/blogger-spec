@@ -692,6 +692,7 @@ function validateDataElement(
   catalog: SpecCatalog,
   diagnostics: BloggerStructureDiagnostic[],
   skinVariables?: Record<string, string | BloggerSkinVariableSymbol>,
+  widgetType?: string,
 ): void {
   if (!token.tagName.startsWith('data:')) {
     return
@@ -733,7 +734,7 @@ function validateDataElement(
   }
 
   // BX1050: Deprecated data property on <data:.../>
-  const resolved = resolveDataPath(token.tagName, { catalog, skinVariables })
+  const resolved = resolveDataPath(token.tagName, { catalog, skinVariables, widgetType })
   if (resolved?.isDeprecated) {
     const replacement = resolved.definition?.replacement as string | undefined
     const fixes = replacement
@@ -1572,7 +1573,9 @@ export function validateTemplateStructure(
     validateIdentifierUniqueness(token, globalSectionWidgetIds, containerIncludableIds, tagStack, catalog, diagnostics)
     validateWidgetElement(token, catalog, diagnostics)
     validateVariableElement(token, catalog, diagnostics)
-    validateDataElement(token, catalog, diagnostics, skinVariables)
+    const currentEnclosingWidget = tagStack.slice().reverse().find(t => t.tagName === 'b:widget')
+    const currentWidgetType = currentEnclosingWidget?.attributes.type?.value?.trim()
+    validateDataElement(token, catalog, diagnostics, skinVariables, currentWidgetType)
     validateIncludeElement(token, catalog, diagnostics)
 
     if (token.tagName === 'b:includable' && !token.isClosing) {
