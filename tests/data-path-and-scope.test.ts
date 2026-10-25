@@ -84,6 +84,7 @@ describe('dataPath Navigator (resolveDataPath)', () => {
     expect(widgetMeta).toBeDefined()
     expect(widgetMeta?.name).toBe('instanceId')
     expect(widgetMeta?.type).toBe('string')
+    expect(widgetMeta?.sourceCatalog).toBe('widgets')
   })
 
   it('resolves localized messages from messages catalog', () => {
@@ -236,6 +237,9 @@ describe('scopeEnvironment Symbol Table & Scope Stack', () => {
 
   it('pushes and pops widget scopes and resolves active widget properties', () => {
     const env = new ScopeEnvironment()
+    expect(env.hasSymbol('data:widget')).toBe(false)
+    expect(env.hasSymbol('widget')).toBe(false)
+
     env.pushScope('widget', { widgetType: 'FeaturedPost' })
 
     expect(env.getDepth()).toBe(2)
@@ -253,6 +257,7 @@ describe('scopeEnvironment Symbol Table & Scope Stack', () => {
     expect(popped?.type).toBe('widget')
     expect(env.getDepth()).toBe(1)
     expect(env.getActiveWidgetType()).toBeUndefined()
+    expect(env.hasSymbol('data:widget')).toBe(false)
   })
 
   it('prevents popping the root global scope', () => {

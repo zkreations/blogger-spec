@@ -1,6 +1,7 @@
 import {
   getAllCatalogs,
   getCatalog,
+  getCommonWidget,
   getDiagnostics,
   getDirectives,
   getGlobals,
@@ -18,6 +19,7 @@ export const catalogs = {
   get operators() { return getOperators() },
   get types() { return getTypes() },
   get widgets() { return getWidgets() },
+  get commonWidget() { return getCommonWidget() },
   get settings() { return getSettings() },
   get globals() { return getGlobals() },
   get messages() { return getMessages() },
@@ -29,6 +31,7 @@ export const catalogs = {
 export {
   getAllCatalogs,
   getCatalog,
+  getCommonWidget,
   getDiagnostics,
   getDirectives,
   getGlobals,

@@ -10,6 +10,29 @@
       3
     ]
   },
+  "common": {
+    "description": "Host-scoped metadata accessible strictly within child nodes of <b:includable> inside <b:widget> or <b:defaultmarkup>.",
+    "canonical": {
+      "instanceId": {
+        "type": "string",
+        "description": "DOM and runtime ID of the enclosing gadget (e.g. 'Blog1', 'Header1')."
+      },
+      "sectionId": {
+        "type": "string",
+        "description": "ID of the parent <b:section> containing this gadget."
+      },
+      "type": {
+        "type": "string",
+        "description": "Canonical widget type name (e.g. 'Blog', 'Header')."
+      },
+      "version": {
+        "type": "number",
+        "description": "Schema version of the enclosing gadget (1 or 2)."
+      }
+    },
+    "evidence": "official",
+    "verified_at": "2026-10-10"
+  },
   "widgets": {
     "AdSense": {
       "description": "Google AdSense ad slot configuration, publisher client ID, and slot dimension parameters.",

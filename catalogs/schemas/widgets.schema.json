@@ -10,6 +10,7 @@
     "description",
     "version",
     "domain_metadata",
+    "common",
     "widgets"
   ],
   "properties": {
@@ -40,6 +41,9 @@
         }
       },
       "additionalProperties": false
+    },
+    "common": {
+      "$ref": "#/$defs/widgetEntry"
     },
     "widgets": {
       "type": "object",

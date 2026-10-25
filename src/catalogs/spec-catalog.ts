@@ -959,6 +959,10 @@ export class SpecCatalog {
     return this.widgetMap.get(name)?.canonical
   }
 
+  getCommonWidget(): BloggerWidgetDefinition | undefined {
+    return (this.store.getCatalog('widgets') as BloggerWidgetsCatalog)?.common
+  }
+
   getAllWidgets(): Record<string, BloggerWidgetDefinition> {
     const result: Record<string, BloggerWidgetDefinition> = {}
     for (const [k, v] of this.widgetMap.entries()) {
@@ -1449,6 +1453,10 @@ export function isWidget(name: string, catalog: SpecCatalog = getSpecCatalog()):
 
 export function getWidget(name: string, catalog: SpecCatalog = getSpecCatalog()): BloggerWidgetDefinition | undefined {
   return catalog.getWidget(name)
+}
+
+export function getCommonWidget(catalog: SpecCatalog = getSpecCatalog()): BloggerWidgetDefinition | undefined {
+  return catalog.getCommonWidget()
 }
 
 export function getAllWidgets(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerWidgetDefinition> {

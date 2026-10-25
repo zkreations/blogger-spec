@@ -98,7 +98,9 @@ export function resolveDataPath(
 
     if (typeof varSym === 'object' && varSym.scopeType === 'widget') {
       sourceCatalog = 'widgets'
-      currentDef = catalog.getWidget(widgetType)?.canonical?.[strippedFirst] ?? varSym
+      currentDef = strippedFirst === 'widget'
+        ? catalog.getCommonWidget() ?? varSym
+        : catalog.getWidget(widgetType)?.canonical?.[strippedFirst] ?? varSym
     }
     else if (typeof varSym === 'object' && varSym.scopeType === 'global') {
       sourceCatalog = 'globals'
@@ -161,6 +163,15 @@ export function resolveDataPath(
       sourceCatalog = 'messages'
       currentType = 'object'
       currentDef = { type: 'object', description: 'Universal localized UI messages dictionary.' }
+    }
+    else if (first === 'data:widget' || first === 'widget') {
+      const commonWidget = catalog.getCommonWidget()
+      if (commonWidget) {
+        sourceCatalog = 'widgets'
+        currentDef = commonWidget
+        currentType = 'object'
+        isCollection = false
+      }
     }
     else {
       return undefined

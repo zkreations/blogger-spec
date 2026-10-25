@@ -453,6 +453,7 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('  domain_metadata?: {')
   lines.push('    layout_versions: number[];')
   lines.push('  };')
+  lines.push('  common: BloggerWidgetDefinition;')
   lines.push('  widgets: Record<string, BloggerWidgetDefinition>;')
   lines.push('}')
   lines.push('')

@@ -335,6 +335,19 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   const widgetsCatalog = store.getCatalog('widgets')
   const settingsCatalog = store.getCatalog('settings')
   const knownWidgets = new Set(Object.keys(widgetsCatalog.widgets || {}))
+
+  if ((widgetsCatalog as any).common) {
+    const commonCanonical = (widgetsCatalog as any).common.canonical || {}
+    for (const [propKey, propDef] of Object.entries(commonCanonical)) {
+      if (!isKnownType((propDef as any).type)) {
+        errors.push(`Common widget property '${propKey}' specifies unknown type '${(propDef as any).type}'.`)
+      }
+      if ((propDef as any).item_type && !isKnownType((propDef as any).item_type)) {
+        errors.push(`Common widget property '${propKey}' specifies unknown item_type '${(propDef as any).item_type}'.`)
+      }
+    }
+  }
+
   for (const [widgetKey, widgetDef] of Object.entries(widgetsCatalog.widgets || {})) {
     const dataCanonical = widgetDef.canonical || {}
     for (const [propKey, propDef] of Object.entries(dataCanonical)) {
