@@ -303,6 +303,15 @@ export function resolveDataPath(
       continue
     }
 
+    const remaining = segments.slice(i).join('.')
+    if (currentDef?.deprecated?.[remaining]) {
+      const dep = currentDef.deprecated[remaining]
+      currentType = dep.type ?? 'unknown'
+      currentDef = dep
+      isDeprecated = true
+      break
+    }
+
     if (currentDef?.properties?.[seg]) {
       const prop = currentDef.properties[seg]
       currentType = prop.type
