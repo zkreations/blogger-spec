@@ -35,11 +35,7 @@ jobs:
         run: pnpm run build
 
       - name: Verification
-        run: |
-          pnpm run test:spec
-          pnpm run typecheck
-          pnpm run lint
-          pnpm run test
+        run: pnpm run verify
 
       - name: Publish to npm (OIDC Trusted Publishing)
         run: pnpm publish --provenance --access public --no-git-checks
