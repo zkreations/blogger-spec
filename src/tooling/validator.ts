@@ -517,20 +517,20 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
       log('  [PASS] dist/index.d.ts is up to date.')
     }
 
-    const embeddedItem = freshness.items.find(i => i.name === 'src/catalogs/embedded.generated.ts')
+    const embeddedItem = freshness.items.find(i => i.name === 'src/generated/embedded.generated.ts')
     if (embeddedItem && !embeddedItem.valid) {
-      errors.push(embeddedItem.error || 'src/catalogs/embedded.generated.ts is out of date. Run `pnpm run build` to synchronize.')
+      errors.push(embeddedItem.error || 'src/generated/embedded.generated.ts is out of date. Run `pnpm run build` to synchronize.')
     }
     else if (embeddedItem?.valid) {
-      log('  [PASS] src/catalogs/embedded.generated.ts is up to date.')
+      log('  [PASS] src/generated/embedded.generated.ts is up to date.')
     }
 
-    const typesItem = freshness.items.find(i => i.name === 'src/catalogs/types.generated.ts')
+    const typesItem = freshness.items.find(i => i.name === 'src/generated/types.generated.ts')
     if (typesItem && !typesItem.valid) {
-      errors.push(typesItem.error || 'src/catalogs/types.generated.ts is out of date. Run `pnpm run build` to synchronize.')
+      errors.push(typesItem.error || 'src/generated/types.generated.ts is out of date. Run `pnpm run build` to synchronize.')
     }
     else if (typesItem?.valid) {
-      log('  [PASS] src/catalogs/types.generated.ts is up to date.')
+      log('  [PASS] src/generated/types.generated.ts is up to date.')
     }
   }
   else {
