@@ -7,6 +7,6 @@ audit/
 .cache/
 
 # Generated artifacts
-src/catalogs/*.generated.ts
+src/generated/
 fixtures/index.json
 
