@@ -103,6 +103,7 @@
     "test:watch": "vitest",
     "test:spec": "tsx src/tooling/validate-spec.ts",
     "typecheck": "tsc --noEmit",
+    "verify": "pnpm run test:spec && pnpm run typecheck && pnpm run lint && pnpm run test",
     "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
