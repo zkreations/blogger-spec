@@ -116,7 +116,9 @@ export function generateDomainTypes(): string {
 
 export function buildDomainTypes(): void {
   const paths = getWorkspacePaths()
-  const targetPath = join(paths.root, 'src/catalogs/types.generated.ts')
+  const targetDir = join(paths.root, 'src/generated')
+  mkdirSync(targetDir, { recursive: true })
+  const targetPath = join(targetDir, 'types.generated.ts')
   const content = generateDomainTypes()
   writeFileSync(targetPath, content, 'utf-8')
 }
@@ -177,7 +179,9 @@ export function generateEmbeddedCatalogs(): string {
 
 export function buildEmbeddedCatalogs(): void {
   const paths = getWorkspacePaths()
-  const targetPath = join(paths.root, 'src/catalogs/embedded.generated.ts')
+  const targetDir = join(paths.root, 'src/generated')
+  mkdirSync(targetDir, { recursive: true })
+  const targetPath = join(targetDir, 'embedded.generated.ts')
   const content = generateEmbeddedCatalogs()
   writeFileSync(targetPath, content, 'utf-8')
 }
@@ -351,33 +355,33 @@ export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): Veri
     }
   }
 
-  const embeddedPath = join(paths.root, 'src/catalogs/embedded.generated.ts')
+  const embeddedPath = join(paths.root, 'src/generated/embedded.generated.ts')
   if (!existsSync(embeddedPath)) {
-    items.push({ name: 'src/catalogs/embedded.generated.ts', valid: false, error: 'File does not exist.' })
+    items.push({ name: 'src/generated/embedded.generated.ts', valid: false, error: 'File does not exist.' })
   }
   else {
     const currentEmbedded = readFileSync(embeddedPath, 'utf-8')
     const freshEmbedded = generateEmbeddedCatalogs()
     const valid = currentEmbedded === freshEmbedded
     items.push({
-      name: 'src/catalogs/embedded.generated.ts',
+      name: 'src/generated/embedded.generated.ts',
       valid,
-      error: valid ? undefined : 'src/catalogs/embedded.generated.ts is out of date.',
+      error: valid ? undefined : 'src/generated/embedded.generated.ts is out of date.',
     })
   }
 
-  const typesGeneratedPath = join(paths.root, 'src/catalogs/types.generated.ts')
+  const typesGeneratedPath = join(paths.root, 'src/generated/types.generated.ts')
   if (!existsSync(typesGeneratedPath)) {
-    items.push({ name: 'src/catalogs/types.generated.ts', valid: false, error: 'File does not exist.' })
+    items.push({ name: 'src/generated/types.generated.ts', valid: false, error: 'File does not exist.' })
   }
   else {
     const currentTypes = readFileSync(typesGeneratedPath, 'utf-8')
     const freshTypes = generateDomainTypes()
     const valid = currentTypes === freshTypes
     items.push({
-      name: 'src/catalogs/types.generated.ts',
+      name: 'src/generated/types.generated.ts',
       valid,
-      error: valid ? undefined : 'src/catalogs/types.generated.ts is out of date.',
+      error: valid ? undefined : 'src/generated/types.generated.ts is out of date.',
     })
   }
 
