@@ -199,7 +199,8 @@
       "invalid_skin_variable_syntax": "BX1052",
       "unresolved_skin_variable": "BX1053",
       "invalid_skin_var_data_path": "BX1054",
-      "invalid_widget_setting": "BX1056"
+      "invalid_widget_setting": "BX1056",
+      "adsense_monetization_required": "BX1057"
     },
     "html_void_elements": [
       "area",

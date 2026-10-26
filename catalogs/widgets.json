@@ -35,7 +35,8 @@
   },
   "widgets": {
     "AdSense": {
-      "description": "Google AdSense ad slot configuration, publisher client ID, and slot dimension parameters. Manual widget instantiation (<b:widget type='AdSense'>) is prohibited in modern templates; ad units are managed via the AdSense dashboard or customized using <b:defaultmarkup type='AdSense'>.",
+      "description": "Google AdSense ad slot configuration, publisher client ID, and slot dimension parameters. Manual widget instantiation (<b:widget type='AdSense'>) requires approved monetization and is otherwise rejected upon saving; ad units are managed via the AdSense dashboard or customized using <b:defaultmarkup type='AdSense'>.",
+      "warning_diagnostic": "BX1057",
       "canonical": {
         "adClientId": {
           "type": "string",

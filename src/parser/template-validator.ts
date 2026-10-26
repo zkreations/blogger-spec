@@ -491,6 +491,17 @@ function validateWidgetElement(
           message: `Widget id '${id}' is invalid for type '${type}'. Expected '${type}' followed by a number between 1 and 999 (e.g. '${type}1').`,
         })
       }
+
+      const widgetDef = catalog.getWidget(type)
+      if (widgetDef && (widgetDef as any).warning_diagnostic) {
+        const diagCode = (widgetDef as any).warning_diagnostic as BloggerDiagnosticCode
+        const rule = catalog.getDiagnostic(diagCode)
+        pushDiagnostic(diagnostics, catalog, diagCode, token, {
+          severity: rule?.severity ?? 'warning',
+          rule,
+          message: rule?.message,
+        })
+      }
     }
   }
 }

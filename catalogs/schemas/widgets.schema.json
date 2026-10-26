@@ -83,6 +83,10 @@
           "additionalProperties": {
             "$ref": "common.schema.json#/$defs/deprecatedEntry"
           }
+        },
+        "warning_diagnostic": {
+          "$ref": "common.schema.json#/$defs/diagnosticCode",
+          "description": "Optional warning diagnostic code emitted when instantiating this widget."
         }
       },
       "additionalProperties": false

@@ -168,6 +168,9 @@
             },
             "invalid_widget_setting": {
               "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "adsense_monetization_required": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             }
           },
           "additionalProperties": false

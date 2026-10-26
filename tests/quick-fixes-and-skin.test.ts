@@ -151,6 +151,21 @@ describe('semantic QuickFixes and Skin Validation Suite', () => {
     expect(bx1056[2]?.message).toContain('Unknown ad unit type')
   })
 
+  it('emits BX1057 warning when declaring an AdSense widget directly', () => {
+    const xml = `
+      <b:section id='main'>
+        <b:widget id='AdSense1' title='AdSense' type='AdSense' version='2'>
+          <b:includable id='main'/>
+        </b:widget>
+      </b:section>
+    `
+    const diagnostics = validateTemplateStructure(xml)
+    const bx1057 = diagnostics.filter(d => d.code === 'BX1057')
+    expect(bx1057).toHaveLength(1)
+    expect(bx1057[0]?.severity).toBe('warning')
+    expect(bx1057[0]?.message).toContain('monetization')
+  })
+
   it('emits BX1053 for invalid modifiers on declared skin variables', () => {
     const xml = `
       <b:skin><![CDATA[

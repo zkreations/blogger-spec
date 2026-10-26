@@ -1244,6 +1244,28 @@
         "stage": "linter"
       },
       "verified_at": "2026-10-26"
+    },
+    {
+      "id": "diagnostics/negative_syntax/adsense-widget-monetization-warning",
+      "title": "AdSense Widget Instantiation Monetization Warning",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1057",
+        "tag:b:widget"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:widget id='AdSense1' title='AdSense' type='AdSense' version='2'><b:includable id='main'/></b:widget></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1057"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-26"
     }
   ]
 }
