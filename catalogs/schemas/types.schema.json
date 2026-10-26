@@ -256,6 +256,10 @@
             "type": "string"
           },
           "description": "Permitted literal values returned by this modifier."
+        },
+        "available_in_skin": {
+          "type": "boolean",
+          "description": "Whether this modifier can be used inside <b:skin> $(variable.modifier) syntax."
         }
       },
       "additionalProperties": false

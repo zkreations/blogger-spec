@@ -165,6 +165,9 @@
             },
             "invalid_skin_var_data_path": {
               "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "invalid_widget_setting": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             }
           },
           "additionalProperties": false

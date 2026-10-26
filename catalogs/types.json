@@ -901,12 +901,13 @@
       },
       "modifiers": {
         "image": {
-          "description": "Extracted background image URL or CSS url(...) expression.",
+          "description": "Extracted background image URL or CSS url(...) expression. Only available in outside-skin expressions (data:skin.vars.*), not inside $(...) in <b:skin>.",
           "output_type": "string",
           "syntax": ".image",
           "direct_syntax": "<data:skin.vars.name.image/>",
           "expr_syntax": "data:skin.vars.name.image",
-          "example": "data:skin.vars.header_bg.image"
+          "example": "data:skin.vars.header_bg.image",
+          "available_in_skin": false
         },
         "color": {
           "description": "Extracted background color hex or rgb string.",

@@ -1178,6 +1178,72 @@
         "stage": "linter"
       },
       "verified_at": "2026-10-24"
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-widget-setting-minimum",
+      "title": "Invalid Widget Setting Dimension Below Minimum Constraint",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1056",
+        "tag:b:widget-setting"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:widget id='Header1' title='Header' type='Header' version='2'><b:widget-settings><b:widget-setting name='displayHeight'>0</b:widget-setting></b:widget-settings><b:includable id='main'/></b:widget></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1056"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-26"
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-widget-setting-disallowed-value",
+      "title": "Invalid Widget Setting Disallowed Enum Value",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1056",
+        "tag:b:widget-setting"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:widget id='LinkList1' title='Links' type='LinkList' version='2'><b:widget-settings><b:widget-setting name='sorting'>none</b:widget-setting></b:widget-settings><b:includable id='main'/></b:widget></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1056"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-26"
+    },
+    {
+      "id": "diagnostics/negative_syntax/invalid-widget-setting-obsolete",
+      "title": "Invalid Widget Setting Obsolete Legacy Ad Styling",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1056",
+        "tag:b:widget-setting"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:widget id='Blog1' title='Blog' type='Blog' version='2'><b:widget-settings><b:widget-setting name='style.unittype'>1</b:widget-setting></b:widget-settings><b:includable id='main'/></b:widget></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1056"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-26"
     }
   ]
 }

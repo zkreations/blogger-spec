@@ -520,6 +520,15 @@
       "message": "Logical AND operator '&&' causes XML parsing errors or readability issues. Use 'and' instead.",
       "evidence": "observed",
       "verified_at": "2026-10-24"
+    },
+    "BX1056": {
+      "code": "BX1056",
+      "name": "INVALID_WIDGET_SETTING",
+      "category": "syntax",
+      "severity": "error",
+      "message": "Widget setting is invalid, obsolete, or violates configuration constraints.",
+      "evidence": "observed",
+      "verified_at": "2026-10-26"
     }
   }
 }

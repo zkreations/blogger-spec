@@ -117,6 +117,10 @@
             "type": "string"
           }
         },
+        "minimum": {
+          "type": "number",
+          "description": "Minimum acceptable numeric value for this setting."
+        },
         "bound_runtime_data": {
           "type": [
             "string",

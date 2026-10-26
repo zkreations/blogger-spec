@@ -532,6 +532,106 @@ function isPrimitiveScalarLiteral(val: string): boolean {
   return false
 }
 
+function validateWidgetSettingElement(
+  token: BloggerDirectiveToken,
+  widgetToken: BloggerDirectiveToken | undefined,
+  tokensOrXml: readonly BloggerDirectiveToken[] | string,
+  catalog: SpecCatalog,
+  diagnostics: BloggerStructureDiagnostic[],
+): void {
+  if (token.tagName !== 'b:widget-setting' || !widgetToken) {
+    return
+  }
+
+  const widgetType = widgetToken.attributes.type?.value?.trim()
+  const widgetId = widgetToken.attributes.id?.value?.trim() ?? widgetType ?? 'widget'
+  const settingName = token.attributes.name?.value?.trim()
+
+  if (!widgetType || !settingName) {
+    return
+  }
+
+  const widgetSettingsDef = catalog.getWidgetSettings(widgetType)
+  if (!widgetSettingsDef) {
+    return
+  }
+
+  const dep = widgetSettingsDef.deprecated?.[settingName]
+  if (dep) {
+    if (settingName.startsWith('style.')) {
+      const diagCode = 'BX1056' as BloggerDiagnosticCode
+      pushDiagnostic(diagnostics, catalog, diagCode, token, {
+        message: `The widget settings in widget with id ${widgetId} is not valid. ${dep.reason || 'Unknown ad unit type'}`,
+      })
+      return
+    }
+    else {
+      pushDiagnostic(diagnostics, catalog, 'BX1050', token, {
+        severity: 'warning',
+        message: `Widget setting '${settingName}' is deprecated for widget type '${widgetType}'. ${dep.reason || ''}`.trim(),
+      })
+    }
+  }
+
+  let rawContent: string | undefined
+  if (typeof tokensOrXml === 'string') {
+    const endTag = '</b:widget-setting>'
+    const closeIdx = tokensOrXml.indexOf(endTag, token.tagEnd)
+    if (closeIdx !== -1) {
+      rawContent = tokensOrXml.slice(token.tagEnd, closeIdx)
+    }
+  }
+
+  const canonical = (widgetSettingsDef.canonical as Record<string, any>)?.[settingName]
+  if (canonical && rawContent !== undefined) {
+    let content = rawContent.trim()
+    if (content.startsWith('<![CDATA[') && content.endsWith(']]>')) {
+      content = content.slice(9, -3).trim()
+    }
+
+    if (canonical.allowed_values && canonical.allowed_values.length > 0) {
+      if (!canonical.allowed_values.includes(content)) {
+        const diagCode = 'BX1056' as BloggerDiagnosticCode
+        const msg = widgetType === 'BloggerButton'
+          ? `The widget settings in widget with id ${widgetId} is not valid. The specified logo URL is not allowed.`
+          : `The widget settings in widget with id ${widgetId} is not valid. That is not one of the acceptable values`
+        pushDiagnostic(diagnostics, catalog, diagCode, token, { message: msg })
+        return
+      }
+    }
+
+    if (canonical.minimum !== undefined) {
+      const num = Number(content)
+      if (!Number.isNaN(num) && num < canonical.minimum) {
+        const diagCode = 'BX1056' as BloggerDiagnosticCode
+        pushDiagnostic(diagnostics, catalog, diagCode, token, {
+          message: `The widget settings in widget with id ${widgetId} is not valid. Must be at least ${canonical.minimum}`,
+        })
+        return
+      }
+    }
+
+    if (canonical.serialization_format === 'json') {
+      if (rawContent.includes('&lt;![CDATA[')) {
+        const diagCode = 'BX1056' as BloggerDiagnosticCode
+        pushDiagnostic(diagnostics, catalog, diagCode, token, {
+          message: `The widget settings in widget with id ${widgetId} is not valid. Page title is invalid.`,
+        })
+        return
+      }
+      try {
+        JSON.parse(content)
+      }
+      catch {
+        const diagCode = 'BX1056' as BloggerDiagnosticCode
+        pushDiagnostic(diagnostics, catalog, diagCode, token, {
+          message: `The widget settings in widget with id ${widgetId} is not valid. Page title is invalid.`,
+        })
+      }
+    }
+  }
+}
+
 function validateIncludeElement(
   token: BloggerDirectiveToken,
   catalog: SpecCatalog,
@@ -1575,6 +1675,7 @@ export function validateTemplateStructure(
     validateVariableElement(token, catalog, diagnostics)
     const currentEnclosingWidget = tagStack.slice().reverse().find(t => t.tagName === 'b:widget')
     const currentWidgetType = currentEnclosingWidget?.attributes.type?.value?.trim()
+    validateWidgetSettingElement(token, currentEnclosingWidget, tokensOrXml, catalog, diagnostics)
     validateDataElement(token, catalog, diagnostics, skinVariables, currentWidgetType)
     validateIncludeElement(token, catalog, diagnostics)
 
@@ -1663,6 +1764,13 @@ function validateSkinVariableReference(
       const varType = baseVar.type || 'string'
       const modifiers = getSkinTypeModifiers(varType, catalog)
       if (candidateMod in modifiers) {
+        const modDef = modifiers[candidateMod]
+        if (modDef && (modDef as any).available_in_skin === false) {
+          return {
+            isValid: false,
+            message: `Modifier '${candidateMod}' for skin variable '${candidateVar}' of type '${varType}' is only supported in outside-skin expressions (data:skin.vars...), not within $(...).`,
+          }
+        }
         return { isValid: true }
       }
       return {

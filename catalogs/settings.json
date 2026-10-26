@@ -42,46 +42,46 @@
       },
       "deprecated": {
         "style.bgcolor": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Text ad color styling moved to the Google AdSense management dashboard."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         },
         "style.bordercolor": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Text ad color styling moved to the Google AdSense management dashboard."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         },
         "style.linkcolor": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Text ad color styling moved to the Google AdSense management dashboard."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         },
         "style.textcolor": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Text ad color styling moved to the Google AdSense management dashboard."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         },
         "style.unittype": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "number",
           "replacement": null,
-          "reason": "Ad unit format configuration managed inside Google AdSense."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         },
         "style.urlcolor": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Text ad color styling moved to the Google AdSense management dashboard."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         }
       },
       "evidence": "official",
@@ -237,46 +237,46 @@
           "reason": "Blogger reaction rating system was decommissioned in modern responsive themes."
         },
         "style.bgcolor": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         },
         "style.bordercolor": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         },
         "style.linkcolor": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         },
         "style.textcolor": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         },
         "style.unittype": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "number",
           "replacement": null,
-          "reason": "Ad unit format configuration managed inside Google AdSense."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         },
         "style.urlcolor": {
-          "status": "deprecated_in_layout_v3",
+          "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Inline AdSense ad styling moved to the Google AdSense management dashboard."
+          "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         }
       },
       "evidence": "official",
@@ -419,7 +419,16 @@
         "button": {
           "type": "url",
           "description": "Hosted asset URL for selected Blogger promotional badge graphic.",
-          "default": "//img1.blogblog.com/html/buttons/blogger-powerby-blue.gif",
+          "default": "https://resources.blogblog.com/html/buttons/blogger-powerby-blue.gif",
+          "allowed_values": [
+            "https://resources.blogblog.com/html/buttons/blogger-ipower-blue.gif",
+            "https://resources.blogblog.com/html/buttons/blogger-powerby-blue.gif",
+            "https://resources.blogblog.com/html/buttons/blogger-simple-kahki.gif",
+            "https://resources.blogblog.com/html/buttons/blogger-ipower-kahki.gif",
+            "https://resources.blogblog.com/html/buttons/blogger-simple-blue.gif",
+            "https://resources.blogblog.com/html/buttons/blogger-simple-white.gif",
+            "//blogger.googleusercontent.com/img/b/U2hvZWJveA/AVvXsEgfMvYAhAbdHksiBA24JKmb2Tav6K0GviwztID3Cq4VpV96HaJfy0viIu8z1SSw_G9n5FQHZWSRao61M3e58ImahqBtr7LiOUS6m_w59IvDYwjmMcbq3fKW4JSbacqkbxTo8B90dWp0Cese92xfLMPe_tg11g/s128/"
+          ],
           "bound_runtime_data": "data:source"
         }
       },
@@ -585,8 +594,9 @@
       "canonical": {
         "displayHeight": {
           "type": "number",
-          "description": "Rendered height dimension in pixels for header image.",
-          "default": 0,
+          "description": "Rendered height dimension in pixels for header image (must be at least 1).",
+          "default": 1,
+          "minimum": 1,
           "bound_runtime_data": "data:height"
         },
         "displayUrl": {
@@ -597,8 +607,9 @@
         },
         "displayWidth": {
           "type": "number",
-          "description": "Rendered width dimension in pixels for header image.",
-          "default": 0,
+          "description": "Rendered width dimension in pixels for header image (must be at least 1).",
+          "default": 1,
+          "minimum": 1,
           "bound_runtime_data": "data:width"
         },
         "imagePlacement": {
@@ -648,8 +659,9 @@
         },
         "displayHeight": {
           "type": "number",
-          "description": "Rendered height dimension in pixels for image.",
-          "default": 0,
+          "description": "Rendered height dimension in pixels for image (must be at least 1).",
+          "default": 1,
+          "minimum": 1,
           "bound_runtime_data": "data:height"
         },
         "displayUrl": {
@@ -660,8 +672,9 @@
         },
         "displayWidth": {
           "type": "number",
-          "description": "Rendered width dimension in pixels for image.",
-          "default": 0,
+          "description": "Rendered width dimension in pixels for image (must be at least 1).",
+          "default": 1,
+          "minimum": 1,
           "bound_runtime_data": "data:width"
         },
         "link": {
@@ -743,18 +756,19 @@
       "canonical": {
         "shownum": {
           "type": "number",
-          "description": "Maximum number of links to display (0 indicates display all).",
-          "default": 0,
+          "description": "Maximum number of links to display (must be at least 1).",
+          "default": 1,
+          "minimum": 1,
           "bound_runtime_data": "data:shownum"
         },
         "sorting": {
           "type": "string",
           "description": "Alphabetical sorting order for link items.",
-          "default": "none",
+          "default": "NONE",
           "allowed_values": [
-            "none",
-            "alpha",
-            "reversealpha"
+            "NONE",
+            "ALPHABETICAL",
+            "REVERSE_ALPHABETICAL"
           ],
           "bound_runtime_data": "data:sorting"
         }
@@ -790,7 +804,7 @@
         "pageListJson": {
           "type": "string",
           "serialization_format": "json",
-          "description": "Serialized JSON navigation map wrapped in CDATA, encoding numeric page IDs, external links (keyed sequentially as link0, link1, ...), titles, and sort positions.",
+          "description": "Serialized JSON navigation map. Must be valid unescaped JSON or unescaped CDATA encoding numeric page IDs, external links, titles, and sort positions. XML-escaped &lt;![CDATA[...]]&gt; causes compiler failure ('Page title is invalid.').",
           "default": "{}",
           "bound_runtime_data": "data:links",
           "item_properties": {
@@ -941,8 +955,9 @@
       "canonical": {
         "shownum": {
           "type": "number",
-          "description": "Maximum number of list items to render (0 indicates display all).",
-          "default": 0,
+          "description": "Maximum number of list items to render (must be at least 1).",
+          "default": 1,
+          "minimum": 1,
           "bound_runtime_data": "data:shownum"
         },
         "sorting": {

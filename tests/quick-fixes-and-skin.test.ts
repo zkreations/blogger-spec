@@ -97,13 +97,58 @@ describe('semantic QuickFixes and Skin Validation Suite', () => {
           border-color: rgba($(primary.accent.red), $(primary.accent.green), $(primary.accent.blue), $(primary.accent.alpha));
           font-family: $(fuente.principal.family);
           font-size: $(fuente.principal.size);
-          background-image: $(fondo.image);
           background-color: $(fondo.color);
         }
       ]]></b:skin>
     `
     const diagnostics = validateTemplateStructure(xml)
     expect(diagnostics.filter(d => d.code === 'BX1053')).toHaveLength(0)
+  })
+
+  it('emits BX1053 when modifier is only available outside skin (e.g. skin:background .image)', () => {
+    const xml = `
+      <b:skin><![CDATA[
+        <Variable name="fondo" description="Background" type="background" default="#fff" value="#fff"/>
+        body {
+          background-image: $(fondo.image);
+        }
+      ]]></b:skin>
+    `
+    const diagnostics = validateTemplateStructure(xml)
+    const bx1053 = diagnostics.filter(d => d.code === 'BX1053')
+    expect(bx1053).toHaveLength(1)
+    expect(bx1053[0]?.message).toContain('only supported in outside-skin expressions')
+  })
+
+  it('emits BX1056 for invalid widget settings (minimum, allowed values, obsolete)', () => {
+    const xml = `
+      <b:section id='main'>
+        <b:widget id='Header1' title='Header' type='Header' version='2'>
+          <b:widget-settings>
+            <b:widget-setting name='displayHeight'>0</b:widget-setting>
+          </b:widget-settings>
+          <b:includable id='main'/>
+        </b:widget>
+        <b:widget id='LinkList1' title='Links' type='LinkList' version='2'>
+          <b:widget-settings>
+            <b:widget-setting name='sorting'>none</b:widget-setting>
+          </b:widget-settings>
+          <b:includable id='main'/>
+        </b:widget>
+        <b:widget id='Blog1' title='Blog' type='Blog' version='2'>
+          <b:widget-settings>
+            <b:widget-setting name='style.unittype'>1</b:widget-setting>
+          </b:widget-settings>
+          <b:includable id='main'/>
+        </b:widget>
+      </b:section>
+    `
+    const diagnostics = validateTemplateStructure(xml)
+    const bx1056 = diagnostics.filter(d => d.code === 'BX1056')
+    expect(bx1056).toHaveLength(3)
+    expect(bx1056[0]?.message).toContain('Must be at least 1')
+    expect(bx1056[1]?.message).toContain('That is not one of the acceptable values')
+    expect(bx1056[2]?.message).toContain('Unknown ad unit type')
   })
 
   it('emits BX1053 for invalid modifiers on declared skin variables', () => {

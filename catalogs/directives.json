@@ -198,7 +198,8 @@
       "hallucinated_data_property": "BX1051",
       "invalid_skin_variable_syntax": "BX1052",
       "unresolved_skin_variable": "BX1053",
-      "invalid_skin_var_data_path": "BX1054"
+      "invalid_skin_var_data_path": "BX1054",
+      "invalid_widget_setting": "BX1056"
     },
     "html_void_elements": [
       "area",
@@ -882,7 +883,8 @@
           "description": "Predefined setting identifier specific to the enclosing widget type (e.g., 'showShareButtons', 'authorLabel').",
           "required": true,
           "attribute_kind": "static_literal",
-          "expr": false
+          "expr": false,
+          "diagnostic": "BX1056"
         }
       },
       "constraints": {
