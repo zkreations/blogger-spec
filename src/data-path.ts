@@ -1,6 +1,6 @@
 import type { SpecCatalog } from './catalogs/index.js'
 import type { BloggerScopeSymbol, ScopeEnvironment } from './scope.js'
-import type { BloggerMemberInfo } from './types.js'
+import type { BloggerMemberInfo, BloggerViewId } from './types.js'
 import { getSpecCatalog } from './catalogs/index.js'
 import { getTypeModifiers, resolveModifierReturnType } from './type-system.js'
 
@@ -34,6 +34,11 @@ export interface BloggerResolvedProperty {
   readonly isCollection?: boolean
   readonly itemType?: string
   readonly description?: string
+  readonly availableInViews?: readonly BloggerViewId[]
+  readonly unconfiguredState?: 'empty' | 'missing'
+  readonly condition?: string
+  readonly runtimeState?: 'active' | 'empty' | 'missing'
+  readonly sourceConstraint?: string
 }
 
 function parsePathSegments(path: string | readonly string[]): string[] {
@@ -178,6 +183,33 @@ export function resolveDataPath(
     }
   }
 
+  let availableInViews: readonly BloggerViewId[] | undefined = currentDef?.available_in_views
+  let unconfiguredState: 'empty' | 'missing' | undefined = currentDef?.unconfigured_state
+  let condition: string | undefined = currentDef?.condition
+  let runtimeState: 'active' | 'empty' | 'missing' | undefined = currentDef?.runtime_state
+  let sourceConstraint: string | undefined = currentDef?.source_constraint
+
+  const syncMetadata = (def: any) => {
+    if (!def || typeof def !== 'object') {
+      return
+    }
+    if (def.available_in_views !== undefined) {
+      availableInViews = def.available_in_views
+    }
+    if (def.unconfigured_state !== undefined) {
+      unconfiguredState = def.unconfigured_state
+    }
+    if (def.condition !== undefined) {
+      condition = def.condition
+    }
+    if (def.runtime_state !== undefined) {
+      runtimeState = def.runtime_state
+    }
+    if (def.source_constraint !== undefined) {
+      sourceConstraint = def.source_constraint
+    }
+  }
+
   if (segments.length === 1) {
     const strippedName = first.startsWith('data:') ? first.slice(5) : first
     return {
@@ -190,6 +222,11 @@ export function resolveDataPath(
       isCollection,
       itemType,
       description: currentDef?.description ?? currentDef?.reason,
+      availableInViews,
+      unconfiguredState,
+      condition,
+      runtimeState,
+      sourceConstraint,
     }
   }
 
@@ -204,6 +241,7 @@ export function resolveDataPath(
       if (widgetSubProp) {
         currentType = widgetSubProp.type ?? 'string'
         currentDef = widgetSubProp
+        syncMetadata(currentDef)
         sourceCatalog = 'widgets'
         isCollection = widgetSubProp.type?.startsWith('array') || Boolean(widgetSubProp.item_properties)
         itemType = widgetSubProp.item_type ?? (widgetSubProp.type?.startsWith('array[') ? widgetSubProp.type.slice(6, -1) : undefined)
@@ -214,6 +252,7 @@ export function resolveDataPath(
       const msgDef = catalog.getMessage(seg)
       currentType = 'string'
       currentDef = msgDef ?? { type: 'string', description: `Localized message for '${seg}'` }
+      syncMetadata(currentDef)
       sourceCatalog = 'messages'
       isCollection = false
       itemType = undefined
@@ -235,6 +274,7 @@ export function resolveDataPath(
       if (seg === 'size' || seg === 'length') {
         currentType = 'number'
         currentDef = catalog.getType('array')?.modifiers?.[seg]
+        syncMetadata(currentDef)
         sourceCatalog = 'types'
         isCollection = false
         itemType = undefined
@@ -244,6 +284,7 @@ export function resolveDataPath(
       if (seg === 'empty' || seg === 'notEmpty' || seg === 'any') {
         currentType = 'boolean'
         currentDef = catalog.getType('array')?.modifiers?.[seg]
+        syncMetadata(currentDef)
         sourceCatalog = 'types'
         isCollection = false
         itemType = undefined
@@ -258,6 +299,7 @@ export function resolveDataPath(
         isCollection = true
         itemType = 'object'
         currentDef = catalog.getGlobal('data:widgets')?.canonical?.[seg]
+        syncMetadata(currentDef)
         continue
       }
 
@@ -266,6 +308,7 @@ export function resolveDataPath(
         currentType = 'object'
         isCollection = false
         currentDef = catalog.getGlobal('data:widgets')?.canonical?.[matchingType] ?? catalog.getWidget(matchingType)
+        syncMetadata(currentDef)
         continue
       }
     }
@@ -286,6 +329,7 @@ export function resolveDataPath(
         const skinType = rawType.startsWith('skin:') ? rawType : (catalog.getType(`skin:${rawType}`) ? `skin:${rawType}` : rawType)
         currentType = skinType
         currentDef = typeof skinVar === 'object' ? skinVar : catalog.getType(skinType) ?? { type: skinType }
+        syncMetadata(currentDef)
         sourceCatalog = 'variables'
         isCollection = false
         itemType = undefined
@@ -296,6 +340,7 @@ export function resolveDataPath(
       const pattern = catalog.getGlobal('data:skin')?.patterns?.[0]
       currentType = pattern?.type ?? 'skin_variable'
       currentDef = pattern ?? { type: currentType, description: 'Theme Designer skin variable.' }
+      syncMetadata(currentDef)
       sourceCatalog = 'globals'
       isCollection = false
       itemType = undefined
@@ -308,6 +353,7 @@ export function resolveDataPath(
       const dep = currentDef.deprecated[remaining]
       currentType = dep.type ?? 'unknown'
       currentDef = dep
+      syncMetadata(currentDef)
       isDeprecated = true
       break
     }
@@ -316,6 +362,7 @@ export function resolveDataPath(
       const prop = currentDef.properties[seg]
       currentType = prop.type
       currentDef = prop
+      syncMetadata(currentDef)
       isCollection = prop.type?.startsWith('array') || Boolean(prop.item_properties)
       itemType = prop.item_type ?? (prop.type?.startsWith('array[') ? prop.type.slice(6, -1) : undefined)
       isDeprecated = Boolean(prop.deprecated)
@@ -326,6 +373,7 @@ export function resolveDataPath(
       const prop = currentDef.item_properties[seg]
       currentType = prop.type
       currentDef = prop
+      syncMetadata(currentDef)
       isCollection = prop.type?.startsWith('array') || Boolean(prop.item_properties)
       itemType = prop.item_type ?? (prop.type?.startsWith('array[') ? prop.type.slice(6, -1) : undefined)
       isDeprecated = Boolean(prop.deprecated)
@@ -336,6 +384,7 @@ export function resolveDataPath(
       const prop = currentDef.canonical[seg]
       currentType = prop.type
       currentDef = prop
+      syncMetadata(currentDef)
       isCollection = prop.type?.startsWith('array') || Boolean(prop.item_properties)
       itemType = prop.item_type ?? (prop.type?.startsWith('array[') ? prop.type.slice(6, -1) : undefined)
       isDeprecated = Boolean(prop.deprecated)
@@ -346,6 +395,7 @@ export function resolveDataPath(
       const dep = currentDef.deprecated[seg]
       currentType = dep.type ?? 'unknown'
       currentDef = dep
+      syncMetadata(currentDef)
       isDeprecated = true
       continue
     }
@@ -356,6 +406,7 @@ export function resolveDataPath(
       const outType = resolveModifierReturnType(currentType, seg, catalog)
       currentType = outType
       currentDef = mod
+      syncMetadata(currentDef)
       sourceCatalog = 'types'
       isCollection = outType.startsWith('array')
       itemType = outType.startsWith('array[') && outType.endsWith(']') ? outType.slice(6, -1) : undefined
@@ -369,6 +420,7 @@ export function resolveDataPath(
       if (authorProp) {
         currentType = authorProp.type
         currentDef = authorProp
+        syncMetadata(currentDef)
         sourceCatalog = 'widgets'
         isCollection = authorProp.type?.startsWith('array') || Boolean(authorProp.item_properties)
         itemType = authorProp.item_type
@@ -381,6 +433,7 @@ export function resolveDataPath(
       if (postProp) {
         currentType = postProp.type
         currentDef = postProp
+        syncMetadata(currentDef)
         sourceCatalog = 'widgets'
         isCollection = postProp.type?.startsWith('array') || Boolean(postProp.item_properties)
         itemType = postProp.item_type
@@ -392,6 +445,7 @@ export function resolveDataPath(
       const prop = widget.canonical[seg]!
       currentType = prop.type
       currentDef = prop
+      syncMetadata(currentDef)
       sourceCatalog = 'widgets'
       isCollection = prop.type?.startsWith('array') || Boolean(prop.item_properties)
       itemType = prop.item_type
@@ -411,6 +465,11 @@ export function resolveDataPath(
     isCollection,
     itemType,
     description: currentDef?.description ?? currentDef?.reason,
+    availableInViews,
+    unconfiguredState,
+    condition,
+    runtimeState,
+    sourceConstraint,
   }
 }
 
@@ -443,6 +502,9 @@ export function getTypeMembers(
           itemType: p.item_type,
           isDeprecated: Boolean(p.deprecated),
           description: p.description,
+          availableInViews: p.available_in_views,
+          unconfiguredState: p.unconfigured_state,
+          condition: p.condition,
         })
       }
     }
@@ -461,6 +523,7 @@ export function getTypeMembers(
         isCollection: outType.startsWith('array'),
         itemType: outType.startsWith('array[') && outType.endsWith(']') ? outType.slice(6, -1) : undefined,
         description: modDef.description,
+        sourceConstraint: modDef.source_constraint,
       })
     }
   }
@@ -506,6 +569,9 @@ export function getDataPathMembers(
             isCollection: propDef.type.startsWith('array') || Boolean(propDef.item_properties),
             itemType: propDef.item_type,
             description: propDef.description,
+            availableInViews: propDef.available_in_views,
+            unconfiguredState: propDef.unconfigured_state,
+            condition: propDef.condition,
           })
         }
       }
@@ -600,6 +666,9 @@ export function getDataPathMembers(
           itemType: p.item_type,
           isDeprecated: Boolean(p.deprecated),
           description: p.description,
+          availableInViews: p.available_in_views ?? resolved.availableInViews,
+          unconfiguredState: p.unconfigured_state ?? resolved.unconfiguredState,
+          condition: p.condition ?? resolved.condition,
         })
       }
     }
@@ -619,6 +688,7 @@ export function getDataPathMembers(
           isCollection: outType.startsWith('array'),
           itemType: outType.startsWith('array[') && outType.endsWith(']') ? outType.slice(6, -1) : undefined,
           description: modDef.description,
+          sourceConstraint: modDef.source_constraint,
         })
       }
     }
@@ -638,6 +708,7 @@ export function getDataPathMembers(
           isCollection: outType.startsWith('array'),
           itemType: outType.startsWith('array[') && outType.endsWith(']') ? outType.slice(6, -1) : undefined,
           description: modDef.description,
+          sourceConstraint: modDef.source_constraint,
         })
       }
     }
@@ -656,6 +727,7 @@ export function getDataPathMembers(
           description: d.reason,
           deprecationReason: d.reason,
           replacement: d.replacement ?? undefined,
+          runtimeState: d.runtime_state,
         })
       }
     }
@@ -675,6 +747,9 @@ export function getDataPathMembers(
             isCollection: pDef.type.startsWith('array') || Boolean(pDef.item_properties),
             itemType: pDef.item_type,
             description: pDef.description,
+            availableInViews: pDef.available_in_views,
+            unconfiguredState: pDef.unconfigured_state,
+            condition: pDef.condition,
           })
         }
       }
@@ -693,6 +768,9 @@ export function getDataPathMembers(
             isCollection: aDef.type.startsWith('array') || Boolean(aDef.item_properties),
             itemType: aDef.item_type,
             description: aDef.description,
+            availableInViews: aDef.available_in_views,
+            unconfiguredState: aDef.unconfigured_state,
+            condition: aDef.condition,
           })
         }
       }

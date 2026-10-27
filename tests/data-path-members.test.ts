@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { getDataPathMembers, getTypeMembers } from '../src/data-path.js'
+import { getRuntimeEvaluationStates, getViewMatrixEntry, getViewsMatrix } from '../src/catalogs/index.js'
+import { getDataPathMembers, getTypeMembers, resolveDataPath } from '../src/data-path.js'
 import { ScopeEnvironment } from '../src/scope.js'
 
 describe('dataPath Members & Type Members Navigation', () => {
@@ -83,5 +84,46 @@ describe('dataPath Members & Type Members Navigation', () => {
     expect(isMobileMember).toBeDefined()
     expect(isMobileMember?.isDeprecated).toBe(true)
     expect(isMobileMember?.replacement).toBe('data:blog.isMobileRequest')
+    expect(isMobileMember?.runtimeState).toBe('active')
+  })
+
+  it('exposes view availability, unconfiguredState, condition, runtimeState, and sourceConstraint across resolveDataPath and members', () => {
+    const postIdProp = resolveDataPath('data:view.postId')
+    expect(postIdProp?.availableInViews).toEqual(['post'])
+
+    const archiveDayProp = resolveDataPath('data:view.archive.day')
+    expect(archiveDayProp?.unconfiguredState).toBe('missing')
+
+    const archiveMonthProp = resolveDataPath('data:view.archive.month')
+    expect(archiveMonthProp?.availableInViews).toEqual(['archive_monthly', 'archive_weekly_daily'])
+
+    const analyticsProp = resolveDataPath('data:blog.analyticsAccountNumber')
+    expect(analyticsProp?.unconfiguredState).toBe('empty')
+
+    const analytics4Prop = resolveDataPath('data:blog.analytics4')
+    expect(analytics4Prop?.unconfiguredState).toBe('missing')
+    expect(analytics4Prop?.condition).toBe('analytics4_configured')
+
+    const profileTeamAuthorProp = resolveDataPath('data:authors.first.userUrl', { widgetType: 'Profile' })
+    expect(profileTeamAuthorProp?.condition).toBe('team == true')
+    expect(profileTeamAuthorProp?.unconfiguredState).toBe('missing')
+
+    const featuredImageOrigWidth = resolveDataPath('data:posts.first.featuredImage.originalWidth', { widgetType: 'Blog' })
+    expect(featuredImageOrigWidth?.sourceConstraint).toBe('Blog.posts.featuredImage')
+
+    const imageMembers = getTypeMembers('image')
+    const widthMod = imageMembers.find(m => m.name === 'width')
+    const origWidthMod = imageMembers.find(m => m.name === 'originalWidth')
+    expect(widthMod?.sourceConstraint).toBe('resizeImage')
+    expect(origWidthMod?.sourceConstraint).toBe('Blog.posts.featuredImage')
+
+    const viewsMatrix = getViewsMatrix()
+    expect(Object.keys(viewsMatrix)).toHaveLength(12)
+    expect(getViewMatrixEntry('homepage')?.flags.isSearch).toBe('missing')
+    expect(getViewMatrixEntry('post')?.flags.isSingleItem).toBe('true')
+
+    const evalStates = getRuntimeEvaluationStates()
+    expect(evalStates.MISSING?.html_output_template).toBe('<!--Can\'t find substitution for tag [{tag}]-->')
+    expect(evalStates.NOT_SINGLETON?.html_output_template).toBe('<!--Substitution is not a singleton for tag [{tag}]-->')
   })
 })

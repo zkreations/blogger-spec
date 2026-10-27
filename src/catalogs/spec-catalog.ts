@@ -21,12 +21,15 @@ import type {
   BloggerOperatorName,
   BloggerOperatorsCatalog,
   BloggerPrecedenceHierarchyLevel,
+  BloggerRuntimeEvaluationState,
   BloggerScopeDefinition,
   BloggerScopesCatalog,
   BloggerStandardDiagnosticKey,
   BloggerStandardDiagnostics,
   BloggerTypeDefinition,
   BloggerTypesCatalog,
+  BloggerViewId,
+  BloggerViewMatrixEntry,
   BloggerWidgetDefinition,
   BloggerWidgetsCatalog,
   BloggerWidgetSettingsDefinition,
@@ -999,6 +1002,20 @@ export class SpecCatalog {
     return result
   }
 
+  getViewsMatrix(): Readonly<Record<BloggerViewId, BloggerViewMatrixEntry>> {
+    const globalsCatalog = this.store.getCatalog('globals') as BloggerGlobalsCatalog
+    return (globalsCatalog.domain_metadata?.views ?? {}) as Readonly<Record<BloggerViewId, BloggerViewMatrixEntry>>
+  }
+
+  getViewMatrixEntry(viewId: BloggerViewId): BloggerViewMatrixEntry | undefined {
+    return this.getViewsMatrix()[viewId]
+  }
+
+  getRuntimeEvaluationStates(): Readonly<Record<string, BloggerRuntimeEvaluationState>> {
+    const globalsCatalog = this.store.getCatalog('globals') as BloggerGlobalsCatalog
+    return globalsCatalog.domain_metadata?.runtime_evaluation_states ?? {}
+  }
+
   isMessage(key: string): boolean {
     return this.messageMap.has(key)
   }
@@ -1481,6 +1498,18 @@ export function getGlobal(name: string, catalog: SpecCatalog = getSpecCatalog())
 
 export function getAllGlobals(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerGlobalObjectDefinition> {
   return catalog.getAllGlobals()
+}
+
+export function getViewsMatrix(catalog: SpecCatalog = getSpecCatalog()): Readonly<Record<BloggerViewId, BloggerViewMatrixEntry>> {
+  return catalog.getViewsMatrix()
+}
+
+export function getViewMatrixEntry(viewId: BloggerViewId, catalog: SpecCatalog = getSpecCatalog()): BloggerViewMatrixEntry | undefined {
+  return catalog.getViewMatrixEntry(viewId)
+}
+
+export function getRuntimeEvaluationStates(catalog: SpecCatalog = getSpecCatalog()): Readonly<Record<string, BloggerRuntimeEvaluationState>> {
+  return catalog.getRuntimeEvaluationStates()
 }
 
 export function isMessage(key: string, catalog: SpecCatalog = getSpecCatalog()): boolean {

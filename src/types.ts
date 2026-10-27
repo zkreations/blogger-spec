@@ -11,6 +11,7 @@ import type {
   BloggerFixturesManifest,
   BloggerLayoutVersion,
   BloggerOperatorDefinition,
+  BloggerViewId,
   DirectiveNestingAction,
 } from './generated/types.generated.js'
 
@@ -66,6 +67,11 @@ export interface BloggerMemberInfo {
   readonly description?: string
   readonly deprecationReason?: string
   readonly replacement?: string
+  readonly availableInViews?: readonly BloggerViewId[]
+  readonly unconfiguredState?: 'empty' | 'missing'
+  readonly condition?: string
+  readonly runtimeState?: 'active' | 'empty' | 'missing'
+  readonly sourceConstraint?: string
 }
 
 export interface BloggerCursorContext {

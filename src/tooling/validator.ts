@@ -318,17 +318,51 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   }
 
   const globalsCatalog = store.getCatalog('globals')
+  const knownViews = new Set(Object.keys(globalsCatalog.domain_metadata?.views || {}))
+  if (knownViews.size === 0) {
+    errors.push('Globals catalog domain_metadata.views is missing or empty.')
+  }
+  const runtimeEvalStates = globalsCatalog.domain_metadata?.runtime_evaluation_states || {}
+  for (const requiredState of ['VALUE', 'EMPTY', 'MISSING', 'NOT_SINGLETON']) {
+    if (!runtimeEvalStates[requiredState]) {
+      errors.push(`Globals catalog domain_metadata.runtime_evaluation_states is missing required state '${requiredState}'.`)
+    }
+  }
+
+  function validatePropertyTree(propDef: any, label: string): void {
+    if (!propDef || typeof propDef !== 'object') {
+      return
+    }
+    if (propDef.type && !isKnownType(propDef.type)) {
+      errors.push(`${label} specifies unknown type '${propDef.type}'.`)
+    }
+    if (propDef.item_type && !isKnownType(propDef.item_type)) {
+      errors.push(`${label} specifies unknown item_type '${propDef.item_type}'.`)
+    }
+    if (Array.isArray(propDef.available_in_views)) {
+      for (const viewId of propDef.available_in_views) {
+        if (!knownViews.has(viewId)) {
+          errors.push(`${label} specifies unknown viewId '${viewId}' in available_in_views.`)
+        }
+      }
+    }
+    for (const [subKey, subDef] of Object.entries(propDef.properties || {})) {
+      validatePropertyTree(subDef, `${label}.${subKey}`)
+    }
+    for (const [itemKey, itemDef] of Object.entries(propDef.item_properties || {})) {
+      validatePropertyTree(itemDef, `${label}[].${itemKey}`)
+    }
+  }
+
   for (const [objKey, objDef] of Object.entries(globalsCatalog.objects || {})) {
     if (objDef.item_type && !isKnownType(objDef.item_type)) {
       errors.push(`Global object '${objKey}' specifies unknown item_type '${objDef.item_type}'.`)
     }
     for (const [propKey, propDef] of Object.entries(objDef.canonical || {})) {
-      if (!isKnownType(propDef.type)) {
-        errors.push(`Global property '${objKey}.${propKey}' specifies unknown type '${propDef.type}'.`)
-      }
-      if (propDef.item_type && !isKnownType(propDef.item_type)) {
-        errors.push(`Global property '${objKey}.${propKey}' specifies unknown item_type '${propDef.item_type}'.`)
-      }
+      validatePropertyTree(propDef, `Global property '${objKey}.${propKey}'`)
+    }
+    for (const [itemKey, itemDef] of Object.entries((objDef as any).item_properties || {})) {
+      validatePropertyTree(itemDef, `Global item property '${objKey}[].${itemKey}'`)
     }
   }
 
@@ -339,24 +373,14 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   if ((widgetsCatalog as any).common) {
     const commonCanonical = (widgetsCatalog as any).common.canonical || {}
     for (const [propKey, propDef] of Object.entries(commonCanonical)) {
-      if (!isKnownType((propDef as any).type)) {
-        errors.push(`Common widget property '${propKey}' specifies unknown type '${(propDef as any).type}'.`)
-      }
-      if ((propDef as any).item_type && !isKnownType((propDef as any).item_type)) {
-        errors.push(`Common widget property '${propKey}' specifies unknown item_type '${(propDef as any).item_type}'.`)
-      }
+      validatePropertyTree(propDef, `Common widget property '${propKey}'`)
     }
   }
 
   for (const [widgetKey, widgetDef] of Object.entries(widgetsCatalog.widgets || {})) {
     const dataCanonical = widgetDef.canonical || {}
     for (const [propKey, propDef] of Object.entries(dataCanonical)) {
-      if (!isKnownType((propDef as any).type)) {
-        errors.push(`Widget property '${widgetKey}.${propKey}' specifies unknown type '${(propDef as any).type}'.`)
-      }
-      if ((propDef as any).item_type && !isKnownType((propDef as any).item_type)) {
-        errors.push(`Widget property '${widgetKey}.${propKey}' specifies unknown item_type '${(propDef as any).item_type}'.`)
-      }
+      validatePropertyTree(propDef, `Widget property '${widgetKey}.${propKey}'`)
     }
   }
 
