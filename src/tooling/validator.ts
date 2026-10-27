@@ -8,12 +8,19 @@ import { FsCatalogStore } from '../catalogs/fs-store.js'
 import { CATALOG_NAMES } from '../catalogs/store.js'
 import { getWorkspacePaths } from '../paths.js'
 import { verifyArtifactsFreshness } from './compiler.js'
+import { verifySchemasBackwardCompatibility } from './schema-compatibility.js'
 
 export {
   type BloggerVerificationFreshnessItem,
   type BloggerVerificationFreshnessReport,
   verifyArtifactsFreshness,
 } from './compiler.js'
+export {
+  checkSchemaCompatibility,
+  type SchemaCompatibilityOptions,
+  type SchemaCompatibilityResult,
+  verifySchemasBackwardCompatibility,
+} from './schema-compatibility.js'
 
 export interface BloggerSpecValidationReport {
   valid: boolean
@@ -662,6 +669,10 @@ export function validateSpec(options?: BloggerValidateSpecOptions): BloggerSpecV
     log(`  [PASS] fixtures manifest verified (${metrics.fixturesChecked} fixtures).`)
     const fixtureValidate = ajv.getSchema('fixture.schema.json#/$defs/fixture')
       || ajv.compile({ $ref: 'fixture.schema.json#/$defs/fixture' })
+    const manifestValidate = ajv.getSchema('fixture.schema.json#/$defs/fixtureManifest')
+      || ajv.compile({ $ref: 'fixture.schema.json#/$defs/fixtureManifest' })
+    const suiteValidate = ajv.getSchema('fixture.schema.json#/$defs/fixtureSuite')
+      || ajv.compile({ $ref: 'fixture.schema.json#/$defs/fixtureSuite' })
     const manifest = JSON.parse(readFileSync(manifestPath, 'utf-8')) as {
       fixtures?: Array<{
         id: string
@@ -671,6 +682,12 @@ export function validateSpec(options?: BloggerValidateSpecOptions): BloggerSpecV
           diagnosticCodes?: string[]
         }
       }>
+    }
+
+    if (!manifestValidate(manifest)) {
+      for (const err of manifestValidate.errors || []) {
+        errors.push(`Manifest '${manifestPath}': ${err.instancePath || '/'} ${err.message}`)
+      }
     }
 
     const knownModifiers = new Set<string>()
@@ -704,18 +721,13 @@ export function validateSpec(options?: BloggerValidateSpecOptions): BloggerSpecV
           const relPath = `${cat}/${file}`
           try {
             const suiteData = JSON.parse(readFileSync(filePath, 'utf-8'))
-            if (!suiteData || typeof suiteData !== 'object') {
-              errors.push(`Suite file '${relPath}' must contain a valid JSON object.`)
-              continue
-            }
-            if (!suiteData.subsystem || typeof suiteData.subsystem !== 'string') {
-              errors.push(`Suite file '${relPath}' is missing mandatory string property 'subsystem'.`)
+            if (!suiteValidate(suiteData)) {
+              for (const err of suiteValidate.errors || []) {
+                errors.push(`Suite file '${relPath}': ${err.instancePath || '/'} ${err.message}`)
+              }
             }
             else if (!knownSubsystems.has(suiteData.subsystem)) {
               errors.push(`Suite file '${relPath}' declares unknown subsystem '${suiteData.subsystem}'.`)
-            }
-            if (!Array.isArray(suiteData.fixtures)) {
-              errors.push(`Suite file '${relPath}' is missing mandatory array property 'fixtures'.`)
             }
           }
           catch (err: any) {
@@ -798,6 +810,17 @@ export function validateSpec(options?: BloggerValidateSpecOptions): BloggerSpecV
         }
       }
     }
+  }
+
+  log('-> 5. Verifying schema backward compatibility...')
+  const compat = verifySchemasBackwardCompatibility({
+    reporter: log,
+  })
+  if (!compat.valid) {
+    errors.push(...compat.errors)
+  }
+  else if (!compat.skipped) {
+    log('  [PASS] All schemas strictly satisfy backward compatibility against Git baseline.')
   }
 
   return {

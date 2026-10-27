@@ -42,6 +42,24 @@
       "pattern": "^[a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?$",
       "description": "Canonical Blogger runtime data property type, parameterized collection, or skin variable."
     },
+    "directiveAttributeType": {
+      "type": "string",
+      "enum": [
+        "string",
+        "number",
+        "boolean",
+        "scalar",
+        "expression",
+        "any",
+        "array"
+      ],
+      "description": "Blogger XML directive attribute data type defined in types.json."
+    },
+    "operatorDataType": {
+      "type": "string",
+      "pattern": "^[a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?$",
+      "description": "Allowed Blogger expression operator operand/return type identifier, generic collection, or primitive."
+    },
     "deprecationStatus": {
       "type": "string",
       "enum": [

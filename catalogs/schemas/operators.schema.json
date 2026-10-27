@@ -476,7 +476,7 @@
     },
     "operatorDataType": {
       "description": "Blogger Expression Engine operator and operand data type referenced from types catalog",
-      "$ref": "types.schema.json#/$defs/operatorDataType"
+      "$ref": "common.schema.json#/$defs/operatorDataType"
     },
     "operatorExample": {
       "type": "object",

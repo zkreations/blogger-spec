@@ -3,6 +3,17 @@
   "$id": "fixture.schema.json",
   "title": "Blogger Conformance Fixture Schema",
   "description": "JSON Schema specification for individual Blogger conformance test fixtures and test manifests.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/fixture"
+    },
+    {
+      "$ref": "#/$defs/fixtureSuite"
+    },
+    {
+      "$ref": "#/$defs/fixtureManifest"
+    }
+  ],
   "$defs": {
     "fixture": {
       "type": "object",
@@ -102,6 +113,75 @@
         },
         "verified_at": {
           "$ref": "common.schema.json#/$defs/verified_at"
+        }
+      },
+      "additionalProperties": false
+    },
+    "fixtureSuite": {
+      "type": "object",
+      "required": [
+        "subsystem",
+        "fixtures"
+      ],
+      "properties": {
+        "subsystem": {
+          "type": "string"
+        },
+        "fixtures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fixture"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "fixtureManifest": {
+      "type": "object",
+      "required": [
+        "version",
+        "fixtures"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "generatedAt": {
+          "$ref": "common.schema.json#/$defs/verified_at"
+        },
+        "metrics": {
+          "type": "object",
+          "required": [
+            "totalFixtures",
+            "positiveFixtures",
+            "negativeFixtures",
+            "coveredSpecEntities"
+          ],
+          "properties": {
+            "totalFixtures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "positiveFixtures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "negativeFixtures": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "coveredSpecEntities": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        },
+        "fixtures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fixture"
+          }
         }
       },
       "additionalProperties": false

@@ -486,7 +486,7 @@
       ],
       "properties": {
         "type": {
-          "$ref": "types.schema.json#/$defs/directiveAttributeType"
+          "$ref": "common.schema.json#/$defs/directiveAttributeType"
         },
         "diagnostic": {
           "$ref": "common.schema.json#/$defs/diagnosticCode"

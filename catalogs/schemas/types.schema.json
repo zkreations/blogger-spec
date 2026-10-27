@@ -317,22 +317,10 @@
       "$ref": "common.schema.json#/$defs/canonicalPropertyType"
     },
     "directiveAttributeType": {
-      "type": "string",
-      "enum": [
-        "string",
-        "number",
-        "boolean",
-        "scalar",
-        "expression",
-        "any",
-        "array"
-      ],
-      "description": "Blogger XML directive attribute data type defined in types.json."
+      "$ref": "common.schema.json#/$defs/directiveAttributeType"
     },
     "operatorDataType": {
-      "type": "string",
-      "pattern": "^[a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?$",
-      "description": "Allowed Blogger expression operator operand/return type identifier, generic collection, or primitive."
+      "$ref": "common.schema.json#/$defs/operatorDataType"
     }
   }
 }
