@@ -28,6 +28,7 @@ import type {
   BloggerScopesCatalog,
   BloggerStandardDiagnosticKey,
   BloggerStandardDiagnostics,
+  BloggerSuperDelegationRule,
   BloggerTypeDefinition,
   BloggerTypesCatalog,
   BloggerViewId,
@@ -151,6 +152,7 @@ export class SpecCatalog {
   private readonly typeMap = new Map<string, BloggerTypeDefinition>()
   private readonly coercionRules: Record<string, any> = {}
   private readonly inclusionMap = new Map<string, BloggerInclusionDefinition>()
+  private readonly widgetDefaultInclusions = new Map<string, string[]>()
   private readonly hallucinatedDirectives = new Map<string, BloggerDiagnosticCode>()
   private readonly hallucinatedDirectiveTransforms = new Map<string, HallucinatedDirectiveConfig>()
   private readonly invertedAttributeMaps = new Map<string, string>()
@@ -422,6 +424,10 @@ export class SpecCatalog {
     this.superPrefix = prefix
     for (const [name, def] of Object.entries(inclusionsData.inclusions || {})) {
       this.inclusionMap.set(name, { ...def, name: def.name ?? name })
+    }
+    this.widgetDefaultInclusions.clear()
+    for (const [wType, list] of Object.entries(inclusionsData.domain_metadata?.widget_default_inclusions || {})) {
+      this.widgetDefaultInclusions.set(wType, list)
     }
   }
 
@@ -1347,6 +1353,44 @@ export class SpecCatalog {
     return inc?.category === 'universal'
   }
 
+  isPortableInclusion(name: string): boolean {
+    const inc = this.inclusionMap.get(name)
+    return inc?.safety === 'portable'
+  }
+
+  isThemeBoundInclusion(name: string): boolean {
+    const inc = this.inclusionMap.get(name)
+    return inc?.safety === 'theme_bound'
+  }
+
+  getInclusionMarkup(name: string): string | undefined {
+    return this.inclusionMap.get(name)?.server_markup
+  }
+
+  getSuperDelegationRule(): BloggerSuperDelegationRule | undefined {
+    const inclusionsData = this.store.getCatalog('inclusions') as BloggerInclusionsCatalog
+    return inclusionsData.domain_metadata?.super_delegation
+  }
+
+  getWidgetDefaultInclusions(widgetType: string): readonly string[] {
+    const specific = this.widgetDefaultInclusions.get(widgetType) || []
+    const universal = this.widgetDefaultInclusions.get('All') || []
+    return Array.from(new Set([...specific, ...universal]))
+  }
+
+  isValidSuperInclusion(widgetType: string, subroutineName: string): boolean {
+    const list = this.getWidgetDefaultInclusions(widgetType)
+    return list.includes(subroutineName)
+  }
+
+  getAllWidgetDefaultInclusions(): Record<string, string[]> {
+    const result: Record<string, string[]> = {}
+    for (const [k, v] of this.widgetDefaultInclusions.entries()) {
+      result[k] = [...v]
+    }
+    return result
+  }
+
   getScalarTypes(): readonly string[] {
     if (this.scalarTypes.length === 0) {
       throw new Error('Missing scalar_types in types catalog')
@@ -1740,6 +1784,34 @@ export const getAllServerInclusions = getAllInclusions
 
 export function isUniversalInclusion(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
   return catalog.isUniversalInclusion(name)
+}
+
+export function isPortableInclusion(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isPortableInclusion(name)
+}
+
+export function isThemeBoundInclusion(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isThemeBoundInclusion(name)
+}
+
+export function getInclusionMarkup(name: string, catalog: SpecCatalog = getSpecCatalog()): string | undefined {
+  return catalog.getInclusionMarkup(name)
+}
+
+export function getSuperDelegationRule(catalog: SpecCatalog = getSpecCatalog()): BloggerSuperDelegationRule | undefined {
+  return catalog.getSuperDelegationRule()
+}
+
+export function getWidgetDefaultInclusions(widgetType: string, catalog: SpecCatalog = getSpecCatalog()): readonly string[] {
+  return catalog.getWidgetDefaultInclusions(widgetType)
+}
+
+export function isValidSuperInclusion(widgetType: string, subroutineName: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isValidSuperInclusion(widgetType, subroutineName)
+}
+
+export function getAllWidgetDefaultInclusions(catalog: SpecCatalog = getSpecCatalog()): Record<string, string[]> {
+  return catalog.getAllWidgetDefaultInclusions()
 }
 
 export function getSuperPrefix(catalog: SpecCatalog = getSpecCatalog()): string {

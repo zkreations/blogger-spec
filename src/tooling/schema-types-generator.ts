@@ -99,6 +99,7 @@ export function generateCanonicalSchemaTypes(): string {
 
   const incDefProps = incSchema.$defs?.inclusionDefinition?.properties || {}
   const incCategoryEnum = (incDefProps.category?.enum as string[]) || ['universal', 'common', 'icon', 'theme', 'deprecated']
+  const incSafetyEnum = (incDefProps.safety?.enum as string[]) || ['portable', 'theme_bound', 'internal', 'deprecated']
 
   const stdDiagProps = dirSchema.properties?.domain_metadata?.properties?.standard_diagnostics?.properties || {}
   const stdDiagKeys = Object.keys(stdDiagProps).sort()
@@ -147,6 +148,8 @@ export function generateCanonicalSchemaTypes(): string {
     `export type BloggerDeprecationAction = ${deprecationActionEnum.map(a => `'${a}'`).join(' | ')};`,
     '',
     `export type BloggerInclusionCategory = ${incCategoryEnum.map(c => `'${c}'`).join(' | ')};`,
+    '',
+    `export type BloggerInclusionSafety = ${incSafetyEnum.map(s => `'${s}'`).join(' | ')};`,
     '',
     `export type BloggerCanonicalPropertyType = ${propertyTypeNames.map(t => `'${t}'`).join(' | ')} | (string & {});`,
     '',
@@ -551,11 +554,22 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('// Inclusions Catalog Models (SSoT: inclusions.schema.json)')
   lines.push('// =========================================================================')
   lines.push('')
+  if (incSchema.$defs?.inclusionThemeDependency) {
+    lines.push(generateInterface('BloggerInclusionThemeDependency', incSchema.$defs.inclusionThemeDependency))
+  }
+  if (incSchema.$defs?.inclusionParameter) {
+    lines.push(generateInterface('BloggerInclusionParameter', incSchema.$defs.inclusionParameter))
+  }
   lines.push(generateInterface('BloggerInclusionDefinition', incSchema.$defs.inclusionDefinition))
   lines.push('export interface BloggerSuperPrefixRule {')
   lines.push('  prefix: string;')
   lines.push('  description: string;')
   lines.push('  behavior: string;')
+  lines.push('}')
+  lines.push('')
+  lines.push('export interface BloggerSuperDelegationRule {')
+  lines.push('  supported_widgets?: string[];')
+  lines.push('  supported_subroutines?: string[];')
   lines.push('}')
   lines.push('')
   lines.push('export interface BloggerInclusionsCatalog {')
@@ -565,6 +579,9 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('  description?: string;')
   lines.push('  domain_metadata?: {')
   lines.push('    super_prefix_rule: BloggerSuperPrefixRule;')
+  lines.push('    standard_diagnostics?: Record<string, BloggerDiagnosticCode>;')
+  lines.push('    super_delegation?: BloggerSuperDelegationRule;')
+  lines.push('    widget_default_inclusions?: Record<string, string[]>;')
   lines.push('  };')
   lines.push('  inclusions: Record<string, BloggerInclusionDefinition>;')
   lines.push('}')

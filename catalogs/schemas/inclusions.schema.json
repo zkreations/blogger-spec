@@ -57,9 +57,48 @@
           "properties": {
             "unresolved_inclusion": {
               "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "super_inclusion_warning": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "theme_bound_inclusion_warning": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
+            },
+            "prohibited_super_includable_override": {
+              "$ref": "common.schema.json#/$defs/diagnosticCode"
             }
           },
           "additionalProperties": false
+        },
+        "super_delegation": {
+          "type": "object",
+          "properties": {
+            "supported_widgets": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Widgets supporting super.main delegation to default platform markup."
+            },
+            "supported_subroutines": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Subroutines supporting super.<name> delegation (e.g. super.postShareButtons)."
+            }
+          },
+          "additionalProperties": false
+        },
+        "widget_default_inclusions": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": "Registry of canonical default includable subroutine identifiers available per widget type (and 'All') in Blogger's platform rendering engine."
         }
       },
       "additionalProperties": false
@@ -92,6 +131,7 @@
             "universal",
             "common",
             "icon",
+            "widget",
             "theme",
             "deprecated"
           ]
@@ -129,6 +169,80 @@
             "minimum": 1
           },
           "description": "Blogger template engine architecture version(s) (b:layoutsVersion='1' | '2' | '3') where this inclusion is available."
+        },
+        "safety": {
+          "type": "string",
+          "enum": [
+            "portable",
+            "theme_bound",
+            "internal",
+            "deprecated"
+          ],
+          "description": "Portability and lifecycle safety classification for independent theme development."
+        },
+        "theme_dependency": {
+          "$ref": "#/$defs/inclusionThemeDependency"
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/inclusionParameter"
+          },
+          "description": "Parameter contracts accepted by the inclusion via data='...' or context variables."
+        },
+        "server_markup": {
+          "type": "string",
+          "description": "Verified server-side XML includable body injected by Blogger's backend rendering engine."
+        }
+      },
+      "additionalProperties": false
+    },
+    "inclusionThemeDependency": {
+      "type": "object",
+      "required": [
+        "theme_name",
+        "failure_reason"
+      ],
+      "properties": {
+        "theme_name": {
+          "type": "string",
+          "description": "Name of the official Blogger theme required by this inclusion (e.g. Notable, Emporio)."
+        },
+        "missing_dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Subinclusions, skin variables, or collection structures expected by the backend."
+        },
+        "failure_reason": {
+          "type": "string",
+          "description": "Explanation of the compilation or rendering failure when invoked in custom themes."
+        }
+      },
+      "additionalProperties": false
+    },
+    "inclusionParameter": {
+      "type": "object",
+      "required": [
+        "type",
+        "description"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Expected data type of parameter."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether the parameter must be provided."
+        },
+        "description": {
+          "type": "string",
+          "description": "Functional description of the parameter."
+        },
+        "default": {
+          "description": "Default value if parameter is omitted."
         }
       },
       "additionalProperties": false

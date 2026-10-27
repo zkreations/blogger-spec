@@ -538,6 +538,33 @@
       "message": "Instantiating an AdSense widget (<b:widget type='AdSense'>) requires an approved, active AdSense monetization account on the blog; otherwise template saving fails with 'Unknown ad unit type'. Prefer customizing via <b:defaultmarkup type='AdSense'>.",
       "evidence": "observed",
       "verified_at": "2026-10-26"
+    },
+    "BX1058": {
+      "code": "BX1058",
+      "name": "SUPER_INCLUSION_WARNING",
+      "category": "structure",
+      "severity": "warning",
+      "message": "Referencing platform super.* inclusions delegates execution to Blogger's internal official theme templates. Avoid in custom themes to maintain visual and markup consistency.",
+      "evidence": "observed",
+      "verified_at": "2026-10-27"
+    },
+    "BX1059": {
+      "code": "BX1059",
+      "name": "THEME_BOUND_INCLUSION_WARNING",
+      "category": "structure",
+      "severity": "warning",
+      "message": "Referenced server inclusion is bound to an official Blogger theme and fails in independent themes due to unfulfilled subinclusions or skin variable dependencies.",
+      "evidence": "observed",
+      "verified_at": "2026-10-27"
+    },
+    "BX1060": {
+      "code": "BX1060",
+      "name": "PROHIBITED_SUPER_INCLUDABLE_OVERRIDE",
+      "category": "structure",
+      "severity": "error",
+      "message": "Defining or overriding an includable with a 'super.' prefix is prohibited. Platform super delegators are immutable and cannot be declared via <b:includable>.",
+      "evidence": "official",
+      "verified_at": "2026-10-27"
     }
   }
 }

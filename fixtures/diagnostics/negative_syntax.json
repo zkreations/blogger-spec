@@ -1266,6 +1266,72 @@
         "stage": "linter"
       },
       "verified_at": "2026-10-26"
+    },
+    {
+      "id": "diagnostics/negative_syntax/super-inclusion-warning",
+      "title": "Super Inclusion Invocation Warning in Custom Theme",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1058",
+        "tag:b:include"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:widget id='Blog1' title='Blog' type='Blog' version='2'><b:includable id='main'><b:include name='super.main'/></b:includable></b:widget></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1058"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-27"
+    },
+    {
+      "id": "diagnostics/negative_syntax/theme-bound-inclusion-warning",
+      "title": "Theme Bound Inclusion Invocation Warning Outside Official Theme",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1059",
+        "tag:b:include"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='main'><b:widget id='Blog1' title='Blog' type='Blog' version='2'><b:includable id='main'><b:include name='heroPost'/></b:includable></b:widget></b:section>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1059"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-27"
+    },
+    {
+      "id": "diagnostics/negative_syntax/prohibited-super-includable-override",
+      "title": "Prohibited Includable Identifier With super. Prefix",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1060",
+        "tag:b:includable"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Blog'><b:includable id='super.main'><div>Override</div></b:includable></b:defaultmarkup></b:defaultmarkups>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1060"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-27"
     }
   ]
 }

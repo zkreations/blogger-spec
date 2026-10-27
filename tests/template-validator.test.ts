@@ -1224,6 +1224,69 @@ describe('helpers & canonical structure validation suite', () => {
       expect(validateTemplateStructure(validXml).some(d => d.code === 'BX1037')).toBe(false)
     })
 
+    it('detects super inclusions usage warning (BX1058)', () => {
+      const superMainXml = `
+        <b:widget id='Blog1' type='Blog'>
+          <b:includable id='main'>
+            <b:include name='super.main'/>
+          </b:includable>
+        </b:widget>
+      `
+      const diags = validateTemplateStructure(superMainXml)
+      expect(diags.some(d => d.code === 'BX1058')).toBe(true)
+      expect(diags.find(d => d.code === 'BX1058')?.severity).toBe('warning')
+    })
+
+    it('detects theme-bound inclusion usage warning outside official themes (BX1059)', () => {
+      const heroPostXml = `
+        <b:widget id='Blog1' type='Blog'>
+          <b:includable id='main'>
+            <b:include name='heroPost'/>
+          </b:includable>
+        </b:widget>
+      `
+      const diags = validateTemplateStructure(heroPostXml)
+      expect(diags.some(d => d.code === 'BX1059')).toBe(true)
+      expect(diags.find(d => d.code === 'BX1059')?.severity).toBe('warning')
+
+      // Clean portable inclusion has no BX1059
+      const portableXml = `
+        <b:widget id='Blog1' type='Blog'>
+          <b:includable id='main'>
+            <b:include name='all-head-content'/>
+          </b:includable>
+        </b:widget>
+      `
+      const cleanDiags = validateTemplateStructure(portableXml)
+      expect(cleanDiags.some(d => d.code === 'BX1059')).toBe(false)
+      expect(cleanDiags.some(d => d.code === 'BX1058')).toBe(false)
+    })
+
+    it('prohibits defining or overriding super.* includables in defaultmarkup or widgets (BX1060)', () => {
+      const prohibitedDefaultMarkupXml = `
+        <b:defaultmarkups>
+          <b:defaultmarkup type='Blog'>
+            <b:includable id='super.main'>
+              <div>Prohibited override</div>
+            </b:includable>
+          </b:defaultmarkup>
+        </b:defaultmarkups>
+      `
+      const diags = validateTemplateStructure(prohibitedDefaultMarkupXml)
+      expect(diags.some(d => d.code === 'BX1060')).toBe(true)
+      expect(diags.find(d => d.code === 'BX1060')?.severity).toBe('error')
+
+      const prohibitedWidgetXml = `
+        <b:widget id='Blog1' type='Blog'>
+          <b:includable id='super.postShareButtons'>
+            <div>Prohibited widget override</div>
+          </b:includable>
+        </b:widget>
+      `
+      const widgetDiags = validateTemplateStructure(prohibitedWidgetXml)
+      expect(widgetDiags.some(d => d.code === 'BX1060')).toBe(true)
+    })
+
     it('re-exports BloggerStructureDiagnostic and DirectiveNestingViolation types from parser', () => {
       const diags: BloggerStructureDiagnostic[] = validateExpression('data:post.isFirst == "true"')
       expect(diags.length).toBeGreaterThan(0)

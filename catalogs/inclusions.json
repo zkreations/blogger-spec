@@ -10,10 +10,247 @@
       "behavior": "delegation"
     },
     "standard_diagnostics": {
-      "unresolved_inclusion": "BX1037"
+      "unresolved_inclusion": "BX1037",
+      "super_inclusion_warning": "BX1058",
+      "theme_bound_inclusion_warning": "BX1059",
+      "prohibited_super_includable_override": "BX1060"
+    },
+    "super_delegation": {
+      "supported_widgets": [
+        "AdSense",
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog",
+        "BlogArchive",
+        "BlogSearch",
+        "Header",
+        "Label",
+        "PageList",
+        "Profile",
+        "Subscribe"
+      ],
+      "supported_subroutines": [
+        "super.main",
+        "super.content",
+        "super.postShareButtons"
+      ]
+    },
+    "widget_default_inclusions": {
+      "All": [
+        "main",
+        "content"
+      ],
+      "AdSense": [
+        "defaultAdUnit"
+      ],
+      "FeaturedPost": [
+        "blogThisShare",
+        "bylineByName",
+        "bylineRegion",
+        "commentsLink",
+        "commentsLinkIframe",
+        "emailPostIcon",
+        "facebookShare",
+        "footerBylines",
+        "googlePlusShare",
+        "headerByline",
+        "linkShare",
+        "otherSharingButton",
+        "platformShare",
+        "postAuthor",
+        "postCommentsLink",
+        "postJumpLink",
+        "postLabels",
+        "postLocation",
+        "postReactions",
+        "postShareButtons",
+        "postTimestamp",
+        "sharingButton",
+        "sharingButtonContent",
+        "sharingButtons",
+        "sharingButtonsMenu",
+        "sharingPlatformIcon",
+        "snippetedPostByline",
+        "snippetedPostContent",
+        "snippetedPosts",
+        "snippetedPostThumbnail",
+        "snippetedPostTitle"
+      ],
+      "PopularPosts": [
+        "blogThisShare",
+        "bylineByName",
+        "bylineRegion",
+        "commentsLink",
+        "commentsLinkIframe",
+        "emailPostIcon",
+        "facebookShare",
+        "footerBylines",
+        "googlePlusShare",
+        "headerByline",
+        "linkShare",
+        "otherSharingButton",
+        "platformShare",
+        "postAuthor",
+        "postCommentsLink",
+        "postJumpLink",
+        "postLabels",
+        "postLocation",
+        "postReactions",
+        "postShareButtons",
+        "postTimestamp",
+        "sharingButton",
+        "sharingButtonContent",
+        "sharingButtons",
+        "sharingButtonsMenu",
+        "sharingPlatformIcon",
+        "snippetedPostByline",
+        "snippetedPostContent",
+        "snippetedPosts",
+        "snippetedPostThumbnail",
+        "snippetedPostTitle"
+      ],
+      "Blog": [
+        "aboutPostAuthor",
+        "addComments",
+        "blogThisShare",
+        "bylineByName",
+        "bylineRegion",
+        "commentAuthorAvatar",
+        "commentDeleteIcon",
+        "commentForm",
+        "commentFormIframeSrc",
+        "commentItem",
+        "commentList",
+        "commentPicker",
+        "comments",
+        "commentsLink",
+        "commentsLinkIframe",
+        "commentsTitle",
+        "defaultAdUnit",
+        "emailPostIcon",
+        "facebookShare",
+        "feedLinks",
+        "feedLinksBody",
+        "footerBylines",
+        "googlePlusShare",
+        "headerByline",
+        "homePageLink",
+        "iframeComments",
+        "inlineAd",
+        "linkShare",
+        "manageComments",
+        "nextPageLink",
+        "otherSharingButton",
+        "platformShare",
+        "post",
+        "postAuthor",
+        "postBody",
+        "postBodySnippet",
+        "postCommentsAndAd",
+        "postCommentsLink",
+        "postFooter",
+        "postFooterAuthorProfile",
+        "postHeader",
+        "postJumpLink",
+        "postLabels",
+        "postLocation",
+        "postMeta",
+        "postMetadataJSONImage",
+        "postMetadataJSONPublisher",
+        "postPagination",
+        "postReactions",
+        "postShareButtons",
+        "postTimestamp",
+        "postTitle",
+        "previousPageLink",
+        "sharingButton",
+        "sharingButtonContent",
+        "sharingButtons",
+        "sharingButtonsMenu",
+        "sharingPlatformIcon",
+        "threadedCommentForm",
+        "threadedCommentJs",
+        "threadedComments",
+        "tooltipCss"
+      ],
+      "BlogArchive": [
+        "flat",
+        "hierarchy",
+        "interval",
+        "posts"
+      ],
+      "BlogSearch": [
+        "searchForm",
+        "searchSubmit"
+      ],
+      "Header": [
+        "behindImageStyle",
+        "description",
+        "image",
+        "title"
+      ],
+      "Label": [
+        "cloud",
+        "list"
+      ],
+      "PageList": [
+        "overflowButton",
+        "overflowablePageList",
+        "pageLink",
+        "pageList"
+      ],
+      "Profile": [
+        "authorProfileImage",
+        "defaultProfileImage",
+        "profileImage",
+        "teamProfile",
+        "teamProfileLink",
+        "userGoogleProfile",
+        "userLocation",
+        "userProfile",
+        "userProfileData",
+        "userProfileImage",
+        "userProfileInfo",
+        "userProfileLink",
+        "userProfileText",
+        "viewProfileLink"
+      ],
+      "Subscribe": [
+        "feeds"
+      ]
     }
   },
   "inclusions": {
+    "aboutPostAuthor": {
+      "name": "aboutPostAuthor",
+      "category": "widget",
+      "description": "Extended author biography and profile avatar card displayed in post footer.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "addComments": {
+      "name": "addComments",
+      "category": "widget",
+      "description": "Call-to-action anchor link initiating comment creation on the post.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
     "all-head-content": {
       "name": "all-head-content",
       "category": "universal",
@@ -24,7 +261,650 @@
         1,
         2,
         3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='all-head-content'>\n  <meta expr:content='\"text/html; charset=\" + data:blog.encoding' http-equiv='Content-Type'/>\n  <b:if cond='data:widgets'>\n    <b:comment>Chrome, Firefox OS and Opera</b:comment>\n    <meta expr:content='data:skin.vars.body_background_color' name='theme-color'/>\n    <b:comment>Windows Phone</b:comment>\n    <meta expr:content='data:skin.vars.body_background_color' name='msapplication-navbutton-color'/>\n  </b:if>\n  <data:blog.latencyHeadScript/>\n  <data:blog.mobileHeadScript/>\n  <meta content='blogger' name='generator'/>\n  <link expr:href='data:blog.blogspotFaviconUrl' rel='icon' type='image/x-icon'/>\n  <b:if cond='data:blog.adultContent'>\n    <meta content='adult' name='rating'/>\n  </b:if>\n  <link expr:href='data:view.url.canonical' rel='canonical'/>\n  <data:blog.feedLinks/>\n  <b:tag name='link' cond='data:view.featuredImage' expr:href='data:view.featuredImage' rel='image_src'/>\n  <b:if cond='data:blog.metaDescription'>\n    <meta expr:content='data:blog.metaDescription' name='description'/>\n  </b:if>\n  <b:include name='openGraphMetaData'/>\n  <data:blog.ieCssRetrofitLinks/>\n  <!--[if IE]><script> (function() { var html5 = (\"abbr,article,aside,audio,canvas,datalist,details,\" + \"figure,footer,header,hgroup,mark,menu,meter,nav,output,\" + \"progress,section,time,video\").split(','); for (var i = 0; i < html5.length; i++) { document.createElement(html5[i]); } try { document.execCommand('BackgroundImageCache', false, true); } catch(e) {} })(); </script>\n<![endif]-->\n</b:includable>"
+    },
+    "authorProfileImage": {
+      "name": "authorProfileImage",
+      "category": "widget",
+      "description": "Author avatar thumbnail element with fallback to default platform avatar.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
       ]
+    },
+    "backArrowIcon": {
+      "name": "backArrowIcon",
+      "category": "icon",
+      "description": "Left-pointing arrow SVG icon for pagination and previous post navigation.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='backArrowIcon'>\n  <b:include data='{iconId: \"ic_arrow_back_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "behindImageStyle": {
+      "name": "behindImageStyle",
+      "category": "widget",
+      "description": "Dynamic background-image CSS style block when header image is set to 'Behind title and description'.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Header"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "blogThisShare": {
+      "name": "blogThisShare",
+      "category": "widget",
+      "description": "Blogger platform 'BlogThis!' legacy sharing action link button.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "bylineByName": {
+      "name": "bylineByName",
+      "category": "widget",
+      "description": "Dynamic layout dispatcher subroutine routing byline items by their identifier name.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "bylineRegion": {
+      "name": "bylineRegion",
+      "category": "widget",
+      "description": "Container region subroutine rendering associated post byline metadata items.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "chevronDownIcon": {
+      "name": "chevronDownIcon",
+      "category": "icon",
+      "description": "Downward chevron SVG icon for dropdown menus and disclosure widgets.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='chevronDownIcon'>\n  <b:include data='{iconId: \"ic_expand_more_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "chevronUpIcon": {
+      "name": "chevronUpIcon",
+      "category": "icon",
+      "description": "Upward chevron SVG icon for accordion items and collapse toggles.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='chevronUpIcon'>\n  <b:include data='{iconId: \"ic_expand_less_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "cloud": {
+      "name": "cloud",
+      "category": "widget",
+      "description": "Tag cloud layout subroutine scaling label font sizes proportionally to post frequency.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Label"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "commentAuthorAvatar": {
+      "name": "commentAuthorAvatar",
+      "category": "widget",
+      "description": "Comment author user avatar image element subroutine.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "commentDeleteIcon": {
+      "name": "commentDeleteIcon",
+      "category": "widget",
+      "description": "Administrative trashcan icon allowing authorized users to delete a comment.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "commentForm": {
+      "name": "commentForm",
+      "category": "widget",
+      "description": "Embedded security comment submission form container and iframe.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "commentFormIframeSrc": {
+      "name": "commentFormIframeSrc",
+      "category": "widget",
+      "description": "Evaluates security authorization URL parameters for comment iframe source.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "commentIcon": {
+      "name": "commentIcon",
+      "category": "icon",
+      "description": "Speech bubble comment SVG icon for post discussion links.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='commentIcon'>\n  <b:include data='{iconId: \"ic_mode_comment_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "commentItem": {
+      "name": "commentItem",
+      "category": "widget",
+      "description": "Individual comment entry block rendering author, timestamp, body, and action buttons.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "commentList": {
+      "name": "commentList",
+      "category": "widget",
+      "description": "Ordered collection loop subroutine iterating through published blog comments.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "commentPicker": {
+      "name": "commentPicker",
+      "category": "widget",
+      "description": "Comment form provider selector between Blogger native, Google, or external accounts.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "comments": {
+      "name": "comments",
+      "category": "widget",
+      "description": "Top-level comment discussion section container enclosing thread and submission form.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "commentsLink": {
+      "name": "commentsLink",
+      "category": "widget",
+      "description": "Summary comment counter anchor link navigating to post discussion.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "commentsLinkIframe": {
+      "name": "commentsLinkIframe",
+      "category": "widget",
+      "description": "Inline iframe loader container for threaded comments section navigation.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "commentsTitle": {
+      "name": "commentsTitle",
+      "category": "widget",
+      "description": "Heading title element displaying localized comment count and discussion header.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "content": {
+      "name": "content",
+      "category": "common",
+      "description": "Standard content container subroutine enclosing widget items or collection payload.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "All"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "defaultAdUnit": {
+      "name": "defaultAdUnit",
+      "category": "widget",
+      "description": "Standard Google AdSense responsive ad unit rendering subroutine.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "AdSense",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "defaultAvatarIcon": {
+      "name": "defaultAvatarIcon",
+      "category": "icon",
+      "description": "Generic silhouette avatar SVG icon for anonymous or avatarless commenters.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='defaultAvatarIcon'>\n  <b:include data='{iconId: \"ic_person_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "defaultProfileImage": {
+      "name": "defaultProfileImage",
+      "category": "widget",
+      "description": "Silhouette placeholder avatar icon when author profile has no custom photo.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "description": {
+      "name": "description",
+      "category": "widget",
+      "description": "Blog subtitle or description paragraph element under header title.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Header"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "emailIcon": {
+      "name": "emailIcon",
+      "category": "icon",
+      "description": "Mail envelope SVG icon for email sharing action.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='emailIcon'>\n  <b:include data='{iconId: \"ic_24_email_dark\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "emailPostIcon": {
+      "name": "emailPostIcon",
+      "category": "widget",
+      "description": "Email sharing action button subroutine for sending post link via email client.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "extendableItems": {
+      "name": "extendableItems",
+      "category": "common",
+      "description": "Renders expandable and collapsible list items for navigation menus and archive hierarchies.",
+      "evidence": "observed",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "theme_bound",
+      "theme_dependency": {
+        "theme_name": "Emporio",
+        "missing_dependencies": [
+          "items"
+        ],
+        "failure_reason": "Requires structured hierarchical items collection not populated in standard gadgets."
+      }
+    },
+    "facebookIcon": {
+      "name": "facebookIcon",
+      "category": "icon",
+      "description": "Facebook brand SVG icon for social sharing action.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='facebookIcon'>\n  <b:include data='{iconId: \"ic_24_facebook_dark\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "facebookShare": {
+      "name": "facebookShare",
+      "category": "widget",
+      "description": "Facebook social share button subroutine dispatching to platform share dialog.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "feedLinks": {
+      "name": "feedLinks",
+      "category": "widget",
+      "description": "Atom and RSS feed autodiscovery link tags in document head and widget container.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "feedLinksBody": {
+      "name": "feedLinksBody",
+      "category": "widget",
+      "description": "Visible feed subscription anchor links rendered at bottom of blog post index.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "feedPostImage": {
+      "name": "feedPostImage",
+      "category": "theme",
+      "description": "Renders post thumbnail image card within dynamic feeds (Emporio theme).",
+      "evidence": "official",
+      "widget_version": 2,
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        3
+      ],
+      "safety": "theme_bound",
+      "theme_dependency": {
+        "theme_name": "Emporio",
+        "missing_dependencies": [
+          "$(posts.thumbnail.aspectRatio)"
+        ],
+        "failure_reason": "Strictly depends on Emporio Theme Designer skin variable '$(posts.thumbnail.aspectRatio)'."
+      }
+    },
+    "feeds": {
+      "name": "feeds",
+      "category": "widget",
+      "description": "Subscription links collection rendering Atom and RSS feed options.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Subscribe"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "flat": {
+      "name": "flat",
+      "category": "widget",
+      "description": "Chronological flat list format for monthly or yearly blog post archive index.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "BlogArchive"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "flatBloggerIcon": {
+      "name": "flatBloggerIcon",
+      "category": "common",
+      "description": "Renders the standard flat SVG Blogger B logo mark.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "parameters": {
+        "iconClass": {
+          "type": "string",
+          "required": false,
+          "description": "Optional CSS class string."
+        },
+        "button": {
+          "type": "boolean",
+          "required": false,
+          "description": "Render as interactive button when true, or inline SVG when false."
+        }
+      },
+      "server_markup": "<b:includable id='flatBloggerIcon'>\n  <b:include data='{iconId: \"ic_post_blogger_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "footerBylines": {
+      "name": "footerBylines",
+      "category": "widget",
+      "description": "Post footer metadata byline container section rendering author, date, and label items.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "footerBylinesOverride": {
+      "name": "footerBylinesOverride",
+      "category": "common",
+      "description": "Layout hook for overriding post footer metadata bylines.",
+      "evidence": "official",
+      "widget_version": 2,
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "parameters": {
+        "items": {
+          "type": "string[][]",
+          "required": true,
+          "description": "Two-dimensional array of byline item names organized by footer line."
+        }
+      },
+      "server_markup": "<b:includable id='footerBylinesOverride'>\n  <b:loop index='i' values='data:items' var='region'>\n    <div expr:class='\"post-footer-line post-footer-line-\" + data:i'>\n      <b:loop values='data:region' var='item'>\n        <b:with value='data:widgets.Blog.first.allBylineItems where (n => n.name == data:item)' var='allbyline'>\n          <b:include data='allbyline' name='bylineRegion'/>\n        </b:with>\n      </b:loop>\n    </div>\n  </b:loop>\n</b:includable>"
+    },
+    "forwardArrowIcon": {
+      "name": "forwardArrowIcon",
+      "category": "icon",
+      "description": "Right-pointing arrow SVG icon for pagination and next post navigation.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='forwardArrowIcon'>\n  <b:include data='{iconId: \"ic_arrow_forward_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
     },
     "google-analytics": {
       "name": "google-analytics",
@@ -36,16 +916,991 @@
         1,
         2,
         3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='google-analytics'>\n  <b:if cond='data:blog.analytics4'>\n    <script async='' expr:src='\"https://www.googletagmanager.com/gtag/js\" params { id: data:blog.analyticsAccountNumber }'/>\n    <script>\n      window.dataLayer = window.dataLayer || [];\n      function gtag(){dataLayer.push(arguments);}\n      gtag('js', new Date());\n\n      gtag('config', '<data:blog.analyticsAccountNumber/>');\n    </script>\n    <b:else/>\n    <script type='text/javascript'>\n      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){\n      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),\n      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)\n      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');\n      ga('create', '<data:blog.analyticsAccountNumber/>', 'auto', 'blogger');\n      ga('blogger.send', 'pageview');\n    </script>\n  </b:if>\n</b:includable>"
+    },
+    "googlePlusBootstrap": {
+      "name": "googlePlusBootstrap",
+      "category": "universal",
+      "description": "Legacy Google+ identity and sharing SDK bootstrap script.",
+      "evidence": "official",
+      "deprecated": {
+        "status": "obsolete",
+        "action": "remove",
+        "reason": "Google+ integration has been sunset by Google.",
+        "replacement": null
+      },
+      "verified_at": "2026-10-10",
+      "safety": "deprecated",
+      "server_markup": "<b:includable id='googlePlusBootstrap'>\n  <script type='text/javascript'>\n    window.___gcfg = { 'lang': '<data:blog.locale/>' };\n  </script>\n</b:includable>"
+    },
+    "googlePlusIcon": {
+      "name": "googlePlusIcon",
+      "category": "deprecated",
+      "description": "Legacy Google+ brand SVG icon.",
+      "evidence": "official",
+      "deprecated": {
+        "status": "obsolete",
+        "action": "remove",
+        "reason": "Google+ integration has been sunset.",
+        "replacement": null
+      },
+      "verified_at": "2026-10-10",
+      "safety": "deprecated",
+      "server_markup": "<b:includable id='googlePlusIcon'>\n  <b:include data='{iconId: \"ic_24_googlePlus_dark\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "googlePlusShare": {
+      "name": "googlePlusShare",
+      "category": "widget",
+      "description": "Legacy Google+ social sharing action button subroutine.",
+      "evidence": "observed",
+      "safety": "deprecated",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "deprecated": {
+        "status": "obsolete",
+        "action": "remove",
+        "reason": "Google+ integration has been sunset by Google.",
+        "replacement": null
+      }
+    },
+    "headerByline": {
+      "name": "headerByline",
+      "category": "widget",
+      "description": "Post header metadata byline container section rendering publication date and author.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
       ]
     },
-    "urlParamsAsFormInput": {
-      "name": "urlParamsAsFormInput",
-      "category": "universal",
-      "description": "Preserves current URL query parameters as hidden form input fields when submitting search or filter forms.",
+    "headerBylineOverride": {
+      "name": "headerBylineOverride",
+      "category": "common",
+      "description": "Layout hook for overriding post header metadata bylines.",
+      "evidence": "official",
+      "widget_version": 2,
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "parameters": {
+        "items": {
+          "type": "string[]",
+          "required": true,
+          "description": "Array of byline item identifier names to render in header."
+        }
+      },
+      "server_markup": "<b:includable id='headerBylineOverride'>\n  <div class='post-header'>\n    <div class='post-header-line-1'>\n      <b:loop values='data:items' var='item'>\n        <b:with value='data:widgets.Blog.first.allBylineItems where (n => n.name == data:item)' var='allByline'>\n          <b:include data='allByline' name='bylineRegion'/>\n        </b:with>\n      </b:loop>\n    </div>\n  </div>\n</b:includable>"
+    },
+    "heroPost": {
+      "name": "heroPost",
+      "category": "theme",
+      "description": "Renders featured hero post banner card (Notable theme).",
+      "evidence": "official",
+      "widget_version": 2,
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        3
+      ],
+      "safety": "theme_bound",
+      "theme_dependency": {
+        "theme_name": "Notable",
+        "missing_dependencies": [
+          "normalPostSnippet",
+          "heroPostSubroutines"
+        ],
+        "failure_reason": "Invokes unprovided nested subroutines specific to the Notable official theme."
+      }
+    },
+    "heroPostSnippet": {
+      "name": "heroPostSnippet",
+      "category": "theme",
+      "description": "Renders excerpt description for the featured hero post (Notable theme).",
+      "evidence": "official",
+      "widget_version": 2,
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        3
+      ],
+      "safety": "theme_bound",
+      "theme_dependency": {
+        "theme_name": "Notable",
+        "missing_dependencies": [
+          "normalPostSnippet"
+        ],
+        "failure_reason": "Coupled to Notable post excerpt markup hierarchy."
+      }
+    },
+    "hierarchy": {
+      "name": "hierarchy",
+      "category": "widget",
+      "description": "Collapsible tree hierarchy archive format organized by year, month, and post titles.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "BlogArchive"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "homePageLink": {
+      "name": "homePageLink",
+      "category": "widget",
+      "description": "Pagination navigation anchor link returning to the blog homepage.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "iframeComments": {
+      "name": "iframeComments",
+      "category": "widget",
+      "description": "Security iframe container hosting Google-authenticated comment submission interface.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "image": {
+      "name": "image",
+      "category": "widget",
+      "description": "Blog logo or banner header image element rendered according to placement setting.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Header"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "inlineAd": {
+      "name": "inlineAd",
+      "category": "widget",
+      "description": "In-feed responsive advertising slot rendered between index listing post cards.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "interval": {
+      "name": "interval",
+      "category": "widget",
+      "description": "Archive interval node selector rendering collapsible accordion toggle button.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "BlogArchive"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "linkIcon": {
+      "name": "linkIcon",
+      "category": "icon",
+      "description": "Hyperlink chain SVG icon for permalinks and external links.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='linkIcon'>\n  <b:include data='{iconId: \"ic_24_link_dark\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "linkShare": {
+      "name": "linkShare",
+      "category": "widget",
+      "description": "Direct permalink clipboard copy action button subroutine for post sharing.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "list": {
+      "name": "list",
+      "category": "widget",
+      "description": "Vertical unordered list format for blog labels with optional post count badges.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Label"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "main": {
+      "name": "main",
+      "category": "common",
+      "description": "Primary top-level entrypoint subroutine invoked when rendering the gadget.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "All"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "manageComments": {
+      "name": "manageComments",
+      "category": "widget",
+      "description": "Administrative comment moderation action links for authenticated blog authors.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "maybeAddShareButtons": {
+      "name": "maybeAddShareButtons",
+      "category": "common",
+      "description": "Evaluates widget configuration and renders social share buttons when enabled.",
+      "evidence": "official",
+      "widget_version": 2,
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "parameters": {
+        "shareButtonClass": {
+          "type": "string",
+          "required": false,
+          "description": "CSS class applied to share buttons container."
+        },
+        "overridden": {
+          "type": "boolean",
+          "required": false,
+          "description": "Whether super.postShareButtons should be invoked."
+        }
+      },
+      "server_markup": "<b:includable id='maybeAddShareButtons'>\n  <div class='post-share-buttons'>\n    <b:class expr:name='data:shareButtonClass'/>\n    <b:include cond='data:overridden' name='super.postShareButtons'/>\n  </div>\n</b:includable>"
+    },
+    "menuIcon": {
+      "name": "menuIcon",
+      "category": "icon",
+      "description": "Hamburger menu SVG icon (three horizontal bars) for mobile navigation drawer.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='menuIcon'>\n  <b:include data='{iconId: \"ic_menu_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "nextPageLink": {
+      "name": "nextPageLink",
+      "category": "widget",
+      "description": "Pagination navigation link navigating to the next chronological page of posts.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "noContentPlaceholder": {
+      "name": "noContentPlaceholder",
+      "category": "common",
+      "description": "Displays empty state placeholder markup when a widget collection contains no entries.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='noContentPlaceholder'>\n  <b:if cond='data:posts.empty'>\n    <div class='blog-posts hfeed container'>\n      <div class='post-outer-container'>\n        <b:if cond='data:view.isError'>\n          <div class='status-msg-body'><data:navMessage/></div>\n          <b:else/>\n          <div class='no-posts-message'><b:eval expr='data:view.isSearch ? data:messages.noResultsFound : data:messages.theresNothingHere'/></div>\n        </b:if>\n      </div>\n    </div>\n  </b:if>\n</b:includable>"
+    },
+    "normalPost": {
+      "name": "normalPost",
+      "category": "theme",
+      "description": "Renders standard post card within theme feed listings (Notable theme).",
+      "evidence": "official",
+      "widget_version": 2,
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        3
+      ],
+      "safety": "theme_bound",
+      "theme_dependency": {
+        "theme_name": "Notable",
+        "missing_dependencies": [
+          "normalPostSnippet",
+          "notableSubroutines"
+        ],
+        "failure_reason": "Requires Notable internal post container includables not defined in custom themes."
+      }
+    },
+    "normalPostBodySnippet": {
+      "name": "normalPostBodySnippet",
+      "category": "theme",
+      "description": "Renders body snippet text for normal post cards (Notable theme).",
+      "evidence": "official",
+      "widget_version": 2,
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        3
+      ],
+      "safety": "theme_bound",
+      "theme_dependency": {
+        "theme_name": "Notable",
+        "missing_dependencies": [
+          "normalPostSnippet"
+        ],
+        "failure_reason": "Coupled to Notable theme post excerpt markup."
+      }
+    },
+    "openGraphMetaData": {
+      "name": "openGraphMetaData",
+      "category": "common",
+      "description": "Generates Open Graph protocol metadata tags (og:title, og:url, og:image, og:description) for enhanced social sharing.",
       "evidence": "official",
       "verified_at": "2026-10-10",
       "layout_versions": [
         1,
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='openGraphMetaData'>\n  <b:comment render='false'>Metadata for Open Graph protocol. See http://ogp.me/.</b:comment>\n  <meta expr:content='data:blog.url.canonical' property='og:url'/>\n  <meta expr:content='data:view.title.escaped' property='og:title'/>\n  <meta expr:content='data:view.description.escaped' property='og:description'/>\n  <b:if cond='data:view.featuredImage'>\n    <meta expr:content='resizeImage(data:view.featuredImage, 1200, \"1200:630\")' property='og:image'/>\n  <b:elseif cond='data:widgets'/>\n    <b:loop values='data:widgets.Blog.first.posts where (p => p.featuredImage) map (p => p.featuredImage)' var='imageUrl'>\n      <meta expr:content='resizeImage(data:imageUrl, 1200, \"1200:630\")' property='og:image'/>\n    </b:loop>\n  <b:elseif cond='data:blog.postImageUrl'/>\n    <meta expr:content='resizeImage(data:blog.postImageUrl, 1200, \"1200:630\")' property='og:image'/>\n  </b:if>\n</b:includable>"
+    },
+    "otherSharingButton": {
+      "name": "otherSharingButton",
+      "category": "widget",
+      "description": "Overflow 'more options' sharing button opening extended providers dropdown menu.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "overflowButton": {
+      "name": "overflowButton",
+      "category": "widget",
+      "description": "Mobile or responsive overflow toggle button showing hidden navigation pages.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "PageList"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "overflowablePageList": {
+      "name": "overflowablePageList",
+      "category": "widget",
+      "description": "Responsive navigation bar with automatic overflow folding for long page menus.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "PageList"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "pageLink": {
+      "name": "pageLink",
+      "category": "widget",
+      "description": "Individual navigation link item rendering page title and active state indicator.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "PageList"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "pageList": {
+      "name": "pageList",
+      "category": "widget",
+      "description": "Standard unordered list container holding published standalone page navigation links.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "PageList"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "pinterestIcon": {
+      "name": "pinterestIcon",
+      "category": "icon",
+      "description": "Pinterest brand SVG icon for pin sharing action.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='pinterestIcon'>\n  <b:include data='{iconId: \"ic_24_pinterest_dark\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "platformShare": {
+      "name": "platformShare",
+      "category": "widget",
+      "description": "Generic social platform sharing button subroutine evaluating target service provider.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "post": {
+      "name": "post",
+      "category": "widget",
+      "description": "Complete single post card layout container enclosing header, body, and footer sections.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postAuthor": {
+      "name": "postAuthor",
+      "category": "widget",
+      "description": "Post author byline metadata item rendering author display name and profile link.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postBody": {
+      "name": "postBody",
+      "category": "theme",
+      "description": "Main post content body block container.",
+      "evidence": "official",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        1,
+        2,
+        3
+      ],
+      "safety": "portable",
+      "parameters": {
+        "post": {
+          "type": "Post",
+          "required": true,
+          "description": "Post object dictionary containing id and body."
+        }
+      },
+      "server_markup": "<b:includable id='postBody' var='post'>\n  <div class='post-body entry-content container' expr:id='\"post-body-\" + data:post.id'>\n    <data:post.body/>\n  </div>\n</b:includable>"
+    },
+    "postBodySnippet": {
+      "name": "postBodySnippet",
+      "category": "theme",
+      "description": "Post body text snippet representation.",
+      "evidence": "official",
+      "widget_version": 2,
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "parameters": {
+        "post": {
+          "type": "Post",
+          "required": true,
+          "description": "Post object dictionary containing snippets."
+        }
+      },
+      "server_markup": "<b:includable id='postBodySnippet' var='post'>\n  <b:with value='\"post\"' var='snippetPrefix'>\n    <b:include data='post' name='normalPostBodySnippet'/>\n  </b:with>\n</b:includable>"
+    },
+    "postCommentsAndAd": {
+      "name": "postCommentsAndAd",
+      "category": "widget",
+      "description": "Wrapper container grouping post comments section and following inline advertisement.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postCommentsLink": {
+      "name": "postCommentsLink",
+      "category": "widget",
+      "description": "Discussion anchor link rendering comment count and navigating to comment form.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postFooter": {
+      "name": "postFooter",
+      "category": "widget",
+      "description": "Post footer block container enclosing bylines, share buttons, author box, and labels.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postFooterAuthorProfile": {
+      "name": "postFooterAuthorProfile",
+      "category": "widget",
+      "description": "Author profile badge and biographical info rendered in post footer.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postHeader": {
+      "name": "postHeader",
+      "category": "widget",
+      "description": "Post header block container enclosing post title and publication bylines.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postJumpLink": {
+      "name": "postJumpLink",
+      "category": "widget",
+      "description": "Standard 'Read more' / 'Keep reading' excerpt jump link navigating to full post page.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postLabels": {
+      "name": "postLabels",
+      "category": "widget",
+      "description": "Post tag and label collection list rendering categorisation links.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postLocation": {
+      "name": "postLocation",
+      "category": "widget",
+      "description": "Geographical publication location byline tag rendering post place name.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postMeta": {
+      "name": "postMeta",
+      "category": "widget",
+      "description": "Structured schema metadata container enclosing machine-readable microdata attributes.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postMetadataJSON": {
+      "name": "postMetadataJSON",
+      "category": "common",
+      "description": "Injects structured schema.org JSON-LD metadata for search engine indexing.",
+      "evidence": "official",
+      "widget_version": 2,
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "parameters": {
+        "post": {
+          "type": "Post",
+          "required": true,
+          "description": "Post object dictionary containing canonical url, title, body, date, author."
+        }
+      },
+      "server_markup": "<b:includable id='postMetadataJSON' var='post'>\n<script type='application/ld+json'>\n{\n  \"@context\": \"http://schema.org\",\n  \"@type\": \"BlogPosting\",\n  \"mainEntityOfPage\": {\n    \"@type\": \"WebPage\",\n    \"@id\": \"<data:post.url.canonical.jsonEscaped/>\"\n  },\n  \"headline\": \"<data:post.title.jsonEscaped/>\",\n  \"description\": \"<b:eval expr='(data:post.body snippet { length: 150, links: false, linebreaks: false, ellipsis: true }).jsonEscaped'/>\",\n  \"datePublished\": \"<data:post.date.iso8601.jsonEscaped/>\",\n  \"dateModified\": \"<data:post.lastUpdated.iso8601.jsonEscaped/>\",\n  <b:include name='postMetadataJSONImage'/>\n  <b:include name='postMetadataJSONPublisher'/>\n  \"author\": {\n    \"@type\": \"Person\",\n    \"name\": \"<data:post.author.name.jsonEscaped/>\"\n  }\n}\n</script>\n</b:includable>"
+    },
+    "postMetadataJSONImage": {
+      "name": "postMetadataJSONImage",
+      "category": "widget",
+      "description": "JSON-LD schema.org ImageObject structured metadata node for search indexing.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postMetadataJSONPublisher": {
+      "name": "postMetadataJSONPublisher",
+      "category": "widget",
+      "description": "JSON-LD schema.org Organization publisher metadata node for search indexing.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postPagination": {
+      "name": "postPagination",
+      "category": "widget",
+      "description": "Older and newer post navigation anchor links container rendered on single post views.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postReactions": {
+      "name": "postReactions",
+      "category": "widget",
+      "description": "Interactive post reaction voting buttons container subroutine.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postShareButtons": {
+      "name": "postShareButtons",
+      "category": "widget",
+      "description": "Post social sharing buttons group container rendering enabled provider icons.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postSnippet": {
+      "name": "postSnippet",
+      "category": "common",
+      "description": "Generates summary text excerpt with truncation from post content.",
+      "evidence": "official",
+      "widget_version": 2,
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "parameters": {
+        "post": {
+          "type": "Post",
+          "required": true,
+          "description": "Post object dictionary containing snippets."
+        },
+        "snippetPrefix": {
+          "type": "string",
+          "required": false,
+          "description": "Prefix for CSS container classes (defaults to 'post')."
+        }
+      },
+      "server_markup": "<b:includable id='postSnippet'>\n  <div expr:class='(data:snippetPrefix ?: \"post\") + \"-snippet snippet-container r-snippet-container\"'>\n    <div class='snippet-item r-snippetized'>\n      <b:eval expr='data:post.snippets.long'/>\n    </div>\n    <a class='snippet-fade r-snippet-fade hidden' expr:href='data:post.url'/>\n  </div>\n</b:includable>"
+    },
+    "postTimestamp": {
+      "name": "postTimestamp",
+      "category": "widget",
+      "description": "Post publication or modification timestamp byline rendering formatted date.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "postTitle": {
+      "name": "postTitle",
+      "category": "theme",
+      "description": "Post title heading with permalink anchor.",
+      "evidence": "official",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        1,
+        2,
+        3
+      ],
+      "safety": "portable",
+      "parameters": {
+        "post": {
+          "type": "Post",
+          "required": true,
+          "description": "Post object dictionary containing id, title, link, and url."
+        }
+      },
+      "server_markup": "<b:includable id='postTitle' var='post'>\n  <b:comment>Snippetize the post title</b:comment>\n  <div class='post-title-container'>\n    <a expr:name='data:post.id'/>\n    <h3 class='post-title entry-title'>\n      <b:if cond='data:post.link or (data:post.url and data:view.url != data:post.url)'>\n        <a expr:href='data:post.link ?: data:post.url'>\n          <div class='snippet-container r-snippet-container'>\n            <div class='r-snippetized'>\n              <data:post.title/>\n            </div>\n            <b:if cond='data:post.title != \"\"'>\n              <div class='snippet-fade r-snippet-fade hidden'/>\n            </b:if>\n          </div>\n        </a>\n      <b:else/>\n        <data:post.title/>\n      </b:if>\n    </h3>\n  </div>\n</b:includable>"
+    },
+    "posts": {
+      "name": "posts",
+      "category": "widget",
+      "description": "Subordinate post collection list rendered under an expanded archive date node.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "BlogArchive"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "previousPageLink": {
+      "name": "previousPageLink",
+      "category": "widget",
+      "description": "Pagination navigation link navigating to previous chronological page of posts.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "profileImage": {
+      "name": "profileImage",
+      "category": "widget",
+      "description": "User profile photograph container element.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
         2,
         3
       ]
@@ -66,32 +1921,9 @@
       "layout_versions": [
         1,
         2
-      ]
-    },
-    "googlePlusBootstrap": {
-      "name": "googlePlusBootstrap",
-      "category": "universal",
-      "description": "Legacy Google+ identity and sharing SDK bootstrap script.",
-      "evidence": "official",
-      "deprecated": {
-        "status": "obsolete",
-        "action": "remove",
-        "reason": "Google+ integration has been sunset by Google.",
-        "replacement": null
-      },
-      "verified_at": "2026-10-10"
-    },
-    "openGraphMetaData": {
-      "name": "openGraphMetaData",
-      "category": "common",
-      "description": "Generates Open Graph protocol metadata tags (og:title, og:url, og:image, og:description) for enhanced social sharing.",
-      "evidence": "official",
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        1,
-        2,
-        3
-      ]
+      ],
+      "safety": "deprecated",
+      "server_markup": "<b:includable id='quickedit'>\n  <div class='clear'></div>\n</b:includable>"
     },
     "reportAbuse": {
       "name": "reportAbuse",
@@ -103,130 +1935,9 @@
         1,
         2,
         3
-      ]
-    },
-    "responsiveImageStyle": {
-      "name": "responsiveImageStyle",
-      "category": "common",
-      "description": "Emits dynamic inline CSS styling for responsive aspect ratios and container dimensions.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "extendableItems": {
-      "name": "extendableItems",
-      "category": "common",
-      "description": "Renders expandable and collapsible list items for navigation menus and archive hierarchies.",
-      "evidence": "observed",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "flatBloggerIcon": {
-      "name": "flatBloggerIcon",
-      "category": "common",
-      "description": "Renders the standard flat SVG Blogger B logo mark.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "footerBylinesOverride": {
-      "name": "footerBylinesOverride",
-      "category": "common",
-      "description": "Layout hook for overriding post footer metadata bylines.",
-      "evidence": "official",
-      "widget_version": 2,
-      "target_widgets": [
-        "Blog"
       ],
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "headerBylineOverride": {
-      "name": "headerBylineOverride",
-      "category": "common",
-      "description": "Layout hook for overriding post header metadata bylines.",
-      "evidence": "official",
-      "widget_version": 2,
-      "target_widgets": [
-        "Blog"
-      ],
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "maybeAddShareButtons": {
-      "name": "maybeAddShareButtons",
-      "category": "common",
-      "description": "Evaluates widget configuration and renders social share buttons when enabled.",
-      "evidence": "official",
-      "widget_version": 2,
-      "target_widgets": [
-        "Blog"
-      ],
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "noContentPlaceholder": {
-      "name": "noContentPlaceholder",
-      "category": "common",
-      "description": "Displays empty state placeholder markup when a widget collection contains no entries.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "postMetadataJSON": {
-      "name": "postMetadataJSON",
-      "category": "common",
-      "description": "Injects structured schema.org JSON-LD metadata for search engine indexing.",
-      "evidence": "official",
-      "widget_version": 2,
-      "target_widgets": [
-        "Blog"
-      ],
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "postSnippet": {
-      "name": "postSnippet",
-      "category": "common",
-      "description": "Generates summary text excerpt with truncation from post content.",
-      "evidence": "official",
-      "widget_version": 2,
-      "target_widgets": [
-        "Blog"
-      ],
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
+      "safety": "portable",
+      "server_markup": "<b:includable id='reportAbuse'>\n  <h3 class='title'>\n    <a class='report_abuse'\n       href='https://www.blogger.com/go/report-abuse'\n       rel='noopener'\n       target='_blank'>\n      <data:messages.reportAbuse/>\n    </a>\n  </h3>\n</b:includable>"
     },
     "responsiveImage": {
       "name": "responsiveImage",
@@ -238,171 +1949,88 @@
       "layout_versions": [
         2,
         3
-      ]
+      ],
+      "safety": "portable",
+      "parameters": {
+        "image": {
+          "type": "string",
+          "required": true,
+          "description": "Source image URL for the img element."
+        },
+        "imageClass": {
+          "type": "string",
+          "required": false,
+          "description": "Optional CSS class name for the img element."
+        },
+        "altText": {
+          "type": "string",
+          "required": false,
+          "description": "Accessible alternative description for the image."
+        },
+        "imageSizes": {
+          "type": "number[]",
+          "required": false,
+          "description": "Array of integer pixel widths for responsive breakpoints."
+        },
+        "imageRatio": {
+          "type": "string",
+          "required": false,
+          "description": "Target aspect ratio string (e.g. '16:9')."
+        },
+        "sourceSizes": {
+          "type": "string",
+          "required": false,
+          "description": "HTML sizes attribute value string."
+        }
+      },
+      "server_markup": "<b:includable id='responsiveImage'>\n  <img expr:src='data:image'>\n    <b:class expr:name='data:imageClass'/>\n    <b:attr expr:value='data:altText ?: data:messages.image' name='alt'/>\n    <b:attr cond='data:enhancedSourceset.isYoutube' expr:value='resizeImage(data:enhancedSourceset, 1152, \"1152:864\")' name='data-ess'/>\n    <b:attr expr:value='data:originalWidth' name='data-original-width'/>\n    <b:attr expr:value='data:originalHeight' name='data-original-height'/>\n    <b:attr expr:value='data:image.isResizable ? data:sourceSizes : \"\"' name='sizes'/>\n    <b:attr expr:value='sourceSet(data:image, (data:imageSizes ?: [120,240,480,640,800]), data:imageRatio)' name='srcset'/>\n  </img>\n</b:includable>"
     },
-    "skipNavigation": {
-      "name": "skipNavigation",
+    "responsiveImageStyle": {
+      "name": "responsiveImageStyle",
       "category": "common",
-      "description": "Renders accessibility skip-to-content navigation anchor link.",
+      "description": "Emits dynamic inline CSS styling for responsive aspect ratios and container dimensions.",
       "evidence": "official",
       "widget_version": 2,
       "verified_at": "2026-10-10",
       "layout_versions": [
         2,
         3
-      ]
+      ],
+      "safety": "portable",
+      "parameters": {
+        "image": {
+          "type": "string",
+          "required": true,
+          "description": "Source image URL to be styled responsively."
+        },
+        "selector": {
+          "type": "string",
+          "required": true,
+          "description": "CSS selector target to apply the background image rules."
+        },
+        "imageSizes": {
+          "type": "number[]",
+          "required": false,
+          "description": "Array of integer pixel widths for responsive breakpoints."
+        },
+        "imageRatio": {
+          "type": "string",
+          "required": false,
+          "description": "Target aspect ratio string (e.g. '16:9')."
+        }
+      },
+      "server_markup": "<b:includable id='responsiveImageStyle'>\n  <b:with value='resizeImage(data:image,(data:imageSizes ?: [200,400,800,1200]),data:imageRatio)' var='images'>\n    <b:tag name='style'>\n      <b:eval expr='data:selector + \" {background-image:url(\" + data:image.cssEscaped + \");}\"'/>\n      <b:loop index='i' values='data:images' var='image'>\n        <b:if cond='data:image.size == data:images.last.size'>\n          /* Last tag covers anything over one higher than the previous max-size cap. */\n        </b:if>\n        @media <b:if cond='data:image.size != data:images.last.size'><b:eval expr='\"(max-width: \" + data:image.size + \"px)\"'/></b:if><b:if cond='data:image.size not in {data:images.first.size,data:images.last.size}'> and </b:if><b:if cond='data:image.size != data:images.first.size'><b:eval expr='\"(min-width: \" + (data:images[data:i - 1].size + 1) + \"px)\"'/></b:if> <b:eval expr='\"{ \" + data:selector + \" {background-image:url(\" + data:image.url.cssEscaped + \");}}\"'/>\n      </b:loop>\n    </b:tag>\n  </b:with>\n</b:includable>"
     },
-    "widget-title": {
-      "name": "widget-title",
-      "category": "common",
-      "description": "Standard widget title heading markup rendered across all gadget types.",
-      "evidence": "official",
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        1,
-        2,
-        3
-      ]
-    },
-    "widgetNotAvailableInPreview": {
-      "name": "widgetNotAvailableInPreview",
-      "category": "common",
-      "description": "Banner shown in Theme Designer preview when a widget cannot be previewed live.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "backArrowIcon": {
-      "name": "backArrowIcon",
-      "category": "icon",
-      "description": "Left-pointing arrow SVG icon for pagination and previous post navigation.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "chevronDownIcon": {
-      "name": "chevronDownIcon",
-      "category": "icon",
-      "description": "Downward chevron SVG icon for dropdown menus and disclosure widgets.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "chevronUpIcon": {
-      "name": "chevronUpIcon",
-      "category": "icon",
-      "description": "Upward chevron SVG icon for accordion items and collapse toggles.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "commentIcon": {
-      "name": "commentIcon",
-      "category": "icon",
-      "description": "Speech bubble comment SVG icon for post discussion links.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "defaultAvatarIcon": {
-      "name": "defaultAvatarIcon",
-      "category": "icon",
-      "description": "Generic silhouette avatar SVG icon for anonymous or avatarless commenters.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "emailIcon": {
-      "name": "emailIcon",
-      "category": "icon",
-      "description": "Mail envelope SVG icon for email sharing action.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "facebookIcon": {
-      "name": "facebookIcon",
-      "category": "icon",
-      "description": "Facebook brand SVG icon for social sharing action.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "forwardArrowIcon": {
-      "name": "forwardArrowIcon",
-      "category": "icon",
-      "description": "Right-pointing arrow SVG icon for pagination and next post navigation.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "linkIcon": {
-      "name": "linkIcon",
-      "category": "icon",
-      "description": "Hyperlink chain SVG icon for permalinks and external links.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "menuIcon": {
-      "name": "menuIcon",
-      "category": "icon",
-      "description": "Hamburger menu SVG icon (three horizontal bars) for mobile navigation drawer.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "pinterestIcon": {
-      "name": "pinterestIcon",
-      "category": "icon",
-      "description": "Pinterest brand SVG icon for pin sharing action.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
+    "searchForm": {
+      "name": "searchForm",
+      "category": "widget",
+      "description": "Search query submission form enclosing input field and submit button.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "BlogSearch"
+      ],
+      "verified_at": "2026-10-27",
       "layout_versions": [
         2,
         3
@@ -418,6 +2046,23 @@
       "layout_versions": [
         2,
         3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='searchIcon'>\n  <b:include data='{iconId: \"ic_search_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "searchSubmit": {
+      "name": "searchSubmit",
+      "category": "widget",
+      "description": "Search button element dispatching blog query to search results view.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "BlogSearch"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
       ]
     },
     "shareIcon": {
@@ -427,6 +2072,76 @@
       "evidence": "official",
       "widget_version": 2,
       "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='shareIcon'>\n  <b:include data='{iconId: \"ic_share_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "sharingButton": {
+      "name": "sharingButton",
+      "category": "widget",
+      "description": "Individual social sharing button wrapper subroutine.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "sharingButtonContent": {
+      "name": "sharingButtonContent",
+      "category": "widget",
+      "description": "Inner icon and text label content structure for a sharing button.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "sharingButtons": {
+      "name": "sharingButtons",
+      "category": "widget",
+      "description": "Unified responsive social sharing buttons toolbar container subroutine.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "sharingButtonsMenu": {
+      "name": "sharingButtonsMenu",
+      "category": "widget",
+      "description": "Collapsible disclosure menu panel holding secondary social sharing options.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
       "layout_versions": [
         2,
         3
@@ -442,67 +2157,118 @@
       "layout_versions": [
         2,
         3
-      ]
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='sharingOtherIcon'>\n  <b:include data='{iconId: \"ic_more_horiz_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
     },
-    "svgIcon": {
-      "name": "svgIcon",
-      "category": "icon",
-      "description": "Universal system subroutine that resolves and renders named SVG icons.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "svgIconButton": {
-      "name": "svgIconButton",
-      "category": "icon",
-      "description": "Interactive button wrapper element enclosing a named SVG icon.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "twitterIcon": {
-      "name": "twitterIcon",
-      "category": "icon",
-      "description": "Twitter brand SVG icon for tweet sharing action.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "verticalMoreIcon": {
-      "name": "verticalMoreIcon",
-      "category": "icon",
-      "description": "Vertical ellipsis (kebab menu) SVG icon for contextual actions.",
-      "evidence": "official",
-      "widget_version": 2,
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        2,
-        3
-      ]
-    },
-    "feedPostImage": {
-      "name": "feedPostImage",
-      "category": "theme",
-      "description": "Renders post thumbnail image card within dynamic feeds (Emporio theme).",
-      "evidence": "official",
-      "widget_version": 2,
+    "sharingPlatformIcon": {
+      "name": "sharingPlatformIcon",
+      "category": "widget",
+      "description": "SVG brand icon subroutine resolving the visual symbol for a sharing provider.",
+      "evidence": "observed",
+      "safety": "portable",
       "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts",
         "Blog"
       ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "skipNavigation": {
+      "name": "skipNavigation",
+      "category": "common",
+      "description": "Renders accessibility skip-to-content navigation anchor link.",
+      "evidence": "official",
+      "widget_version": 2,
       "verified_at": "2026-10-10",
       "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='skipNavigation'>\n  <a class='skip-navigation' href='#main' tabindex='0'>\n    <data:messages.skipToMainContent/>\n  </a>\n</b:includable>"
+    },
+    "snippetedPostByline": {
+      "name": "snippetedPostByline",
+      "category": "widget",
+      "description": "Compact post metadata byline rendered within aggregated summary cards.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "snippetedPostContent": {
+      "name": "snippetedPostContent",
+      "category": "widget",
+      "description": "Summary post excerpt container subroutine within aggregated gadget listings.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "snippetedPostThumbnail": {
+      "name": "snippetedPostThumbnail",
+      "category": "widget",
+      "description": "Responsive post thumbnail image subroutine computed via resizeImage.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "snippetedPostTitle": {
+      "name": "snippetedPostTitle",
+      "category": "widget",
+      "description": "Post heading title link within aggregated summary gadget listings.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "snippetedPosts": {
+      "name": "snippetedPosts",
+      "category": "widget",
+      "description": "Aggregated collection loop subroutine rendering post summary cards.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "FeaturedPost",
+        "PopularPosts"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
         3
       ]
     },
@@ -518,121 +2284,377 @@
       "verified_at": "2026-10-10",
       "layout_versions": [
         3
-      ]
+      ],
+      "safety": "theme_bound",
+      "theme_dependency": {
+        "theme_name": "Emporio",
+        "missing_dependencies": [
+          "$(posts.thumbnail.aspectRatio)"
+        ],
+        "failure_reason": "Strictly depends on Emporio Theme Designer skin variable '$(posts.thumbnail.aspectRatio)'."
+      }
     },
-    "heroPost": {
-      "name": "heroPost",
-      "category": "theme",
-      "description": "Renders featured hero post banner card (Notable theme).",
+    "svgIcon": {
+      "name": "svgIcon",
+      "category": "icon",
+      "description": "Universal system subroutine that resolves and renders named SVG icons.",
       "evidence": "official",
       "widget_version": 2,
-      "target_widgets": [
-        "Blog"
-      ],
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        3
-      ]
-    },
-    "heroPostSnippet": {
-      "name": "heroPostSnippet",
-      "category": "theme",
-      "description": "Renders excerpt description for the featured hero post (Notable theme).",
-      "evidence": "official",
-      "widget_version": 2,
-      "target_widgets": [
-        "Blog"
-      ],
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        3
-      ]
-    },
-    "normalPost": {
-      "name": "normalPost",
-      "category": "theme",
-      "description": "Renders standard post card within theme feed listings (Notable theme).",
-      "evidence": "official",
-      "widget_version": 2,
-      "target_widgets": [
-        "Blog"
-      ],
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        3
-      ]
-    },
-    "normalPostBodySnippet": {
-      "name": "normalPostBodySnippet",
-      "category": "theme",
-      "description": "Renders body snippet text for normal post cards (Notable theme).",
-      "evidence": "official",
-      "widget_version": 2,
-      "target_widgets": [
-        "Blog"
-      ],
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        3
-      ]
-    },
-    "postBody": {
-      "name": "postBody",
-      "category": "theme",
-      "description": "Main post content body block container.",
-      "evidence": "official",
-      "target_widgets": [
-        "Blog"
-      ],
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        1,
-        2,
-        3
-      ]
-    },
-    "postBodySnippet": {
-      "name": "postBodySnippet",
-      "category": "theme",
-      "description": "Post body text snippet representation.",
-      "evidence": "official",
-      "widget_version": 2,
-      "target_widgets": [
-        "Blog"
-      ],
       "verified_at": "2026-10-10",
       "layout_versions": [
         2,
         3
-      ]
-    },
-    "postTitle": {
-      "name": "postTitle",
-      "category": "theme",
-      "description": "Post title heading with permalink anchor.",
-      "evidence": "official",
-      "target_widgets": [
-        "Blog"
       ],
-      "verified_at": "2026-10-10",
-      "layout_versions": [
-        1,
-        2,
-        3
-      ]
-    },
-    "googlePlusIcon": {
-      "name": "googlePlusIcon",
-      "category": "deprecated",
-      "description": "Legacy Google+ brand SVG icon.",
-      "evidence": "official",
-      "deprecated": {
-        "status": "obsolete",
-        "action": "remove",
-        "reason": "Google+ integration has been sunset.",
-        "replacement": null
+      "safety": "portable",
+      "parameters": {
+        "iconId": {
+          "type": "string",
+          "required": true,
+          "description": "Identifier fragment for the SVG sprite symbol."
+        },
+        "iconClass": {
+          "type": "string",
+          "required": false,
+          "description": "Optional CSS class string applied to the SVG tag."
+        }
       },
-      "verified_at": "2026-10-10"
+      "server_markup": "<b:includable id='svgIcon'>\n  <svg class='svg-icon-24'>\n    <b:class expr:name='data:iconClass'/>\n    <use expr:xlink:href='\"/responsive/sprite_v1_6.css.svg\" fragment data:iconId' xmlns:xlink='http://www.w3.org/1999/xlink'/>\n  </svg>\n</b:includable>"
+    },
+    "svgIconButton": {
+      "name": "svgIconButton",
+      "category": "icon",
+      "description": "Interactive button wrapper element enclosing a named SVG icon.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "parameters": {
+        "iconId": {
+          "type": "string",
+          "required": true,
+          "description": "Identifier fragment for the SVG sprite symbol."
+        },
+        "iconClass": {
+          "type": "string",
+          "required": false,
+          "description": "Optional CSS class string applied to button and SVG."
+        }
+      },
+      "server_markup": "<b:includable id='svgIconButton'>\n  <button class='svg-icon-24-button'>\n    <b:class expr:name='data:iconClass'/>\n    <svg class='svg-icon-24'>\n      <use expr:xlink:href='\"/responsive/sprite_v1_6.css.svg\" fragment data:iconId'\n           xmlns:xlink='http://www.w3.org/1999/xlink'/>\n    </svg>\n  </button>\n</b:includable>"
+    },
+    "teamProfile": {
+      "name": "teamProfile",
+      "category": "widget",
+      "description": "Team blog contributor list rendering multiple author profile cards.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "teamProfileLink": {
+      "name": "teamProfileLink",
+      "category": "widget",
+      "description": "Anchor link navigating to the author's public contributor profile.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "threadedCommentForm": {
+      "name": "threadedCommentForm",
+      "category": "widget",
+      "description": "Nested reply comment form container invoked under parent comment threads.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "threadedCommentJs": {
+      "name": "threadedCommentJs",
+      "category": "widget",
+      "description": "Core JavaScript runtime bootstrap script enabling interactive threaded comment replies.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "threadedComments": {
+      "name": "threadedComments",
+      "category": "widget",
+      "description": "Hierarchical threaded comments tree container rendering parent and nested reply comments.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "title": {
+      "name": "title",
+      "category": "widget",
+      "description": "Blog brand title heading or anchor link displayed in site header.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Header"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "tooltipCss": {
+      "name": "tooltipCss",
+      "category": "widget",
+      "description": "Dynamic inline styles for hover tooltip popups on social sharing and reaction buttons.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Blog"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "twitterIcon": {
+      "name": "twitterIcon",
+      "category": "icon",
+      "description": "Twitter brand SVG icon for tweet sharing action.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='twitterIcon'>\n  <b:include data='{iconId: \"ic_24_twitter_dark\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "urlParamsAsFormInput": {
+      "name": "urlParamsAsFormInput",
+      "category": "universal",
+      "description": "Preserves current URL query parameters as hidden form input fields when submitting search or filter forms.",
+      "evidence": "official",
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        1,
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='urlParamsAsFormInput'>\n  <!-- EMPTY -->\n</b:includable>"
+    },
+    "userGoogleProfile": {
+      "name": "userGoogleProfile",
+      "category": "widget",
+      "description": "Google Account profile integration link for authenticated blog authors.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "userLocation": {
+      "name": "userLocation",
+      "category": "widget",
+      "description": "Author hometown or geographical residence byline item.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "userProfile": {
+      "name": "userProfile",
+      "category": "widget",
+      "description": "Single-author profile container enclosing avatar, bio, and social links.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "userProfileData": {
+      "name": "userProfileData",
+      "category": "widget",
+      "description": "Author metadata dictionary list rendering location and joined date.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "userProfileImage": {
+      "name": "userProfileImage",
+      "category": "widget",
+      "description": "Main author portrait photograph image element.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "userProfileInfo": {
+      "name": "userProfileInfo",
+      "category": "widget",
+      "description": "Biographical description text and author introduction paragraph.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "userProfileLink": {
+      "name": "userProfileLink",
+      "category": "widget",
+      "description": "Anchor link navigating to the author's complete public profile page.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "userProfileText": {
+      "name": "userProfileText",
+      "category": "widget",
+      "description": "Brief author introduction summary excerpt.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "verticalMoreIcon": {
+      "name": "verticalMoreIcon",
+      "category": "icon",
+      "description": "Vertical ellipsis (kebab menu) SVG icon for contextual actions.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='verticalMoreIcon'>\n  <b:include data='{iconId: \"ic_more_vert_black_24dp\", iconClass: data:iconClass}'\n             expr:name='data:button ? \"svgIconButton\" : \"svgIcon\"'/>\n</b:includable>"
+    },
+    "viewProfileLink": {
+      "name": "viewProfileLink",
+      "category": "widget",
+      "description": "Outbound anchor link directing visitors to complete Google or Blogger profile.",
+      "evidence": "observed",
+      "safety": "portable",
+      "target_widgets": [
+        "Profile"
+      ],
+      "verified_at": "2026-10-27",
+      "layout_versions": [
+        2,
+        3
+      ]
+    },
+    "widget-title": {
+      "name": "widget-title",
+      "category": "common",
+      "description": "Standard widget title heading markup rendered across all gadget types.",
+      "evidence": "official",
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        1,
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='widget-title'>\n  <b:if cond='data:renderAsDetails'>\n    <summary>\n      <div class='collapsible-title'>\n        <h3 class='title'>\n          <b:if cond='data:defaultTitle or data:title'>\n            <b:eval expr='data:defaultTitle ?: data:title'/>\n          <b:else/>\n            <data:messages.widget/>\n          </b:if>\n        </h3>\n        <b:include data='{ iconClass: \"chevron-down\" }' name='chevronDownIcon'/>\n        <b:include data='{ iconClass: \"chevron-up\" }' name='chevronUpIcon'/>\n      </div>\n    </summary>\n  <b:elseif cond='data:defaultTitle or data:title'/>\n    <h3 class='title'>\n      <b:eval expr='data:defaultTitle ?: data:title'/>\n    </h3>\n  </b:if>\n</b:includable>"
+    },
+    "widgetNotAvailableInPreview": {
+      "name": "widgetNotAvailableInPreview",
+      "category": "common",
+      "description": "Banner shown in Theme Designer preview when a widget cannot be previewed live.",
+      "evidence": "official",
+      "widget_version": 2,
+      "verified_at": "2026-10-10",
+      "layout_versions": [
+        2,
+        3
+      ],
+      "safety": "portable",
+      "server_markup": "<b:includable id='widgetNotAvailableInPreview'>\n  <div expr:class='\"widget not-available-https\" + data:widget.type'>\n    <b:with value='data:widget.type' var='defaultTitle'>\n      <b:include name='widget-title'/>\n    </b:with>\n    <div class='widget-content'>\n      <table>\n        <tr>\n          <td align='center' valign='middle'>\n            <data:messages.widgetNotAvailableInPreview/>\n          </td>\n        </tr>\n      </table>\n    </div>\n  </div>\n</b:includable>"
     }
   }
 }

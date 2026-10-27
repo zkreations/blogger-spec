@@ -434,6 +434,20 @@ function validateIdentifierUniqueness(
   }
 
   if (isIncludable) {
+    const idAttr = token.attributes.id
+    const idVal = idAttr?.value ? idAttr.value.trim() : ''
+
+    if (idVal && idVal.startsWith('super.')) {
+      const diagCode = 'BX1060' as BloggerDiagnosticCode
+      const diagRule = catalog.getDiagnostic(diagCode)
+      pushDiagnostic(diagnostics, catalog, diagCode, token, {
+        attribute: 'id',
+        start: idAttr.start,
+        end: idAttr.end,
+        message: diagRule?.message ?? 'Defining or overriding an includable with a \'super.\' prefix is prohibited. Platform super delegators are immutable and cannot be declared via <b:includable>.',
+      })
+    }
+
     let container: BloggerDirectiveToken | undefined
     for (let i = tagStack.length - 1; i >= 0; i--) {
       if (tagStack[i]!.tagName === 'b:widget' || tagStack[i]!.tagName === 'b:defaultmarkup') {
@@ -442,26 +456,22 @@ function validateIdentifierUniqueness(
       }
     }
 
-    const idAttr = token.attributes.id
-    if (idAttr) {
-      const idVal = idAttr.value.trim()
-      if (idVal && container) {
-        let idSet = containerIncludableIds.get(container)
-        if (!idSet) {
-          idSet = new Set()
-          containerIncludableIds.set(container, idSet)
-        }
-        if (idSet.has(idVal)) {
-          const dupIncDiag = catalog.getStandardDiagnostic('duplicate_includable_id')
-          pushDiagnostic(diagnostics, catalog, dupIncDiag, token, {
-            message: `Duplicate includable identifier '${idVal}' in <${container.tagName}>.`,
-            start: idAttr.start,
-            end: idAttr.end,
-          })
-        }
-        else {
-          idSet.add(idVal)
-        }
+    if (idVal && container) {
+      let idSet = containerIncludableIds.get(container)
+      if (!idSet) {
+        idSet = new Set()
+        containerIncludableIds.set(container, idSet)
+      }
+      if (idSet.has(idVal)) {
+        const dupIncDiag = catalog.getStandardDiagnostic('duplicate_includable_id')
+        pushDiagnostic(diagnostics, catalog, dupIncDiag, token, {
+          message: `Duplicate includable identifier '${idVal}' in <${container.tagName}>.`,
+          start: idAttr?.start,
+          end: idAttr?.end,
+        })
+      }
+      else {
+        idSet.add(idVal)
       }
     }
   }
@@ -665,19 +675,46 @@ function validateIncludeElement(
     })
   }
 
-  // 2. BX1024: Deprecated server inclusion
   const nameAttr = token.attributes.name
   if (nameAttr?.value) {
     const rawName = nameAttr.value.trim()
+
+    // 2. BX1058: Super inclusion warning in custom themes
+    if (rawName.startsWith('super.')) {
+      const diagCode = 'BX1058' as BloggerDiagnosticCode
+      const diagRule = catalog.getDiagnostic(diagCode)
+      pushDiagnostic(diagnostics, catalog, diagCode, token, {
+        attribute: 'name',
+        start: nameAttr.start,
+        end: nameAttr.end,
+        message: diagRule?.message ?? 'Referencing platform super.* inclusions delegates execution to Blogger\'s internal official theme templates. Avoid in custom themes to maintain visual and markup consistency.',
+      })
+    }
+
     const incName = rawName.startsWith('super.') ? rawName.slice('super.'.length) : rawName
     const incDef = catalog.getInclusion(incName)
-    if (incDef?.deprecated) {
+
+    // 3. BX1059: Theme-bound inclusion warning
+    if (incDef?.safety === 'theme_bound') {
+      const diagCode = 'BX1059' as BloggerDiagnosticCode
+      const diagRule = catalog.getDiagnostic(diagCode)
+      const depMsg = incDef.theme_dependency ? ` (${incDef.theme_dependency.failure_reason})` : ''
+      pushDiagnostic(diagnostics, catalog, diagCode, token, {
+        attribute: 'name',
+        start: nameAttr.start,
+        end: nameAttr.end,
+        message: `${diagRule?.message ?? 'Referenced server inclusion is bound to an official Blogger theme and fails in independent themes.'}${depMsg}`.trim(),
+      })
+    }
+
+    // 4. BX1024: Deprecated server inclusion
+    if (incDef?.deprecated || incDef?.safety === 'deprecated') {
       const diagCode = (catalog.getStandardDiagnostic('deprecated_attribute') || 'BX1024') as BloggerDiagnosticCode
       pushDiagnostic(diagnostics, catalog, diagCode, token, {
         attribute: 'name',
         start: nameAttr.start,
         end: nameAttr.end,
-        message: `Server inclusion '${incName}' is deprecated. ${incDef.deprecated.reason ?? ''}`.trim(),
+        message: `Server inclusion '${incName}' is deprecated. ${incDef?.deprecated?.reason ?? ''}`.trim(),
       })
     }
   }
@@ -1693,7 +1730,7 @@ export function validateTemplateStructure(
     if (token.tagName === 'b:includable' && !token.isClosing) {
       if (tagStack.some(t => t.tagName === 'b:defaultmarkup')) {
         const idVal = token.attributes.id?.value?.trim()
-        if (idVal) {
+        if (idVal && !idVal.startsWith('super.')) {
           defaultMarkupIncludableIds.add(idVal)
         }
       }

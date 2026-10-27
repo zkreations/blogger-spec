@@ -471,10 +471,23 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   }
 
   const inclusionsCatalog = store.getCatalog('inclusions')
-  for (const [incKey, incDef] of Object.entries(inclusionsCatalog.inclusions || {})) {
+  const inclusionsMap = inclusionsCatalog.inclusions || {}
+  for (const [incKey, incDef] of Object.entries(inclusionsMap)) {
     for (const targetWidget of incDef.target_widgets || []) {
-      if (!knownWidgets.has(targetWidget)) {
+      if (targetWidget !== 'All' && !knownWidgets.has(targetWidget)) {
         errors.push(`Inclusion '${incKey}' references unknown target widget '${targetWidget}'.`)
+      }
+    }
+  }
+
+  const widgetDefaults = inclusionsCatalog.domain_metadata?.widget_default_inclusions || {}
+  for (const [wType, subroutines] of Object.entries(widgetDefaults)) {
+    if (wType !== 'All' && !knownWidgets.has(wType)) {
+      errors.push(`widget_default_inclusions specifies unknown widget type '${wType}'.`)
+    }
+    for (const sub of (subroutines as string[]) || []) {
+      if (!inclusionsMap[sub]) {
+        errors.push(`widget_default_inclusions['${wType}'] references unknown inclusion '${sub}'.`)
       }
     }
   }
