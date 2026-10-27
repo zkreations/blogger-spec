@@ -2,6 +2,7 @@
 node_modules/
 dist/
 audit/
+plans/
 *.log
 .DS_Store
 .cache/
