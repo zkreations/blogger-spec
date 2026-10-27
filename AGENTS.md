@@ -4,7 +4,7 @@ Zero-runtime-dependency specification authority and execution engine for Blogger
 
 ## Architecture
 
-- `catalogs/*.json`: **Single Source of Truth** (SSOT for all 10 domains). Never hardcode catalog domain knowledge in `src/`.
+- `catalogs/*.json`: **Single Source of Truth** (SSOT for all 11 domains). Never hardcode catalog domain knowledge in `src/`.
 - `catalogs/schemas/`: Draft 2020-12 canonical validation schemas.
 - `fixtures/`: Empirical test suite (`expressions/`, `templates/`, `diagnostics/`).
 - `src/`: Engine implementation and validation logic.
@@ -25,7 +25,7 @@ pnpm.cmd run test         # Vitest conformance suite
 ## Invariants
 
 - **Catalog edit cycle**: Edit `catalogs/<catalog>.json` -> `pnpm.cmd run build` -> `pnpm.cmd run test:spec`.
-- **Fixture contract**: Conforms to `BloggerFixture` union (`input.kind`, `expected.outcome`, `covers[]`, `verifiedAt`).
+- **Fixture contract**: Conforms to `BloggerFixture` union (`input.kind`, `expected.outcome`, `covers[]`, `verified_at`).
 - **Zero runtime dependencies**: Production export strictly maintains `"dependencies": {}`.
 - **Type ontology**: Platform subtypes inherit directly from `string` (depth 1). Theme variables (`skin:*`) are strictly isolated (`parent_type: null`) and do not receive template string modifiers (`.length`, `.escaped`).
 - **Layout versioning**: Layouts v1, v2, v3 metadata resides in `catalogs/directives.json`. Detection runs via `detectTemplateVersion(xmlText)` with explicit attribute precedence and fallback to Layouts v3.

@@ -13,7 +13,7 @@ It is designed to be consumed by external tools — IDE extensions, linters, tem
 
 ## Modules
 
-- **10 JSON catalogs** — machine-readable definitions (Draft 2020-12 schemas) for directives, operators, types, widgets, settings, globals, messages, scopes, diagnostics, and system inclusions.
+- **11 JSON catalogs** — machine-readable definitions (Draft 2020-12 schemas) for directives, operators, types, widgets, settings, globals, messages, scopes, diagnostics, system inclusions, and locales.
 - **`blogger-spec/ast`** — Pratt expression parser producing structured AST nodes (`BloggerExpressionNode`), supporting dual syntax (infix and functional), collection lambdas, dynamic bracket indexing, and 10 levels of operator precedence. Includes recursion limit protection (`maxDepth: 50`).
 - **`blogger-spec/parser`** — Lexical tokenizer and attribute parser for Blogger XML directives (`<b:...>`, `<data:...>`, `<Variable...>`), expressions containing relational operators (`>`), CDATA skin variables, and unclosed tag stack tracking.
 - **`blogger-spec/version`** — Detects Blogger template layout architecture (Layouts v1, v2, v3) from raw XML.
@@ -40,8 +40,9 @@ blogger-spec/
 │   ├── globals.json          # Global data objects (data:blog, data:view, data:skin...)
 │   ├── messages.json         # Localized UI string definitions (data:messages.*)
 │   ├── scopes.json           # Variable scope resolution rules and precedence
-│   ├── diagnostics.json      # Diagnostic rules (BX1001-BX1049)
+│   ├── diagnostics.json      # Diagnostic rules (BX1001-BX1060)
 │   ├── inclusions.json       # System inclusions, layout versions 1-3, super.* prefix
+│   ├── locales.json          # Locale metadata and canonical UI translations
 │   └── schemas/              # JSON Schemas Draft 2020-12 for each catalog
 ├── fixtures/                 # Test fixtures verified against the production Blogger engine
 │   ├── expressions/          # Expression evaluation cases and edge cases
@@ -201,11 +202,12 @@ import types from 'blogger-spec/types' with { type: 'json' }
 | `blogger-spec/ast` | `parseExpression`, `tokenize`, `ExpressionParser` | Pratt parser and lexer producing expression ASTs (`BloggerExpressionNode`). |
 | `blogger-spec/data-path` | `resolveDataPath`, `toSkinVarIdentifier` | Member traversal across globals, widget dictionaries, platform types, variables, and Theme Designer skin variables (`data:skin.vars.*`). |
 | `blogger-spec/scope` | `ScopeEnvironment` | Compiler symbol table and scope stack with canonical precedence and variable shadowing. |
-| `blogger-spec/parser` | `scanDirectiveTokens`, `validateTemplateStructure`, `validateTemplateExpressions`, `validateExpression`, `validateDirectiveNesting`, `canNest`, `BloggerStructureDiagnostic` | Directive scanner, structural validator, expression attribute auditor, and automated QuickFix provider (`BX1001-BX1049`). |
+| `blogger-spec/parser` | `scanDirectiveTokens`, `validateTemplateStructure`, `validateTemplateExpressions`, `validateExpression`, `validateDirectiveNesting`, `canNest`, `BloggerStructureDiagnostic` | Directive scanner, structural validator, expression attribute auditor, and automated QuickFix provider (`BX1001-BX1060`). |
 | `blogger-spec/quota` | `evaluateExpressionBudget`, `countExpressionTokens`, `tokenizeExpression`, `COMPILER_QUOTA_LIMIT` | Token quota calculator and budget evaluator against the 40-token compiler ceiling (`BX1021`). |
 | `blogger-spec/type-system` | `isTypeAssignable`, `getTypeModifiers`, `getSkinTypeModifiers`, `resolveModifierReturnType`, `resolveOperatorReturnType`, `inferExpressionType`, `isTruthy` | Type assignability, modifier inheritance, Theme Designer skin modifiers, operator return type inference, and expression type deduction. |
 | `blogger-spec/version` | `detectTemplateVersion`, `getLayoutVersionsSpec` | Template layout architecture detector (v1, v2, v3). |
 | `blogger-spec/catalogs` | `getSpecCatalog`, `SpecCatalog`, `MemoryCatalogStore`, `getDirectiveSnippet`, `getOperatorSnippet`, `isDirective`, `isOperator`, `getDiagnostic` | Specification query facade, attribute validation, snippet generators, and in-memory catalog store. |
+| `blogger-spec/inclusion-expander` | `expandServerInclusion`, `extractIncludableBody`, `getInclusionParameterContracts` | Platform backend inclusion expander and macro-inlining engine. |
 | `blogger-spec/runner` | `runSpecConformance`, `runConformance` | Test harness to validate engine conformance against empirical fixtures. |
 | `blogger-spec/node` | `FsCatalogStore`, `getCatalogsDirectory`, `getSchemasDirectory` | Filesystem-based catalog store for Node.js environments. |
 | `blogger-spec/<domain>` | `directives`, `operators`, `types`, `widgets`, `settings`, `globals`, etc. | Direct access to JSON catalogs and Draft 2020-12 schemas (`blogger-spec/schemas/*`). |

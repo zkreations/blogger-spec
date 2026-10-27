@@ -20,7 +20,7 @@
 
 ```
 blogger-spec/
-├── catalogs/                 # Canonical Single Source of Truth (10 Master JSON Catalogs)
+├── catalogs/                 # Canonical Single Source of Truth (11 Master JSON Catalogs)
 │   ├── directives.json       # b:* tags, attributes, closure modes, constraints, layout versions
 │   ├── operators.json        # Operators, 10 precedence tiers, dual syntax, token costs
 │   ├── types.json            # Types ontology, modifiers, truthiness matrix, coercion rules
@@ -29,8 +29,9 @@ blogger-spec/
 │   ├── globals.json          # Global data objects (data:blog, data:view, data:skin...)
 │   ├── messages.json         # Localized UI string definitions (data:messages.*)
 │   ├── scopes.json           # Variable scope resolution rules & precedence
-│   ├── diagnostics.json      # Diagnostic compiler/linter rules (BX1001-BX1049)
+│   ├── diagnostics.json      # Diagnostic compiler/linter rules (BX1001-BX1060)
 │   ├── inclusions.json       # System inclusions, layouts versions 1-3, super.* prefix
+│   ├── locales.json          # Locale metadata and canonical UI translations
 │   └── schemas/              # Draft 2020-12 canonical JSON schemas
 ├── fixtures/                 # Empirical conformance test cases
 │   ├── expressions/          # Expression evaluation fixtures
@@ -85,7 +86,7 @@ blogger-spec/
 - **Structural Validation & Expression Audits**: If directive nesting, grammar groups, expression attribute validation, or snippet generators change, update [`catalogs/directives.json`](catalogs/directives.json), [`src/catalogs/spec-catalog.ts`](src/catalogs/spec-catalog.ts), and [`src/parser/template-validator.ts`](src/parser/template-validator.ts). Ensure `canNest`, `validateDirectiveNesting`, and `validateTemplateExpressions` reflect canonical policies.
 
 ### 3. Add Conformance Fixtures
-Add empirical test cases under [`fixtures/`](fixtures/) adhering to the `BloggerFixture` discriminated union contract (`input.kind`, `expected.outcome`, `covers[]`, `verifiedAt`).
+Add empirical test cases under [`fixtures/`](fixtures/) adhering to the `BloggerFixture` discriminated union contract (`input.kind`, `expected.outcome`, `covers[]`, `verified_at`).
 
 ### 4. Build & Verify Loop
 Run the complete verification pipeline before submitting any changes:
