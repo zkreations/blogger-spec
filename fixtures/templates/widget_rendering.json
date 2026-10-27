@@ -379,6 +379,106 @@
         "canonicalDom": true
       },
       "verified_at": "2026-10-16"
+    },
+    {
+      "id": "rendering/widget_rendering/data-tag-not-singleton-comment",
+      "title": "Direct Data Tag On Composite Object Emits Not A Singleton Comment",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:data:*",
+        "type:object"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:blog.locale/>",
+        "mode": "fragment",
+        "context": {
+          "blog": {
+            "locale": {
+              "language": "es"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<!--Substitution is not a singleton for tag [blog.locale]-->",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-26"
+    },
+    {
+      "id": "rendering/widget_rendering/data-tag-missing-substitution-comment",
+      "title": "Direct Data Tag On Missing Property Emits Cannot Find Substitution Comment",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:data:*"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<data:view.postId/>",
+        "mode": "fragment",
+        "context": {
+          "view": {
+            "isHomepage": true
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<!--Can't find substitution for tag [view.postId]-->",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-26"
+    },
+    {
+      "id": "rendering/widget_rendering/section-empty-no-items-class",
+      "title": "Empty Section Emits No-Items Section Class",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:section"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='empty-sec' showaddelement='false'/>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"no-items section\" id=\"empty-sec\"></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-26"
+    },
+    {
+      "id": "rendering/widget_rendering/widget-suppress-when-empty-pagelist",
+      "title": "Suppress When Empty Widget Policy Omits Wrapper When Collection Is Empty",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:section",
+        "tag:b:widget",
+        "tag:b:includable",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:section id='nav' showaddelement='false'><b:widget id='PageList1' type='PageList' version='2'><b:includable id='main'><ul><b:loop values='data:links' var='link'><li><data:link.title/></li></b:loop></ul></b:includable></b:widget></b:section>",
+        "mode": "fragment",
+        "context": {
+          "links": []
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"no-items section\" id=\"nav\"></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-26"
     }
   ]
 }

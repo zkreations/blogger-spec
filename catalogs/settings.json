@@ -330,7 +330,8 @@
             "FLAT",
             "MENU"
           ],
-          "bound_runtime_data": "data:style"
+          "bound_runtime_data": "data:style",
+          "value_transform": "none"
         },
         "showWeekEnd": {
           "type": "boolean",
@@ -401,7 +402,8 @@
             "LAST_UPDATE_DESCENDING",
             "ALPHABETICAL"
           ],
-          "bound_runtime_data": "data:sortType"
+          "bound_runtime_data": "data:sortType",
+          "value_transform": "none"
         }
       },
       "evidence": "official",
@@ -621,7 +623,8 @@
             "REPLACE",
             "BEFORE_DESCRIPTION"
           ],
-          "bound_runtime_data": "data:imagePlacement"
+          "bound_runtime_data": "data:imagePlacement",
+          "value_transform": "none"
         },
         "shrinkToFit": {
           "type": "boolean",
@@ -998,7 +1001,8 @@
             "HORIZONTAL",
             "SIMPLE"
           ],
-          "bound_runtime_data": "data:layout"
+          "bound_runtime_data": "data:layout",
+          "value_transform": "none"
         }
       },
       "evidence": "official",

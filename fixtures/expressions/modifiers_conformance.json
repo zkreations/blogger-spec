@@ -289,51 +289,49 @@
     },
     {
       "id": "expressions/modifiers/width",
-      "title": "width Modifier Conformance",
-      "evidence": "official",
+      "title": "width Modifier Conformance on Resized Image",
+      "evidence": "observed",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:width",
+        "operator:resizeImage",
         "type:image"
       ],
       "input": {
         "kind": "expression",
-        "source": "data:image.width",
+        "source": "resizeImage(data:image, 800, \"4:3\").width",
         "context": {
-          "image": {
-            "width": 800
-          }
+          "image": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
         }
       },
       "expected": {
         "outcome": "value",
         "value": 800
       },
-      "verified_at": "2026-10-17"
+      "verified_at": "2026-10-26"
     },
     {
       "id": "expressions/modifiers/height",
-      "title": "height Modifier Conformance",
-      "evidence": "official",
+      "title": "height Modifier Conformance on Resized Image",
+      "evidence": "observed",
       "covers": [
         "subsystem:subtype_modifiers",
         "modifier:height",
+        "operator:resizeImage",
         "type:image"
       ],
       "input": {
         "kind": "expression",
-        "source": "data:image.height",
+        "source": "resizeImage(data:image, 800, \"4:3\").height",
         "context": {
-          "image": {
-            "height": 600
-          }
+          "image": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
         }
       },
       "expected": {
         "outcome": "value",
         "value": 600
       },
-      "verified_at": "2026-10-17"
+      "verified_at": "2026-10-26"
     },
     {
       "id": "expressions/modifiers/day-of-month",

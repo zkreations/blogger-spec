@@ -90,6 +90,7 @@
     },
     "Blog": {
       "description": "Canonical post model, comments, author data, pagination, labels, and feed links.",
+      "runtime_rendering_policy": "standard",
       "canonical": {
         "adClientId": {
           "type": "string",
@@ -1212,6 +1213,7 @@
     },
     "BlogArchive": {
       "description": "Hierarchical date archives, monthly/yearly post trees, and flat count lists.",
+      "runtime_rendering_policy": "suppress_when_empty",
       "canonical": {
         "data": {
           "type": "array[object]",
@@ -1557,6 +1559,7 @@
     },
     "FeaturedPost": {
       "description": "Pinned article showcase schema, post hero image, and formatted snippets.",
+      "runtime_rendering_policy": "suppress_when_empty",
       "canonical": {
         "postDisplay": {
           "type": "object",
@@ -1866,6 +1869,7 @@
     },
     "Header": {
       "description": "Blog title, header hero banner, description, and image placement flags.",
+      "runtime_rendering_policy": "suppress_when_empty",
       "canonical": {
         "backgroundPositionStyleStr": {
           "type": "string",
@@ -1945,6 +1949,7 @@
     },
     "Image": {
       "description": "Standalone image banner, caption, destination link, responsive srcset, and dimensions.",
+      "runtime_rendering_policy": "suppress_when_empty",
       "canonical": {
         "caption": {
           "type": "string",
@@ -2079,6 +2084,7 @@
     },
     "PageList": {
       "description": "Static standalone page navigation links, home link, and active selection state.",
+      "runtime_rendering_policy": "suppress_when_empty",
       "canonical": {
         "links": {
           "type": "array[object]",
@@ -2121,6 +2127,7 @@
     },
     "PopularPosts": {
       "description": "Ranked trending posts collection, thumbnail images, and comment counts.",
+      "runtime_rendering_policy": "suppress_when_empty",
       "canonical": {
         "postDisplay": {
           "type": "object",
@@ -2480,6 +2487,7 @@
     },
     "ReportAbuse": {
       "description": "System abuse reporting link gadget (DSA compliance, replaces legacy Navbar reporting channel).",
+      "runtime_rendering_policy": "server_forced_markup",
       "canonical": {},
       "evidence": "official",
       "verified_at": "2026-10-10"

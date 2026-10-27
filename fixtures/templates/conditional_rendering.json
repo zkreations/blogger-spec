@@ -75,6 +75,62 @@
         "canonicalDom": true
       },
       "verified_at": "2026-10-10"
+    },
+    {
+      "id": "rendering/conditional_rendering/non-singleton-object-truthiness",
+      "title": "Non-Singleton Composite Object Evaluates To Truthy In Conditional",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:conditional_rendering",
+        "tag:b:if",
+        "tag:b:else",
+        "type:object"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:blog.locale'>TruthyObject<b:else/>Falsy</b:if>",
+        "mode": "fragment",
+        "context": {
+          "blog": {
+            "locale": {
+              "language": "es",
+              "country": ""
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "TruthyObject",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-26"
+    },
+    {
+      "id": "rendering/conditional_rendering/missing-view-flag-falsy",
+      "title": "Missing View Flag Evaluates To Falsy In Conditional",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:conditional_rendering",
+        "tag:b:if",
+        "tag:b:else"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.isSearch'>Search<b:else/>NotSearch</b:if>",
+        "mode": "fragment",
+        "context": {
+          "view": {
+            "isHomepage": true
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "NotSearch",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-26"
     }
   ]
 }

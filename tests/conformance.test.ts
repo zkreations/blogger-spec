@@ -1,7 +1,17 @@
 import type { BloggerFixture, BloggerFixturesManifest } from '../src/types.js'
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { getDiagnostics } from '../src/catalogs/index.js'
+import {
+  getCoercionRules,
+  getDiagnostics,
+  getDirective,
+  getInclusion,
+  getOperator,
+  getRuntimeEvaluationStates,
+  getViewsMatrix,
+  getWidget,
+  getWidgetSettings,
+} from '../src/catalogs/index.js'
 import { parseExpression, validateExpression, validateTemplateStructure } from '../src/parser/index.js'
 import { getWorkspacePaths, setCustomWorkspaceRoot } from '../src/paths.js'
 import { evaluateExpressionBudget } from '../src/quota.js'
@@ -333,6 +343,67 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
           expect(actualCodes.has(expectedCode), `Fixture '${f.id}' expected diagnostic '${expectedCode}' but got [${Array.from(actualCodes).join(', ')}]`).toBe(true)
         }
       }
+    })
+  })
+
+  describe('local compiler SSOT contracts (BC-01 to BC-07)', () => {
+    it('defines all 12 canonical views and 4 runtime evaluation states (BC-02, BC-03)', () => {
+      const views = getViewsMatrix()
+      expect(Object.keys(views)).toEqual([
+        'homepage',
+        'post_listing',
+        'search_query',
+        'label_search',
+        'archive_yearly',
+        'archive_monthly',
+        'archive_weekly_daily',
+        'post',
+        'static_page',
+        'error_404',
+        'preview',
+        'layout_mode',
+      ])
+      expect(views.homepage.flags.isSearch).toBe('missing')
+      expect(views.search_query.flags.isSearch).toBe('true')
+      expect(views.preview.flags.isPreview).toBe('true')
+      expect(views.layout_mode.flags.isLayoutMode).toBe('true')
+
+      const evalStates = getRuntimeEvaluationStates()
+      expect(Object.keys(evalStates)).toEqual(['VALUE', 'EMPTY', 'MISSING', 'NOT_SINGLETON'])
+      expect(evalStates.NOT_SINGLETON?.boolean_coercion).toBe('truthy')
+      expect(evalStates.MISSING?.boolean_coercion).toBe('falsy')
+
+      const coercionRules = getCoercionRules()
+      expect(coercionRules.non_singleton_serialization).toBeDefined()
+      expect(coercionRules.missing_property_serialization).toBeDefined()
+    })
+
+    it('declares widget runtime_rendering_policy, setting value_transform, and directive rendering contracts (BC-05)', () => {
+      expect(getWidget('PageList')?.runtime_rendering_policy).toBe('suppress_when_empty')
+      expect(getWidget('ReportAbuse')?.runtime_rendering_policy).toBe('server_forced_markup')
+      expect(getWidget('Blog')?.runtime_rendering_policy).toBe('standard')
+
+      expect(getWidgetSettings('BlogArchive')?.canonical.showStyle?.value_transform).toBe('none')
+      expect(getWidgetSettings('Header')?.canonical.imagePlacement?.value_transform).toBe('none')
+      expect(getWidgetSettings('Label')?.canonical.display?.value_transform).toBe('lowercase')
+      expect(getWidgetSettings('LinkList')?.canonical.sorting?.value_transform).toBe('lowercase')
+      expect(getWidgetSettings('TextList')?.canonical.sorting?.value_transform).toBe('lowercase')
+
+      expect(getDirective('b:section')?.spec_extensions?.rendering).toBeDefined()
+      expect(getDirective('b:widget')?.spec_extensions?.rendering).toBeDefined()
+      expect(getDirective('data:*')?.spec_extensions?.rendering).toBeDefined()
+      expect(getInclusion('all-head-content')).toBeDefined()
+      expect(getInclusion('reportAbuse')).toBeDefined()
+    })
+
+    it('enforces resizeImage and sourceSet operator signatures (BC-06, BC-07)', () => {
+      const resizeOp = getOperator('resizeImage')
+      expect(resizeOp?.return_type).toBe('image')
+      expect(resizeOp?.overloads?.map(o => o.return_type)).toEqual(['image', 'array[object]'])
+
+      const sourceSetOp = getOperator('sourceSet')
+      expect(sourceSetOp?.return_type).toBe('string')
+      expect(sourceSetOp?.anti_patterns?.some(p => p.includes('resizeImage'))).toBe(true)
     })
   })
 })

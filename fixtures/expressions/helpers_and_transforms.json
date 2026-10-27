@@ -317,6 +317,49 @@
         "value": "Lorem ipsum dolor sit amet, consectetur adipiscing"
       },
       "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/helpers_and_transforms/image-resize-array-variants-url",
+      "title": "Image Resize Array Overload Returns Variant Objects With Url And Size",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:resizeImage",
+        "type:image_variant",
+        "modifier:url",
+        "modifier:first"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "(data:cdnImg resizeImage [300, 600]).first.url",
+        "context": {
+          "cdnImg": "https://blogger.googleusercontent.com/img/a/sample_id=s1600"
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://blogger.googleusercontent.com/img/a/sample_id=w300"
+      },
+      "verified_at": "2026-10-26"
+    },
+    {
+      "id": "expressions/helpers_and_transforms/url-params-overwrite-existing",
+      "title": "Url Params Operator Replaces Existing Query Parameters",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:helpers_and_transforms",
+        "operator:params"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "\"https://dev.zkreations.com/?old=1\" params { hl: \"es\", m: \"1\" }",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "https://dev.zkreations.com/?hl=es&m=1"
+      },
+      "verified_at": "2026-10-26"
     }
   ]
 }
