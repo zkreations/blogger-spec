@@ -10,12 +10,12 @@ import { getWorkspacePaths } from '../paths.js'
 import { verifyArtifactsFreshness } from './compiler.js'
 
 export {
-  type VerificationFreshnessItem,
-  type VerificationFreshnessReport,
+  type BloggerVerificationFreshnessItem,
+  type BloggerVerificationFreshnessReport,
   verifyArtifactsFreshness,
 } from './compiler.js'
 
-export interface SpecValidationReport {
+export interface BloggerSpecValidationReport {
   valid: boolean
   errors: string[]
   metrics: {
@@ -24,7 +24,7 @@ export interface SpecValidationReport {
   }
 }
 
-export interface ValidateSpecOptions {
+export interface BloggerValidateSpecOptions {
   reporter?: (message: string) => void
   checkDtsFreshness?: boolean
   store?: CatalogStore
@@ -110,7 +110,7 @@ function resolveBoundRuntimeData(
   return false
 }
 
-export function validateSpec(options?: ValidateSpecOptions): SpecValidationReport {
+export function validateSpec(options?: BloggerValidateSpecOptions): BloggerSpecValidationReport {
   const store = options?.store || new FsCatalogStore()
   const log = options?.reporter || (() => {})
   const errors: string[] = []

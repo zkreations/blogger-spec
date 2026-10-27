@@ -6,13 +6,13 @@ import type {
   BloggerDiagnosticCode,
   BloggerDiagnosticRule,
   BloggerDiagnosticSeverity,
+  BloggerDirectiveNestingAction,
   BloggerEvidenceLevel,
   BloggerFixture,
   BloggerFixturesManifest,
   BloggerLayoutVersion,
   BloggerOperatorDefinition,
   BloggerViewId,
-  DirectiveNestingAction,
 } from './generated/types.generated.js'
 
 export type * from './generated/types.generated.js'
@@ -89,20 +89,20 @@ export interface BloggerCursorContext {
   }
 }
 
-export interface HallucinatedDirectiveConfig {
+export interface BloggerHallucinatedDirectiveConfig {
   readonly targetTag: string
   readonly attrMap: Readonly<Record<string, string>>
   readonly requiredAttrs?: readonly string[]
 }
 
-export interface DirectiveNestingViolation {
+export interface BloggerDirectiveNestingViolation {
   code: BloggerDiagnosticCode
   rule: BloggerDiagnosticRule
-  action: DirectiveNestingAction
+  action: BloggerDirectiveNestingAction
   message: string
 }
 
-export interface DirectiveAttributeViolation {
+export interface BloggerDirectiveAttributeViolation {
   readonly attribute: string
   readonly code: BloggerDiagnosticCode
   readonly message: string
@@ -112,7 +112,7 @@ export interface DirectiveAttributeViolation {
   readonly valueEnd?: number
 }
 
-export interface DirectiveAttributesValidationResult {
+export interface BloggerDirectiveAttributesValidationResult {
   readonly valid: boolean
   readonly missingRequired: string[]
   readonly unknown: string[]
@@ -144,10 +144,10 @@ export interface DirectiveAttributesValidationResult {
     readonly valueStart?: number
     readonly valueEnd?: number
   }>
-  readonly violations: DirectiveAttributeViolation[]
+  readonly violations: BloggerDirectiveAttributeViolation[]
 }
 
-export interface VariableAttributesValidationResult {
+export interface BloggerVariableAttributesValidationResult {
   valid: boolean
   invalidAttributes: string[]
   missingAttributes: string[]
@@ -176,12 +176,12 @@ export interface BloggerDirectiveToken {
   attributes: Record<string, BloggerDirectiveAttributeToken>
 }
 
-export interface ScanDirectiveOptions {
+export interface BloggerScanDirectiveOptions {
   stopAtOffset?: number
   catalog?: any
 }
 
-export interface TemplateVersionResult {
+export interface BloggerTemplateVersionResult {
   version: BloggerLayoutVersion
   confidence: 'explicit' | 'inferred'
   detectedFeatures: string[]
@@ -194,22 +194,20 @@ export interface BloggerEngineAdapter {
   analyze?: (source: string, mode: 'expression' | 'template') => Array<{ code: string }>
 }
 
-export type SpecConsumerAdapter = BloggerEngineAdapter
-
-export interface ConformanceFilter {
+export interface BloggerConformanceFilter {
   kind?: 'expression' | 'template'
   covers?: string[]
   evidence?: BloggerEvidenceLevel[]
   ids?: string[]
 }
 
-export interface ConformanceOptions {
+export interface BloggerConformanceOptions {
   fixtures?: BloggerFixture[] | BloggerFixturesManifest
-  filter?: ConformanceFilter
+  filter?: BloggerConformanceFilter
   normalizeHtml?: (html?: string) => string
 }
 
-export interface ConformanceCaseResult {
+export interface BloggerConformanceCaseResult {
   id: string
   passed: boolean
   message?: string
@@ -217,12 +215,12 @@ export interface ConformanceCaseResult {
   actual?: any
 }
 
-export interface ConformanceReport {
+export interface BloggerConformanceReport {
   total: number
   passed: number
   failed: number
   skipped: number
-  results: ConformanceCaseResult[]
+  results: BloggerConformanceCaseResult[]
 }
 
 export interface BloggerExpressionToken {

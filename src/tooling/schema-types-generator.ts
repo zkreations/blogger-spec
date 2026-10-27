@@ -141,7 +141,7 @@ export function generateCanonicalSchemaTypes(): string {
     '',
     `export type BloggerDiagnosticSeverity = ${severityEnum.map(s => `'${s}'`).join(' | ')};`,
     '',
-    `export type DirectiveNestingAction = ${nestingActionEnum.map(a => `'${a}'`).join(' | ')};`,
+    `export type BloggerDirectiveNestingAction = ${nestingActionEnum.map(a => `'${a}'`).join(' | ')};`,
     '',
     `export type BloggerDeprecationStatus = ${deprecationStatusEnum.map(s => `'${s}'`).join(' | ')};`,
     '',

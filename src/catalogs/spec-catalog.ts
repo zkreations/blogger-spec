@@ -5,13 +5,18 @@ import type {
   BloggerDiagnosticRule,
   BloggerDiagnosticsCatalog,
   BloggerDirectiveAttribute,
+  BloggerDirectiveAttributesValidationResult,
   BloggerDirectiveAttributeToken,
+  BloggerDirectiveAttributeViolation,
   BloggerDirectiveDefinition,
   BloggerDirectiveName,
+  BloggerDirectiveNestingAction,
+  BloggerDirectiveNestingViolation,
   BloggerDirectivesCatalog,
   BloggerDirectiveToken,
   BloggerGlobalObjectDefinition,
   BloggerGlobalsCatalog,
+  BloggerHallucinatedDirectiveConfig,
   BloggerInclusionDefinition,
   BloggerInclusionsCatalog,
   BloggerLayoutVersionsCatalog,
@@ -31,18 +36,13 @@ import type {
   BloggerSuperDelegationRule,
   BloggerTypeDefinition,
   BloggerTypesCatalog,
+  BloggerVariableAttributesValidationResult,
   BloggerViewId,
   BloggerViewMatrixEntry,
   BloggerWidgetDefinition,
   BloggerWidgetsCatalog,
   BloggerWidgetSettingsDefinition,
   BloggerWidgetType,
-  DirectiveAttributesValidationResult,
-  DirectiveAttributeViolation,
-  DirectiveNestingAction,
-  DirectiveNestingViolation,
-  HallucinatedDirectiveConfig,
-  VariableAttributesValidationResult,
 } from '../types.js'
 import type { CatalogStore } from './store.js'
 import {
@@ -89,7 +89,7 @@ export function validateVariableAttributes(
   variableType: string,
   presentAttributes: string[],
   catalog: SpecCatalog = getSpecCatalog(),
-): VariableAttributesValidationResult {
+): BloggerVariableAttributesValidationResult {
   return catalog.validateVariableAttributes(variableType, presentAttributes)
 }
 
@@ -97,7 +97,7 @@ export function validateDirectiveAttributes(
   target: string | DirectiveAttributesValidationTarget,
   attributesOrCatalog?: string[] | Record<string, BloggerDirectiveAttributeToken | { value?: string }> | SpecCatalog,
   catalog: SpecCatalog = getSpecCatalog(),
-): DirectiveAttributesValidationResult {
+): BloggerDirectiveAttributesValidationResult {
   if (typeof target !== 'string') {
     const spec = (attributesOrCatalog && typeof attributesOrCatalog === 'object' && 'validateDirectiveAttributes' in attributesOrCatalog)
       ? (attributesOrCatalog as SpecCatalog)
@@ -121,8 +121,8 @@ export function getVariableTypeAttributes(
 }
 
 export type {
-  DirectiveAttributesValidationResult,
-  VariableAttributesValidationResult,
+  BloggerDirectiveAttributesValidationResult,
+  BloggerVariableAttributesValidationResult,
 } from '../types.js'
 export {
   BLOGGER_BOOLEAN_VALUES,
@@ -154,7 +154,7 @@ export class SpecCatalog {
   private readonly inclusionMap = new Map<string, BloggerInclusionDefinition>()
   private readonly widgetDefaultInclusions = new Map<string, string[]>()
   private readonly hallucinatedDirectives = new Map<string, BloggerDiagnosticCode>()
-  private readonly hallucinatedDirectiveTransforms = new Map<string, HallucinatedDirectiveConfig>()
+  private readonly hallucinatedDirectiveTransforms = new Map<string, BloggerHallucinatedDirectiveConfig>()
   private readonly invertedAttributeMaps = new Map<string, string>()
   private readonly standardDiagnostics = new Map<BloggerStandardDiagnosticKey, BloggerDiagnosticCode>()
   private readonly scalarTypes: string[] = []
@@ -197,7 +197,7 @@ export class SpecCatalog {
 
     const transforms = (dirCatalog.domain_metadata as any)?.hallucinated_directive_transforms || {}
     for (const [code, config] of Object.entries(transforms)) {
-      this.hallucinatedDirectiveTransforms.set(code, config as HallucinatedDirectiveConfig)
+      this.hallucinatedDirectiveTransforms.set(code, config as BloggerHallucinatedDirectiveConfig)
     }
 
     const inverted = (dirCatalog.domain_metadata as any)?.inverted_attribute_maps || {}
@@ -509,7 +509,7 @@ export class SpecCatalog {
     return true
   }
 
-  validateNesting(parentTag: string, childTag: string): DirectiveNestingViolation | null {
+  validateDirectiveNesting(parentTag: string, childTag: string): BloggerDirectiveNestingViolation | null {
     if (this.canNest(parentTag, childTag)) {
       return null
     }
@@ -519,7 +519,7 @@ export class SpecCatalog {
 
     const defaultProhibitedCode = this.getStandardDiagnostic('prohibited_nesting')
     let diagCode = defaultProhibitedCode
-    let action: DirectiveNestingAction = 'reject'
+    let action: BloggerDirectiveNestingAction = 'reject'
 
     const parentPolicy = parentDef?.grammar?.invalid_nesting_policy?.on_invalid_child
     if (parentPolicy) {
@@ -585,7 +585,7 @@ export class SpecCatalog {
   validateDirectiveAttributes(
     target: string | DirectiveAttributesValidationTarget,
     attributesOrCatalog?: string[] | Record<string, BloggerDirectiveAttributeToken | { value?: string }> | SpecCatalog,
-  ): DirectiveAttributesValidationResult {
+  ): BloggerDirectiveAttributesValidationResult {
     let tagName: string
     let attributesRecord: Record<string, { value?: string, start?: number, end?: number, valueStart?: number, valueEnd?: number }> = {}
     let presentAttributes: string[] = []
@@ -667,11 +667,11 @@ export class SpecCatalog {
     const allowsArbitrary = Boolean(directive.grammar?.arbitrary_attributes)
 
     const unknown: string[] = []
-    const deprecated: DirectiveAttributesValidationResult['deprecated'] = []
+    const deprecated: BloggerDirectiveAttributesValidationResult['deprecated'] = []
     const invalidExpressions: string[] = []
-    const inverted: DirectiveAttributesValidationResult['inverted'] = []
-    const disallowedValues: DirectiveAttributesValidationResult['disallowedValues'] = []
-    const violations: DirectiveAttributeViolation[] = []
+    const inverted: BloggerDirectiveAttributesValidationResult['inverted'] = []
+    const disallowedValues: BloggerDirectiveAttributesValidationResult['disallowedValues'] = []
+    const violations: BloggerDirectiveAttributeViolation[] = []
 
     const inversions = directive.attribute_inversions || {}
     for (const [invAttr, invDef] of Object.entries(inversions)) {
@@ -864,7 +864,7 @@ export class SpecCatalog {
   validateVariableAttributes(
     variableType: string,
     presentAttributes: string[],
-  ): VariableAttributesValidationResult {
+  ): BloggerVariableAttributesValidationResult {
     const meta = this.getVariableTypeAttributes(variableType)
     if (!meta) {
       return {
@@ -885,10 +885,6 @@ export class SpecCatalog {
       invalidAttributes,
       missingAttributes,
     }
-  }
-
-  validateDirectiveNesting(parentTag: string, childTag: string): DirectiveNestingViolation | null {
-    return this.validateNesting(parentTag, childTag)
   }
 
   isOperator(op: string): op is BloggerOperatorName {
@@ -966,12 +962,8 @@ export class SpecCatalog {
     return this.diagnosticMap.has(code)
   }
 
-  getDiagnosticRule(code: string): BloggerDiagnosticRule | undefined {
-    return this.diagnosticMap.get(code)
-  }
-
   getDiagnostic(code: string): BloggerDiagnosticRule | undefined {
-    return this.getDiagnosticRule(code)
+    return this.diagnosticMap.get(code)
   }
 
   getAllDiagnostics(): Record<string, BloggerDiagnosticRule> {
@@ -1328,7 +1320,7 @@ export class SpecCatalog {
     return this.hallucinatedDirectives.get(tagName.toLowerCase())
   }
 
-  getHallucinatedDirectiveTransform(code: string): HallucinatedDirectiveConfig | undefined {
+  getHallucinatedDirectiveTransform(code: string): BloggerHallucinatedDirectiveConfig | undefined {
     return this.hallucinatedDirectiveTransforms.get(code)
   }
 
@@ -1575,8 +1567,8 @@ export function canNest(parentTagName: string, childTagName: string, catalog: Sp
   return catalog.canNest(parentTagName, childTagName)
 }
 
-export function validateNesting(parentTagName: string, childTagName: string, catalog: SpecCatalog = getSpecCatalog()): DirectiveNestingViolation | null {
-  return catalog.validateNesting(parentTagName, childTagName)
+export function validateDirectiveNesting(parentTagName: string, childTagName: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDirectiveNestingViolation | null {
+  return catalog.validateDirectiveNesting(parentTagName, childTagName)
 }
 
 export function canBeAtRoot(tagName: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
@@ -1637,10 +1629,6 @@ export function isRightAssociativeOperator(op: string, catalog: SpecCatalog = ge
 
 export function isDiagnosticCode(code: string, catalog: SpecCatalog = getSpecCatalog()): code is BloggerDiagnosticCode {
   return catalog.isDiagnosticCode(code)
-}
-
-export function getDiagnosticRule(code: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticRule | undefined {
-  return catalog.getDiagnosticRule(code)
 }
 
 export function getDiagnostic(code: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticRule | undefined {
@@ -1862,7 +1850,7 @@ export function getHallucinatedDirectiveDiagnostic(tagName: string, catalog: Spe
   return catalog.getHallucinatedDirectiveDiagnostic(tagName)
 }
 
-export function getHallucinatedDirectiveTransform(code: string, catalog: SpecCatalog = getSpecCatalog()): HallucinatedDirectiveConfig | undefined {
+export function getHallucinatedDirectiveTransform(code: string, catalog: SpecCatalog = getSpecCatalog()): BloggerHallucinatedDirectiveConfig | undefined {
   return catalog.getHallucinatedDirectiveTransform(code)
 }
 

@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
-export interface WorkspacePaths {
+export interface BloggerWorkspacePaths {
   root: string
   src: string
   catalogs: string
@@ -40,7 +40,7 @@ export function resolveWorkspaceRoot(): string {
   return candidate1
 }
 
-export function getWorkspacePaths(overrideRoot?: string): WorkspacePaths {
+export function getWorkspacePaths(overrideRoot?: string): BloggerWorkspacePaths {
   const root = overrideRoot || resolveWorkspaceRoot()
   const catalogs = join(root, 'catalogs')
   const fixtures = join(root, 'fixtures')

@@ -6,13 +6,13 @@ import type {
   BloggerDiagnosticFix,
   BloggerDiagnosticRule,
   BloggerDiagnosticSeverity,
+  BloggerDirectiveNestingViolation,
   BloggerDirectiveToken,
   BloggerStructureDiagnostic,
   BloggerTextEdit,
-  DirectiveNestingViolation,
 } from '../types.js'
 import type { Token } from './lexer.js'
-import { getSpecCatalog } from '../catalogs/index.js'
+import { getSpecCatalog, validateDirectiveNesting } from '../catalogs/index.js'
 import { resolveDataPath, toSkinVarIdentifier } from '../data-path.js'
 import { evaluateExpressionBudget } from '../quota.js'
 import { getSkinTypeModifiers } from '../type-system.js'
@@ -21,8 +21,8 @@ import { parseExpression } from './expr-parser.js'
 import { tokenize, unescapeXmlEntitiesWithSourceMap } from './lexer.js'
 
 export type {
+  BloggerDirectiveNestingViolation,
   BloggerStructureDiagnostic,
-  DirectiveNestingViolation,
 }
 
 function pushDiagnostic(
@@ -258,7 +258,7 @@ function validateNestingRules(
   const isSkin = token.tagName === 'b:skin' || token.tagName === 'b:template-skin'
   if (isSkin && tagStack.some(t => t.tagName === 'b:widget')) {
     const violation = validateDirectiveNesting('b:widget', token.tagName, catalog)
-      ?? catalog.validateNesting('b:widget', token.tagName)
+      ?? catalog.validateDirectiveNesting('b:widget', token.tagName)
     if (violation) {
       pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
         rule: violation.rule,
@@ -946,15 +946,9 @@ function validateDataElement(
   }
 }
 
-export function validateDirectiveNesting(
-  parentTag: string,
-  childTag: string,
-  catalog: SpecCatalog = getSpecCatalog(),
-): DirectiveNestingViolation | null {
-  return catalog.validateNesting(parentTag, childTag)
-}
+export { validateDirectiveNesting }
 
-export interface ExpressionValidationContext {
+export interface BloggerExpressionValidationContext {
   readonly tagName?: string
   readonly tagStart?: number
   readonly tagEnd?: number
@@ -999,7 +993,7 @@ const OPERAND_END_TOKEN_TYPES = new Set<string>([
 export function validateExpression(
   exprText: string,
   catalog: SpecCatalog = getSpecCatalog(),
-  context?: ExpressionValidationContext,
+  context?: BloggerExpressionValidationContext,
 ): BloggerStructureDiagnostic[] {
   const diagnostics: BloggerStructureDiagnostic[] = []
   const tagName = context?.tagName ?? 'expression'

@@ -2,7 +2,6 @@ import type { BloggerExpressionNode } from './ast.js'
 import type { SpecCatalog } from './catalogs/index.js'
 import type {
   BloggerCompatibleOperator,
-  BloggerTypeDefinition,
   BloggerTypeModifierDefinition,
 } from './types.js'
 import { getSpecCatalog } from './catalogs/index.js'
@@ -44,13 +43,6 @@ export function isTypeAssignable(
   }
 
   return false
-}
-
-export function getTypeDefinition(
-  typeName: string,
-  catalog: SpecCatalog = getSpecCatalog(),
-): BloggerTypeDefinition | undefined {
-  return catalog.getType(typeName)
 }
 
 export function getTypeModifiers(

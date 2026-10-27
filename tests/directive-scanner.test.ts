@@ -5,6 +5,7 @@ import {
   scanDirectiveTokens as directScan,
 } from '../src/parser/directive-scanner.js'
 import {
+  BLOGGER_STRICTLY_SELF_CLOSING_TAGS,
   directiveTokenToAstNode,
   getNearestUnclosedDirective,
   getNearestUnclosedTag,
@@ -16,7 +17,6 @@ import {
   maskXmlCommentsAndCdata,
   parseAttributes,
   scanDirectiveTokens,
-  STRICTLY_SELF_CLOSING_BLOGGER_TAGS,
 } from '../src/parser/index.js'
 
 describe('directive scanner suite', () => {
@@ -60,7 +60,7 @@ describe('directive scanner suite', () => {
     })
 
     it('exposes tag sets', () => {
-      expect(STRICTLY_SELF_CLOSING_BLOGGER_TAGS.has('b:include')).toBe(true)
+      expect(BLOGGER_STRICTLY_SELF_CLOSING_TAGS.has('b:include')).toBe(true)
       expect(HTML_VOID_ELEMENTS.has('input')).toBe(true)
     })
   })

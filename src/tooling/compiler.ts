@@ -7,21 +7,21 @@ import { CATALOG_NAMES } from '../catalogs/constants.js'
 import { getWorkspacePaths } from '../paths.js'
 import { generateCanonicalSchemaTypes } from './schema-types-generator.js'
 
-export interface VerificationFreshnessItem {
+export interface BloggerVerificationFreshnessItem {
   name: string
   valid: boolean
   count?: number
   error?: string
 }
 
-export interface VerificationFreshnessReport {
+export interface BloggerVerificationFreshnessReport {
   allValid: boolean
-  items: VerificationFreshnessItem[]
+  items: BloggerVerificationFreshnessItem[]
 }
 
 export function generateDts(): string {
   return [
-    'import { getAllCatalogs, getCatalog, getCommonWidget, getDiagnostics, getDirectives, getGlobals, getInclusions, getLocales, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets } from \'./catalogs/index.js\';',
+    'import { getAllCatalogs, getCatalog, getCommonWidget, getDiagnostics, getDirectives, getGlobals, getInclusions, getLocales, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets, validateDirectiveNesting } from \'./catalogs/index.js\';',
     'export declare const catalogs: {',
     '  readonly directives: import("./types.js").BloggerDirectivesCatalog;',
     '  readonly operators: import("./types.js").BloggerOperatorsCatalog;',
@@ -36,7 +36,7 @@ export function generateDts(): string {
     '  readonly inclusions: import("./types.js").BloggerInclusionsCatalog;',
     '  readonly locales: import("./types.js").BloggerLocalesCatalog;',
     '};',
-    'export { getAllCatalogs, getCatalog, getCommonWidget, getDiagnostics, getDirectives, getGlobals, getInclusions, getLocales, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets, };',
+    'export { getAllCatalogs, getCatalog, getCommonWidget, getDiagnostics, getDirectives, getGlobals, getInclusions, getLocales, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets, validateDirectiveNesting, };',
     'export * from \'./ast.js\';',
     'export * from \'./catalogs/index.js\';',
     'export * from \'./data-path.js\';',
@@ -327,9 +327,9 @@ export function compile(target?: string): void {
 
 export const buildSpec = compile
 
-export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): VerificationFreshnessReport {
+export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): BloggerVerificationFreshnessReport {
   const paths = getWorkspacePaths()
-  const items: VerificationFreshnessItem[] = []
+  const items: BloggerVerificationFreshnessItem[] = []
 
   if (options?.checkDts ?? true) {
     if (!existsSync(paths.dts)) {

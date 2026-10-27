@@ -24,7 +24,7 @@ import { tokenize } from './lexer.js'
 
 export const DEFAULT_MAX_EXPRESSION_DEPTH = 50
 
-export interface ParseExpressionOptions {
+export interface BloggerParseExpressionOptions {
   readonly catalog?: SpecCatalog
   readonly tolerant?: boolean
   readonly maxDepth?: number
@@ -86,7 +86,7 @@ export class ExpressionParser {
   private depth = 0
   private current = 0
 
-  constructor(source: string, options: ParseExpressionOptions = {}) {
+  constructor(source: string, options: BloggerParseExpressionOptions = {}) {
     this.source = source
     this.tokens = tokenize(source)
     this.catalog = options.catalog ?? getSpecCatalog()
@@ -891,7 +891,7 @@ export class ExpressionParser {
 
 export function parseExpression(
   source: string,
-  options?: ParseExpressionOptions,
+  options?: BloggerParseExpressionOptions,
 ): BloggerExpressionNode {
   const parser = new ExpressionParser(source, options)
   return parser.parse()

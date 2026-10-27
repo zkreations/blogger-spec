@@ -13,7 +13,7 @@ export interface BloggerScopeSymbol {
   readonly metadata?: Record<string, unknown>
 }
 
-export interface PushScopeOptions {
+export interface BloggerPushScopeOptions {
   id?: string
   widgetType?: string
   symbols?: Record<string, string | Partial<BloggerScopeSymbol>>
@@ -83,7 +83,7 @@ export class ScopeEnvironment {
     return undefined
   }
 
-  pushScope(type: BloggerScopeType, options?: PushScopeOptions): BloggerScopeFrame {
+  pushScope(type: BloggerScopeType, options?: BloggerPushScopeOptions): BloggerScopeFrame {
     const symbols = new Map<string, BloggerScopeSymbol>()
     const widgetType = options?.widgetType ?? (type === 'widget' ? (this.getActiveWidgetType() ?? 'Blog') : undefined)
 

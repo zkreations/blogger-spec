@@ -15,7 +15,7 @@ import {
 import { parseExpression, validateExpression, validateTemplateStructure } from '../src/parser/index.js'
 import { getWorkspacePaths, setCustomWorkspaceRoot } from '../src/paths.js'
 import { evaluateExpressionBudget } from '../src/quota.js'
-import { runConformance, runSpecConformance } from '../src/runner.js'
+import { runConformance } from '../src/runner.js'
 import { verifyArtifactsFreshness } from '../src/tooling/compiler.js'
 import { validateSpec } from '../src/tooling/validator.js'
 
@@ -65,7 +65,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       const sampleExprFixture = manifest.fixtures.find(f => f.input.kind === 'expression' && f.expected.outcome === 'value')
       const sampleDiagFixture = manifest.fixtures.find(f => f.input.kind === 'template' && f.expected.outcome === 'rejected' && f.expected.diagnosticCodes?.length)
 
-      const report = runSpecConformance({
+      const report = runConformance({
         evaluateExpression(expr) {
           if (sampleExprFixture && expr === sampleExprFixture.input.source)
             return sampleExprFixture.expected.value

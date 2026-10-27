@@ -11,7 +11,7 @@ import type {
 } from './types.js'
 import { getSpecCatalog } from './catalogs/spec-catalog.js'
 
-export interface InclusionExpansionOptions {
+export interface BloggerInclusionExpansionOptions {
   readonly data?: Record<string, any>
   readonly catalog?: SpecCatalog
   readonly unwrap?: boolean
@@ -19,7 +19,7 @@ export interface InclusionExpansionOptions {
   readonly maxDepth?: number
 }
 
-export interface InclusionExpansionResult {
+export interface BloggerInclusionExpansionResult {
   readonly name: string
   readonly markup: string
   readonly safety: BloggerInclusionSafety
@@ -60,8 +60,8 @@ function parseAttributes(attrString: string): Record<string, string> {
  */
 export function expandServerInclusion(
   name: string,
-  options?: InclusionExpansionOptions,
-): InclusionExpansionResult {
+  options?: BloggerInclusionExpansionOptions,
+): BloggerInclusionExpansionResult {
   const catalog = options?.catalog ?? getSpecCatalog()
   const unwrap = options?.unwrap ?? true
   const recursive = options?.recursive ?? false

@@ -3,7 +3,6 @@ import * as RootExports from '../src/index.js'
 import {
   getCompatibleOperatorNames,
   getSkinTypeModifiers,
-  getTypeDefinition,
   getTypeModifiers,
   isTruthy,
   isTypeAssignable,
@@ -395,14 +394,14 @@ describe('canonical type system & coercion engine', () => {
     })
   })
 
-  describe('getTypeDefinition', () => {
+  describe('getType', () => {
     it('retrieves detailed type metadata from catalog', () => {
-      const imgDef = getTypeDefinition('image')
+      const imgDef = RootExports.getType('image')
       expect(imgDef).toBeDefined()
       expect(imgDef?.parent_type).toBe('string')
       expect(imgDef?.category).toBe('subtype')
 
-      const colorDef = getTypeDefinition('skin:color')
+      const colorDef = RootExports.getType('skin:color')
       expect(colorDef).toBeDefined()
       expect(colorDef?.parent_type).toBeNull()
       expect(colorDef?.category).toBe('skin')
@@ -411,7 +410,7 @@ describe('canonical type system & coercion engine', () => {
     it('respects injected custom SpecCatalog instance', () => {
       const customCatalog = RootExports.getSpecCatalog()
       expect(isTypeAssignable('url', 'string', customCatalog)).toBe(true)
-      expect(getTypeDefinition('image', customCatalog)?.parent_type).toBe('string')
+      expect(RootExports.getType('image', customCatalog)?.parent_type).toBe('string')
       expect(getTypeModifiers('string', customCatalog).length).toBeDefined()
       expect(resolveOperatorReturnType('+', 'number', 'number', customCatalog)).toBe('number')
       expect(isTruthy('false', customCatalog)).toBe(false)

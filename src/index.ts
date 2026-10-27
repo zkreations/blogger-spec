@@ -13,6 +13,7 @@ import {
   getSettings,
   getTypes,
   getWidgets,
+  validateDirectiveNesting,
 } from './catalogs/index.js'
 
 export const catalogs = {
@@ -45,6 +46,7 @@ export {
   getSettings,
   getTypes,
   getWidgets,
+  validateDirectiveNesting,
 }
 
 export * from './ast.js'

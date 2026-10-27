@@ -5,7 +5,7 @@ import type {
   BloggerDirectiveAttributeToken,
   BloggerDirectiveName,
   BloggerDirectiveToken,
-  ScanDirectiveOptions,
+  BloggerScanDirectiveOptions,
 } from '../types.js'
 
 import { getSpecCatalog, registerCacheResetListener } from '../catalogs/index.js'
@@ -13,7 +13,7 @@ import { getSpecCatalog, registerCacheResetListener } from '../catalogs/index.js
 export type {
   BloggerDirectiveAttributeToken,
   BloggerDirectiveToken,
-  ScanDirectiveOptions,
+  BloggerScanDirectiveOptions,
 }
 
 function getCanonicalSelfClosingTags(catalog: SpecCatalog = getSpecCatalog()): Set<string> {
@@ -35,17 +35,12 @@ function getCanonicalHtmlVoidElements(catalog: SpecCatalog = getSpecCatalog()): 
 
 export let BLOGGER_STRICTLY_SELF_CLOSING_TAGS: ReadonlySet<string> = getCanonicalSelfClosingTags()
 
-export let STRICTLY_SELF_CLOSING_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS
-export let STRICTLY_SELF_CLOSING_BLOGGER_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS
-
 export let HTML_VOID_ELEMENTS: ReadonlySet<string> = getCanonicalHtmlVoidElements()
 
 registerCacheResetListener(() => {
   try {
     const spec = getSpecCatalog()
     BLOGGER_STRICTLY_SELF_CLOSING_TAGS = getCanonicalSelfClosingTags(spec)
-    STRICTLY_SELF_CLOSING_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS
-    STRICTLY_SELF_CLOSING_BLOGGER_TAGS = BLOGGER_STRICTLY_SELF_CLOSING_TAGS
     HTML_VOID_ELEMENTS = getCanonicalHtmlVoidElements(spec)
   }
   catch {
@@ -185,7 +180,7 @@ export function parseAttributes(
 
 export function scanDirectiveTokens(
   text: string,
-  options?: ScanDirectiveOptions,
+  options?: BloggerScanDirectiveOptions,
 ): readonly BloggerDirectiveToken[] {
   const maxOffset = options?.stopAtOffset ?? text.length
   const catalog = options?.catalog ?? getSpecCatalog()

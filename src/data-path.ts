@@ -12,7 +12,7 @@ export interface BloggerSkinVariableSymbol {
   readonly value?: string
 }
 
-export interface ResolveDataPathContext {
+export interface BloggerResolveDataPathContext {
   widgetType?: string
   catalog?: SpecCatalog
   variables?: Record<string, string | BloggerScopeSymbol>
@@ -74,7 +74,7 @@ function parsePathSegments(path: string | readonly string[]): string[] {
 
 export function resolveDataPath(
   path: string | readonly string[],
-  context?: ResolveDataPathContext,
+  context?: BloggerResolveDataPathContext,
 ): BloggerResolvedProperty | undefined {
   const segments = parsePathSegments(path)
   if (segments.length === 0) {
@@ -578,7 +578,7 @@ export function getTypeMembers(
 
 export function getDataPathMembers(
   path: string | readonly string[],
-  context?: ResolveDataPathContext,
+  context?: BloggerResolveDataPathContext,
 ): BloggerMemberInfo[] {
   const catalog = context?.catalog ?? getSpecCatalog()
   const widgetType = context?.widgetType ?? context?.scope?.getActiveWidgetType() ?? 'Blog'

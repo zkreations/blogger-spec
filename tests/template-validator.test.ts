@@ -1,6 +1,6 @@
 import type {
+  BloggerDirectiveNestingViolation,
   BloggerStructureDiagnostic,
-  DirectiveNestingViolation,
 } from '../src/parser/index.js'
 import { describe, expect, it } from 'vitest'
 import {
@@ -1287,10 +1287,10 @@ describe('helpers & canonical structure validation suite', () => {
       expect(widgetDiags.some(d => d.code === 'BX1060')).toBe(true)
     })
 
-    it('re-exports BloggerStructureDiagnostic and DirectiveNestingViolation types from parser', () => {
+    it('re-exports BloggerStructureDiagnostic and BloggerDirectiveNestingViolation types from parser', () => {
       const diags: BloggerStructureDiagnostic[] = validateExpression('data:post.isFirst == "true"')
       expect(diags.length).toBeGreaterThan(0)
-      const violation: DirectiveNestingViolation | null = validateDirectiveNesting('head', 'b:section')
+      const violation: BloggerDirectiveNestingViolation | null = validateDirectiveNesting('head', 'b:section')
       expect(violation).toBeDefined()
     })
   })

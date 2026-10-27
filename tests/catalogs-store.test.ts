@@ -89,7 +89,7 @@ import {
   setDefaultCatalogStore,
   SpecCatalog,
   validateDirectiveAttributes,
-  validateNesting,
+  validateDirectiveNesting,
 } from '../src/catalogs/index.js'
 import { embeddedCatalogs, embeddedSchemas } from '../src/generated/embedded.generated.js'
 import * as RootExports from '../src/index.js'
@@ -387,14 +387,14 @@ describe('catalogs and store formal verification suite', () => {
         expect(isSelfClosingDirective('nonexistent')).toBe(false)
       })
 
-      it('evaluates structural nesting constraints (canNest and validateNesting)', () => {
+      it('evaluates structural nesting constraints (canNest and validateDirectiveNesting)', () => {
         expect(canNest('b:section', 'b:widget')).toBe(true)
         expect(canNest('b:section', 'b:section')).toBe(false)
         expect(canNest('b:widget', 'b:includable')).toBe(true)
         expect(canNest('b:includable', 'b:if')).toBe(true)
 
-        expect(validateNesting('b:section', 'b:widget')).toBeNull()
-        const violation = validateNesting('b:section', 'b:section')
+        expect(validateDirectiveNesting('b:section', 'b:widget')).toBeNull()
+        const violation = validateDirectiveNesting('b:section', 'b:section')
         expect(violation?.code).toBe('BX1035')
         expect(violation?.action).toBe('reject')
 
@@ -1116,7 +1116,7 @@ describe('catalogs and store formal verification suite', () => {
       expect(generatedContent).toContain('export type BloggerEvidenceLevel =')
       expect(generatedContent).toContain('export type BloggerDiagnosticCategory =')
       expect(generatedContent).toContain('export type BloggerDiagnosticSeverity =')
-      expect(generatedContent).toContain('export type DirectiveNestingAction =')
+      expect(generatedContent).toContain('export type BloggerDirectiveNestingAction =')
       expect(generatedContent).toContain('export type BloggerInclusionCategory =')
       expect(generatedContent).toContain('export type BloggerStandardDiagnosticKey =')
       expect(generatedContent).toContain('export interface BloggerOperatorsCatalog')

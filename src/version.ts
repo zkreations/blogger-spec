@@ -2,14 +2,14 @@ import type { SpecCatalog } from './catalogs/index.js'
 import type {
   BloggerLayoutVersion,
   BloggerLayoutVersionsCatalog,
-  TemplateVersionResult,
+  BloggerTemplateVersionResult,
 } from './types.js'
 import { getSpecCatalog } from './catalogs/index.js'
 
 export type {
   BloggerLayoutVersion,
   BloggerLayoutVersionsCatalog,
-  TemplateVersionResult,
+  BloggerTemplateVersionResult,
 }
 
 export function getLayoutVersionsSpec(catalog: SpecCatalog = getSpecCatalog()): BloggerLayoutVersionsCatalog | undefined {
@@ -67,7 +67,7 @@ function collectMarkersForVersion(
 export function detectTemplateVersion(
   xmlText: string,
   catalog: SpecCatalog = getSpecCatalog(),
-): TemplateVersionResult {
+): BloggerTemplateVersionResult {
   const spec = getLayoutVersionsSpec(catalog)
   if (!spec) {
     throw new Error('Missing layout_versions in directives catalog domain_metadata')

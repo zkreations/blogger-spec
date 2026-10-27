@@ -1,11 +1,10 @@
 import type {
+  BloggerConformanceCaseResult,
+  BloggerConformanceOptions,
+  BloggerConformanceReport,
   BloggerEngineAdapter,
   BloggerFixture,
   BloggerFixturesManifest,
-  ConformanceCaseResult,
-  ConformanceOptions,
-  ConformanceReport,
-  SpecConsumerAdapter,
 } from './types.js'
 import { existsSync, readFileSync } from 'node:fs'
 import { getWorkspacePaths } from './paths.js'
@@ -29,8 +28,8 @@ function normalizeHtmlString(html?: string): string {
 
 export function runConformance(
   adapter: BloggerEngineAdapter,
-  options?: ConformanceOptions,
-): ConformanceReport {
+  options?: BloggerConformanceOptions,
+): BloggerConformanceReport {
   let fixtures: BloggerFixture[] = []
 
   if (options?.fixtures) {
@@ -69,7 +68,7 @@ export function runConformance(
     }
   }
 
-  const report: ConformanceReport = {
+  const report: BloggerConformanceReport = {
     total: fixtures.length,
     passed: 0,
     failed: 0,
@@ -201,12 +200,9 @@ export function runConformance(
   return report
 }
 
-export const runSpecConformance = runConformance
-
 export type {
+  BloggerConformanceCaseResult,
+  BloggerConformanceOptions,
+  BloggerConformanceReport,
   BloggerEngineAdapter,
-  ConformanceCaseResult,
-  ConformanceOptions,
-  ConformanceReport,
-  SpecConsumerAdapter,
 }
