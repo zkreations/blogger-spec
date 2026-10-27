@@ -11,7 +11,283 @@
       "data:skin",
       "data:widgets",
       "data:template"
-    ]
+    ],
+    "runtime_evaluation_states": {
+      "VALUE": {
+        "description": "Property exists in the active runtime data dictionary and holds a non-empty scalar value.",
+        "in_dictionary": true,
+        "boolean_coercion": "value_dependent",
+        "html_output_template": "{value}"
+      },
+      "EMPTY": {
+        "description": "Property exists in the active runtime data dictionary with an empty string value (\"\").",
+        "in_dictionary": true,
+        "boolean_coercion": "falsy",
+        "html_output_template": ""
+      },
+      "MISSING": {
+        "description": "Property is omitted from the active runtime data dictionary for the current view or configuration.",
+        "in_dictionary": false,
+        "boolean_coercion": "falsy",
+        "html_output_template": "<!--Can't find substitution for tag [{tag}]-->"
+      },
+      "NOT_SINGLETON": {
+        "description": "Data path resolves to a composite object or array that cannot be directly interpolated via <data:X/>.",
+        "in_dictionary": true,
+        "boolean_coercion": "truthy",
+        "html_output_template": "<!--Substitution is not a singleton for tag [{tag}]-->"
+      }
+    },
+    "views": {
+      "homepage": {
+        "description": "Root chronological post feed index.",
+        "url_patterns": [
+          "/"
+        ],
+        "blog_page_type": "index",
+        "view_type": "feed",
+        "flags": {
+          "isHomepage": "true",
+          "isPost": "false",
+          "isPage": "false",
+          "isArchive": "false",
+          "isSearch": "missing",
+          "isLabelSearch": "false",
+          "isError": "false",
+          "isPreview": "missing",
+          "isLayoutMode": "missing",
+          "isMultipleItems": "true",
+          "isSingleItem": "false"
+        }
+      },
+      "post_listing": {
+        "description": "Paginated subsequent portions of the chronological post feed.",
+        "url_patterns": [
+          "/search?updated-max={TIMESTAMP}&max-results={N}"
+        ],
+        "blog_page_type": "index",
+        "view_type": "feed",
+        "flags": {
+          "isHomepage": "false",
+          "isPost": "false",
+          "isPage": "false",
+          "isArchive": "false",
+          "isSearch": "true",
+          "isLabelSearch": "false",
+          "isError": "false",
+          "isPreview": "missing",
+          "isLayoutMode": "missing",
+          "isMultipleItems": "true",
+          "isSingleItem": "false"
+        }
+      },
+      "search_query": {
+        "description": "Search results feed matching a user query string.",
+        "url_patterns": [
+          "/search?q={QUERY}"
+        ],
+        "blog_page_type": "index",
+        "view_type": "feed",
+        "flags": {
+          "isHomepage": "false",
+          "isPost": "false",
+          "isPage": "false",
+          "isArchive": "false",
+          "isSearch": "true",
+          "isLabelSearch": "false",
+          "isError": "false",
+          "isPreview": "missing",
+          "isLayoutMode": "missing",
+          "isMultipleItems": "true",
+          "isSingleItem": "false"
+        }
+      },
+      "label_search": {
+        "description": "Category/label post listing feed.",
+        "url_patterns": [
+          "/search/label/{LABEL}"
+        ],
+        "blog_page_type": "index",
+        "view_type": "feed",
+        "flags": {
+          "isHomepage": "false",
+          "isPost": "false",
+          "isPage": "false",
+          "isArchive": "false",
+          "isSearch": "true",
+          "isLabelSearch": "true",
+          "isError": "false",
+          "isPreview": "missing",
+          "isLayoutMode": "missing",
+          "isMultipleItems": "true",
+          "isSingleItem": "false"
+        }
+      },
+      "archive_yearly": {
+        "description": "Yearly chronological post archive.",
+        "url_patterns": [
+          "/{YYYY}",
+          "/{YYYY}/"
+        ],
+        "blog_page_type": "archive",
+        "view_type": "feed",
+        "flags": {
+          "isHomepage": "false",
+          "isPost": "false",
+          "isPage": "false",
+          "isArchive": "true",
+          "isSearch": "missing",
+          "isLabelSearch": "false",
+          "isError": "false",
+          "isPreview": "missing",
+          "isLayoutMode": "missing",
+          "isMultipleItems": "true",
+          "isSingleItem": "false"
+        }
+      },
+      "archive_monthly": {
+        "description": "Monthly chronological post archive.",
+        "url_patterns": [
+          "/{YYYY}/{MM}",
+          "/{YYYY}/{MM}/"
+        ],
+        "blog_page_type": "archive",
+        "view_type": "feed",
+        "flags": {
+          "isHomepage": "false",
+          "isPost": "false",
+          "isPage": "false",
+          "isArchive": "true",
+          "isSearch": "missing",
+          "isLabelSearch": "false",
+          "isError": "false",
+          "isPreview": "missing",
+          "isLayoutMode": "missing",
+          "isMultipleItems": "true",
+          "isSingleItem": "false"
+        }
+      },
+      "archive_weekly_daily": {
+        "description": "Weekly or daily chronological post archive route. Empirically resolves with the monthly archive context (view.archive.year and view.archive.month populated, view.archive.day omitted as MISSING).",
+        "url_patterns": [
+          "/{YYYY}_{MM}_{DD}_archive.html"
+        ],
+        "blog_page_type": "archive",
+        "view_type": "feed",
+        "flags": {
+          "isHomepage": "false",
+          "isPost": "false",
+          "isPage": "false",
+          "isArchive": "true",
+          "isSearch": "missing",
+          "isLabelSearch": "false",
+          "isError": "false",
+          "isPreview": "missing",
+          "isLayoutMode": "missing",
+          "isMultipleItems": "true",
+          "isSingleItem": "false"
+        }
+      },
+      "post": {
+        "description": "Individual blog post permalink view.",
+        "url_patterns": [
+          "/{YYYY}/{MM}/{POST_SLUG}.html"
+        ],
+        "blog_page_type": "item",
+        "view_type": "item",
+        "flags": {
+          "isHomepage": "false",
+          "isPost": "true",
+          "isPage": "false",
+          "isArchive": "false",
+          "isSearch": "missing",
+          "isLabelSearch": "false",
+          "isError": "false",
+          "isPreview": "missing",
+          "isLayoutMode": "missing",
+          "isMultipleItems": "false",
+          "isSingleItem": "true"
+        }
+      },
+      "static_page": {
+        "description": "Individual standalone static page view.",
+        "url_patterns": [
+          "/p/{PAGE_SLUG}.html"
+        ],
+        "blog_page_type": "static_page",
+        "view_type": "item",
+        "flags": {
+          "isHomepage": "false",
+          "isPost": "false",
+          "isPage": "true",
+          "isArchive": "false",
+          "isSearch": "missing",
+          "isLabelSearch": "false",
+          "isError": "false",
+          "isPreview": "missing",
+          "isLayoutMode": "missing",
+          "isMultipleItems": "false",
+          "isSingleItem": "true"
+        }
+      },
+      "error_404": {
+        "description": "HTTP 404 Not Found error page view.",
+        "url_patterns": [],
+        "blog_page_type": "error_page",
+        "view_type": "error",
+        "flags": {
+          "isHomepage": "false",
+          "isPost": "false",
+          "isPage": "false",
+          "isArchive": "false",
+          "isSearch": "missing",
+          "isLabelSearch": "false",
+          "isError": "true",
+          "isPreview": "missing",
+          "isLayoutMode": "missing",
+          "isMultipleItems": "false",
+          "isSingleItem": "false"
+        }
+      },
+      "preview": {
+        "description": "Blogger Theme Designer interactive live preview mode.",
+        "url_patterns": [],
+        "blog_page_type": "index",
+        "view_type": "feed",
+        "flags": {
+          "isHomepage": "true",
+          "isPost": "false",
+          "isPage": "false",
+          "isArchive": "false",
+          "isSearch": "missing",
+          "isLabelSearch": "false",
+          "isError": "false",
+          "isPreview": "true",
+          "isLayoutMode": "missing",
+          "isMultipleItems": "true",
+          "isSingleItem": "false"
+        }
+      },
+      "layout_mode": {
+        "description": "Blogger Admin Panel 'Layout' drag-and-drop widget management view.",
+        "url_patterns": [],
+        "blog_page_type": "index",
+        "view_type": "feed",
+        "flags": {
+          "isHomepage": "true",
+          "isPost": "false",
+          "isPage": "false",
+          "isArchive": "false",
+          "isSearch": "missing",
+          "isLabelSearch": "false",
+          "isError": "false",
+          "isPreview": "missing",
+          "isLayoutMode": "true",
+          "isMultipleItems": "true",
+          "isSingleItem": "false"
+        }
+      }
+    }
   },
   "objects": {
     "data:view": {
@@ -36,7 +312,12 @@
         },
         "isSearch": {
           "type": "boolean",
-          "description": "True when viewing search results (/search?q=...)."
+          "available_in_views": [
+            "post_listing",
+            "search_query",
+            "label_search"
+          ],
+          "description": "True when viewing paginated post listings, search query results (/search?q=...), or label listings (/search/label/...). Omitted (MISSING) in all other views."
         },
         "isLabelSearch": {
           "type": "boolean",
@@ -48,11 +329,17 @@
         },
         "isPreview": {
           "type": "boolean",
-          "description": "True when viewing an uncommitted draft preview inside Blogger admin."
+          "available_in_views": [
+            "preview"
+          ],
+          "description": "True only when the current view is inside the Blogger Theme Designer preview. Omitted (MISSING) in all public blog views."
         },
         "isLayoutMode": {
           "type": "boolean",
-          "description": "True when the template compiles within the visual drag-and-drop Layout dashboard."
+          "available_in_views": [
+            "layout_mode"
+          ],
+          "description": "True only when the current view is the 'Layout' section of the Blogger administration panel. Omitted (MISSING) in all public blog views."
         },
         "isMultipleItems": {
           "type": "boolean",
@@ -68,7 +355,7 @@
         },
         "description": {
           "type": "string",
-          "description": "Contextual page description for SEO meta tags."
+          "description": "Contextual page description for SEO meta tags. Automatically falls back to the general blog description when a post or static page lacks an individual search description."
         },
         "url": {
           "type": "url",
@@ -79,21 +366,31 @@
           "allowed_values": [
             "feed",
             "item",
-            "error_page"
+            "error"
           ],
-          "description": "View category: 'feed' (multiple items), 'item' (single post/page), or 'error_page'."
+          "description": "View category: 'feed' (multiple items), 'item' (single post/page), or 'error' (404 error page)."
         },
         "postId": {
           "type": "number",
-          "description": "Unique numerical ID of active blog post (null on non-post views)."
+          "available_in_views": [
+            "post"
+          ],
+          "description": "Unique numerical ID of active blog post. Only injected on post views (MISSING on all other views)."
         },
         "pageId": {
           "type": "number",
-          "description": "Unique numerical ID of active static page (null on non-page views)."
+          "available_in_views": [
+            "static_page"
+          ],
+          "description": "Unique numerical ID of active static page. Only injected on static page views (MISSING on all other views)."
         },
         "featuredImage": {
           "type": "image",
-          "description": "Primary post hero image URL on item views."
+          "available_in_views": [
+            "post"
+          ],
+          "unconfigured_state": "missing",
+          "description": "Primary post hero image URL on post views. Omitted (MISSING) on non-post views or when the post contains no images."
         },
         "search": {
           "type": "object",
@@ -101,18 +398,32 @@
           "properties": {
             "label": {
               "type": "string",
+              "available_in_views": [
+                "label_search"
+              ],
               "description": "Active category/label filter string on /search/label/{tag}."
             },
             "query": {
               "type": "string",
+              "available_in_views": [
+                "search_query"
+              ],
               "description": "User search query string on /search?q={query}."
             },
             "resultsMessage": {
               "type": "string",
+              "available_in_views": [
+                "search_query",
+                "label_search"
+              ],
               "description": "Localized plain-text summary message."
             },
             "resultsMessageHtml": {
               "type": "string",
+              "available_in_views": [
+                "search_query",
+                "label_search"
+              ],
               "description": "Localized summary message containing HTML anchor markup."
             }
           }
@@ -123,18 +434,33 @@
           "properties": {
             "day": {
               "type": "number",
-              "description": "Archive day integer (1-31; null on monthly/yearly archive views)."
+              "unconfigured_state": "missing",
+              "description": "Archive day integer (1-31). Empirically omitted (MISSING) in current Blogger archive routes, including /YYYY_MM_DD_archive.html."
             },
             "month": {
               "type": "number",
-              "description": "Archive month integer (1-12; null on yearly archive views)."
+              "available_in_views": [
+                "archive_monthly",
+                "archive_weekly_daily"
+              ],
+              "description": "Archive month integer (1-12; MISSING on yearly archive views)."
             },
             "year": {
               "type": "number",
+              "available_in_views": [
+                "archive_yearly",
+                "archive_monthly",
+                "archive_weekly_daily"
+              ],
               "description": "Archive four-digit calendar year integer (e.g. 2026)."
             },
             "rangeMessage": {
               "type": "string",
+              "available_in_views": [
+                "archive_yearly",
+                "archive_monthly",
+                "archive_weekly_daily"
+              ],
               "description": "Localized chronological period label."
             }
           }
@@ -146,11 +472,12 @@
           "action": "migrate",
           "type": "boolean",
           "replacement": "data:blog.isMobileRequest",
-          "reason": "data:view.isMobile is non-functional in responsive v3 themes. Use data:blog.isMobileRequest for URL query detection or CSS media queries for layout."
+          "reason": "data:view.isMobile is non-functional in responsive v3 themes. Use data:blog.isMobileRequest for URL query detection or CSS media queries for layout.",
+          "runtime_state": "active"
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "data:blog": {
       "cardinality": "singleton",
@@ -162,6 +489,7 @@
         },
         "adsenseClientId": {
           "type": "string",
+          "unconfigured_state": "missing",
           "description": "AdSense publisher ID ('ca-pub-XXXXXXXXXXXXXXXX') linked to the blog."
         },
         "adsenseHasAds": {
@@ -170,6 +498,7 @@
         },
         "adsenseHostId": {
           "type": "string",
+          "unconfigured_state": "missing",
           "description": "Platform host publisher ID ('ca-host-pub-1556223355139109')."
         },
         "adultContent": {
@@ -178,11 +507,14 @@
         },
         "analytics4": {
           "type": "boolean",
-          "description": "True if configured Google Analytics property is GA4."
+          "unconfigured_state": "missing",
+          "condition": "analytics4_configured",
+          "description": "True only when a Google Analytics 4 measurement ID (G-XXXXXXXXXX) is configured in blog administration settings. Omitted (MISSING) when unconfigured."
         },
         "analyticsAccountNumber": {
           "type": "string",
-          "description": "Google Analytics tracking/property ID (Universal Analytics UA-... or GA4 G-...)."
+          "unconfigured_state": "empty",
+          "description": "Google Analytics tracking/property ID (GA4 G-XXXXXXXXXX). Evaluates to empty string '' when unconfigured."
         },
         "bloggerUrl": {
           "type": "url",
@@ -260,10 +592,6 @@
           ],
           "description": "Text layout direction: 'ltr' or 'rtl'."
         },
-        "latencyHeadScript": {
-          "type": "string",
-          "description": "Platform performance and latency measurement script tag."
-        },
         "locale": {
           "type": "locale",
           "description": "BCP 47 language/locale code (e.g. 'en', 'es-419', 'fr'). Can be dynamically overridden in requests via the 'hl' query parameter (e.g. '?hl=ca-ES-VALENCIA')."
@@ -274,15 +602,20 @@
         },
         "metaDescription": {
           "type": "string",
-          "description": "Meta description string from Settings or post search description for SEO tags."
+          "unconfigured_state": "empty",
+          "description": "Meta description string from Settings or individual post/page search description for SEO tags. Evaluates to empty string '' on posts/pages without an individual search description."
         },
         "pageId": {
           "type": "string",
-          "description": "Unique numerical ID of active static page (empty on non-page views; data:view.pageId preferred in Layouts v3)."
+          "available_in_views": [
+            "static_page"
+          ],
+          "description": "Unique numerical ID of active static page (MISSING on non-page views; data:view.pageId preferred in Layouts v3)."
         },
         "pageName": {
           "type": "string",
-          "description": "Title of the specific post, page, or label currently being viewed."
+          "unconfigured_state": "empty",
+          "description": "Title of the specific post, page, archive period, or label currently being viewed (empty string '' on homepage, post listings, search queries, and 404 views)."
         },
         "pageTitle": {
           "type": "string",
@@ -301,22 +634,39 @@
         },
         "postId": {
           "type": "string",
-          "description": "Unique numerical ID of active blog post (empty on non-post views; data:view.postId preferred in Layouts v3)."
+          "available_in_views": [
+            "post"
+          ],
+          "description": "Unique numerical ID of active blog post (MISSING on non-post views; data:view.postId preferred in Layouts v3)."
         },
         "postImageThumbnailUrl": {
           "type": "url",
-          "description": "Square thumbnail (s72-c) URL of primary post image on item views."
+          "available_in_views": [
+            "post"
+          ],
+          "unconfigured_state": "missing",
+          "description": "Square thumbnail (s72-c) URL of primary post image on post views."
         },
         "postImageUrl": {
           "type": "url",
-          "description": "Primary hero image URL of active post on item views (data:view.featuredImage preferred in Layouts v3)."
+          "available_in_views": [
+            "post"
+          ],
+          "unconfigured_state": "missing",
+          "description": "Primary hero image URL of active post on post views (data:view.featuredImage preferred in Layouts v3)."
         },
         "searchLabel": {
           "type": "string",
+          "available_in_views": [
+            "label_search"
+          ],
           "description": "Active label filter string on search/label views (data:view.search.label preferred in Layouts v3)."
         },
         "searchQuery": {
           "type": "string",
+          "available_in_views": [
+            "search_query"
+          ],
           "description": "Active query string on search results views (data:view.search.query preferred in Layouts v3)."
         },
         "searchUrl": {
@@ -361,118 +711,142 @@
         },
         "view": {
           "type": "string",
-          "description": "Dynamic Views layout variant name passed via ?view= (e.g. 'flipcard', 'sidebar')."
+          "unconfigured_state": "empty",
+          "description": "Dynamic Views layout variant name passed via ?view= (e.g. 'flipcard', 'sidebar'). Evaluates to empty string '' when not requested."
         }
       },
       "deprecated": {
+        "latencyHeadScript": {
+          "status": "obsolete",
+          "action": "remove",
+          "type": "string",
+          "replacement": null,
+          "reason": "Legacy Blogger latency profiling head script was retired and is no longer injected by the server.",
+          "runtime_state": "missing"
+        },
         "canonicalUrl": {
           "status": "deprecated_in_layout_v3",
           "action": "migrate",
           "type": "url",
           "replacement": "data:blog.url.canonical",
-          "reason": "Fragmented canonical URL property deprecated in 2016. Use data:blog.url.canonical or data:view.url.canonical."
+          "reason": "Fragmented canonical URL property deprecated in 2016. Use data:blog.url.canonical or data:view.url.canonical.",
+          "runtime_state": "active"
         },
         "canonicalHomepageUrl": {
           "status": "deprecated_in_layout_v3",
           "action": "migrate",
           "type": "url",
           "replacement": "data:blog.homepageUrl.canonical",
-          "reason": "Fragmented canonical homepage property deprecated in 2016. Use data:blog.homepageUrl.canonical."
+          "reason": "Fragmented canonical homepage property deprecated in 2016. Use data:blog.homepageUrl.canonical.",
+          "runtime_state": "active"
         },
         "isMobile": {
           "status": "ignored_in_layout_v3",
           "action": "migrate",
           "type": "boolean",
           "replacement": "data:blog.isMobileRequest",
-          "reason": "Non-functional in responsive Layouts v3 themes. Use data:blog.isMobileRequest for URL query detection or CSS media queries."
+          "reason": "Non-functional in responsive Layouts v3 themes. Use data:blog.isMobileRequest for URL query detection or CSS media queries.",
+          "runtime_state": "active"
         },
         "mobileClass": {
           "status": "legacy",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Legacy mobile body CSS class ('mobile') used in v1/v2 dedicated mobile templates; obsolete in responsive themes."
+          "reason": "Legacy mobile body CSS class ('mobile') used in v1/v2 dedicated mobile templates; obsolete in responsive themes.",
+          "runtime_state": "empty"
         },
         "mobileHeadScript": {
           "status": "legacy",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Dedicated mobile browser redirect script from v1/v2; obsolete in responsive themes."
+          "reason": "Dedicated mobile browser redirect script from v1/v2; obsolete in responsive themes.",
+          "runtime_state": "missing"
         },
         "desktopLinkUrl": {
           "status": "legacy",
           "action": "remove",
           "type": "url",
           "replacement": null,
-          "reason": "Desktop version switcher link abandoned in Layouts v3."
+          "reason": "Desktop version switcher link abandoned in Layouts v3.",
+          "runtime_state": "missing"
         },
         "mobileLinkUrl": {
           "status": "legacy",
           "action": "remove",
           "type": "url",
           "replacement": null,
-          "reason": "Mobile version switcher link abandoned in Layouts v3."
+          "reason": "Mobile version switcher link abandoned in Layouts v3.",
+          "runtime_state": "missing"
         },
         "ieCssRetrofitLinks": {
           "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Legacy conditional stylesheet links for Internet Explorer 6-8."
+          "reason": "Legacy conditional stylesheet links for Internet Explorer 6-8.",
+          "runtime_state": "missing"
         },
         "meTag": {
           "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Legacy OpenID rel='me' profile link tag; deprecated by modern identity standards."
+          "reason": "Legacy OpenID rel='me' profile link tag; deprecated by modern identity standards.",
+          "runtime_state": "empty"
         },
         "disableGComments": {
           "status": "obsolete",
           "action": "remove",
           "type": "boolean",
           "replacement": null,
-          "reason": "Google+ comments integration shut down in 2019."
+          "reason": "Google+ comments integration shut down in 2019.",
+          "runtime_state": "active"
         },
         "gPlusViewType": {
           "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Google+ view layout selector shut down in 2019."
+          "reason": "Google+ view layout selector shut down in 2019.",
+          "runtime_state": "active"
         },
         "plusOneApiSrc": {
           "status": "obsolete",
           "action": "remove",
           "type": "url",
           "replacement": null,
-          "reason": "Google +1 button API script sunset."
+          "reason": "Google +1 button API script sunset.",
+          "runtime_state": "active"
         },
         "sharing.disableGooglePlus": {
           "status": "obsolete",
           "action": "remove",
           "type": "boolean",
           "replacement": null,
-          "reason": "Google+ platform sharing decommissioned."
+          "reason": "Google+ platform sharing decommissioned.",
+          "runtime_state": "active"
         },
         "sharing.googlePlusBootstrap": {
           "status": "obsolete",
           "action": "remove",
           "type": "string",
           "replacement": null,
-          "reason": "Google+ script bootstrap decommissioned."
+          "reason": "Google+ script bootstrap decommissioned.",
+          "runtime_state": "active"
         },
         "sharing.googlePlusShareButtonWidth": {
           "status": "obsolete",
           "action": "remove",
           "type": "number",
           "replacement": null,
-          "reason": "Google+ share button dimension decommissioned."
+          "reason": "Google+ share button dimension decommissioned.",
+          "runtime_state": "active"
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "data:messages": {
       "cardinality": "singleton",
@@ -533,7 +907,7 @@
             },
             "allBylineItems": {
               "type": "array[object]",
-              "description": "Flat list of active byline items.",
+              "description": "Flat list and keyed dictionary of active byline items.",
               "item_properties": {
                 "label": {
                   "type": "string",
@@ -542,6 +916,92 @@
                 "name": {
                   "type": "string",
                   "description": "Byline item identifier."
+                }
+              },
+              "properties": {
+                "author": {
+                  "type": "object",
+                  "description": "Author byline item descriptor.",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "description": "Localized byline label."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Byline item identifier ('author')."
+                    }
+                  }
+                },
+                "comments": {
+                  "type": "object",
+                  "description": "Comments byline item descriptor.",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "description": "Localized byline label."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Byline item identifier ('comments')."
+                    }
+                  }
+                },
+                "labels": {
+                  "type": "object",
+                  "description": "Post labels byline item descriptor.",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "description": "Localized byline label."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Byline item identifier ('labels')."
+                    }
+                  }
+                },
+                "location": {
+                  "type": "object",
+                  "description": "Location byline item descriptor.",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "description": "Localized byline label."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Byline item identifier ('location')."
+                    }
+                  }
+                },
+                "share": {
+                  "type": "object",
+                  "description": "Share buttons byline item descriptor.",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "description": "Localized byline label."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Byline item identifier ('share')."
+                    }
+                  }
+                },
+                "timestamp": {
+                  "type": "object",
+                  "description": "Timestamp byline item descriptor.",
+                  "properties": {
+                    "label": {
+                      "type": "string",
+                      "description": "Localized byline label."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Byline item identifier ('timestamp')."
+                    }
+                  }
                 }
               }
             },
@@ -729,7 +1189,8 @@
       "canonical": {
         "override": {
           "type": "string",
-          "description": "Custom CSS injected by user via Theme Designer ('Add CSS'). Empty if none added."
+          "unconfigured_state": "empty",
+          "description": "Custom CSS injected by user via Theme Designer ('Add CSS'). Empty string '' if none added."
         },
         "vars": {
           "type": "object",

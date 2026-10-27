@@ -54,7 +54,7 @@
       "description": "Theme author credits, copyright notices, and platform attribution markup.",
       "canonical": {
         "bloggerUrl": {
-          "type": "url",
+          "type": "string",
           "description": "Blogger platform URL (`https://www.blogger.com`)."
         },
         "copyright": {
@@ -70,7 +70,7 @@
               "description": "Name of the theme background image creator/photographer."
             },
             "url": {
-              "type": "url",
+              "type": "string",
               "description": "Portfolio or source link for the background image creator."
             }
           }
@@ -101,7 +101,7 @@
         },
         "allBylineItems": {
           "type": "array[object]",
-          "description": "Flat list of active byline items configured for the Blog widget.",
+          "description": "Flat list and keyed dictionary of active byline items configured for the Blog widget.",
           "item_properties": {
             "name": {
               "type": "string",
@@ -110,6 +110,92 @@
             "label": {
               "type": "string",
               "description": "Localized label text for the byline item."
+            }
+          },
+          "properties": {
+            "author": {
+              "type": "object",
+              "description": "Author byline item descriptor.",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Byline item identifier ('author')."
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Configured or localized label prefix for author byline."
+                }
+              }
+            },
+            "comments": {
+              "type": "object",
+              "description": "Comments byline item descriptor.",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Byline item identifier ('comments')."
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Configured or localized label for comments link."
+                }
+              }
+            },
+            "labels": {
+              "type": "object",
+              "description": "Post labels/tags byline item descriptor.",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Byline item identifier ('labels')."
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Configured or localized label prefix for post tags."
+                }
+              }
+            },
+            "location": {
+              "type": "object",
+              "description": "Post location byline item descriptor.",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Byline item identifier ('location')."
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Configured or localized label prefix for post location."
+                }
+              }
+            },
+            "share": {
+              "type": "object",
+              "description": "Social share buttons byline item descriptor.",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Byline item identifier ('share')."
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Configured or localized label for share buttons."
+                }
+              }
+            },
+            "timestamp": {
+              "type": "object",
+              "description": "Post publication timestamp byline item descriptor.",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Byline item identifier ('timestamp')."
+                },
+                "label": {
+                  "type": "string",
+                  "description": "Configured or localized label prefix for post timestamp."
+                }
+              }
             }
           }
         },
@@ -150,7 +236,7 @@
               "description": "Localized feed title or descriptor."
             },
             "url": {
-              "type": "url",
+              "type": "string",
               "description": "Public URL for syndicated feed."
             }
           }
@@ -179,10 +265,12 @@
         },
         "newerPageUrl": {
           "type": "url",
+          "unconfigured_state": "missing",
           "description": "Target URL for newer posts page in multi-item views."
         },
         "olderPageUrl": {
           "type": "url",
+          "unconfigured_state": "missing",
           "description": "Target URL for older posts page in multi-item views."
         },
         "numPosts": {
@@ -194,7 +282,7 @@
           "description": "Primary collection of blog posts/articles rendered in current view.",
           "item_properties": {
             "absoluteUrl": {
-              "type": "url",
+              "type": "string",
               "description": "Full canonical permalink URL including protocol and hostname."
             },
             "adNumber": {
@@ -435,7 +523,7 @@
               }
             },
             "commentsUrl": {
-              "type": "url",
+              "type": "string",
               "description": "Target anchor link URL navigating to the comments section."
             },
             "commentsUrlOnclick": {
@@ -497,7 +585,7 @@
                   "description": "Localized feed title or descriptor."
                 },
                 "url": {
-                  "type": "url",
+                  "type": "string",
                   "description": "Public URL for syndicated feed."
                 }
               }
@@ -539,7 +627,7 @@
                   "description": "Category/label name."
                 },
                 "url": {
-                  "type": "url",
+                  "type": "string",
                   "description": "Category archive URL for this label."
                 }
               },
@@ -1138,7 +1226,7 @@
                   "description": "Localized month or day label string."
                 },
                 "url": {
-                  "type": "url",
+                  "type": "string",
                   "description": "Permalink to archive interval view."
                 },
                 "post-count": {
@@ -1166,7 +1254,7 @@
                       "description": "Post title string."
                     },
                     "url": {
-                      "type": "url",
+                      "type": "string",
                       "description": "Canonical permalink URL of the post."
                     }
                   }
@@ -1198,7 +1286,7 @@
                   "description": "Published post headline title."
                 },
                 "url": {
-                  "type": "url",
+                  "type": "string",
                   "description": "Post canonical permalink URL."
                 }
               }
@@ -1208,7 +1296,7 @@
               "description": "Unique DOM ID for collapsible JS toggle script."
             },
             "url": {
-              "type": "url",
+              "type": "string",
               "description": "Archive filter URL for this interval."
             }
           }
@@ -1274,7 +1362,7 @@
               "description": "Title of the external blog."
             },
             "blogUrl": {
-              "type": "url",
+              "type": "string",
               "description": "Homepage URL of the external blog."
             },
             "displayStyle": {
@@ -1298,7 +1386,7 @@
                   "description": "Native height of the thumbnail image in pixels."
                 },
                 "url": {
-                  "type": "url",
+                  "type": "string",
                   "description": "Direct image source URL of the thumbnail."
                 },
                 "width": {
@@ -1312,7 +1400,7 @@
               "description": "Headline/title of the latest published post."
             },
             "itemUrl": {
-              "type": "url",
+              "type": "string",
               "description": "Direct permalink URL to the latest published post."
             },
             "timePeriodSinceLastUpdate": {
@@ -1396,7 +1484,7 @@
       "description": "Official Powered by Blogger badge URLs and graphic assets.",
       "canonical": {
         "source": {
-          "type": "url",
+          "type": "string",
           "description": "Direct URL path to selected logo graphic. Gadget v2 only."
         },
         "srcset": {
@@ -1456,7 +1544,7 @@
           "description": "Action text displayed on form submit button."
         },
         "submitUrl": {
-          "type": "url",
+          "type": "string",
           "description": "Platform AJAX RPC endpoint URL for form submission."
         },
         "title": {
@@ -1501,7 +1589,7 @@
           "description": "Single-element collection containing the pinned post model.",
           "item_properties": {
             "absoluteUrl": {
-              "type": "url",
+              "type": "string",
               "description": "Full canonical permalink URL including protocol and hostname."
             },
             "allowComments": {
@@ -1553,7 +1641,7 @@
               "description": "Comment backend identifier integer (0 = Blogger native, 1 = Google+)."
             },
             "commentsUrl": {
-              "type": "url",
+              "type": "string",
               "description": "Target anchor link URL navigating to comments section."
             },
             "commentsUrlOnclick": {
@@ -1589,7 +1677,7 @@
                   "description": "Category/label name."
                 },
                 "url": {
-                  "type": "url",
+                  "type": "string",
                   "description": "Category archive URL for this label."
                 }
               }
@@ -1673,7 +1761,7 @@
         },
         "postUrl": {
           "status": "deprecated_in_widget_v2",
-          "type": "url",
+          "type": "string",
           "action": "migrate",
           "replacement": "data:posts[0].url",
           "reason": "Replaced by `data:posts[0].url`."
@@ -1714,7 +1802,7 @@
       "description": "External RSS/Atom syndication endpoint configuration, entry limits, and client hydration options.",
       "canonical": {
         "feedUrl": {
-          "type": "url",
+          "type": "string",
           "description": "Syndication feed endpoint URL (RSS 2.0 or Atom)."
         },
         "loadingMsg": {
@@ -1747,6 +1835,7 @@
     },
     "Followers": {
       "description": "Sandboxed Google Friend Connect / Followers iframe embed snippet and header title.",
+      "runtime_rendering_policy": "server_forced_markup",
       "canonical": {
         "codeSnippet": {
           "type": "string",
@@ -1758,7 +1847,7 @@
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "HTML": {
       "description": "Arbitrary user HTML/JS or plain formatted text blocks.",
@@ -1808,16 +1897,12 @@
           "description": "UI toggle indicating whether banner scales down to fit container width."
         },
         "sourceUrl": {
-          "type": "url",
+          "type": "string",
           "description": "Direct CDN URL of the uploaded banner image."
         },
         "title": {
           "type": "string",
           "description": "Blog title text (or custom header title)."
-        },
-        "useImage": {
-          "type": "boolean",
-          "description": "True when an uploaded banner image is active."
         },
         "width": {
           "type": "number",
@@ -1825,6 +1910,14 @@
         }
       },
       "deprecated": {
+        "useImage": {
+          "status": "deprecated_in_widget_v2",
+          "type": "boolean",
+          "action": "migrate",
+          "replacement": "data:image",
+          "reason": "Replaced by data:image in Layouts v3 (widget version 2); omitted from runtime dictionary.",
+          "runtime_state": "missing"
+        },
         "mobile": {
           "status": "deprecated_in_widget_v2",
           "type": "boolean",
@@ -1848,7 +1941,7 @@
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "Image": {
       "description": "Standalone image banner, caption, destination link, responsive srcset, and dimensions.",
@@ -1862,7 +1955,7 @@
           "description": "Native height of the image in pixels."
         },
         "link": {
-          "type": "url",
+          "type": "string",
           "description": "Target destination URL activated when clicking the image."
         },
         "shrinkToFit": {
@@ -1871,10 +1964,12 @@
         },
         "sourceSet": {
           "type": "string",
-          "description": "Comma-separated responsive image candidates (`srcset`)."
+          "unconfigured_state": "missing",
+          "condition": "google_hosted_image",
+          "description": "Comma-separated responsive image candidates (`srcset` with 72w, 128w, 220w, 400w, 640w, 800w, 1024w, 1280w, 1600w). Only populated when `sourceUrl` is hosted on Google/Blogger servers (`blogger.googleusercontent.com`); omitted (MISSING) for external URLs."
         },
         "sourceUrl": {
-          "type": "url",
+          "type": "string",
           "description": "Direct CDN or external source URL of the image."
         },
         "title": {
@@ -1896,10 +1991,11 @@
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "Label": {
       "description": "Category taxonomy, post counts per label, and cloud vs. list display modes.",
+      "runtime_rendering_policy": "suppress_when_empty",
       "canonical": {
         "display": {
           "type": "string",
@@ -1926,7 +2022,7 @@
               "description": "Display name of the label category."
             },
             "url": {
-              "type": "url",
+              "type": "string",
               "description": "Target search URL for posts tagged with this label."
             }
           }
@@ -1941,7 +2037,7 @@
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "LinkList": {
       "description": "Ordered list of custom hyperlinks (`links[i].name`, `links[i].target`).",
@@ -1955,7 +2051,7 @@
               "description": "Anchor label or link text."
             },
             "target": {
-              "type": "url",
+              "type": "string",
               "description": "Destination hyperlink URL."
             }
           }
@@ -1989,7 +2085,7 @@
           "description": "Collection of standalone page and custom navigation links.",
           "item_properties": {
             "href": {
-              "type": "url",
+              "type": "string",
               "description": "Destination page or external link URL."
             },
             "id": {
@@ -2057,7 +2153,7 @@
           "description": "Collection of popular post models (canonical `Blog` post schema).",
           "item_properties": {
             "absoluteUrl": {
-              "type": "url",
+              "type": "string",
               "description": "Fully qualified absolute URL of the post."
             },
             "allowComments": {
@@ -2109,7 +2205,7 @@
               "description": "Comment backend provider (0 = Blogger native, 1 = Google+)."
             },
             "commentsUrl": {
-              "type": "url",
+              "type": "string",
               "description": "URL endpoint for viewing or adding comments."
             },
             "commentsUrlOnclick": {
@@ -2145,7 +2241,7 @@
                   "description": "Category/label name."
                 },
                 "url": {
-                  "type": "url",
+                  "type": "string",
                   "description": "Category archive URL for this label."
                 }
               }
@@ -2245,11 +2341,15 @@
       "canonical": {
         "aboutme": {
           "type": "string",
-          "description": "Author biography or introduction text."
+          "unconfigured_state": "missing",
+          "condition": "team == false",
+          "description": "Author biography or introduction text (injected only in single-author mode `team == false`)."
         },
         "authorPhoto": {
           "type": "object",
-          "description": "Structured avatar object with native `image` type.",
+          "unconfigured_state": "missing",
+          "condition": "team == false",
+          "description": "Structured avatar object with native `image` type (injected only in single-author mode `team == false`).",
           "properties": {
             "alt": {
               "type": "string",
@@ -2271,7 +2371,9 @@
         },
         "authors": {
           "type": "array[object]",
-          "description": "Collection of contributors populated when `team == true`.",
+          "unconfigured_state": "missing",
+          "condition": "team == true",
+          "description": "Collection of contributors populated strictly when `team == true` (MISSING in single-author mode).",
           "item_properties": {
             "authorPhoto": {
               "type": "object",
@@ -2304,34 +2406,46 @@
               "description": "Platform badge/logo URL for contributor."
             },
             "userUrl": {
-              "type": "url",
+              "type": "string",
               "description": "URL linking to contributor's profile page."
             }
           }
         },
         "displayname": {
           "type": "string",
-          "description": "Author display name."
+          "unconfigured_state": "missing",
+          "condition": "team == false",
+          "description": "Author display name (injected only in single-author mode `team == false`)."
         },
         "hasgoogleprofile": {
           "type": "boolean",
-          "description": "True if linked to a Google account profile."
+          "unconfigured_state": "missing",
+          "condition": "team == false",
+          "description": "True if linked to a Google account profile (injected only in single-author mode `team == false`)."
         },
         "location": {
           "type": "string",
-          "description": "Geographic location configured in author profile."
+          "unconfigured_state": "missing",
+          "condition": "team == false",
+          "description": "Geographic location configured in author profile (injected only in single-author mode `team == false`)."
         },
         "profileLogo": {
           "type": "string",
-          "description": "Small platform profile badge/logo URL."
+          "unconfigured_state": "missing",
+          "condition": "team == false",
+          "description": "Small platform profile badge/logo URL (injected only in single-author mode `team == false`)."
         },
         "showaboutme": {
           "type": "boolean",
-          "description": "UI toggle for rendering the biography text."
+          "unconfigured_state": "missing",
+          "condition": "team == false",
+          "description": "UI toggle for rendering the biography text (injected only in single-author mode `team == false`)."
         },
         "showlocation": {
           "type": "boolean",
-          "description": "UI toggle for rendering the location string."
+          "unconfigured_state": "missing",
+          "condition": "team == false",
+          "description": "UI toggle for rendering the location string (injected only in single-author mode `team == false`)."
         },
         "team": {
           "type": "boolean",
@@ -2342,8 +2456,10 @@
           "description": "Widget header title (defaults to 'About Me' or 'Contributors' if omitted)."
         },
         "userUrl": {
-          "type": "url",
-          "description": "URL linking to the author's public profile page."
+          "type": "string",
+          "unconfigured_state": "missing",
+          "condition": "team == false",
+          "description": "URL linking to the author's public profile page (injected only in single-author mode `team == false`)."
         },
         "viewProfileMsg": {
           "type": "string",
@@ -2360,7 +2476,7 @@
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "ReportAbuse": {
       "description": "System abuse reporting link gadget (DSA compliance, replaces legacy Navbar reporting channel).",
@@ -2399,7 +2515,7 @@
       "description": "Subscription feeds, aggregator reader targets, and platform feed icons.",
       "canonical": {
         "arrowDropdownImg": {
-          "type": "url",
+          "type": "string",
           "description": "Static platform image URL for the dropdown chevron arrow."
         },
         "atomFeedTxt": {
@@ -2407,7 +2523,7 @@
           "description": "Localized label for direct Atom feed subscription (e.g. 'Posts (Atom)')."
         },
         "feedIconImg": {
-          "type": "url",
+          "type": "string",
           "description": "Static platform image URL for the standard orange RSS feed icon."
         },
         "feeds": {
@@ -2420,20 +2536,20 @@
             },
             "title": {
               "type": "string",
-              "description": "Display name of the feed reader service (e.g. 'Google', 'Yahoo')."
+              "description": "Display name of the feed reader service (e.g. 'Posts', 'All Comments' on feed views, or 'Comments' on post views)."
             },
             "type": {
               "type": "string",
-              "description": "Identifier code for the feed reader target (e.g. 'GOOGLE', 'YAHOO')."
+              "description": "Identifier code for the feed target ('DEFAULT' for posts, 'COMMENT' for all comments, or 'PER_POST' for per-post comments on post views)."
             },
             "url": {
-              "type": "url",
-              "description": "Direct one-click subscription endpoint targeting that reader service."
+              "type": "string",
+              "description": "Direct one-click subscription endpoint targeting that feed."
             }
           }
         },
         "imagePathBase": {
-          "type": "url",
+          "type": "string",
           "description": "Base CDN directory URL containing feed reader brand logos."
         },
         "title": {
