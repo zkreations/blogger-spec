@@ -2088,7 +2088,7 @@
     },
     "path": {
       "family": "url",
-      "description": "Replaces the path portion of a URL while preserving existing query parameters and hash fragments.",
+      "description": "Replaces the pathname portion of a URL (ensuring a single leading '/') while preserving origin, existing query parameters, and hash fragments.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2135,11 +2135,11 @@
       "grammar_aliases": [],
       "doc_aliases": [],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "params": {
       "family": "url",
-      "description": "Sets or replaces query parameters on a URL using key-values from a dictionary object, deterministically serializing parameters in alphabetical key order.",
+      "description": "Sets or replaces the entire query string on a URL using key-value pairs from a dictionary object, deterministically serializing parameters in alphabetical key order (?k1=v1&k2=v2).",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2192,11 +2192,11 @@
       "grammar_aliases": [],
       "doc_aliases": [],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "appendParams": {
       "family": "url",
-      "description": "Merges and appends additional query parameters to a URL without removing existing parameters.",
+      "description": "Merges and appends additional query parameters from a dictionary object onto a URL while preserving existing query parameters.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2243,11 +2243,11 @@
       "grammar_aliases": [],
       "doc_aliases": [],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "fragment": {
       "family": "url",
-      "description": "Appends or replaces the anchor/hash fragment identifier of a URL.",
+      "description": "Appends or replaces the anchor/hash fragment identifier (#anchor) of a URL.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2294,7 +2294,7 @@
       "grammar_aliases": [],
       "doc_aliases": [],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "format": {
       "family": "date",
@@ -2343,7 +2343,7 @@
     },
     "resizeImage": {
       "family": "image",
-      "description": "Rewrites Google CDN image URLs for resizing, aspect ratio cropping, or responsive datasets. When evaluated against non-Google CDN URLs, safely returns the original URL unmodified without compiler diagnostics.",
+      "description": "Rewrites Google CDN image URLs for resizing (w<size>), aspect ratio cropping (w<width>-h<height>-p-k-no-nu), or responsive variant collections. Scalar resize returns an image descriptor that serializes to the resized URL in scalar output contexts and populates .width and .height modifiers. Array resize returns array[object] of image_variant items with .url and .size. When evaluated against non-Google CDN URLs, safely returns the original URL unmodified without compiler diagnostics.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2393,7 +2393,7 @@
       "overloads": [
         {
           "signature": "resizeImage(image, number[, ratio])",
-          "description": "Scalar image resize",
+          "description": "Scalar image resize returning a resized image URL descriptor with populated .width and .height modifiers.",
           "operands": [
             {
               "name": "image",
@@ -2418,7 +2418,7 @@
         },
         {
           "signature": "resizeImage(image, array[number][, ratio])",
-          "description": "Array of responsive image objects with .url and .size",
+          "description": "Array of responsive image_variant objects with .url and .size properties.",
           "operands": [
             {
               "name": "image",
@@ -2443,7 +2443,8 @@
         }
       ],
       "anti_patterns": [
-        "Only works on Google-hosted image infrastructure; guard with .isResizable modifier."
+        "Only works on Google-hosted image infrastructure; guard with .isResizable modifier.",
+        "Do not pass the result of resizeImage(...) as the first argument to sourceSet(...); pass the raw source image URL directly to sourceSet."
       ],
       "examples": [
         {
@@ -2455,11 +2456,11 @@
       "grammar_aliases": [],
       "doc_aliases": [],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "sourceSet": {
       "family": "image",
-      "description": "Generates an HTML srcset string formatted as 'URL w<size>, ...' from an image URL and dimensions array.",
+      "description": "Generates a comma-separated HTML srcset string formatted as '<resized_url> <size>w, ...' from a raw Google CDN image URL and an array of integer width dimensions.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2478,7 +2479,7 @@
             "string"
           ],
           "required": true,
-          "description": "Source Google CDN image URL"
+          "description": "Raw source Google CDN image URL (not a resizeImage result)"
         },
         {
           "name": "sizes",
@@ -2505,6 +2506,9 @@
         "values",
         "expr:*"
       ],
+      "anti_patterns": [
+        "The first argument to sourceSet(image, sizes[, ratio]) must be a raw image URL or image reference (e.g. data:post.featuredImage), never the result of resizeImage(...)."
+      ],
       "examples": [
         {
           "expression": "data:post.featuredImage sourceSet [320, 640, 1024]",
@@ -2515,11 +2519,11 @@
       "grammar_aliases": [],
       "doc_aliases": [],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "snippet": {
       "family": "snippet",
-      "description": "Extracts a truncated plain-text snippet from markup or text, stripping HTML tags.",
+      "description": "Extracts a truncated plain-text snippet from markup or text, stripping HTML tags and appending a horizontal ellipsis character ('…') when truncated (unless ellipsis: false is specified in options).",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2544,7 +2548,7 @@
             "object"
           ],
           "required": false,
-          "description": "Snippet options: length, links, linebreaks, ellipsis"
+          "description": "Snippet options: length (number), links (boolean), linebreaks (boolean), ellipsis (boolean)"
         }
       ],
       "return_type": "string",
@@ -2568,7 +2572,7 @@
       "grammar_aliases": [],
       "doc_aliases": [],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     }
   }
 }

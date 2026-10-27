@@ -483,9 +483,21 @@
           "reason": "Legacy horizontal/vertical layout hint in deprecated GUI."
         }
       },
+      "spec_extensions": {
+        "rendering": {
+          "populated_section": {
+            "output": "<div class='section' id='main'>...</div>",
+            "description": "Emits an HTML wrapper element (defaulting to div or the tag attribute) with class 'section' (appended to any custom class) and id."
+          },
+          "empty_section": {
+            "output": "<div class='section no-items' id='main'></div>",
+            "description": "Appends the 'no-items' class when the section contains zero rendered widgets at runtime."
+          }
+        }
+      },
       "closure_mode": "container",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "b:widget": {
       "category": "Structuring",
@@ -610,9 +622,25 @@
           "reason": "Legacy attribute used to control widget display on designated page types."
         }
       },
+      "spec_extensions": {
+        "rendering": {
+          "standard_wrapper": {
+            "output": "<div class='widget [Type]' data-version='2' id='[id]'>...</div>",
+            "description": "Emits an outer div wrapper with class='widget [Type]', data-version='[version]', and id='[id]' enclosing the evaluated output of <b:includable id='main'>."
+          },
+          "suppress_when_empty": {
+            "output": "",
+            "description": "For widgets with runtime_rendering_policy='suppress_when_empty' (e.g. Label when data:labels is empty), suppresses the entire widget wrapper from the DOM."
+          },
+          "server_forced_markup": {
+            "output": "<div class='widget Followers' data-version='2' id='Followers1'>...</div>",
+            "description": "For widgets with runtime_rendering_policy='server_forced_markup' (Followers), replaces custom <b:includable id='main'> markup with the server-rendered GAPI iframe payload in public views."
+          }
+        }
+      },
       "closure_mode": "container",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "b:includable": {
       "category": "Structuring",
@@ -1488,9 +1516,21 @@
           "reason": "If the data set does not exist, the containing inclusion will not be executed."
         }
       },
+      "spec_extensions": {
+        "rendering": {
+          "missing_value": {
+            "output": "",
+            "description": "When the evaluated expression resolves to a missing or nullish value, renders empty output without emitting an HTML substitution comment."
+          },
+          "not_singleton": {
+            "output": "<!--Substitution is not a singleton for tag [...]-->",
+            "description": "When the evaluated expression resolves to a non-scalar container (object or array), emits a non-singleton substitution HTML comment."
+          }
+        }
+      },
       "closure_mode": "self_closing",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "data:*": {
       "category": "Output",
@@ -1537,9 +1577,21 @@
           "description": "Extracts an item through multiple nested objects."
         }
       },
+      "spec_extensions": {
+        "rendering": {
+          "missing_property": {
+            "output": "<!--Can't find substitution for tag [path]-->",
+            "description": "When the referenced property path is absent from the runtime dictionary (MISSING), emits an HTML comment indicating the missing tag path (without the 'data:' prefix)."
+          },
+          "not_singleton": {
+            "output": "<!--Substitution is not a singleton for tag [path]-->",
+            "description": "When the referenced property path resolves to a non-scalar container (object or array), emits an HTML comment indicating the tag is not a singleton."
+          }
+        }
+      },
       "closure_mode": "self_closing",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "b:message": {
       "category": "Localization",
@@ -2083,9 +2135,21 @@
           "description": "Blogger expressions contained within the comment are evaluated before the resulting comment is generated."
         }
       },
+      "spec_extensions": {
+        "rendering": {
+          "render_true": {
+            "output": "<!--...-->",
+            "description": "When render evaluates to true ('true' or 'yes'), evaluates inner Blogger directives and emits an HTML comment without interior padding."
+          },
+          "render_false_or_omitted": {
+            "output": "",
+            "description": "When render is false ('false', 'no') or omitted, strips the entire comment from the rendered HTML."
+          }
+        }
+      },
       "closure_mode": "container",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "b:template-script": {
       "category": "Utility",

@@ -6,7 +6,7 @@
   "domain_metadata": {
     "super_prefix_rule": {
       "prefix": "super.",
-      "description": "Prefixing an inclusion identifier with super. (e.g. <b:include name='super.main'/>) instructs the Blogger engine to execute the default platform or theme implementation of that subroutine, bypassing template-level overrides.",
+      "description": "Prefixing an inclusion identifier with super. (e.g. <b:include name='super.main'/>) instructs the Blogger engine to execute the default platform or theme implementation of that subroutine, bypassing template-level overrides. Note: the Followers widget enforces server-side default markup in public views regardless of whether super.main is invoked.",
       "behavior": "delegation"
     },
     "standard_diagnostics": {
@@ -17,9 +17,9 @@
     "all-head-content": {
       "name": "all-head-content",
       "category": "universal",
-      "description": "Injects critical HTML document head elements, including OpenSearch link headers, feed discovery links, canonical link tags, generator meta tags, and platform core scripts.",
+      "description": "Injects critical HTML document head elements, including dynamic authorization CSS (dyncss/authorization.css), OpenSearch link headers, feed discovery links, canonical link tags, google-adsense-platform-account and google-adsense-platform-domain meta tags, and platform core scripts.",
       "evidence": "official",
-      "verified_at": "2026-10-10",
+      "verified_at": "2026-10-26",
       "layout_versions": [
         1,
         2,
@@ -96,9 +96,9 @@
     "reportAbuse": {
       "name": "reportAbuse",
       "category": "common",
-      "description": "Renders the Blogger platform abuse reporting link conforming to Google Terms of Service requirements.",
+      "description": "Renders the Blogger platform abuse reporting link (<h3 class='title'><a class='report_abuse' href='https://www.blogger.com/go/report-abuse' rel='noopener nofollow' target='_blank'>...</a></h3>) conforming to Google Terms of Service and DSA requirements.",
       "evidence": "official",
-      "verified_at": "2026-10-10",
+      "verified_at": "2026-10-26",
       "layout_versions": [
         1,
         2,

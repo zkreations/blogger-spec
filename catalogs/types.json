@@ -19,6 +19,16 @@
         "target_context": "collection_indexing",
         "behavior": "Accessing array elements via subscript [i] or .first/.last unwraps the collection into its child element type.",
         "example": "data:posts.first -> object (post)"
+      },
+      "non_singleton_serialization": {
+        "target_context": "scalar_interpolation",
+        "behavior": "Evaluating a non-scalar container (object or array, or an array element unwrapped via .first/.last that is an object) directly in scalar output contexts (<data:.../> or <b:eval expr='...'/>) emits the HTML error comment <!--Substitution is not a singleton for tag [...]-->, whereas in boolean contexts (cond='...') it evaluates truthiness (non-empty / non-null).",
+        "example": "<data:posts.first/> -> <!--Substitution is not a singleton for tag [posts.first]-->"
+      },
+      "missing_property_serialization": {
+        "target_context": "scalar_interpolation",
+        "behavior": "Evaluating an unpopulated or view-incompatible property in <data:.../> emits <!--Can't find substitution for tag [...]-->, whereas in <b:eval expr='...'/> or dynamic expr:* attributes it evaluates to nullish/empty without emitting an HTML comment.",
+        "example": "<data:view.postId/> -> <!--Can't find substitution for tag [view.postId]-->"
       }
     },
     "truthiness_matrix": {
@@ -413,17 +423,17 @@
     },
     "object": {
       "category": "base",
-      "description": "Key-value associative maps, member projection, and heterogeneous nested datasets.",
+      "description": "Key-value associative maps, member projection, and heterogeneous nested datasets. Evaluating an object directly in scalar output contexts (<data:.../> or <b:eval/>) emits <!--Substitution is not a singleton for tag [...]-->; in boolean contexts (cond='...') it evaluates truthiness.",
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "Record<string, any>",
       "modifiers": {},
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "array": {
       "category": "base",
-      "description": "Ordered homogeneous collection of 0 or more elements of the same type.",
+      "description": "Ordered homogeneous collection of 0 or more elements of the same type. Evaluating an array directly in scalar output contexts emits <!--Substitution is not a singleton for tag [...]-->; in boolean contexts (cond='...') it evaluates to true when non-empty and false when empty.",
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "any[]",
@@ -446,7 +456,7 @@
           "example": "data:posts.length"
         },
         "first": {
-          "description": "Extracts the first element of the collection.",
+          "description": "Extracts the first element of the collection. For scalar collections (array[string], array[number]) it yields the scalar directly; for array[object] it yields an object (which requires a member path in scalar output contexts or else emits NOT_SINGLETON). Resolves to MISSING on empty collections.",
           "output_type": "child_item",
           "syntax": ".first",
           "direct_syntax": "<data:array.first/>",
@@ -454,7 +464,7 @@
           "example": "data:posts.first"
         },
         "last": {
-          "description": "Extracts the last element of the collection.",
+          "description": "Extracts the last element of the collection. For scalar collections (array[string], array[number]) it yields the scalar directly; for array[object] it yields an object (which requires a member path in scalar output contexts or else emits NOT_SINGLETON). Resolves to MISSING on empty collections.",
           "output_type": "child_item",
           "syntax": ".last",
           "direct_syntax": "<data:array.last/>",
@@ -503,7 +513,7 @@
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "image_variant": {
       "category": "subtype",
@@ -599,40 +609,44 @@
           "example": "data:post.featuredImage.youtubeMaxResDefaultUrl"
         },
         "width": {
-          "description": "Returns explicit display width in pixels.",
+          "description": "Returns explicit display width in pixels on a resized image produced by resizeImage(...). Resolves to MISSING on unresized image properties.",
           "output_type": "number",
           "syntax": ".width",
           "direct_syntax": "<data:image.width/>",
           "expr_syntax": "([expr]).width",
-          "example": "data:post.featuredImage.width"
+          "example": "(data:post.featuredImage resizeImage 600).width",
+          "source_constraint": "resizeImage"
         },
         "height": {
-          "description": "Returns explicit display height in pixels.",
+          "description": "Returns explicit display height in pixels on a resized image produced by resizeImage(...). Resolves to MISSING on unresized image properties.",
           "output_type": "number",
           "syntax": ".height",
           "direct_syntax": "<data:image.height/>",
           "expr_syntax": "([expr]).height",
-          "example": "data:post.featuredImage.height"
+          "example": "(data:post.featuredImage resizeImage 600).height",
+          "source_constraint": "resizeImage"
         },
         "originalWidth": {
-          "description": "Returns native, unscaled original pixel width of the source image.",
+          "description": "Returns native, unscaled original pixel width of the source image. Populated exclusively on Blog.posts[].featuredImage (and data:widgets.Blog.first.posts[].featuredImage); resolves to MISSING on other image properties.",
           "output_type": "number",
           "syntax": ".originalWidth",
           "direct_syntax": "<data:image.originalWidth/>",
           "expr_syntax": "([expr]).originalWidth",
-          "example": "data:post.featuredImage.originalWidth"
+          "example": "data:post.featuredImage.originalWidth",
+          "source_constraint": "Blog.posts.featuredImage"
         },
         "originalHeight": {
-          "description": "Returns native, unscaled original pixel height of the source image.",
+          "description": "Returns native, unscaled original pixel height of the source image. Populated exclusively on Blog.posts[].featuredImage (and data:widgets.Blog.first.posts[].featuredImage); resolves to MISSING on other image properties.",
           "output_type": "number",
           "syntax": ".originalHeight",
           "direct_syntax": "<data:image.originalHeight/>",
           "expr_syntax": "([expr]).originalHeight",
-          "example": "data:post.featuredImage.originalHeight"
+          "example": "data:post.featuredImage.originalHeight",
+          "source_constraint": "Blog.posts.featuredImage"
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-26"
     },
     "date": {
       "category": "subtype",
