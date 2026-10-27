@@ -260,6 +260,10 @@
         "available_in_skin": {
           "type": "boolean",
           "description": "Whether this modifier can be used inside <b:skin> $(variable.modifier) syntax."
+        },
+        "source_constraint": {
+          "type": "string",
+          "description": "Runtime origin requirement for this modifier to be populated in the dictionary (e.g. 'resizeImage' or 'Blog.posts.featuredImage'). When accessed on other sources of the same type, the modifier resolves to MISSING."
         }
       },
       "additionalProperties": false

@@ -19,6 +19,24 @@
       "pattern": "^BX[0-9]{4}$",
       "description": "Canonical Blogger specification diagnostic rule identifier (e.g. BX1001)."
     },
+    "viewId": {
+      "type": "string",
+      "enum": [
+        "homepage",
+        "post_listing",
+        "search_query",
+        "label_search",
+        "archive_yearly",
+        "archive_monthly",
+        "archive_weekly_daily",
+        "post",
+        "static_page",
+        "error_404",
+        "preview",
+        "layout_mode"
+      ],
+      "description": "Canonical Blogger runtime page or administrative view identifier."
+    },
     "canonicalPropertyType": {
       "type": "string",
       "pattern": "^[a-z_]+(:[a-z_]+)?(\\[[a-z_:]+\\])?$",
@@ -68,6 +86,15 @@
         },
         "reason": {
           "type": "string"
+        },
+        "runtime_state": {
+          "type": "string",
+          "enum": [
+            "active",
+            "empty",
+            "missing"
+          ],
+          "description": "Empirical runtime resolution state in Blogger's backend dictionary ('active' = returns value, 'empty' = returns empty string, 'missing' = omitted from dictionary and emits substitution error comment)."
         }
       },
       "additionalProperties": false
@@ -93,6 +120,25 @@
           "items": {
             "type": "string"
           }
+        },
+        "available_in_views": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/viewId"
+          },
+          "description": "Subset of canonical Blogger views where this property is injected into the runtime data dictionary. In all other views, the property is omitted (MISSING)."
+        },
+        "unconfigured_state": {
+          "type": "string",
+          "enum": [
+            "empty",
+            "missing"
+          ],
+          "description": "Runtime behavior when an optional setting or resource backing this property is unconfigured ('empty' = key exists with empty string '', 'missing' = key is omitted from dictionary)."
+        },
+        "condition": {
+          "type": "string",
+          "description": "Runtime predicate or configuration state required for this property to be injected (e.g. 'team == false', 'team == true', 'google_hosted_image', 'analytics4_configured')."
         },
         "properties": {
           "type": "object",

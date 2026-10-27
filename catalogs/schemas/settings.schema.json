@@ -127,6 +127,15 @@
             "null"
           ]
         },
+        "value_transform": {
+          "type": "string",
+          "enum": [
+            "none",
+            "lowercase",
+            "uppercase"
+          ],
+          "description": "Transformation applied by Blogger's backend when projecting the XML <b:widget-setting> string into its bound runtime data:* property."
+        },
         "serialization_format": {
           "type": "string",
           "enum": [

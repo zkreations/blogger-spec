@@ -37,6 +37,20 @@
             "type": "string"
           },
           "description": "Standard root dataset namespaces provided by the Blogger platform runtime."
+        },
+        "runtime_evaluation_states": {
+          "type": "object",
+          "description": "Canonical runtime evaluation states for Blogger data tags and expression outputs.",
+          "additionalProperties": {
+            "$ref": "#/$defs/runtimeEvaluationState"
+          }
+        },
+        "views": {
+          "type": "object",
+          "description": "Canonical Blogger page and administrative view routing and state matrix.",
+          "additionalProperties": {
+            "$ref": "#/$defs/viewMatrixEntry"
+          }
         }
       },
       "additionalProperties": false
@@ -50,6 +64,139 @@
   },
   "additionalProperties": false,
   "$defs": {
+    "runtimeEvaluationState": {
+      "type": "object",
+      "required": [
+        "description",
+        "in_dictionary",
+        "boolean_coercion",
+        "html_output_template"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "in_dictionary": {
+          "type": "boolean"
+        },
+        "boolean_coercion": {
+          "type": "string",
+          "enum": [
+            "truthy",
+            "falsy",
+            "value_dependent"
+          ]
+        },
+        "html_output_template": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "viewFlagState": {
+      "type": "string",
+      "enum": [
+        "true",
+        "false",
+        "missing"
+      ],
+      "description": "Exact runtime state of a boolean view flag in a given Blogger view."
+    },
+    "viewMatrixEntry": {
+      "type": "object",
+      "required": [
+        "description",
+        "url_patterns",
+        "blog_page_type",
+        "view_type",
+        "flags"
+      ],
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "url_patterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blog_page_type": {
+          "type": "string",
+          "enum": [
+            "index",
+            "item",
+            "static_page",
+            "archive",
+            "error_page"
+          ]
+        },
+        "view_type": {
+          "type": "string",
+          "enum": [
+            "feed",
+            "item",
+            "error"
+          ]
+        },
+        "flags": {
+          "type": "object",
+          "required": [
+            "isHomepage",
+            "isPost",
+            "isPage",
+            "isArchive",
+            "isSearch",
+            "isLabelSearch",
+            "isError",
+            "isPreview",
+            "isLayoutMode",
+            "isMultipleItems",
+            "isSingleItem"
+          ],
+          "properties": {
+            "isHomepage": {
+              "$ref": "#/$defs/viewFlagState"
+            },
+            "isPost": {
+              "$ref": "#/$defs/viewFlagState"
+            },
+            "isPage": {
+              "$ref": "#/$defs/viewFlagState"
+            },
+            "isArchive": {
+              "$ref": "#/$defs/viewFlagState"
+            },
+            "isSearch": {
+              "$ref": "#/$defs/viewFlagState"
+            },
+            "isLabelSearch": {
+              "$ref": "#/$defs/viewFlagState"
+            },
+            "isError": {
+              "$ref": "#/$defs/viewFlagState"
+            },
+            "isPreview": {
+              "$ref": "#/$defs/viewFlagState"
+            },
+            "isLayoutMode": {
+              "$ref": "#/$defs/viewFlagState"
+            },
+            "isMultipleItems": {
+              "$ref": "#/$defs/viewFlagState"
+            },
+            "isSingleItem": {
+              "$ref": "#/$defs/viewFlagState"
+            }
+          },
+          "additionalProperties": false
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
     "globalObject": {
       "type": "object",
       "required": [

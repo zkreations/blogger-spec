@@ -87,6 +87,15 @@
         "warning_diagnostic": {
           "$ref": "common.schema.json#/$defs/diagnosticCode",
           "description": "Optional warning diagnostic code emitted when instantiating this widget."
+        },
+        "runtime_rendering_policy": {
+          "type": "string",
+          "enum": [
+            "standard",
+            "suppress_when_empty",
+            "server_forced_markup"
+          ],
+          "description": "Server-side DOM rendering policy ('standard' = executes widget includables normally, 'suppress_when_empty' = omits widget wrapper and data:widgets entry when primary collection is empty, 'server_forced_markup' = ignores custom template includables and injects platform markup)."
         }
       },
       "additionalProperties": false

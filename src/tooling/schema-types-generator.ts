@@ -86,6 +86,8 @@ export function generateCanonicalSchemaTypes(): string {
 
   // Extract enums directly from schemas
   const evidenceEnum = (commonSchema.$defs?.evidenceLevel?.enum as string[]) || ['official', 'observed', 'approximate', 'unknown']
+  const viewIdEnum = (commonSchema.$defs?.viewId?.enum as string[]) || ['homepage', 'post_listing', 'search_query', 'label_search', 'archive_yearly', 'archive_monthly', 'archive_weekly_daily', 'post', 'static_page', 'error_404', 'preview', 'layout_mode']
+  const viewFlagStateEnum = (globalsSchema.$defs?.viewFlagState?.enum as string[]) || ['true', 'false', 'missing']
   const diagRuleProps = diagSchema.$defs?.diagnosticRule?.properties || {}
   const categoryEnum = (diagRuleProps.category?.enum as string[]) || ['hallucination', 'syntax', 'expressions', 'quota', 'structure', 'deprecation', 'runtime']
   const severityEnum = (diagRuleProps.severity?.enum as string[]) || ['error', 'warning', 'info']
@@ -129,6 +131,10 @@ export function generateCanonicalSchemaTypes(): string {
     '// =========================================================================',
     '',
     `export type BloggerEvidenceLevel = ${evidenceEnum.map(e => `'${e}'`).join(' | ')};`,
+    '',
+    `export type BloggerViewId = ${viewIdEnum.map(v => `'${v}'`).join(' | ')};`,
+    '',
+    `export type BloggerViewFlagState = ${viewFlagStateEnum.map(s => `'${s}'`).join(' | ')};`,
     '',
     `export type BloggerDiagnosticCategory = ${categoryEnum.map(c => `'${c}'`).join(' | ')};`,
     '',
@@ -431,6 +437,30 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('// Globals & Data Properties Catalog Models (SSoT: globals.schema.json)')
   lines.push('// =========================================================================')
   lines.push('')
+  lines.push(generateInterface('BloggerRuntimeEvaluationState', globalsSchema.$defs.runtimeEvaluationState))
+  lines.push('export interface BloggerViewFlagsMatrix {')
+  lines.push('  isHomepage: BloggerViewFlagState;')
+  lines.push('  isPost: BloggerViewFlagState;')
+  lines.push('  isPage: BloggerViewFlagState;')
+  lines.push('  isArchive: BloggerViewFlagState;')
+  lines.push('  isSearch: BloggerViewFlagState;')
+  lines.push('  isLabelSearch: BloggerViewFlagState;')
+  lines.push('  isError: BloggerViewFlagState;')
+  lines.push('  isPreview: BloggerViewFlagState;')
+  lines.push('  isLayoutMode: BloggerViewFlagState;')
+  lines.push('  isMultipleItems: BloggerViewFlagState;')
+  lines.push('  isSingleItem: BloggerViewFlagState;')
+  lines.push('}')
+  lines.push('')
+  lines.push('export interface BloggerViewMatrixEntry {')
+  lines.push('  description: string;')
+  lines.push('  url_patterns: string[];')
+  lines.push('  blog_page_type: \'index\' | \'item\' | \'static_page\' | \'archive\' | \'error_page\';')
+  lines.push('  view_type: \'feed\' | \'item\' | \'error\';')
+  lines.push('  flags: BloggerViewFlagsMatrix;')
+  lines.push('  notes?: string;')
+  lines.push('}')
+  lines.push('')
   lines.push(generateInterface('BloggerGlobalObjectDefinition', globalsSchema.$defs.globalObject))
   lines.push('export interface BloggerGlobalsCatalog {')
   lines.push('  $schema?: string;')
@@ -439,6 +469,8 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('  description?: string;')
   lines.push('  domain_metadata?: {')
   lines.push('    root_datasets: string[];')
+  lines.push('    runtime_evaluation_states?: Record<string, BloggerRuntimeEvaluationState>;')
+  lines.push('    views?: Record<BloggerViewId, BloggerViewMatrixEntry>;')
   lines.push('  };')
   lines.push('  objects: Record<string, BloggerGlobalObjectDefinition>;')
   lines.push('}')
