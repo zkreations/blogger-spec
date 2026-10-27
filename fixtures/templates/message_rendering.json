@@ -362,6 +362,32 @@
         "canonicalDom": false
       },
       "verified_at": "2026-10-14"
+    },
+    {
+      "id": "rendering/message_rendering/plural-message-directive-spanish",
+      "title": "Plural Message Directive in Spanish",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:message_rendering",
+        "tag:b:message",
+        "tag:b:param"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:message name='messages.numberOfComments'><b:param name='numComments' value='1'/></b:message>",
+        "mode": "fragment",
+        "context": {
+          "messages": {
+            "numberOfComments": "{numComments, plural, =0 {No hay comentarios} =1 {1 comentario} other {# comentarios}}"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "1 comentario",
+        "canonicalDom": false
+      },
+      "verified_at": "2026-10-26"
     }
   ]
 }

@@ -537,6 +537,68 @@ export function validateSpec(options?: ValidateSpecOptions): SpecValidationRepor
   checkMessageReplacements(widgetsCatalog.widgets, 'widgets')
   checkMessageReplacements(settingsCatalog.widgets, 'settings')
 
+  // 2.5 Locales referential integrity
+  const localesCatalog = store.getCatalog('locales') as any
+  if (localesCatalog) {
+    const locales = localesCatalog.locales || {}
+    const translations = localesCatalog.translations || {}
+    const rtlList = new Set<string>(localesCatalog.domain_metadata?.rtl_locales || ['ar', 'fa', 'he', 'ur'])
+
+    for (const [code, loc] of Object.entries(locales)) {
+      const isRtl = rtlList.has(code)
+      if (isRtl && (loc as any).language_direction !== 'rtl') {
+        errors.push(`Locale '${code}' is in rtl_locales but specifies language_direction '${(loc as any).language_direction}'.`)
+      }
+      if (isRtl && (loc as any).language_alignment !== 'right') {
+        errors.push(`Locale '${code}' is RTL but specifies language_alignment '${(loc as any).language_alignment}'.`)
+      }
+    }
+
+    for (const [msgKey, msgDef] of Object.entries(messages)) {
+      if ((msgDef as any).translatable) {
+        if (!translations.messages?.[msgKey]) {
+          errors.push(`Message '${msgKey}' is marked translatable but has no entry in locales.json translations.messages.`)
+        }
+      }
+    }
+
+    function verifyLocalizationKeys(obj: any, loc: string) {
+      if (!obj || typeof obj !== 'object') {
+        return
+      }
+      for (const [k, v] of Object.entries(obj)) {
+        const currentPath = `${loc}.${k}`
+        if (v && typeof v === 'object') {
+          if ((v as any).translatable && (v as any).localization_key) {
+            const key = (v as any).localization_key as string
+            if (key.startsWith('globals.')) {
+              const gKey = key.replace(/^globals\./, '')
+              if (gKey.startsWith('blog.sharing.platforms.')) {
+                if (!translations.globals?.['blog.sharing.platforms']) {
+                  errors.push(`Localization key '${key}' on '${currentPath}' missing from locales.json.`)
+                }
+              }
+              else if (!translations.globals?.[gKey]) {
+                errors.push(`Localization key '${key}' on '${currentPath}' missing from locales.json.`)
+              }
+            }
+            else if (key.startsWith('widgets.')) {
+              const parts = key.replace(/^widgets\./, '').split('.')
+              const wType = parts[0]!
+              const pPath = parts.slice(1).join('.')
+              if (!translations.widgets?.[wType]?.[pPath]) {
+                errors.push(`Localization key '${key}' on '${currentPath}' missing from locales.json.`)
+              }
+            }
+          }
+          verifyLocalizationKeys(v, currentPath)
+        }
+      }
+    }
+    verifyLocalizationKeys(globalsCatalog.objects, 'globals')
+    verifyLocalizationKeys(widgetsCatalog.widgets, 'widgets')
+  }
+
   if (errors.length === 0) {
     log('  [PASS] Catalogs referential integrity validated.')
   }

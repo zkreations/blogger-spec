@@ -104,6 +104,18 @@
         },
         "diagnostic": {
           "$ref": "common.schema.json#/$defs/diagnosticCode"
+        },
+        "translatable": {
+          "type": "boolean",
+          "description": "Indicates whether this message returns platform-localized text across Blogger supported locales."
+        },
+        "localization_key": {
+          "type": "string",
+          "description": "Cross-reference key resolving to localized translations in catalogs/locales.json."
+        },
+        "default_value": {
+          "type": "string",
+          "description": "Canonical English default value of the localized message."
         }
       },
       "additionalProperties": false

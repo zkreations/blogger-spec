@@ -36,6 +36,7 @@ describe('universal ESM & in-memory store suite', () => {
     expect(RootExports.catalogs.scopes).toBeDefined()
     expect(RootExports.catalogs.diagnostics).toBeDefined()
     expect(RootExports.catalogs.inclusions).toBeDefined()
+    expect(RootExports.catalogs.locales).toBeDefined()
   })
 
   it('serves all catalogs and schemas through standard helpers', () => {
@@ -51,6 +52,7 @@ describe('universal ESM & in-memory store suite', () => {
       'scopes',
       'diagnostics',
       'inclusions',
+      'locales',
     ])
 
     const directives = getDirectives()
@@ -60,8 +62,9 @@ describe('universal ESM & in-memory store suite', () => {
     expect(operators.operators['+']).toBeDefined()
 
     const schemas = getAllSchemas()
-    expect(schemas.length).toBe(12)
+    expect(schemas.length).toBe(13)
     expect(schemas.some(s => s.name === 'directives')).toBe(true)
+    expect(schemas.some(s => s.name === 'locales')).toBe(true)
   })
 
   it('allows switching to FsCatalogStore in Node environments when needed', () => {

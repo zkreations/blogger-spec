@@ -21,17 +21,26 @@
     "adsGoHere": {
       "description": "Ad placeholder banner notice.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.adsGoHere",
+      "default_value": "Ads go here"
     },
     "archive": {
       "description": "Blog archive label ('Archive').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.archive",
+      "default_value": "Archive"
     },
     "at": {
       "description": "Time preposition ('at').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.at",
+      "default_value": "at"
     },
     "authorSaid": {
       "description": "Comment author attribution quote ('%1 said&hellip;'). Direct tag invocation prohibited; requires <b:message>.",
@@ -45,7 +54,10 @@
         }
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.authorSaid",
+      "default_value": "__ARG1__ said&hellip;"
     },
     "authorSaidWithLink": {
       "description": "Comment author quote with HTML anchor markup ('<a href=\"%2\" rel=\"nofollow\">%1</a> said&hellip;'). Direct tag invocation prohibited; requires <b:message>.",
@@ -63,22 +75,34 @@
         }
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.authorSaidWithLink",
+      "default_value": "<a href=\"__ARG2__\" rel=\"nofollow\">__ARG1__</a> said&hellip;"
     },
     "blogArchive": {
       "description": "BlogArchive widget title ('Blog Archive').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.blogArchive",
+      "default_value": "Blog Archive"
     },
     "blogAuthors": {
       "description": "Blog authors header label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.blogAuthors",
+      "default_value": "Blog authors"
     },
     "by": {
       "description": "Author preposition ('by').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.by",
+      "default_value": "By"
     },
     "byAuthor": {
       "description": "Attribution phrase ('By %1'). Direct tag invocation prohibited; requires <b:message>.",
@@ -91,7 +115,10 @@
         }
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.byAuthor",
+      "default_value": "By __ARG1__"
     },
     "byAuthorLink": {
       "description": "Attribution phrase with author profile anchor ('By <a href=\"%2\">%1</a>'). Direct tag invocation prohibited; requires <b:message>.",
@@ -108,197 +135,314 @@
         }
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.byAuthorLink",
+      "default_value": "By <a href=\"__ARG2__\">__ARG1__</a>"
     },
     "comments": {
       "description": "Comments count or section title ('Comments').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.comments",
+      "default_value": "Comments"
     },
     "configurationRequired": {
       "description": "Widget setup requirement prompt.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.configurationRequired",
+      "default_value": "Configuration required"
     },
     "copy": {
       "description": "Copy action button label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.copy",
+      "default_value": "Copy"
     },
     "copyToClipboard": {
       "description": "Copy to clipboard action label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.copyToClipboard",
+      "default_value": "Copy to clipboard"
     },
     "deleteComment": {
       "description": "Delete comment moderation button label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.deleteComment",
+      "default_value": "Delete Comment"
     },
     "dynamicViewsNotAvailable": {
       "description": "Dynamic Views unavailable warning text.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.dynamicViewsNotAvailable",
+      "default_value": "This theme is not compatible with the blog's current settings. If you would like to use this theme, please ensure the blog is public and allows blog feeds."
     },
     "edit": {
       "description": "Quick-edit item action link.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.edit",
+      "default_value": "Edit"
     },
     "emailAddress": {
       "description": "Email input field label / placeholder.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.emailAddress",
+      "default_value": "Email Address"
     },
     "emailPost": {
       "description": "Share via email button label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.emailPost",
+      "default_value": "Email Post"
     },
     "euCookieNotice": {
       "description": "European Union cookie consent banner text.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.euCookieNotice",
+      "default_value": "This site uses cookies from Google to deliver its services, to personalize ads and to analyze traffic. Information about your use of this site is shared with Google. By using this site, you agree to its use of cookies."
     },
     "euCookieNotice2018": {
       "description": "Updated EU cookie notice text.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.euCookieNotice2018",
+      "default_value": "This site uses cookies from Google to deliver its services and to analyze traffic. Your IP address and user-agent are shared with Google along with performance and security metrics to ensure quality of service, generate usage statistics, and to detect and address abuse."
     },
     "euCookieNoticeCloseButton": {
       "description": "Cookie consent banner close button label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.euCookieNoticeCloseButton",
+      "default_value": "Got it"
     },
     "euCookieResponsibility": {
       "description": "Cookie compliance disclaimer statement.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.euCookieResponsibility",
+      "default_value": "It is your responsibility to notify your visitors about cookies used on your blog. See http://www.blogger.com/go/cookiechoices for more details."
     },
     "euCookieResponsibility2018": {
       "description": "Updated cookie compliance disclaimer statement.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.euCookieResponsibility2018",
+      "default_value": "It is your responsibility to notify your visitors about cookies used and data collected on your blog. Blogger makes a standard notification available for you to use on your blog, and you can customize it or replace with your own notice. See http://www.blogger.com/go/cookiechoices for more details."
     },
     "featured": {
       "description": "Featured post badge / header label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.featured",
+      "default_value": "Featured"
     },
     "getEmailNotifications": {
       "description": "Email subscription call to action.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.getEmailNotifications",
+      "default_value": "Get email notifications"
     },
     "gotIt": {
       "description": "Confirmation dismissal button ('Got it').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.gotIt",
+      "default_value": "Got it"
     },
     "hidden": {
       "description": "Hidden state label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.hidden",
+      "default_value": "Hidden"
     },
     "home": {
       "description": "Root homepage navigation label ('Home').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.home",
+      "default_value": "Home"
     },
     "image": {
       "description": "Generic image label / alt placeholder.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.image",
+      "default_value": "Image"
     },
     "joinTheConversation": {
       "description": "Comment section header invitation.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.joinTheConversation",
+      "default_value": "Join the conversation"
     },
     "keepReading": {
       "description": "Post continuation teaser link ('Keep reading').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.keepReading",
+      "default_value": "Keep reading"
     },
     "labels": {
       "description": "Post labels / tags header label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.labels",
+      "default_value": "Labels"
     },
     "latestPosts": {
       "description": "Latest posts widget heading.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.latestPosts",
+      "default_value": "Latest Posts"
     },
     "learnMore": {
       "description": "Informational link label ('Learn more').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.learnMore",
+      "default_value": "Learn More"
     },
     "linkCopiedToClipboard": {
       "description": "Copy confirmation toast notice.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.linkCopiedToClipboard",
+      "default_value": "Link copied to clipboard!"
     },
     "loadMorePosts": {
       "description": "Infinite scroll / load more button label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.loadMorePosts",
+      "default_value": "Load more posts"
     },
     "loading": {
       "description": "Asynchronous loading status text.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.loading",
+      "default_value": "Loading&hellip;"
     },
     "moreEllipsis": {
       "description": "Truncation ellipsis continuation ('...').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.moreEllipsis",
+      "default_value": "More&hellip;"
     },
     "morePosts": {
       "description": "Pagination action label ('More posts').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.morePosts",
+      "default_value": "More posts"
     },
     "myBlogList": {
       "description": "BlogList widget default title.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.myBlogList",
+      "default_value": "My Blog List"
     },
     "myFavoriteSites": {
       "description": "Favorite sites widget heading.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.myFavoriteSites",
+      "default_value": "My favorite sites"
     },
     "myPhoto": {
       "description": "Author profile avatar label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.myPhoto",
+      "default_value": "My photo"
     },
     "newer": {
       "description": "Newer pagination link label ('Newer').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.newer",
+      "default_value": "Newer"
     },
     "newerPosts": {
       "description": "Newer posts pagination link ('Newer posts').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.newerPosts",
+      "default_value": "Newer Posts"
     },
     "newest": {
       "description": "Newest pagination link label ('Newest').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.newest",
+      "default_value": "Newest"
     },
     "noResultsFound": {
       "description": "Empty search results notice.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.noResultsFound",
+      "default_value": "No results found"
     },
     "noTitle": {
       "description": "Fallback title for untitled posts ('No title').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.noTitle",
+      "default_value": "No title"
     },
     "numberOfComments": {
       "description": "Comment counter display template ('{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}'). Direct tag invocation prohibited; requires <b:message>.",
@@ -311,67 +455,106 @@
         }
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.numberOfComments",
+      "default_value": "{numComments, plural, =0 {No comments} =1 {1 comment} other {# comments}}"
     },
     "ok": {
       "description": "Confirmation button label ('OK').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.ok",
+      "default_value": "Ok"
     },
     "older": {
       "description": "Older pagination link label ('Older').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.older",
+      "default_value": "Older"
     },
     "olderPosts": {
       "description": "Older posts pagination link ('Older posts').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.olderPosts",
+      "default_value": "Older Posts"
     },
     "oldest": {
       "description": "Oldest pagination link label ('Oldest').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.oldest",
+      "default_value": "Oldest"
     },
     "on": {
       "description": "Date preposition ('on').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.on",
+      "default_value": "on"
     },
     "onlyTeamMembersCanComment": {
       "description": "Restricted commenting notice.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.onlyTeamMembersCanComment",
+      "default_value": "Note: Only a member of this blog may post a comment."
     },
     "photo": {
       "description": "Generic photo label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.photo",
+      "default_value": "Photo"
     },
     "popularPosts": {
       "description": "PopularPosts widget header label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.popularPosts",
+      "default_value": "Popular Posts"
     },
     "popularPostsFromThisBlog": {
       "description": "Popular posts descriptive header.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.popularPostsFromThisBlog",
+      "default_value": "Popular posts from this blog"
     },
     "postAComment": {
       "description": "Comment form submission header.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.postAComment",
+      "default_value": "Post a Comment"
     },
     "postLink": {
       "description": "Post permalink action link label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.postLink",
+      "default_value": "Post Link"
     },
     "postedBy": {
       "description": "Post author attribution prefix ('Posted by').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.postedBy",
+      "default_value": "Posted by"
     },
     "postedByAuthor": {
       "description": "Author attribution display string ('Posted by %1'). Direct tag invocation prohibited; requires <b:message>.",
@@ -384,7 +567,10 @@
         }
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.postedByAuthor",
+      "default_value": "Posted by __ARG1__"
     },
     "postedByAuthorLink": {
       "description": "Author attribution with HTML anchor ('Posted by <a href=\"%2\">%1</a>'). Direct tag invocation prohibited; requires <b:message>.",
@@ -401,17 +587,26 @@
         }
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.postedByAuthorLink",
+      "default_value": "Posted by <a href=\"__ARG2__\">__ARG1__</a>"
     },
     "posts": {
       "description": "Generic posts label ('Posts').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.posts",
+      "default_value": "Posts"
     },
     "poweredByBlogger": {
       "description": "Platform attribution text ('Powered by Blogger').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.poweredByBlogger",
+      "default_value": "Powered by Blogger"
     },
     "poweredByBloggerLink": {
       "description": "Platform attribution with Blogger anchor ('Powered by <a href='%1' target='_blank'>Blogger</a>'). Direct tag invocation prohibited; requires <b:message>.",
@@ -424,92 +619,146 @@
         }
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.poweredByBloggerLink",
+      "default_value": "Powered by <a href='__ARG1__' target='_blank'>Blogger</a>"
     },
     "readMore": {
       "description": "Post jump link action ('Read more').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.readMore",
+      "default_value": "Read more"
     },
     "recentPosts": {
       "description": "Recent posts widget heading.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.recentPosts",
+      "default_value": "Recent posts"
     },
     "reportAbuse": {
       "description": "Abuse reporting action link.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.reportAbuse",
+      "default_value": "Report Abuse"
     },
     "search": {
       "description": "Search button / action label ('Search').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.search",
+      "default_value": "Search"
     },
     "searchBlog": {
       "description": "Search input placeholder ('Search blog').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.searchBlog",
+      "default_value": "Search blog"
     },
     "searchThisBlog": {
       "description": "SearchThisBlog widget header.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.searchThisBlog",
+      "default_value": "Search this blog"
     },
     "share": {
       "description": "Social sharing action button label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.share",
+      "default_value": "Share"
     },
     "shareOtherApps": {
       "description": "Share to external applications label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.shareOtherApps",
+      "default_value": "Other Apps"
     },
     "shareToOtherApps": {
       "description": "Share to external apps button label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.shareToOtherApps",
+      "default_value": "Share to other apps"
     },
     "showAll": {
       "description": "Expand all items button label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.showAll",
+      "default_value": "Show all"
     },
     "showLess": {
       "description": "Collapse items button label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.showLess",
+      "default_value": "Show less"
     },
     "showMore": {
       "description": "Show more items button label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.showMore",
+      "default_value": "Show more"
     },
     "skipToMainContent": {
       "description": "Accessibility skip link navigation label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.skipToMainContent",
+      "default_value": "Skip to main content"
     },
     "someOfMyFavoriteSites": {
       "description": "Alternate favorite sites widget title.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.someOfMyFavoriteSites",
+      "default_value": "Some of my favorite sites"
     },
     "subscribe": {
       "description": "Feed subscription action label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.subscribe",
+      "default_value": "Subscribe"
     },
     "subscribeTo": {
       "description": "Feed subscription prefix label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.subscribeTo",
+      "default_value": "Subscribe to:"
     },
     "subscribeToThisBlog": {
       "description": "Blog feed subscription title.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.subscribeToThisBlog",
+      "default_value": "Subscribe to this blog"
     },
     "templateImagesBy": {
       "description": "Theme image designer attribution ('Theme images by %1'). Direct tag invocation prohibited; requires <b:message>.",
@@ -522,7 +771,10 @@
         }
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.templateImagesBy",
+      "default_value": "Theme images by __ARG1__"
     },
     "templateImagesByLink": {
       "description": "Theme image designer attribution with link ('Theme images by <a href=\"%1\">%2</a>'). Direct tag invocation prohibited; requires <b:message>.",
@@ -539,57 +791,90 @@
         }
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.templateImagesByLink",
+      "default_value": "Theme images by <a href=\"__ARG1__\">__ARG2__</a>"
     },
     "theresNothingHere": {
       "description": "Empty state message ('There's nothing here').",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.theresNothingHere",
+      "default_value": "There's nothing here!"
     },
     "title": {
       "description": "Generic title label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.title",
+      "default_value": "Title"
     },
     "viewAll": {
       "description": "View all items action link.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.viewAll",
+      "default_value": "View all"
     },
     "viewMyCompleteProfile": {
       "description": "Profile widget link to author details.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.viewMyCompleteProfile",
+      "default_value": "View my complete profile"
     },
     "visible": {
       "description": "Visible state label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.visible",
+      "default_value": "Visible"
     },
     "visitProfile": {
       "description": "Author profile link label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.visitProfile",
+      "default_value": "Visit profile"
     },
     "visitSite": {
       "description": "External website link label.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.visitSite",
+      "default_value": "Visit site"
     },
     "widget": {
       "description": "Generic widget indicator.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.widget",
+      "default_value": "Gadget"
     },
     "widgetNotAvailableInPreview": {
       "description": "Theme designer preview warning text.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.widgetNotAvailableInPreview",
+      "default_value": "This content is not available in blog preview."
     },
     "youMayLikeThesePosts": {
       "description": "Related posts recommendation heading.",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-10",
+      "translatable": true,
+      "localization_key": "messages.youMayLikeThesePosts",
+      "default_value": "You may like these posts"
     }
   }
 }

@@ -416,7 +416,9 @@
                 "search_query",
                 "label_search"
               ],
-              "description": "Localized plain-text summary message."
+              "description": "Localized plain-text summary message.",
+              "translatable": true,
+              "localization_key": "globals.view.search.resultsMessage"
             },
             "resultsMessageHtml": {
               "type": "string",
@@ -424,7 +426,9 @@
                 "search_query",
                 "label_search"
               ],
-              "description": "Localized summary message containing HTML anchor markup."
+              "description": "Localized summary message containing HTML anchor markup.",
+              "translatable": true,
+              "localization_key": "globals.view.search.resultsMessageHtml"
             }
           }
         },
@@ -461,7 +465,9 @@
                 "archive_monthly",
                 "archive_weekly_daily"
               ],
-              "description": "Localized chronological period label."
+              "description": "Localized chronological period label.",
+              "translatable": true,
+              "localization_key": "globals.view.archive.rangeMessage"
             }
           }
         }
@@ -582,7 +588,10 @@
         },
         "jumpLinkMessage": {
           "type": "string",
-          "description": "Configured or localized text for the 'Read more' jump link."
+          "description": "Configured or localized text for the 'Read more' jump link.",
+          "translatable": true,
+          "localization_key": "globals.blog.jumpLinkMessage",
+          "default_value": "Read more"
         },
         "languageDirection": {
           "type": "string",
@@ -687,11 +696,15 @@
                 },
                 "name": {
                   "type": "string",
-                  "description": "Localized display name ('Facebook', 'Twitter', etc.)."
+                  "description": "Localized display name ('Facebook', 'Twitter', etc.).",
+                  "translatable": true,
+                  "localization_key": "globals.blog.sharing.platforms.name"
                 },
                 "shareMessage": {
                   "type": "string",
-                  "description": "Localized action label ('Share to Facebook')."
+                  "description": "Localized action label ('Share to Facebook').",
+                  "translatable": true,
+                  "localization_key": "globals.blog.sharing.platforms.shareMessage"
                 },
                 "target": {
                   "type": "string",

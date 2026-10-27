@@ -18,6 +18,7 @@ export interface ResolveDataPathContext {
   variables?: Record<string, string | BloggerScopeSymbol>
   scope?: ScopeEnvironment
   skinVariables?: Record<string, string | BloggerSkinVariableSymbol>
+  locale?: string
 }
 
 export function toSkinVarIdentifier(name: string): string {
@@ -39,6 +40,10 @@ export interface BloggerResolvedProperty {
   readonly condition?: string
   readonly runtimeState?: 'active' | 'empty' | 'missing'
   readonly sourceConstraint?: string
+  readonly translatable?: boolean
+  readonly localizationKey?: string
+  readonly defaultValue?: string
+  readonly localizedValue?: string
 }
 
 function parsePathSegments(path: string | readonly string[]): string[] {
@@ -210,10 +215,56 @@ export function resolveDataPath(
     }
   }
 
-  if (segments.length === 1) {
-    const strippedName = first.startsWith('data:') ? first.slice(5) : first
+  const buildResolvedProperty = (name: string): BloggerResolvedProperty => {
+    const translatable = Boolean(currentDef?.translatable)
+    const localizationKey = currentDef?.localization_key
+    const defaultValue = currentDef?.default_value
+
+    let localizedValue: string | undefined
+    if (context?.locale) {
+      if (sourceCatalog === 'messages') {
+        localizedValue = catalog.getLocalizedMessage(name, context.locale)
+      }
+      else if (localizationKey) {
+        localizedValue = catalog.getTranslation(localizationKey, context.locale)
+      }
+      else {
+        const fullPath = segments.join('.')
+        const locRec = catalog.getLocale(context.locale)
+        if (locRec) {
+          if (fullPath === 'data:blog.locale' || fullPath === 'blog.locale') {
+            localizedValue = locRec.bcp47
+          }
+          else if (fullPath.endsWith('.locale.name')) {
+            localizedValue = locRec.name
+          }
+          else if (fullPath.endsWith('.locale.language')) {
+            localizedValue = locRec.language
+          }
+          else if (fullPath.endsWith('.locale.country')) {
+            localizedValue = locRec.country
+          }
+          else if (fullPath.endsWith('.locale.variant')) {
+            localizedValue = locRec.variant
+          }
+          else if (fullPath.endsWith('.locale.script')) {
+            localizedValue = locRec.script
+          }
+          else if (fullPath.endsWith('.locale.languageDirection') || fullPath === 'data:blog.languageDirection') {
+            localizedValue = locRec.language_direction
+          }
+          else if (fullPath.endsWith('.locale.languageAlignment')) {
+            localizedValue = locRec.language_alignment
+          }
+          else if (fullPath === 'data:blog.localeUnderscoreDelimited') {
+            localizedValue = locRec.underscore_code
+          }
+        }
+      }
+    }
+
     return {
-      name: strippedName,
+      name,
       path: typeof path === 'string' ? path : segments.join('.'),
       type: currentType,
       definition: currentDef,
@@ -227,7 +278,16 @@ export function resolveDataPath(
       condition,
       runtimeState,
       sourceConstraint,
+      translatable: translatable || undefined,
+      localizationKey,
+      defaultValue,
+      localizedValue,
     }
+  }
+
+  if (segments.length === 1) {
+    const strippedName = first.startsWith('data:') ? first.slice(5) : first
+    return buildResolvedProperty(strippedName)
   }
 
   for (let i = 1; i < segments.length; i++) {
@@ -455,22 +515,7 @@ export function resolveDataPath(
     return undefined
   }
 
-  return {
-    name: segments[segments.length - 1]!,
-    path: typeof path === 'string' ? path : segments.join('.'),
-    type: currentType,
-    definition: currentDef,
-    sourceCatalog,
-    isDeprecated,
-    isCollection,
-    itemType,
-    description: currentDef?.description ?? currentDef?.reason,
-    availableInViews,
-    unconfiguredState,
-    condition,
-    runtimeState,
-    sourceConstraint,
-  }
+  return buildResolvedProperty(segments[segments.length - 1]!)
 }
 
 export function getTypeMembers(

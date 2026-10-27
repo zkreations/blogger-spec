@@ -124,7 +124,10 @@
                 },
                 "label": {
                   "type": "string",
-                  "description": "Configured or localized label prefix for author byline."
+                  "description": "Configured or localized label prefix for author byline.",
+                  "translatable": true,
+                  "localization_key": "widgets.Blog.byline.author.label",
+                  "default_value": "By"
                 }
               }
             },
@@ -138,7 +141,10 @@
                 },
                 "label": {
                   "type": "string",
-                  "description": "Configured or localized label for comments link."
+                  "description": "Configured or localized label for comments link.",
+                  "translatable": true,
+                  "localization_key": "widgets.Blog.byline.comments.label",
+                  "default_value": "Comments"
                 }
               }
             },
@@ -152,7 +158,10 @@
                 },
                 "label": {
                   "type": "string",
-                  "description": "Configured or localized label prefix for post tags."
+                  "description": "Configured or localized label prefix for post tags.",
+                  "translatable": true,
+                  "localization_key": "widgets.Blog.byline.labels.label",
+                  "default_value": "Tags:"
                 }
               }
             },
@@ -166,7 +175,10 @@
                 },
                 "label": {
                   "type": "string",
-                  "description": "Configured or localized label prefix for post location."
+                  "description": "Configured or localized label prefix for post location.",
+                  "translatable": true,
+                  "localization_key": "widgets.Blog.byline.location.label",
+                  "default_value": "Location:"
                 }
               }
             },
@@ -194,7 +206,10 @@
                 },
                 "label": {
                   "type": "string",
-                  "description": "Configured or localized label prefix for post timestamp."
+                  "description": "Configured or localized label prefix for post timestamp.",
+                  "translatable": true,
+                  "localization_key": "widgets.Blog.byline.timestamp.label",
+                  "default_value": "at"
                 }
               }
             }
@@ -234,7 +249,10 @@
             },
             "name": {
               "type": "string",
-              "description": "Localized feed title or descriptor."
+              "description": "Localized feed title or descriptor.",
+              "translatable": true,
+              "localization_key": "widgets.Blog.feedLinks.name",
+              "default_value": "Posts"
             },
             "url": {
               "type": "string",
@@ -262,7 +280,10 @@
         },
         "navMessage": {
           "type": "string",
-          "description": "Status banner message displayed on search/archive views."
+          "description": "Status banner message displayed on search/archive views.",
+          "translatable": true,
+          "localization_key": "widgets.Blog.navMessage",
+          "default_value": "Sorry, the page you were looking for in this blog does not exist."
         },
         "newerPageUrl": {
           "type": "url",
@@ -320,7 +341,10 @@
                   "properties": {
                     "alt": {
                       "type": "string",
-                      "description": "Accessible alternate text for author avatar."
+                      "description": "Accessible alternate text for author avatar.",
+                      "translatable": true,
+                      "localization_key": "widgets.Blog.post.authorPhoto.alt",
+                      "default_value": "My Photo"
                     },
                     "height": {
                       "type": "number",
@@ -583,7 +607,10 @@
                 },
                 "name": {
                   "type": "string",
-                  "description": "Localized feed title or descriptor."
+                  "description": "Localized feed title or descriptor.",
+                  "translatable": true,
+                  "localization_key": "widgets.Blog.post.feedLinks.name",
+                  "default_value": "Post Comments"
                 },
                 "url": {
                   "type": "string",
@@ -1313,7 +1340,10 @@
         },
         "name": {
           "type": "string",
-          "description": "Formatted date string for root all-time period."
+          "description": "Formatted date string for root all-time period.",
+          "translatable": true,
+          "localization_key": "widgets.BlogArchive.name",
+          "default_value": "All Posts"
         },
         "post-count": {
           "type": "number",
@@ -1421,7 +1451,10 @@
         },
         "showAllText": {
           "type": "string",
-          "description": "Localized label to reveal all blogs (e.g. 'Show all')."
+          "description": "Localized label to reveal all blogs (e.g. 'Show all').",
+          "translatable": true,
+          "localization_key": "widgets.BlogList.showAllText",
+          "default_value": "Show All"
         },
         "showIcon": {
           "type": "boolean",
@@ -1441,7 +1474,10 @@
         },
         "showNText": {
           "type": "string",
-          "description": "Localized label for displaying limited count (e.g. 'Show %d')."
+          "description": "Localized label for displaying limited count (e.g. 'Show %d').",
+          "translatable": true,
+          "localization_key": "widgets.BlogList.showNText",
+          "default_value": "Show 5"
         },
         "showTimePeriodSinceLastUpdate": {
           "type": "boolean",
@@ -1511,39 +1547,66 @@
       "canonical": {
         "contactFormEmailMsg": {
           "type": "string",
-          "description": "Label and placeholder text for email input field."
+          "description": "Label and placeholder text for email input field.",
+          "translatable": true,
+          "localization_key": "widgets.ContactForm.contactFormEmailMsg",
+          "default_value": "Email"
         },
         "contactFormEmptyMessageMsg": {
           "type": "string",
-          "description": "Client/server validation warning for empty message textarea."
+          "description": "Client/server validation warning for empty message textarea.",
+          "translatable": true,
+          "localization_key": "widgets.ContactForm.contactFormEmptyMessageMsg",
+          "default_value": "Message field cannot be empty."
         },
         "contactFormInvalidEmailMsg": {
           "type": "string",
-          "description": "Client/server validation warning for invalid email format."
+          "description": "Client/server validation warning for invalid email format.",
+          "translatable": true,
+          "localization_key": "widgets.ContactForm.contactFormInvalidEmailMsg",
+          "default_value": "A valid email address is required."
         },
         "contactFormMessageMsg": {
           "type": "string",
-          "description": "Label and placeholder text for message textarea."
+          "description": "Label and placeholder text for message textarea.",
+          "translatable": true,
+          "localization_key": "widgets.ContactForm.contactFormMessageMsg",
+          "default_value": "Message"
         },
         "contactFormMessageNotSentMsg": {
           "type": "string",
-          "description": "Status alert displayed when delivery encounters server error."
+          "description": "Status alert displayed when delivery encounters server error.",
+          "translatable": true,
+          "localization_key": "widgets.ContactForm.contactFormMessageNotSentMsg",
+          "default_value": "Message could not be sent. Please try again later."
         },
         "contactFormMessageSendingMsg": {
           "type": "string",
-          "description": "In-flight submission progress indicator text."
+          "description": "In-flight submission progress indicator text.",
+          "translatable": true,
+          "localization_key": "widgets.ContactForm.contactFormMessageSendingMsg",
+          "default_value": "Sending..."
         },
         "contactFormMessageSentMsg": {
           "type": "string",
-          "description": "Success confirmation notice displayed after dispatch."
+          "description": "Success confirmation notice displayed after dispatch.",
+          "translatable": true,
+          "localization_key": "widgets.ContactForm.contactFormMessageSentMsg",
+          "default_value": "Your message has been sent."
         },
         "contactFormNameMsg": {
           "type": "string",
-          "description": "Label and placeholder text for sender name input."
+          "description": "Label and placeholder text for sender name input.",
+          "translatable": true,
+          "localization_key": "widgets.ContactForm.contactFormNameMsg",
+          "default_value": "Name"
         },
         "contactFormSendMsg": {
           "type": "string",
-          "description": "Action text displayed on form submit button."
+          "description": "Action text displayed on form submit button.",
+          "translatable": true,
+          "localization_key": "widgets.ContactForm.contactFormSendMsg",
+          "default_value": "Send"
         },
         "submitUrl": {
           "type": "string",
@@ -1810,7 +1873,10 @@
         },
         "loadingMsg": {
           "type": "string",
-          "description": "Localized placeholder text while fetching feed items (e.g. 'Loading...')."
+          "description": "Localized placeholder text while fetching feed items (e.g. 'Loading...').",
+          "translatable": true,
+          "localization_key": "widgets.Feed.loadingMsg",
+          "default_value": "Loading..."
         },
         "numItemsShow": {
           "type": "number",
@@ -2360,7 +2426,9 @@
           "properties": {
             "alt": {
               "type": "string",
-              "description": "Accessible alternate text for author avatar."
+              "description": "Accessible alternate text for author avatar.",
+              "translatable": true,
+              "localization_key": "widgets.Profile.authorPhoto.alt"
             },
             "height": {
               "type": "number",
@@ -2388,7 +2456,9 @@
               "properties": {
                 "alt": {
                   "type": "string",
-                  "description": "Accessible alternate text for author avatar."
+                  "description": "Accessible alternate text for author avatar.",
+                  "translatable": true,
+                  "localization_key": "widgets.Profile.authorPhoto.alt"
                 },
                 "height": {
                   "type": "number",
@@ -2470,7 +2540,10 @@
         },
         "viewProfileMsg": {
           "type": "string",
-          "description": "Localized string (e.g. 'View my complete profile')."
+          "description": "Localized string (e.g. 'View my complete profile').",
+          "translatable": true,
+          "localization_key": "widgets.Profile.viewProfileMsg",
+          "default_value": "View my complete profile"
         }
       },
       "deprecated": {
@@ -2528,7 +2601,10 @@
         },
         "atomFeedTxt": {
           "type": "string",
-          "description": "Localized label for direct Atom feed subscription (e.g. 'Posts (Atom)')."
+          "description": "Localized label for direct Atom feed subscription (e.g. 'Posts (Atom)').",
+          "translatable": true,
+          "localization_key": "widgets.Subscribe.atomFeedTxt",
+          "default_value": "Atom Feed"
         },
         "feedIconImg": {
           "type": "string",
@@ -2544,7 +2620,10 @@
             },
             "title": {
               "type": "string",
-              "description": "Display name of the feed reader service (e.g. 'Posts', 'All Comments' on feed views, or 'Comments' on post views)."
+              "description": "Display name of the feed reader service (e.g. 'Posts', 'All Comments' on feed views, or 'Comments' on post views).",
+              "translatable": true,
+              "localization_key": "widgets.Subscribe.feed.title",
+              "default_value": "All Comments"
             },
             "type": {
               "type": "string",
@@ -2653,23 +2732,38 @@
       "canonical": {
         "enterTextMsg": {
           "type": "string",
-          "description": "Localized placeholder/prompt (e.g. 'Enter search terms')."
+          "description": "Localized placeholder/prompt (e.g. 'Enter search terms').",
+          "translatable": true,
+          "localization_key": "widgets.Wikipedia.enterTextMsg",
+          "default_value": "Please enter text to search."
         },
         "fetchingErrorMsg": {
           "type": "string",
-          "description": "Localized error message displayed when Wikipedia API query fails."
+          "description": "Localized error message displayed when Wikipedia API query fails.",
+          "translatable": true,
+          "localization_key": "widgets.Wikipedia.fetchingErrorMsg",
+          "default_value": "An error occurred. Please try again."
         },
         "moreMsg": {
           "type": "string",
-          "description": "Localized string for expansion/read more link (e.g. 'More')."
+          "description": "Localized string for expansion/read more link (e.g. 'More').",
+          "translatable": true,
+          "localization_key": "widgets.Wikipedia.moreMsg",
+          "default_value": "More &#187;"
         },
         "noResultsFoundMsg": {
           "type": "string",
-          "description": "Localized message when query yields zero results (e.g. 'No results found')."
+          "description": "Localized message when query yields zero results (e.g. 'No results found').",
+          "translatable": true,
+          "localization_key": "widgets.Wikipedia.noResultsFoundMsg",
+          "default_value": "No results found."
         },
         "searchResultsMsg": {
           "type": "string",
-          "description": "Localized header for results list (e.g. 'Search Results')."
+          "description": "Localized header for results list (e.g. 'Search Results').",
+          "translatable": true,
+          "localization_key": "widgets.Wikipedia.searchResultsMsg",
+          "default_value": "Search results"
         },
         "title": {
           "type": "string",

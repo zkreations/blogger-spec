@@ -6,6 +6,7 @@ import {
   getDirectives,
   getGlobals,
   getInclusions,
+  getLocales,
   getMessages,
   getOperators,
   getScopes,
@@ -26,6 +27,7 @@ export const catalogs = {
   get scopes() { return getScopes() },
   get diagnostics() { return getDiagnostics() },
   get inclusions() { return getInclusions() },
+  get locales() { return getLocales() },
 }
 
 export {
@@ -36,6 +38,7 @@ export {
   getDirectives,
   getGlobals,
   getInclusions,
+  getLocales,
   getMessages,
   getOperators,
   getScopes,

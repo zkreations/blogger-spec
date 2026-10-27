@@ -287,6 +287,35 @@
         "value": ""
       },
       "verified_at": "2026-10-14"
+    },
+    {
+      "id": "expressions/locale_modifiers/locale-rtl-alignment",
+      "title": "Arabic Locale RTL Alignment",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:locale_modifiers",
+        "modifier:languageAlignment"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog.locale.languageAlignment",
+        "context": {
+          "blog": {
+            "locale": {
+              "name": "Arabic",
+              "language": "ar",
+              "country": "EG",
+              "languageDirection": "rtl",
+              "languageAlignment": "right"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "right"
+      },
+      "verified_at": "2026-10-26"
     }
   ]
 }

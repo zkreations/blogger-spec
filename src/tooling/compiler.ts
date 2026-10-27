@@ -21,7 +21,7 @@ export interface VerificationFreshnessReport {
 
 export function generateDts(): string {
   return [
-    'import { getAllCatalogs, getCatalog, getDiagnostics, getDirectives, getGlobals, getInclusions, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets } from \'./catalogs/index.js\';',
+    'import { getAllCatalogs, getCatalog, getDiagnostics, getDirectives, getGlobals, getInclusions, getLocales, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets } from \'./catalogs/index.js\';',
     'export declare let directives: import("./types.js").BloggerDirectivesCatalog;',
     'export declare let operators: import("./types.js").BloggerOperatorsCatalog;',
     'export declare let types: import("./types.js").BloggerTypesCatalog;',
@@ -32,7 +32,8 @@ export function generateDts(): string {
     'export declare let scopes: import("./types.js").BloggerScopesCatalog;',
     'export declare let diagnostics: import("./types.js").BloggerDiagnosticsCatalog;',
     'export declare let inclusions: import("./types.js").BloggerInclusionsCatalog;',
-    'export { getAllCatalogs, getCatalog, getDiagnostics, getDirectives, getGlobals, getInclusions, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets, };',
+    'export declare let locales: import("./types.js").BloggerLocalesCatalog;',
+    'export { getAllCatalogs, getCatalog, getDiagnostics, getDirectives, getGlobals, getInclusions, getLocales, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets, };',
     'export * from \'./ast.js\';',
     'export * from \'./catalogs/index.js\';',
     'export * from \'./data-path.js\';',

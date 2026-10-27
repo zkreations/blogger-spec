@@ -15,6 +15,8 @@ import type {
   BloggerInclusionDefinition,
   BloggerInclusionsCatalog,
   BloggerLayoutVersionsCatalog,
+  BloggerLocaleRecord,
+  BloggerLocalesCatalog,
   BloggerMessageDefinition,
   BloggerMessagesCatalog,
   BloggerOperatorDefinition,
@@ -157,6 +159,8 @@ export class SpecCatalog {
   private readonly falsyStringLiterals = new Set<string>()
   private readonly truthyStringLiterals = new Set<string>()
   private readonly htmlVoidElements = new Set<string>()
+  private readonly localeMap = new Map<string, BloggerLocaleRecord>()
+  private localesCatalog?: BloggerLocalesCatalog
   private superPrefix = 'super.'
 
   constructor(store: CatalogStore = getDefaultCatalogStore()) {
@@ -171,6 +175,7 @@ export class SpecCatalog {
     this.indexScopes()
     this.indexTypes()
     this.indexInclusions()
+    this.indexLocales()
   }
 
   private indexDirectives(): void {
@@ -417,6 +422,27 @@ export class SpecCatalog {
     this.superPrefix = prefix
     for (const [name, def] of Object.entries(inclusionsData.inclusions || {})) {
       this.inclusionMap.set(name, { ...def, name: def.name ?? name })
+    }
+  }
+
+  private indexLocales(): void {
+    try {
+      const catalog = this.store.getCatalog('locales') as BloggerLocalesCatalog
+      this.localesCatalog = catalog
+      if (catalog?.locales) {
+        for (const [code, rec] of Object.entries(catalog.locales)) {
+          this.localeMap.set(code.toLowerCase(), rec)
+          if (rec.underscore_code) {
+            this.localeMap.set(rec.underscore_code.toLowerCase(), rec)
+          }
+          if (rec.bcp47) {
+            this.localeMap.set(rec.bcp47.toLowerCase(), rec)
+          }
+        }
+      }
+    }
+    catch {
+      // Store might not contain locales catalog in minimal or custom store instances
     }
   }
 
@@ -1032,6 +1058,123 @@ export class SpecCatalog {
     return result
   }
 
+  getLocale(code: string): BloggerLocaleRecord | undefined {
+    return this.localeMap.get(code.toLowerCase())
+  }
+
+  getAllLocales(): Record<string, BloggerLocaleRecord> {
+    return this.localesCatalog?.locales || {}
+  }
+
+  isRTL(locale: string): boolean {
+    const rec = this.getLocale(locale)
+    return rec ? rec.language_direction === 'rtl' : false
+  }
+
+  getTranslation(key: string, locale = 'en'): string | undefined {
+    if (!this.localesCatalog?.translations) {
+      return undefined
+    }
+    const cleanLocale = locale.toLowerCase()
+
+    if (key.startsWith('messages.')) {
+      const msgKey = key.slice(9)
+      return this.getLocalizedMessage(msgKey, locale)
+    }
+
+    if (key.startsWith('globals.')) {
+      const globKey = key.slice(8)
+      if (globKey.startsWith('blog.sharing.platforms.')) {
+        const parts = globKey.split('.')
+        const field = parts[parts.length - 1]
+        const platKey = parts.length === 5 ? parts[3] : 'facebook'
+        const platforms = this.localesCatalog.translations.globals['blog.sharing.platforms'] as any
+        const platform = platforms?.[platKey]
+        if (platform) {
+          const entry = field === 'shareMessage' ? platform.share_message : platform.name
+          return entry?.values?.[locale] ?? entry?.values?.[cleanLocale] ?? entry?.default
+        }
+        return undefined
+      }
+      const entry = (this.localesCatalog.translations.globals as any)?.[globKey]
+      if (entry) {
+        return entry.values?.[locale] ?? entry.values?.[cleanLocale] ?? entry.default
+      }
+      return undefined
+    }
+
+    if (key.startsWith('widgets.')) {
+      const parts = key.slice(8).split('.')
+      const widgetType = parts[0]
+      const propPath = parts.slice(1).join('.')
+      const widgetTranslations = this.localesCatalog.translations.widgets?.[widgetType]
+      const entry = widgetTranslations?.[propPath]
+      if (entry) {
+        return entry.values?.[locale] ?? entry.values?.[cleanLocale] ?? entry.default
+      }
+      return undefined
+    }
+
+    return this.getLocalizedMessage(key, locale)
+  }
+
+  getLocalizedMessage(messageKey: string, locale = 'en'): string | undefined {
+    const entry = this.localesCatalog?.translations?.messages?.[messageKey]
+    if (!entry) {
+      return undefined
+    }
+    const clean = locale.toLowerCase()
+    return entry.values?.[locale] ?? entry.values?.[clean] ?? entry.default
+  }
+
+  resolvePlural(messageKey: string, count: number, locale = 'en'): string | undefined {
+    const entry = this.localesCatalog?.translations?.messages?.[messageKey]
+    if (!entry?.plural_forms) {
+      return this.getLocalizedMessage(messageKey, locale)
+    }
+    const clean = locale.toLowerCase()
+    const localeForms = entry.plural_forms[locale] ?? entry.plural_forms[clean] ?? entry.plural_forms.en
+    if (!localeForms) {
+      return entry.default
+    }
+    const strCount = String(count)
+    if (localeForms[strCount]) {
+      return localeForms[strCount]
+    }
+    try {
+      const pr = new Intl.PluralRules(locale)
+      const category = pr.select(count)
+      let rep = '5'
+      if (category === 'zero') {
+        rep = '0'
+      }
+      else if (category === 'one') {
+        rep = '1'
+      }
+      else if (category === 'two') {
+        rep = '2'
+      }
+      else if (category === 'few') {
+        rep = '2'
+      }
+      else if (category === 'many') {
+        rep = '5'
+      }
+      else {
+        rep = '100'
+      }
+
+      const templateStr = localeForms[rep] ?? localeForms['5'] ?? localeForms['1']
+      if (templateStr) {
+        return templateStr.replace(new RegExp(`\\b${rep}\\b`), strCount)
+      }
+    }
+    catch {
+      // Fallback
+    }
+    return localeForms['5']?.replace(/\b5\b/, strCount) ?? `${count} ${entry.default}`
+  }
+
   isScope(name: string): boolean {
     return this.scopeMap.has(name)
   }
@@ -1522,6 +1665,30 @@ export function getMessage(key: string, catalog: SpecCatalog = getSpecCatalog())
 
 export function getAllMessages(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerMessageDefinition> {
   return catalog.getAllMessages()
+}
+
+export function getLocale(code: string, catalog: SpecCatalog = getSpecCatalog()): BloggerLocaleRecord | undefined {
+  return catalog.getLocale(code)
+}
+
+export function getAllLocales(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerLocaleRecord> {
+  return catalog.getAllLocales()
+}
+
+export function isRTL(locale: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isRTL(locale)
+}
+
+export function getTranslation(key: string, locale = 'en', catalog: SpecCatalog = getSpecCatalog()): string | undefined {
+  return catalog.getTranslation(key, locale)
+}
+
+export function getLocalizedMessage(messageKey: string, locale = 'en', catalog: SpecCatalog = getSpecCatalog()): string | undefined {
+  return catalog.getLocalizedMessage(messageKey, locale)
+}
+
+export function resolvePlural(messageKey: string, count: number, locale = 'en', catalog: SpecCatalog = getSpecCatalog()): string | undefined {
+  return catalog.resolvePlural(messageKey, count, locale)
 }
 
 export function isScope(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {

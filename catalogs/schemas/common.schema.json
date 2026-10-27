@@ -140,6 +140,18 @@
           "type": "string",
           "description": "Runtime predicate or configuration state required for this property to be injected (e.g. 'team == false', 'team == true', 'google_hosted_image', 'analytics4_configured')."
         },
+        "translatable": {
+          "type": "boolean",
+          "description": "Indicates whether this property returns platform-localized text across Blogger supported locales."
+        },
+        "localization_key": {
+          "type": "string",
+          "description": "Cross-reference key resolving to localized translations in catalogs/locales.json."
+        },
+        "default_value": {
+          "type": "string",
+          "description": "Canonical English default value of the localized string."
+        },
         "properties": {
           "type": "object",
           "additionalProperties": {

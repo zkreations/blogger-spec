@@ -232,7 +232,7 @@ describe('catalogs and store formal verification suite', () => {
       }
     })
 
-    it('ensures all 10 canonical catalogs declare domain_metadata', () => {
+    it('ensures all 11 canonical catalogs declare domain_metadata', () => {
       const all = getAllCatalogs()
       for (const [name, cat] of Object.entries(all)) {
         expect((cat as any).domain_metadata, `Catalog '${name}' must have domain_metadata`).toBeDefined()
@@ -249,13 +249,14 @@ describe('catalogs and store formal verification suite', () => {
   })
 
   describe('memoryCatalogStore & store life-cycle', () => {
-    it('retrieves all 10 canonical catalogs with pure in-memory access', () => {
+    it('retrieves all 11 canonical catalogs with pure in-memory access', () => {
       const all = getAllCatalogs()
       expect(Object.keys(all).sort()).toEqual([
         'diagnostics',
         'directives',
         'globals',
         'inclusions',
+        'locales',
         'messages',
         'operators',
         'scopes',
