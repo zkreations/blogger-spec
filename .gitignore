@@ -1,13 +1,16 @@
-.codegraph
+# Dependencies & Build artifacts
 node_modules/
 dist/
-audit/
-plans/
-*.log
-.DS_Store
-.cache/
-
-# Generated artifacts
 src/generated/
 fixtures/index.json
 
+# Local Workbench (Research, Captures, Audits, Private Samples & Plans)
+.workbench/
+
+# Temporary and tooling caches
+.codegraph/
+.cache/
+*.log
+.DS_Store
+__pycache__/
+*.pyc
