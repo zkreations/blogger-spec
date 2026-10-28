@@ -1,0 +1,660 @@
+{
+  "blog": {
+    "title": "Mi Blog de Pruebas",
+    "description": "Bitácora sobre tecnología, diseño web y desarrollo de plantillas.",
+    "url": "https://ejemplo.blogspot.com/",
+    "canonicalUrl": "https://ejemplo.blogspot.com/",
+    "homepageUrl": "https://ejemplo.blogspot.com/",
+    "bloggerUrl": "https://www.blogger.com",
+    "blogId": "1234567890123456789",
+    "blogspotFaviconUrl": "https://ejemplo.blogspot.com/favicon.ico",
+    "locale": "es",
+    "localeUnderscoreDelimited": "es",
+    "languageDirection": "ltr",
+    "encoding": "UTF-8",
+    "isMobileRequest": false,
+    "adultContent": false,
+    "httpsEnabled": true,
+    "hasCustomDomain": false,
+    "adsenseHasAds": false,
+    "adsenseAutoAds": false,
+    "enabledCommentProfileImages": true,
+    "metaDescription": "Bitácora sobre tecnología, diseño web y desarrollo de plantillas.",
+    "pageType": "archive",
+    "pageTitle": "octubre de 2026 - Mi Blog de Pruebas",
+    "pageName": "octubre de 2026 - Mi Blog de Pruebas"
+  },
+  "view": {
+    "type": "feed",
+    "title": "octubre de 2026 - Mi Blog de Pruebas",
+    "description": "Entradas publicadas en octubre de 2026.",
+    "url": "https://ejemplo.blogspot.com/2026/10/",
+    "isHomepage": false,
+    "isPost": false,
+    "isPage": false,
+    "isArchive": true,
+    "isLabelSearch": false,
+    "isError": false,
+    "isMultipleItems": true,
+    "isSingleItem": false,
+    "archive": {
+      "year": 2026,
+      "month": 10,
+      "rangeMessage": "octubre de 2026"
+    }
+  },
+  "messages": {
+    "archive": "Archivo",
+    "at": "a la(s)",
+    "authorSaid": "%1 dijo&hellip;",
+    "by": "por",
+    "comments": "Comentarios",
+    "deleteComment": "Eliminar comentario",
+    "home": "Inicio",
+    "morePosts": "Más entradas",
+    "newer": "Más recientes",
+    "newerPosts": "Entradas más recientes",
+    "older": "Más antiguas",
+    "olderPosts": "Entradas más antiguas",
+    "noResultsFound": "No se han encontrado resultados",
+    "postAComment": "Publicar un comentario",
+    "postComment": "Publicar comentario",
+    "posts": "Entradas",
+    "readMore": "Leer más",
+    "search": "Buscar",
+    "share": "Compartir",
+    "subscribe": "Suscribirse",
+    "labels": "Etiquetas",
+    "location": "Ubicación"
+  },
+  "skin": {
+    "vars": {
+      "body_font": "16px Arial, sans-serif",
+      "body_background_color": "#ffffff",
+      "body_text_color": "#333333",
+      "keycolor": "#1a73e8",
+      "header_title_color": "#202124"
+    }
+  },
+  "widgets": {
+    "Blog": [
+      {
+        "id": "Blog1",
+        "type": "Blog",
+        "sectionId": "main",
+        "title": "Entradas del blog"
+      }
+    ],
+    "Header": [
+      {
+        "id": "Header1",
+        "type": "Header",
+        "sectionId": "header",
+        "title": "Mi Blog de Pruebas"
+      }
+    ],
+    "PageList": [
+      {
+        "id": "PageList1",
+        "type": "PageList",
+        "sectionId": "header",
+        "title": "Páginas"
+      }
+    ],
+    "Label": [
+      {
+        "id": "Label1",
+        "type": "Label",
+        "sectionId": "sidebar",
+        "title": "Etiquetas"
+      }
+    ],
+    "BlogArchive": [
+      {
+        "id": "BlogArchive1",
+        "type": "BlogArchive",
+        "sectionId": "sidebar",
+        "title": "Archivo del blog"
+      }
+    ],
+    "FeaturedPost": [
+      {
+        "id": "FeaturedPost1",
+        "type": "FeaturedPost",
+        "sectionId": "sidebar",
+        "title": "Entrada destacada"
+      }
+    ],
+    "PopularPosts": [
+      {
+        "id": "PopularPosts1",
+        "type": "PopularPosts",
+        "sectionId": "sidebar",
+        "title": "Entradas populares"
+      }
+    ],
+    "Profile": [
+      {
+        "id": "Profile1",
+        "type": "Profile",
+        "sectionId": "sidebar",
+        "title": "Sobre el autor"
+      }
+    ]
+  },
+  "widgetData": {
+    "Blog1": {
+      "title": "Entradas del blog",
+      "numPosts": 7,
+      "languageCode": "es",
+      "allBylineItems": [
+        {
+          "name": "share",
+          "label": "Compartir"
+        },
+        {
+          "name": "author",
+          "label": "Por"
+        },
+        {
+          "name": "timestamp",
+          "label": "a la(s)"
+        },
+        {
+          "name": "comments",
+          "label": "Comentarios"
+        },
+        {
+          "name": "icons",
+          "label": "Iconos"
+        },
+        {
+          "name": "labels",
+          "label": "Etiquetas"
+        },
+        {
+          "name": "location",
+          "label": "Ubicación"
+        }
+      ],
+      "posts": [
+        {
+          "id": "1001",
+          "title": "Guía Definitiva de Plantillas Blogger",
+          "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html",
+          "absoluteUrl": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html",
+          "body": "<p>Aprende las mejores prácticas para crear temas modernos en Blogger Layouts v3. Este artículo cubre la resolución ontológica de includables, expresiones lambda y la compilación de Theme Designer.</p>",
+          "date": "28 de octubre de 2026",
+          "lastUpdated": "28 de octubre de 2026",
+          "featuredImage": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200",
+          "thumbnailUrl": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=150",
+          "author": {
+            "name": "Abel",
+            "profileUrl": "https://www.blogger.com/profile/0123456789",
+            "aboutMe": "Desarrollador web y autor de especificaciones de plantillas.",
+            "authorPhoto": {
+              "url": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+              "width": 80,
+              "height": 80,
+              "alt": "Foto de Abel"
+            }
+          },
+          "labels": [
+            {
+              "name": "tecnologia",
+              "url": "https://ejemplo.blogspot.com/search/label/tecnologia"
+            },
+            {
+              "name": "blogger",
+              "url": "https://ejemplo.blogspot.com/search/label/blogger"
+            }
+          ],
+          "snippets": {
+            "short": "Aprende las mejores prácticas para crear temas modernos en Blogger...",
+            "long": "Aprende las mejores prácticas para crear temas modernos en Blogger Layouts v3 paso a paso con ejemplos reales y pruebas empíricas."
+          },
+          "numberOfComments": 2,
+          "allowComments": true,
+          "allowNewComments": true,
+          "showThreadedComments": true,
+          "hasJumpLink": true,
+          "comments": [
+            {
+              "id": "c1001",
+              "author": "Carlos",
+              "authorAvatarSrc": "https://lh3.googleusercontent.com/a/default-user=s35-c",
+              "authorUrl": "https://carlos.dev",
+              "authorUserType": "BLOGGER",
+              "body": "<p>Excelente artículo sobre plantillas Blogger. Muy completo.</p>",
+              "timestamp": "28 de octubre de 2026, 10:30",
+              "timestampValue": 1793201400000,
+              "timestampAbs": 1793201400000,
+              "inReplyTo": "",
+              "isDeleted": false,
+              "adminClass": "",
+              "deleteUrl": "https://www.blogger.com/delete-comment.g?blogID=1234567890123456789&postID=c1001",
+              "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html#c1001",
+              "anchorName": "c1001"
+            },
+            {
+              "id": "c1002",
+              "author": "Abel",
+              "authorAvatarSrc": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+              "authorUrl": "https://www.blogger.com/profile/0123456789",
+              "authorUserType": "BLOGGER",
+              "body": "<p>¡Muchas gracias Carlos! Me alegra que te sirva de guía.</p>",
+              "timestamp": "28 de octubre de 2026, 11:15",
+              "timestampValue": 1793204100000,
+              "timestampAbs": 1793204100000,
+              "inReplyTo": "c1001",
+              "isDeleted": false,
+              "adminClass": "is-admin",
+              "deleteUrl": "https://www.blogger.com/delete-comment.g?blogID=1234567890123456789&postID=c1002",
+              "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html#c1002",
+              "anchorName": "c1002"
+            }
+          ],
+          "commentFormIframeSrc": "https://www.blogger.com/comment-iframe.g?blogID=1234567890123456789&postID=1001"
+        },
+        {
+          "id": "1002",
+          "title": "Novedades de XML en Blogger Layouts v3",
+          "url": "https://ejemplo.blogspot.com/2026/10/novedades-de-xml.html",
+          "absoluteUrl": "https://ejemplo.blogspot.com/2026/10/novedades-de-xml.html",
+          "body": "<p>Revisión en profundidad de los atributos expr:*, b:with, b:switch y las nuevas capacidades de manipulación semántica del DOM.</p>",
+          "date": "20 de octubre de 2026",
+          "lastUpdated": "21 de octubre de 2026",
+          "featuredImage": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200",
+          "thumbnailUrl": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=150",
+          "author": {
+            "name": "Abel",
+            "profileUrl": "https://www.blogger.com/profile/0123456789",
+            "aboutMe": "Desarrollador web y autor de especificaciones de plantillas.",
+            "authorPhoto": {
+              "url": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+              "width": 80,
+              "height": 80,
+              "alt": "Foto de Abel"
+            }
+          },
+          "labels": [
+            {
+              "name": "blogger",
+              "url": "https://ejemplo.blogspot.com/search/label/blogger"
+            }
+          ],
+          "snippets": {
+            "short": "Revisión en profundidad de los atributos expr:* y directivas...",
+            "long": "Revisión en profundidad de los atributos expr:*, b:with, b:switch y las nuevas capacidades semánticas de Layouts v3."
+          },
+          "numberOfComments": 0,
+          "allowComments": true,
+          "allowNewComments": true,
+          "showThreadedComments": true,
+          "hasJumpLink": false,
+          "comments": [],
+          "commentFormIframeSrc": "https://www.blogger.com/comment-iframe.g?blogID=1234567890123456789&postID=1002"
+        },
+        {
+          "id": "1003",
+          "title": "Optimización de Fuentes e Imágenes para la Web",
+          "url": "https://ejemplo.blogspot.com/2026/10/optimizacion-de-fuentes.html",
+          "absoluteUrl": "https://ejemplo.blogspot.com/2026/10/optimizacion-de-fuentes.html",
+          "body": "<p>Cómo integrar Google Fonts y operadores de redimensionamiento resizeImage para alcanzar 100 en Core Web Vitals sin dependencias pesadas.</p>",
+          "date": "10 de octubre de 2026",
+          "lastUpdated": "10 de octubre de 2026",
+          "featuredImage": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=1200",
+          "thumbnailUrl": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=150",
+          "author": {
+            "name": "Abel",
+            "profileUrl": "https://www.blogger.com/profile/0123456789",
+            "aboutMe": "Desarrollador web y autor de especificaciones de plantillas.",
+            "authorPhoto": {
+              "url": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+              "width": 80,
+              "height": 80,
+              "alt": "Foto de Abel"
+            }
+          },
+          "labels": [
+            {
+              "name": "diseño",
+              "url": "https://ejemplo.blogspot.com/search/label/dise%C3%B1o"
+            },
+            {
+              "name": "tecnologia",
+              "url": "https://ejemplo.blogspot.com/search/label/tecnologia"
+            }
+          ],
+          "snippets": {
+            "short": "Cómo integrar Google Fonts y operadores resizeImage...",
+            "long": "Cómo integrar Google Fonts y operadores de redimensionamiento resizeImage para alcanzar 100 en Core Web Vitals."
+          },
+          "numberOfComments": 0,
+          "allowComments": true,
+          "allowNewComments": true,
+          "showThreadedComments": true,
+          "hasJumpLink": false,
+          "comments": [],
+          "commentFormIframeSrc": "https://www.blogger.com/comment-iframe.g?blogID=1234567890123456789&postID=1003"
+        }
+      ]
+    },
+    "Header1": {
+      "title": "Mi Blog de Pruebas",
+      "description": "Bitácora sobre tecnología, diseño web y desarrollo de plantillas.",
+      "image": "",
+      "imagePlacement": "BEHIND",
+      "shrinkToFit": false
+    },
+    "PageList1": {
+      "title": "Páginas",
+      "links": [
+        {
+          "id": "c0",
+          "title": "Inicio",
+          "href": "https://ejemplo.blogspot.com/",
+          "isCurrentPage": false
+        },
+        {
+          "id": "2001",
+          "title": "Acerca de Nosotros",
+          "href": "https://ejemplo.blogspot.com/p/acerca-de.html",
+          "isCurrentPage": false
+        },
+        {
+          "id": "2002",
+          "title": "Contacto",
+          "href": "https://ejemplo.blogspot.com/p/contacto.html",
+          "isCurrentPage": false
+        }
+      ]
+    },
+    "Label1": {
+      "title": "Etiquetas",
+      "display": "list",
+      "showFreqNumbers": true,
+      "labels": [
+        {
+          "name": "blogger",
+          "count": 5,
+          "url": "https://ejemplo.blogspot.com/search/label/blogger",
+          "cssSize": 5
+        },
+        {
+          "name": "tecnologia",
+          "count": 3,
+          "url": "https://ejemplo.blogspot.com/search/label/tecnologia",
+          "cssSize": 3
+        },
+        {
+          "name": "diseño",
+          "count": 2,
+          "url": "https://ejemplo.blogspot.com/search/label/dise%C3%B1o",
+          "cssSize": 2
+        }
+      ]
+    },
+    "BlogArchive1": {
+      "title": "Archivo del blog",
+      "style": "HIERARCHY",
+      "data": [
+        {
+          "name": "2026",
+          "url": "https://ejemplo.blogspot.com/2026/",
+          "post-count": 3,
+          "expclass": "expanded",
+          "toggleId": "BlogArchive1_2026",
+          "posts": [],
+          "data": [
+            {
+              "name": "octubre",
+              "url": "https://ejemplo.blogspot.com/2026/10/",
+              "post-count": 3,
+              "expclass": "expanded",
+              "toggleId": "BlogArchive1_2026_10",
+              "data": [],
+              "posts": [
+                {
+                  "title": "Guía Definitiva de Plantillas Blogger",
+                  "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html"
+                },
+                {
+                  "title": "Novedades de XML en Blogger Layouts v3",
+                  "url": "https://ejemplo.blogspot.com/2026/10/novedades-de-xml.html"
+                },
+                {
+                  "title": "Optimización de Fuentes e Imágenes para la Web",
+                  "url": "https://ejemplo.blogspot.com/2026/10/optimizacion-de-fuentes.html"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "FeaturedPost1": {
+      "title": "Entrada destacada",
+      "postDisplay": "SHOW_ALL",
+      "posts": [
+        {
+          "id": "1001",
+          "title": "Guía Definitiva de Plantillas Blogger",
+          "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html",
+          "absoluteUrl": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html",
+          "body": "<p>Aprende las mejores prácticas para crear temas modernos en Blogger Layouts v3. Este artículo cubre la resolución ontológica de includables, expresiones lambda y la compilación de Theme Designer.</p>",
+          "date": "28 de octubre de 2026",
+          "lastUpdated": "28 de octubre de 2026",
+          "featuredImage": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200",
+          "thumbnailUrl": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=150",
+          "author": {
+            "name": "Abel",
+            "profileUrl": "https://www.blogger.com/profile/0123456789",
+            "aboutMe": "Desarrollador web y autor de especificaciones de plantillas.",
+            "authorPhoto": {
+              "url": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+              "width": 80,
+              "height": 80,
+              "alt": "Foto de Abel"
+            }
+          },
+          "labels": [
+            {
+              "name": "tecnologia",
+              "url": "https://ejemplo.blogspot.com/search/label/tecnologia"
+            },
+            {
+              "name": "blogger",
+              "url": "https://ejemplo.blogspot.com/search/label/blogger"
+            }
+          ],
+          "snippets": {
+            "short": "Aprende las mejores prácticas para crear temas modernos en Blogger...",
+            "long": "Aprende las mejores prácticas para crear temas modernos en Blogger Layouts v3 paso a paso con ejemplos reales y pruebas empíricas."
+          },
+          "numberOfComments": 2,
+          "allowComments": true,
+          "allowNewComments": true,
+          "showThreadedComments": true,
+          "hasJumpLink": true,
+          "comments": [
+            {
+              "id": "c1001",
+              "author": "Carlos",
+              "authorAvatarSrc": "https://lh3.googleusercontent.com/a/default-user=s35-c",
+              "authorUrl": "https://carlos.dev",
+              "authorUserType": "BLOGGER",
+              "body": "<p>Excelente artículo sobre plantillas Blogger. Muy completo.</p>",
+              "timestamp": "28 de octubre de 2026, 10:30",
+              "timestampValue": 1793201400000,
+              "timestampAbs": 1793201400000,
+              "inReplyTo": "",
+              "isDeleted": false,
+              "adminClass": "",
+              "deleteUrl": "https://www.blogger.com/delete-comment.g?blogID=1234567890123456789&postID=c1001",
+              "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html#c1001",
+              "anchorName": "c1001"
+            },
+            {
+              "id": "c1002",
+              "author": "Abel",
+              "authorAvatarSrc": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+              "authorUrl": "https://www.blogger.com/profile/0123456789",
+              "authorUserType": "BLOGGER",
+              "body": "<p>¡Muchas gracias Carlos! Me alegra que te sirva de guía.</p>",
+              "timestamp": "28 de octubre de 2026, 11:15",
+              "timestampValue": 1793204100000,
+              "timestampAbs": 1793204100000,
+              "inReplyTo": "c1001",
+              "isDeleted": false,
+              "adminClass": "is-admin",
+              "deleteUrl": "https://www.blogger.com/delete-comment.g?blogID=1234567890123456789&postID=c1002",
+              "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html#c1002",
+              "anchorName": "c1002"
+            }
+          ],
+          "commentFormIframeSrc": "https://www.blogger.com/comment-iframe.g?blogID=1234567890123456789&postID=1001"
+        }
+      ]
+    },
+    "PopularPosts1": {
+      "title": "Entradas populares",
+      "postDisplay": "SHOW_ALL",
+      "posts": [
+        {
+          "id": "1001",
+          "title": "Guía Definitiva de Plantillas Blogger",
+          "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html",
+          "absoluteUrl": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html",
+          "body": "<p>Aprende las mejores prácticas para crear temas modernos en Blogger Layouts v3. Este artículo cubre la resolución ontológica de includables, expresiones lambda y la compilación de Theme Designer.</p>",
+          "date": "28 de octubre de 2026",
+          "lastUpdated": "28 de octubre de 2026",
+          "featuredImage": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200",
+          "thumbnailUrl": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=150",
+          "author": {
+            "name": "Abel",
+            "profileUrl": "https://www.blogger.com/profile/0123456789",
+            "aboutMe": "Desarrollador web y autor de especificaciones de plantillas.",
+            "authorPhoto": {
+              "url": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+              "width": 80,
+              "height": 80,
+              "alt": "Foto de Abel"
+            }
+          },
+          "labels": [
+            {
+              "name": "tecnologia",
+              "url": "https://ejemplo.blogspot.com/search/label/tecnologia"
+            },
+            {
+              "name": "blogger",
+              "url": "https://ejemplo.blogspot.com/search/label/blogger"
+            }
+          ],
+          "snippets": {
+            "short": "Aprende las mejores prácticas para crear temas modernos en Blogger...",
+            "long": "Aprende las mejores prácticas para crear temas modernos en Blogger Layouts v3 paso a paso con ejemplos reales y pruebas empíricas."
+          },
+          "numberOfComments": 2,
+          "allowComments": true,
+          "allowNewComments": true,
+          "showThreadedComments": true,
+          "hasJumpLink": true,
+          "comments": [
+            {
+              "id": "c1001",
+              "author": "Carlos",
+              "authorAvatarSrc": "https://lh3.googleusercontent.com/a/default-user=s35-c",
+              "authorUrl": "https://carlos.dev",
+              "authorUserType": "BLOGGER",
+              "body": "<p>Excelente artículo sobre plantillas Blogger. Muy completo.</p>",
+              "timestamp": "28 de octubre de 2026, 10:30",
+              "timestampValue": 1793201400000,
+              "timestampAbs": 1793201400000,
+              "inReplyTo": "",
+              "isDeleted": false,
+              "adminClass": "",
+              "deleteUrl": "https://www.blogger.com/delete-comment.g?blogID=1234567890123456789&postID=c1001",
+              "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html#c1001",
+              "anchorName": "c1001"
+            },
+            {
+              "id": "c1002",
+              "author": "Abel",
+              "authorAvatarSrc": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+              "authorUrl": "https://www.blogger.com/profile/0123456789",
+              "authorUserType": "BLOGGER",
+              "body": "<p>¡Muchas gracias Carlos! Me alegra que te sirva de guía.</p>",
+              "timestamp": "28 de octubre de 2026, 11:15",
+              "timestampValue": 1793204100000,
+              "timestampAbs": 1793204100000,
+              "inReplyTo": "c1001",
+              "isDeleted": false,
+              "adminClass": "is-admin",
+              "deleteUrl": "https://www.blogger.com/delete-comment.g?blogID=1234567890123456789&postID=c1002",
+              "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html#c1002",
+              "anchorName": "c1002"
+            }
+          ],
+          "commentFormIframeSrc": "https://www.blogger.com/comment-iframe.g?blogID=1234567890123456789&postID=1001"
+        },
+        {
+          "id": "1002",
+          "title": "Novedades de XML en Blogger Layouts v3",
+          "url": "https://ejemplo.blogspot.com/2026/10/novedades-de-xml.html",
+          "absoluteUrl": "https://ejemplo.blogspot.com/2026/10/novedades-de-xml.html",
+          "body": "<p>Revisión en profundidad de los atributos expr:*, b:with, b:switch y las nuevas capacidades de manipulación semántica del DOM.</p>",
+          "date": "20 de octubre de 2026",
+          "lastUpdated": "21 de octubre de 2026",
+          "featuredImage": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200",
+          "thumbnailUrl": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=150",
+          "author": {
+            "name": "Abel",
+            "profileUrl": "https://www.blogger.com/profile/0123456789",
+            "aboutMe": "Desarrollador web y autor de especificaciones de plantillas.",
+            "authorPhoto": {
+              "url": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+              "width": 80,
+              "height": 80,
+              "alt": "Foto de Abel"
+            }
+          },
+          "labels": [
+            {
+              "name": "blogger",
+              "url": "https://ejemplo.blogspot.com/search/label/blogger"
+            }
+          ],
+          "snippets": {
+            "short": "Revisión en profundidad de los atributos expr:* y directivas...",
+            "long": "Revisión en profundidad de los atributos expr:*, b:with, b:switch y las nuevas capacidades semánticas de Layouts v3."
+          },
+          "numberOfComments": 0,
+          "allowComments": true,
+          "allowNewComments": true,
+          "showThreadedComments": true,
+          "hasJumpLink": false,
+          "comments": [],
+          "commentFormIframeSrc": "https://www.blogger.com/comment-iframe.g?blogID=1234567890123456789&postID=1002"
+        }
+      ]
+    },
+    "Profile1": {
+      "title": "Sobre el autor",
+      "team": false,
+      "displayname": "Abel",
+      "aboutme": "Desarrollador web enfocado en la especificación de estándares y plantillas para Blogger.",
+      "location": "Perú",
+      "showlocation": true,
+      "showaboutme": true,
+      "hasgoogleprofile": true,
+      "userUrl": "https://www.blogger.com/profile/0123456789",
+      "authorPhoto": {
+        "url": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+        "width": 80,
+        "height": 80
+      }
+    }
+  }
+}

@@ -53,7 +53,11 @@ import {
   BLOGGER_BOOLEAN_VALUES,
   isBloggerBoolean,
 } from '../types.js'
-import { getDefaultCatalogStore, registerCacheResetListener } from './store.js'
+import {
+  embeddedContexts,
+  getDefaultCatalogStore,
+  registerCacheResetListener,
+} from './store.js'
 
 export type DirectiveAttributesValidationTarget
   = | BloggerDirectiveToken
@@ -1569,6 +1573,10 @@ export class SpecCatalog {
     const right = op.operands?.[1]?.name ?? 'right'
     return `\${1:${left}} ${operatorName} \${2:${right}}$0`
   }
+
+  getMockContext(viewId: BloggerViewId, overrides?: Record<string, any>): Record<string, any> {
+    return getMockContext(viewId, overrides)
+  }
 }
 
 export function isDirective(tagName: string, catalog: SpecCatalog = getSpecCatalog()): tagName is BloggerDirectiveName {
@@ -1947,4 +1955,68 @@ export function getOperatorSnippet(
   catalog: SpecCatalog = getSpecCatalog(),
 ): string {
   return catalog.getOperatorSnippet(operatorName, options)
+}
+
+function deepCloneAndMerge<T>(base: T, overrides?: Record<string, any>): T {
+  if (base === null || typeof base !== 'object') {
+    return base
+  }
+
+  if (Array.isArray(base)) {
+    const clonedArr = base.map(item => deepCloneAndMerge(item)) as any
+    for (const key of Object.keys(base)) {
+      if (!/^\d+$/.test(key)) {
+        clonedArr[key] = deepCloneAndMerge((base as any)[key])
+      }
+    }
+    return clonedArr
+  }
+
+  const result: Record<string, any> = {}
+  for (const key of Object.keys(base as any)) {
+    result[key] = deepCloneAndMerge((base as any)[key])
+  }
+
+  if (overrides && typeof overrides === 'object' && !Array.isArray(overrides)) {
+    for (const [key, val] of Object.entries(overrides)) {
+      if (
+        val !== null
+        && typeof val === 'object'
+        && !Array.isArray(val)
+        && result[key] !== null
+        && typeof result[key] === 'object'
+        && !Array.isArray(result[key])
+      ) {
+        result[key] = deepCloneAndMerge(result[key], val)
+      }
+      else {
+        result[key] = deepCloneAndMerge(val)
+      }
+    }
+  }
+
+  return result as T
+}
+
+export function getMockContext(
+  viewId: BloggerViewId,
+  overrides?: Record<string, any>,
+): Record<string, any> {
+  const base = embeddedContexts[viewId]
+  if (!base) {
+    throw new Error(`Unknown Blogger view ID for mock context: '${viewId}'`)
+  }
+
+  const cloned = deepCloneAndMerge(base, overrides)
+
+  const blog1 = cloned.widgetData?.Blog1
+  if (blog1 && Array.isArray(blog1.allBylineItems)) {
+    for (const item of blog1.allBylineItems) {
+      if (item && typeof item === 'object' && item.name) {
+        blog1.allBylineItems[item.name] = item
+      }
+    }
+  }
+
+  return cloned
 }

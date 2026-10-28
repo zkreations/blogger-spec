@@ -16,6 +16,7 @@ import type {
 import { embeddedCatalogs, embeddedSchemas } from '../generated/embedded.generated.js'
 import { CATALOG_NAMES } from './constants.js'
 
+export { embeddedContexts } from '../generated/embedded.generated.js'
 export { CATALOG_NAMES } from './constants.js'
 
 export interface CatalogStore {

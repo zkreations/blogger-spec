@@ -714,6 +714,69 @@ export function validateSpec(options?: BloggerValidateSpecOptions): BloggerSpecV
         .map(d => d.name)
 
       for (const cat of suiteCategories) {
+        if (cat === 'contexts') {
+          const catDir = join(fixturePaths, cat)
+          const contextFiles = readdirSync(catDir).filter(f => f.endsWith('.json')).sort()
+          const knownViews: Record<string, any> = globalsCatalog.domain_metadata?.views || {}
+          const expectedViews = Object.keys(knownViews)
+          const foundViews = new Set<string>()
+
+          for (const file of contextFiles) {
+            const viewId = file.replace(/\.json$/, '')
+            foundViews.add(viewId)
+            const filePath = join(catDir, file)
+            const relPath = `${cat}/${file}`
+            try {
+              const data = JSON.parse(readFileSync(filePath, 'utf-8'))
+              if (!data.blog || typeof data.blog !== 'object') {
+                errors.push(`Context file '${relPath}': must have object property 'blog'.`)
+              }
+              if (!data.view || typeof data.view !== 'object') {
+                errors.push(`Context file '${relPath}': must have object property 'view'.`)
+              }
+              if (!data.messages || typeof data.messages !== 'object') {
+                errors.push(`Context file '${relPath}': must have object property 'messages'.`)
+              }
+              if (!data.widgets || typeof data.widgets !== 'object') {
+                errors.push(`Context file '${relPath}': must have object property 'widgets'.`)
+              }
+              if (!data.widgetData || typeof data.widgetData !== 'object') {
+                errors.push(`Context file '${relPath}': must have object property 'widgetData'.`)
+              }
+              const viewDef = knownViews[viewId]
+              if (!viewDef) {
+                errors.push(`Context file '${relPath}': view '${viewId}' is not declared in globals.json views matrix.`)
+              }
+              else {
+                if (data.view?.type !== viewDef.view_type) {
+                  errors.push(`Context file '${relPath}': view.type '${data.view?.type}' does not match matrix view_type '${viewDef.view_type}'.`)
+                }
+                for (const [flag, expectedState] of Object.entries(viewDef.flags || {})) {
+                  const actualVal = data.view?.[flag]
+                  if (expectedState === 'true' && actualVal !== true) {
+                    errors.push(`Context file '${relPath}': view flag '${flag}' expected true, got ${actualVal}.`)
+                  }
+                  else if (expectedState === 'false' && actualVal !== false) {
+                    errors.push(`Context file '${relPath}': view flag '${flag}' expected false, got ${actualVal}.`)
+                  }
+                  else if (expectedState === 'missing' && actualVal !== undefined) {
+                    errors.push(`Context file '${relPath}': view flag '${flag}' expected MISSING (omitted), got ${actualVal}.`)
+                  }
+                }
+              }
+            }
+            catch (err: any) {
+              errors.push(`Context file '${relPath}' failed to parse: ${err.message}`)
+            }
+          }
+          for (const expView of expectedViews) {
+            if (!foundViews.has(expView)) {
+              errors.push(`Missing canonical mock context file: 'contexts/${expView}.json'.`)
+            }
+          }
+          continue
+        }
+
         const catDir = join(fixturePaths, cat)
         const suiteFiles = readdirSync(catDir).filter(f => f.endsWith('.json'))
         for (const file of suiteFiles) {

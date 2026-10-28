@@ -21,7 +21,7 @@ export interface BloggerVerificationFreshnessReport {
 
 export function generateDts(): string {
   return [
-    'import { getAllCatalogs, getCatalog, getCommonWidget, getDiagnostics, getDirectives, getGlobals, getInclusions, getLocales, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets, validateDirectiveNesting } from \'./catalogs/index.js\';',
+    'import { getAllCatalogs, getCatalog, getCommonWidget, getDiagnostics, getDirectives, getGlobals, getInclusions, getLocales, getMessages, getMockContext, getOperators, getScopes, getSettings, getTypes, getWidgets, validateDirectiveNesting } from \'./catalogs/index.js\';',
     'export declare const catalogs: {',
     '  readonly directives: import("./types.js").BloggerDirectivesCatalog;',
     '  readonly operators: import("./types.js").BloggerOperatorsCatalog;',
@@ -36,7 +36,7 @@ export function generateDts(): string {
     '  readonly inclusions: import("./types.js").BloggerInclusionsCatalog;',
     '  readonly locales: import("./types.js").BloggerLocalesCatalog;',
     '};',
-    'export { getAllCatalogs, getCatalog, getCommonWidget, getDiagnostics, getDirectives, getGlobals, getInclusions, getLocales, getMessages, getOperators, getScopes, getSettings, getTypes, getWidgets, validateDirectiveNesting, };',
+    'export { getAllCatalogs, getCatalog, getCommonWidget, getDiagnostics, getDirectives, getGlobals, getInclusions, getLocales, getMessages, getMockContext, getOperators, getScopes, getSettings, getTypes, getWidgets, validateDirectiveNesting, };',
     'export * from \'./ast.js\';',
     'export * from \'./catalogs/index.js\';',
     'export * from \'./data-path.js\';',
@@ -69,6 +69,8 @@ export function generateFixturesManifest(): BloggerFixturesManifest {
     : []
 
   for (const cat of categories) {
+    if (cat === 'contexts')
+      continue
     const catDir = join(paths.fixtures, cat)
     if (!existsSync(catDir))
       continue
@@ -132,6 +134,7 @@ export function generateEmbeddedCatalogs(): string {
   const paths = getWorkspacePaths()
   const catalogsDir = paths.catalogs
   const schemasDir = paths.schemas
+  const contextsDir = join(paths.fixtures, 'contexts')
 
   const catalogs: Record<string, any> = {}
   for (const name of CATALOG_NAMES) {
@@ -146,6 +149,15 @@ export function generateEmbeddedCatalogs(): string {
     const schemaFiles = readdirSync(schemasDir).filter(f => f.endsWith('.schema.json'))
     for (const f of schemaFiles) {
       schemas[f] = JSON.parse(readFileSync(join(schemasDir, f), 'utf-8'))
+    }
+  }
+
+  const contexts: Record<string, any> = {}
+  if (existsSync(contextsDir)) {
+    const contextFiles = readdirSync(contextsDir).filter(f => f.endsWith('.json')).sort()
+    for (const f of contextFiles) {
+      const viewId = f.replace(/\.json$/, '')
+      contexts[viewId] = JSON.parse(readFileSync(join(contextsDir, f), 'utf-8'))
     }
   }
 
@@ -168,6 +180,7 @@ export function generateEmbeddedCatalogs(): string {
     '',
     'import type {',
     '  BloggerCatalogMap,',
+    '  BloggerViewId,',
     ...CATALOG_NAMES.map(name => `  Blogger${name.charAt(0).toUpperCase() + name.slice(1)}Catalog,`),
     '} from \'../types.js\'',
     '',
@@ -178,6 +191,8 @@ export function generateEmbeddedCatalogs(): string {
     '};',
     '',
     `export const embeddedSchemas: Record<string, any> = ${JSON.stringify(schemas, null, 2)};`,
+    '',
+    `export const embeddedContexts: Record<BloggerViewId, Record<string, any>> = ${JSON.stringify(contexts, null, 2)} as unknown as Record<BloggerViewId, Record<string, any>>;`,
     '',
   ].join('\n')
 }

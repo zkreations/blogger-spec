@@ -80,6 +80,7 @@
     "./inclusions": "./catalogs/inclusions.json",
     "./locales": "./catalogs/locales.json",
     "./fixtures": "./fixtures/index.json",
+    "./contexts/*": "./fixtures/contexts/*",
     "./runner": {
       "types": "./dist/runner.d.ts",
       "default": "./dist/runner.js"
