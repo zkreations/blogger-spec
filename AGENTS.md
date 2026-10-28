@@ -15,11 +15,13 @@ Zero-runtime-dependency specification authority and execution engine for Blogger
 Run via `pnpm.cmd` on Windows (`pnpm` on POSIX):
 
 ```bash
-pnpm.cmd run build        # Compile dist/, generated artifacts & sync fixtures manifest
-pnpm.cmd run test:spec    # Validate schemas (AJV Draft 2020-12), integrity & .d.ts freshness
-pnpm.cmd run typecheck    # Strict TypeScript check (tsc --noEmit)
-pnpm.cmd run lint         # ESLint check (@antfu/eslint-config)
-pnpm.cmd run test         # Vitest conformance suite
+pnpm.cmd run build           # Compile dist/, generated artifacts & sync fixtures manifest
+pnpm.cmd run test:spec       # Validate schemas (AJV Draft 2020-12), integrity & .d.ts freshness
+pnpm.cmd run check:hermetic  # Validate test isolation & absence of unversioned local paths
+pnpm.cmd run typecheck       # Strict TypeScript check (tsc --noEmit)
+pnpm.cmd run lint            # ESLint check (@antfu/eslint-config)
+pnpm.cmd run test            # Vitest conformance suite
+pnpm.cmd run sync:samples    # Synchronize canonical external template samples (hamlet.xml)
 ```
 
 ## Invariants
