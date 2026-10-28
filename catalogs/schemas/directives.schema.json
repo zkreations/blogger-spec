@@ -495,6 +495,107 @@
             }
           },
           "additionalProperties": false
+        },
+        "skin_compilation": {
+          "type": "object",
+          "description": "Deterministic specifications for Theme Designer skin variables extraction, CSS compilation, Google Fonts injection, and style tag serialization.",
+          "required": [
+            "page_skin",
+            "template_skin",
+            "google_fonts_strategy",
+            "expression_projection"
+          ],
+          "properties": {
+            "page_skin": {
+              "type": "object",
+              "required": [
+                "output_wrapper",
+                "variable_substitution",
+                "metadata_cleanup"
+              ],
+              "properties": {
+                "output_wrapper": {
+                  "type": "string"
+                },
+                "variable_substitution": {
+                  "type": "object",
+                  "required": [
+                    "syntax",
+                    "value_precedence",
+                    "composite_font_decomposition"
+                  ],
+                  "properties": {
+                    "syntax": {
+                      "type": "string"
+                    },
+                    "value_precedence": {
+                      "type": "string"
+                    },
+                    "composite_font_decomposition": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                },
+                "metadata_cleanup": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "template_skin": {
+              "type": "object",
+              "required": [
+                "output_wrapper",
+                "recommended_guard"
+              ],
+              "properties": {
+                "output_wrapper": {
+                  "type": "string"
+                },
+                "recommended_guard": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "google_fonts_strategy": {
+              "type": "object",
+              "required": [
+                "local_compiler_policy",
+                "link_template"
+              ],
+              "properties": {
+                "local_compiler_policy": {
+                  "type": "string"
+                },
+                "link_template": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "expression_projection": {
+              "type": "object",
+              "required": [
+                "dot_replacement",
+                "target_namespace"
+              ],
+              "properties": {
+                "dot_replacement": {
+                  "type": "string"
+                },
+                "target_namespace": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

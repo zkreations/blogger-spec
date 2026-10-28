@@ -637,6 +637,83 @@
         "canonicalDom": true
       },
       "verified_at": "2026-10-28"
+    },
+    {
+      "id": "rendering/widget_rendering/skin-variable-value-precedence-over-default-and-font-decomposition",
+      "title": "Skin Variable Value Precedence Over Default And Composite Font Decomposition",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:skin",
+        "tag:Variable"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:skin><![CDATA[/* <Variable name=\"brandColor\" description=\"Color\" type=\"color\" default=\"#ff0000\" value=\"#00ff00\"/> <Variable name=\"compositeFont\" description=\"Font\" type=\"font\" default=\"normal normal 14px Arial\" value=\"normal bold 18px 'Roboto', sans-serif\"/> */ body { color: $(brandColor); font-family: $(compositeFont.family); font-size: $(compositeFont.size); }]]></b:skin>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<style id=\"page-skin-1\" type=\"text/css\"><!--\nbody { color: #00ff00; font-family: 'Roboto', sans-serif; font-size: 18px; }\n--></style>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "rendering/widget_rendering/skin-variable-projection-to-template-expression-with-underscores",
+      "title": "Skin Variable Dotted Name Projected To Underscores In Template Expression",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:skin",
+        "tag:Variable",
+        "tag:data:*"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:skin><![CDATA[/* <Variable name=\"theme.spacing.base\" description=\"Spacing\" type=\"string\" default=\"16px\"/> */]]></b:skin><div expr:data-spacing='data:skin.vars.theme_spacing_base'>Spacing Test</div>",
+        "mode": "fragment",
+        "context": {
+          "skin": {
+            "vars": {
+              "theme_spacing_base": "16px"
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<style id=\"page-skin-1\" type=\"text/css\"><!--\n\n--></style><div data-spacing=\"16px\">Spacing Test</div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "rendering/widget_rendering/template-skin-isolated-in-layout-mode-guard",
+      "title": "Template Skin Isolated Inside isLayoutMode Guard Omitted In Public Feed View",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:template-skin",
+        "tag:b:if"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:if cond='data:view.isLayoutMode'><b:template-skin><![CDATA[body#layout { color: red; }]]></b:template-skin></b:if>",
+        "mode": "fragment",
+        "context": {
+          "view": {
+            "isLayoutMode": false
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
     }
   ]
 }

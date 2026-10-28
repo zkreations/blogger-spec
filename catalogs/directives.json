@@ -311,6 +311,34 @@
         "false_condition_behavior": "unwrap_children_and_hoist_mutations"
       }
     },
+    "skin_compilation": {
+      "page_skin": {
+        "output_wrapper": "<style id='page-skin-1' type='text/css'><!--\n{content}\n--></style>",
+        "variable_substitution": {
+          "syntax": "$(variable.name)",
+          "value_precedence": "value_over_default",
+          "composite_font_decomposition": [
+            "family",
+            "size",
+            "style",
+            "weight"
+          ]
+        },
+        "metadata_cleanup": "Strip <Variable .../> and <Group>...</Group> tags from processed CSS"
+      },
+      "template_skin": {
+        "output_wrapper": "<style id='template-skin-1' type='text/css'><!--\n{content}\n--></style>",
+        "recommended_guard": "<b:if cond='data:view.isLayoutMode'>"
+      },
+      "google_fonts_strategy": {
+        "local_compiler_policy": "Inject <link rel='stylesheet' href='https://fonts.googleapis.com/...'> into <head> instead of massive inlined @font-face blocks",
+        "link_template": "<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family={family}:{weights}&amp;display=swap'/>"
+      },
+      "expression_projection": {
+        "dot_replacement": "name.replace(/\\./g, '_')",
+        "target_namespace": "data:skin.vars.*"
+      }
+    },
     "html_void_elements": [
       "area",
       "base",
@@ -1825,7 +1853,7 @@
     "b:skin": {
       "category": "Styling",
       "namespace": "b",
-      "description": "Required theme component that encapsulates CSS declarations and skin variables used to customize the blog's appearance.",
+      "description": "Required theme component that encapsulates CSS declarations and skin variables. Compiled by Blogger into <style id='page-skin-1' type='text/css'><!-- ... --></style> after substituting $(...) variables.",
       "grammar": {
         "valid_parents": [
           "@theme_containers"
@@ -1861,6 +1889,9 @@
           "min": 1,
           "max": 1,
           "description": "Exactly one b:skin element is permitted per theme."
+        },
+        "compilation": {
+          "description": "Compiles into <style id='page-skin-1' type='text/css'><!-- ... --></style>. Variable references $(name) are substituted with effective values (value has precedence over default; type='font' decomposes into .family, .size, .style, .weight). Metadata tags (<Variable>, <Group>) are stripped from output."
         }
       },
       "closure_mode": "container",
@@ -1870,7 +1901,7 @@
     "b:template-skin": {
       "category": "Styling",
       "namespace": "b",
-      "description": "Theme component used for styles specifically applicable to the Layout tab of the Blogger dashboard.",
+      "description": "Theme component used for styles specifically applicable to the Layout tab of the Blogger dashboard. Emits <style id='template-skin-1' type='text/css'><!-- ... --></style> if not conditionally guarded; recommended practice is to isolate via <b:if cond='data:view.isLayoutMode'>.",
       "grammar": {
         "valid_parents": [
           "@theme_containers"
@@ -1907,6 +1938,9 @@
           "min": 0,
           "max": 1,
           "description": "At most one b:template-skin element is permitted per theme."
+        },
+        "serialization": {
+          "description": "Serializes into <style id='template-skin-1' type='text/css'><!-- ... --></style>. In production themes, wrapping with <b:if cond='data:view.isLayoutMode'> is recommended to omit it from public views."
         }
       },
       "closure_mode": "container",
@@ -2013,13 +2047,13 @@
         },
         "default": {
           "type": "string",
-          "description": "Factory default value restored when the user resets theme defaults. Optional for type='string'; required for all other variable types.",
+          "description": "Factory default value restored when user resets theme defaults or when value is omitted. Optional for type='string'; required for all other variable types.",
           "attribute_kind": "static_literal",
           "expr": false
         },
         "value": {
           "type": "string",
-          "description": "Current active value (overridden when saved in the Theme Designer). Permitted to be empty ('') exclusively for type='string'; non-empty required for all other variable types.",
+          "description": "Current active value taking strict precedence over default when present. Permitted to be empty ('') exclusively for type='string'; non-empty required for all other variable types.",
           "required": true,
           "attribute_kind": "static_literal",
           "expr": false

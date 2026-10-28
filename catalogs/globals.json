@@ -1207,7 +1207,7 @@
         },
         "vars": {
           "type": "object",
-          "description": "Dictionary of all <Variable> definitions declared within <b:skin> CDATA."
+          "description": "Dictionary of all <Variable> definitions declared within <b:skin> CDATA. In template expressions, dots in variable names are canonically converted to underscores (name.replace(/\\./g, '_')), e.g. theme.spacing.base -> data:skin.vars.theme_spacing_base. Value resolution prefers 'value' over 'default'."
         }
       },
       "patterns": [
@@ -1223,7 +1223,7 @@
             "url",
             "automatic"
           ],
-          "description": "Evaluates the value of a Theme Designer variable by name."
+          "description": "Evaluates the value of a Theme Designer variable by name, converting dots to underscores (name.replace(/\\./g, '_')). Composite font variables expose sub-properties .family and .size in template expressions."
         }
       ],
       "evidence": "official",
