@@ -62,4 +62,3 @@ describe('includable resolution hierarchy & data contract (Plan 02)', () => {
     expect(bx1046).toBeDefined()
   })
 })
-

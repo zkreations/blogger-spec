@@ -479,6 +479,164 @@
         "canonicalDom": true
       },
       "verified_at": "2026-10-26"
+    },
+    {
+      "id": "rendering/widget_rendering/synthetic-widget-wrapper-mutation-and-id-override",
+      "title": "Synthetic Widget Wrapper Mutation And Effective ID Override",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:widget",
+        "tag:b:includable",
+        "tag:b:class",
+        "tag:b:attr"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Header1' type='Header' version='2'><b:includable id='main'><b:class name='custom-widget-class'/><b:attr name='data-test-wrapper' value='ok'/><b:attr name='id' value='OverriddenHeaderId'/><p>Content</p></b:includable></b:widget>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"widget Header custom-widget-class\" data-test-wrapper=\"ok\" data-version=\"2\" id=\"OverriddenHeaderId\"><p>Content</p></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "rendering/widget_rendering/dom-mutation-hoisting-across-include-boundary",
+      "title": "DOM Mutation Class And Attr Hoisting Across Include Subroutine Boundary",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:defaultmarkups",
+        "tag:b:defaultmarkup",
+        "tag:b:includable",
+        "tag:b:include",
+        "tag:b:class",
+        "tag:b:attr"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='mutateCaller'><b:class name='mutated-from-include'/><b:attr name='data-injected' value='success'/></b:includable></b:defaultmarkup></b:defaultmarkups><div class='container'><b:include name='mutateCaller'/></div>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"container mutated-from-include\" data-injected=\"success\"></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "rendering/widget_rendering/tag-unwrap-false-condition-and-continuous-class-hoisting",
+      "title": "Conditional b:tag Unwrapping With Continuous Mutation Hoisting To Ancestor",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:tag",
+        "tag:b:class"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div class='container'><b:tag cond='false' name='span'><b:class name='tag-discarded-class'/><span>Contenido interior preservado</span></b:tag></div>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"container tag-discarded-class\"><span>Contenido interior preservado</span></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "rendering/widget_rendering/attr-overwrite-existing-attribute",
+      "title": "Attribute Overwrite Existing Predeclared Attribute Value",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:attr"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div class='container' id='orig-id'><b:attr name='id' value='new-id'/></div>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"container\" id=\"new-id\"></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "rendering/widget_rendering/clean-void-element-closure-with-whitespace-remove",
+      "title": "Clean Void Element Closure and Suppression With b:whitespace Remove",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:attr",
+        "tag:b:tag"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div><img src='https://example.com/pic.jpg'><b:attr name='b:whitespace' value='remove'/><b:attr name='alt' value='Pic'/></img><b:tag name='img'><b:attr name='b:whitespace' value='remove'/><b:attr name='src' value='https://example.com/tag.jpg'/><b:attr name='alt' value='Tag'/></b:tag></div>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div><img alt=\"Pic\" src=\"https://example.com/pic.jpg\"/><img alt=\"Tag\" src=\"https://example.com/tag.jpg\"/></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "rendering/widget_rendering/attr-empty-value-omitted-from-dom",
+      "title": "Empty Attribute Value Completely Omitted From Rendered Output",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:attr"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<input type='text'><b:attr name='b:whitespace' value='remove'/><b:attr name='disabled' value=''/></input>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<input type=\"text\"/>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "rendering/widget_rendering/loop-class-accumulation-on-ancestor-container",
+      "title": "Sequential Class Accumulation In Loop Onto HTML Container",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:widget_rendering",
+        "tag:b:loop",
+        "tag:b:class"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div class='container'><b:loop values='[\"badge-a\", \"badge-b\"]' var='b'><b:class expr:name='data:b'/></b:loop></div>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"container badge-a badge-b\"></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
     }
   ]
 }

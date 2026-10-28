@@ -360,6 +360,141 @@
             }
           },
           "additionalProperties": false
+        },
+        "dom_mutation_pipeline": {
+          "type": "object",
+          "description": "Deterministic DOM tree mutation and attribute/class hoisting state machine specifications.",
+          "required": [
+            "target_resolution",
+            "class_mutation",
+            "attr_mutation",
+            "tag_unwrapping"
+          ],
+          "properties": {
+            "target_resolution": {
+              "type": "object",
+              "required": [
+                "description",
+                "traversed_containers",
+                "boundary_crossings",
+                "widget_synthetic_wrapper_binding"
+              ],
+              "properties": {
+                "description": {
+                  "type": "string"
+                },
+                "traversed_containers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "boundary_crossings": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "widget_synthetic_wrapper_binding": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
+            "class_mutation": {
+              "type": "object",
+              "required": [
+                "mode",
+                "separator",
+                "existing_class_policy",
+                "loop_accumulation"
+              ],
+              "properties": {
+                "mode": {
+                  "type": "string"
+                },
+                "separator": {
+                  "type": "string"
+                },
+                "existing_class_policy": {
+                  "type": "string"
+                },
+                "loop_accumulation": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            },
+            "attr_mutation": {
+              "type": "object",
+              "required": [
+                "mode",
+                "empty_value_policy",
+                "overwrite_policy",
+                "allows_id_override",
+                "special_pseudo_attributes"
+              ],
+              "properties": {
+                "mode": {
+                  "type": "string"
+                },
+                "empty_value_policy": {
+                  "type": "string"
+                },
+                "overwrite_policy": {
+                  "type": "string"
+                },
+                "allows_id_override": {
+                  "type": "boolean"
+                },
+                "special_pseudo_attributes": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "object",
+                    "required": [
+                      "value",
+                      "suppressed_from_output",
+                      "target_elements",
+                      "collapses_inner_whitespace",
+                      "forces_clean_void_closure"
+                    ],
+                    "properties": {
+                      "value": {
+                        "type": "string"
+                      },
+                      "suppressed_from_output": {
+                        "type": "boolean"
+                      },
+                      "target_elements": {
+                        "type": "string"
+                      },
+                      "collapses_inner_whitespace": {
+                        "type": "boolean"
+                      },
+                      "forces_clean_void_closure": {
+                        "type": "boolean"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "additionalProperties": false
+            },
+            "tag_unwrapping": {
+              "type": "object",
+              "required": [
+                "false_condition_behavior"
+              ],
+              "properties": {
+                "false_condition_behavior": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
