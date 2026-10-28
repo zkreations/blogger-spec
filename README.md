@@ -9,19 +9,29 @@
 
 It is designed to be consumed by external tools — IDE extensions, linters, template compilers, AST engines, and validators — so that all consumers share an identical, versioned understanding of the language.
 
+## Architectural Boundary
+
+`blogger-spec` enforces a strict architectural boundary:
+
+$$\underbrace{\text{XML / Expression} \xrightarrow[\text{lexer / parser}]{\text{\textbf{blogger-spec}}} \text{\textbf{Typed AST}}}_{\text{Responsibility of blogger-spec}} \quad\Big|\quad \underbrace{\text{\textbf{Typed AST}} \xrightarrow[\text{pipeline / runtime}]{\text{\textbf{Consumer}}} \text{Final HTML}}_{\text{Responsibility of Compiler / Consumer}}$$
+
+- **What `blogger-spec` provides**: Zero-runtime-dependency specification authority, full template XML parser (`parseTemplate`), Pratt expression parser (`parseExpression`), runtime expression evaluator (`evaluateExpression`), canonical mock contexts for 12 views, 11 JSON catalogs, validation schemas, and conformance test runner (`runConformance`).
+- **What belongs to the consumer**: Full template rendering machines (AST traversal, section/widget DOM wrappers, and loop/subroutine orchestration into final HTML), preview web servers, watchers, and production site generation.
+
 ---
 
 ## Modules
 
 - **11 JSON catalogs** — machine-readable definitions (Draft 2020-12 schemas) for directives, operators, types, widgets, settings, globals, messages, scopes, diagnostics, system inclusions, and locales.
-- **`blogger-spec/ast`** — Pratt expression parser producing structured AST nodes (`BloggerExpressionNode`), supporting dual syntax (infix and functional), collection lambdas, dynamic bracket indexing, and 10 levels of operator precedence. Includes recursion limit protection (`maxDepth: 50`).
-- **`blogger-spec/parser`** — Lexical tokenizer and attribute parser for Blogger XML directives (`<b:...>`, `<data:...>`, `<Variable...>`), expressions containing relational operators (`>`), CDATA skin variables, and unclosed tag stack tracking.
+- **`blogger-spec/ast`** — Full template XML parser (`parseTemplate`) producing strongly typed `BloggerDocumentNode` ASTs, and Pratt expression parser (`parseExpression`) producing `BloggerExpressionNode` ASTs. Supports dual syntax (infix and functional), collection lambdas, dynamic bracket indexing, and 10 levels of operator precedence with recursion limit protection (`maxDepth: 50`).
+- **`blogger-spec/parser`** — Lexical tokenizer, attribute parser, and runtime expression evaluator (`evaluateExpression`) with null-safety and platform modifiers. Includes directive nesting rules (`validateDirectiveNesting`) and structural auditors (`validateTemplateStructure`, `validateTemplateExpressions`).
 - **`blogger-spec/version`** — Detects Blogger template layout architecture (Layouts v1, v2, v3) from raw XML.
 - **`blogger-spec/quota`** — Token counting and budget evaluation against the Blogger compiler's 40-token ceiling (`BX1021`).
 - **`blogger-spec/type-system`** — Subtype assignability, modifier inheritance, Theme Designer skin modifiers (`getSkinTypeModifiers`), operator compatibility, and expression return type inference with widget scope support.
 - **`blogger-spec/data-path`** — Data path resolution (`resolveDataPath`) across globals, widget dictionaries, platform types, localized messages, scoped variables, and Theme Designer skin variables (`skinVariables`, `toSkinVarIdentifier`), including collection unwrapping (`[0]`, `.first`, `.last`) and type modifiers (`.escaped`, `.canonical`, `.length`).
 - **`blogger-spec/scope`** — Compiler symbol table and scope stack (`ScopeEnvironment`) with canonical resolution precedence (`lambda` → `loop` → `with` → `includable` → `widget` → `global`) and variable shadowing.
-- **`blogger-spec/catalogs`** — Snippet generators (`getDirectiveSnippet`, `getOperatorSnippet`) with tabstops, enforcing single quotes for template directives and double quotes for skin variables.
+- **`blogger-spec/catalogs`** — Query facade, mock contexts generator (`getMockContext`) for 12 canonical views, snippet generators (`getDirectiveSnippet`, `getOperatorSnippet`), and embedded catalog store.
+- **`blogger-spec/runner`** — Conformance test runner (`runConformance`) and HTML normalizer (`normalizeHtmlString`) for cross-engine empirical validation.
 
 No Node.js built-in dependencies (`fs`, `path`). Works in browsers, Node.js, Cloudflare Workers, and Web Workers.
 
@@ -40,31 +50,34 @@ blogger-spec/
 │   ├── globals.json          # Global data objects (data:blog, data:view, data:skin...)
 │   ├── messages.json         # Localized UI string definitions (data:messages.*)
 │   ├── scopes.json           # Variable scope resolution rules and precedence
-│   ├── diagnostics.json      # Diagnostic rules (BX1001-BX1060)
+│   ├── diagnostics.json      # Diagnostic rules (BX1001-BX1062)
 │   ├── inclusions.json       # System inclusions, layout versions 1-3, super.* prefix
 │   ├── locales.json          # Locale metadata and canonical UI translations
 │   └── schemas/              # JSON Schemas Draft 2020-12 for each catalog
 ├── fixtures/                 # Test fixtures verified against the production Blogger engine
+│   ├── contexts/             # Canonical mock data contexts for all 12 Blogger views
 │   ├── expressions/          # Expression evaluation cases and edge cases
 │   ├── templates/            # Rendering and scoping fixtures
 │   ├── diagnostics/          # Negative fixtures (templates the Blogger server rejects)
 │   └── index.json            # Consolidated manifest (compiled via build)
 ├── src/
 │   ├── index.ts              # Root package entry point
-│   ├── ast.ts                # AST interfaces and parser exports
+│   ├── ast.ts                # AST interfaces, parseExpression, and parseTemplate exports
 │   ├── data-path.ts          # Data path navigator (resolveDataPath)
 │   ├── scope.ts              # ScopeEnvironment symbol table and scope stack
 │   ├── parser/
 │   │   ├── lexer.ts          # Expression lexer with location tracking
 │   │   ├── expr-parser.ts    # Pratt parser guided by operators.json precedence
+│   │   ├── expr-evaluator.ts # Runtime expression evaluator with safe null-tolerance
+│   │   ├── template-parser.ts # Full XML template to AST parser (strict & tolerant)
 │   │   ├── directive-scanner.ts # XML directive and tag tokenizer
 │   │   └── template-validator.ts # Directive nesting and structural validator
 │   ├── version.ts            # Template layout version detector (v1, v2, v3)
 │   ├── quota.ts              # Token quota calculator (BX1021)
 │   ├── type-system.ts        # Type assignability, modifiers, operators, and truthiness
-│   ├── catalogs/             # CatalogStore, SpecCatalog, and query functions
+│   ├── catalogs/             # CatalogStore, SpecCatalog, mock contexts, and query functions
 │   ├── paths.ts              # Workspace path resolution utilities
-│   ├── runner.ts             # Conformance harness engine
+│   ├── runner.ts             # Conformance harness and HTML normalizer
 │   ├── tooling/              # Build pipeline, schema validator, and compiler
 │   └── types.ts              # Models, catalog types, and fixture interfaces
 └── dist/                     # Distribution artifacts (no runtime dependencies)
@@ -99,16 +112,21 @@ npm install blogger-spec
 import {
   catalogs,
   detectTemplateVersion,
+  evaluateExpression,
   evaluateExpressionBudget,
   getDirectives,
   getDirectiveSnippet,
+  getMockContext,
   getOperatorSnippet,
   getSkinTypeModifiers,
   getSpecCatalog,
   inferExpressionType,
   isTypeAssignable,
+  normalizeHtmlString,
   parseExpression,
+  parseTemplate,
   resolveDataPath,
+  runConformance,
   scanDirectiveTokens,
   ScopeEnvironment,
   toSkinVarIdentifier,
@@ -199,16 +217,16 @@ import types from 'blogger-spec/types' with { type: 'json' }
 
 | Subpath | Key exports | Description |
 | :--- | :--- | :--- |
-| `blogger-spec/ast` | `parseExpression`, `tokenize`, `ExpressionParser` | Pratt parser and lexer producing expression ASTs (`BloggerExpressionNode`). |
+| `blogger-spec/ast` | `parseTemplate`, `parseExpression`, `tokenize`, `ExpressionParser` | Full template XML parser (`BloggerDocumentNode`) and Pratt expression parser (`BloggerExpressionNode`). |
 | `blogger-spec/data-path` | `resolveDataPath`, `toSkinVarIdentifier` | Member traversal across globals, widget dictionaries, platform types, variables, and Theme Designer skin variables (`data:skin.vars.*`). |
 | `blogger-spec/scope` | `ScopeEnvironment` | Compiler symbol table and scope stack with canonical precedence and variable shadowing. |
-| `blogger-spec/parser` | `scanDirectiveTokens`, `validateTemplateStructure`, `validateTemplateExpressions`, `validateExpression`, `validateDirectiveNesting`, `canNest`, `BloggerStructureDiagnostic` | Directive scanner, structural validator, expression attribute auditor, and automated QuickFix provider (`BX1001-BX1060`). |
+| `blogger-spec/parser` | `parseTemplate`, `evaluateExpression`, `scanDirectiveTokens`, `validateTemplateStructure`, `validateTemplateExpressions`, `validateExpression`, `validateDirectiveNesting`, `canNest`, `BloggerStructureDiagnostic` | Full XML template parser, runtime expression evaluator, structural validator, and automated QuickFix provider (`BX1001-BX1062`). |
 | `blogger-spec/quota` | `evaluateExpressionBudget`, `countExpressionTokens`, `tokenizeExpression`, `COMPILER_QUOTA_LIMIT` | Token quota calculator and budget evaluator against the 40-token compiler ceiling (`BX1021`). |
 | `blogger-spec/type-system` | `isTypeAssignable`, `getTypeModifiers`, `getSkinTypeModifiers`, `resolveModifierReturnType`, `resolveOperatorReturnType`, `inferExpressionType`, `isTruthy` | Type assignability, modifier inheritance, Theme Designer skin modifiers, operator return type inference, and expression type deduction. |
 | `blogger-spec/version` | `detectTemplateVersion`, `getLayoutVersionsSpec` | Template layout architecture detector (v1, v2, v3). |
-| `blogger-spec/catalogs` | `getSpecCatalog`, `SpecCatalog`, `MemoryCatalogStore`, `getDirectiveSnippet`, `getOperatorSnippet`, `isDirective`, `isOperator`, `getDiagnostic` | Specification query facade, attribute validation, snippet generators, and in-memory catalog store. |
+| `blogger-spec/catalogs` | `getSpecCatalog`, `getMockContext`, `SpecCatalog`, `MemoryCatalogStore`, `getDirectiveSnippet`, `getOperatorSnippet`, `isDirective`, `isOperator`, `getDiagnostic` | Specification query facade, 12-view mock context generator, attribute validation, and snippet generators. |
 | `blogger-spec/inclusion-expander` | `expandServerInclusion`, `extractIncludableBody`, `getInclusionParameterContracts` | Platform backend inclusion expander and macro-inlining engine. |
-| `blogger-spec/runner` | `runSpecConformance`, `runConformance` | Test harness to validate engine conformance against empirical fixtures. |
+| `blogger-spec/runner` | `runConformance`, `runSpecConformance`, `normalizeHtmlString` | Test harness and HTML normalizer to validate engine conformance against empirical fixtures. |
 | `blogger-spec/node` | `FsCatalogStore`, `getCatalogsDirectory`, `getSchemasDirectory` | Filesystem-based catalog store for Node.js environments. |
 | `blogger-spec/<domain>` | `directives`, `operators`, `types`, `widgets`, `settings`, `globals`, etc. | Direct access to JSON catalogs and Draft 2020-12 schemas (`blogger-spec/schemas/*`). |
 
@@ -400,6 +418,60 @@ getOperatorSnippet('filter')
 
 getOperatorSnippet('resizeImage')
 // "resizeImage(${1:image}, ${2:size}, ${3:ratio})$0"
+```
+
+### 11. Full template parsing to AST (`parseTemplate`)
+
+```typescript
+import { parseTemplate } from 'blogger-spec'
+
+const templateXml = `
+  <html b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'>
+    <head><title><data:view.title.escaped/></title></head>
+    <body>
+      <b:section id='main'>
+        <b:widget id='Blog1' type='Blog'/>
+      </b:section>
+    </body>
+  </html>
+`
+
+const doc = parseTemplate(templateXml, { tolerant: false })
+// doc.type -> 'Document'
+// doc.children -> [ BloggerElementNode (html) ]
+// doc.doctype -> '<!DOCTYPE html>'
+```
+
+### 12. Runtime expression evaluation (`evaluateExpression`)
+
+```typescript
+import { evaluateExpression, parseExpression } from 'blogger-spec'
+
+const exprNode = parseExpression('data:posts filter (p => p.labels any (l => l.name == "News"))')
+const context = {
+  posts: [
+    { title: 'Post 1', labels: [{ name: 'Tech' }] },
+    { title: 'Post 2', labels: [{ name: 'News' }] },
+  ],
+}
+
+const filtered = evaluateExpression(exprNode, context)
+// [ { title: 'Post 2', labels: [ { name: 'News' } ] } ]
+```
+
+### 13. Canonical mock contexts for 12 views (`getMockContext`)
+
+```typescript
+import { getMockContext } from 'blogger-spec'
+
+// Generates complete mock context with exact boolean flags for 'post' view:
+const postContext = getMockContext('post', {
+  blog: { title: 'Custom Blog Title' },
+})
+
+console.log(postContext.view.isPost) // true
+console.log(postContext.view.isHomepage) // false
+console.log(postContext.widgetData.Blog1.posts[0].title) // 'Entrada de prueba estándar'
 ```
 
 ---

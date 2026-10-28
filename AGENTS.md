@@ -24,6 +24,13 @@ pnpm.cmd run test         # Vitest conformance suite
 
 ## Invariants
 
+- **Architectural boundary**: `blogger-spec` is the SSOT authority, full AST parser (`parseTemplate`, `parseExpression`), and expression execution engine (`evaluateExpression`). It is NOT a full HTML page compiler, web server, or previewer. Compiling and rendering the AST into final HTML belongs to consumers (builders, previewers, linters).
+- **Template parser & AST**: `parseTemplate(xml, options)` parses full Blogger XML templates into a strongly typed `BloggerDocumentNode` AST, strictly enforcing XML well-formedness, entity references, and attribute expression parsing without external dependencies.
+- **Expression evaluation**: `evaluateExpression(node, context)` provides safe runtime evaluation of expression ASTs with null-safety, canonical equality (`isEqual`), collection lambdas, and platform modifiers.
+- **Mock contexts**: Canonical mock data for all 12 views resides in `fixtures/contexts/` and is accessed via `getMockContext(viewId, overrides)`.
+- **Includable resolution**: 6-tier ontological specificity chain (`local_widget` -> `gadget_specific` -> `universal_widget` -> `shared_common` -> `platform_server` -> `unresolved`) with `last_block_wins` collision handling per `catalogs/directives.json`.
+- **DOM mutation pipeline**: `b:class` (accumulate) and `b:attr` (upsert_or_omit) hoist through containers (`b:if`, `b:loop`, `b:tag[cond=false]`) and subroutines (`b:include`), supporting `b:whitespace='remove'`.
+- **Root HTML attributes**: Modern templates enforce `b:css='false'`, `b:js='false'`, `b:defaultwidgetversion='2'`, `b:layoutsVersion='3'` (`BX1061`, `BX1062`).
 - **Catalog edit cycle**: Edit `catalogs/<catalog>.json` -> `pnpm.cmd run build` -> `pnpm.cmd run test:spec`.
 - **Fixture contract**: Conforms to `BloggerFixture` union (`input.kind`, `expected.outcome`, `covers[]`, `verified_at`).
 - **Zero runtime dependencies**: Production export strictly maintains `"dependencies": {}`.

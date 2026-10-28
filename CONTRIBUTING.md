@@ -13,6 +13,7 @@
 5. **Flat Type Hierarchy & Skin Variable Isolation**: Platform subtypes (`url`, `image`, `date`, `locale`, `message`) inherit directly from `string` (1-level depth). Theme variables (`skin:*`) have `parent_type: null` and must remain strictly isolated from template string modifiers (`.length`, `.escaped`).
 6. **Declarative Directive Grammar & Symbolic Groups**: Directive nesting rules (`valid_parents`, `valid_children`) and recovery behaviors (`invalid_nesting_policy` with `reject`, `strip`, `ignore`) reside in [`catalogs/directives.json`](catalogs/directives.json). Do not hardcode tag hierarchy assumptions in validators; query via `canNest` and `validateDirectiveNesting`.
 7. **No External Documentation Links**: Catalogs and schemas must never include external links (`documentation_urls`, `references`). Official documentation is obsolete and community sources are frozen; all canonical behavior is self-contained and verified via empirical fixtures (`fixtures/`).
+8. **Architectural Boundary**: `blogger-spec` is the specification authority, full AST parser (`parseTemplate`, `parseExpression`), and atomic expression evaluator (`evaluateExpression`). It produces strongly typed ASTs and evaluates expressions, but does not act as a full HTML compiler, server, or site builder. End-to-end AST compilation into final HTML belongs to consumer projects.
 
 ---
 
@@ -34,18 +35,21 @@ blogger-spec/
 │   ├── locales.json          # Locale metadata and canonical UI translations
 │   └── schemas/              # Draft 2020-12 canonical JSON schemas
 ├── fixtures/                 # Empirical conformance test cases
+│   ├── contexts/             # Canonical mock data contexts for all 12 Blogger views
 │   ├── expressions/          # Expression evaluation fixtures
 │   ├── templates/            # Template rendering fixtures
 │   ├── diagnostics/          # Negative validation fixtures (rejected by Blogger)
 │   └── index.json            # Compiled fixtures manifest (generated)
 ├── src/                      # Spec modules, runtime helpers, parser, and tooling
 │   ├── index.ts              # Canonical package entry point (ESM exports)
-│   ├── ast.ts                # Formal AST interfaces and parseExpression export
+│   ├── ast.ts                # Formal AST interfaces and parseExpression / parseTemplate exports
 │   ├── data-path.ts          # Canonical deep data path navigator (resolveDataPath)
 │   ├── scope.ts              # Formalized ScopeEnvironment symbol table & scope stack
-│   ├── parser/               # Pratt expression parser, directive scanner, lexer, validator
+│   ├── parser/               # Template and expression parsers, directive scanner, lexer, validator
 │   │   ├── lexer.ts          # Deterministic expression lexer with loc tracking
 │   │   ├── expr-parser.ts    # Pratt parser guided by operators.json precedence
+│   │   ├── expr-evaluator.ts # Runtime expression evaluator with safe null-tolerance
+│   │   ├── template-parser.ts # Full XML template to AST parser (strict & tolerant)
 │   │   ├── directive-scanner.ts # Fault-tolerant XML directive & tag tokenizer
 │   │   └── template-validator.ts # Directive nesting & structural template validator
 │   ├── version.ts            # Canonical template layout version detector (v1, v2, v3)
@@ -77,7 +81,8 @@ blogger-spec/
 - **Schemas**: If metadata structures change, update [`catalogs/schemas/`](catalogs/schemas/).
 
 ### 2. Engine & Parser Changes
-- **Expression Parser**: If grammar, lexing, recursion limits, or operator binding power changes, update [`src/parser/lexer.ts`](src/parser/lexer.ts) and [`src/parser/expr-parser.ts`](src/parser/expr-parser.ts).
+- **Expression Parser & Evaluator**: If grammar, lexing, recursion limits, or operator binding power changes, update [`src/parser/lexer.ts`](src/parser/lexer.ts), [`src/parser/expr-parser.ts`](src/parser/expr-parser.ts), and [`src/parser/expr-evaluator.ts`](src/parser/expr-evaluator.ts).
+- **Template Parser**: If XML well-formedness rules, entity handling, or AST node construction changes, update [`src/parser/template-parser.ts`](src/parser/template-parser.ts) and [`src/ast.ts`](src/ast.ts).
 - **Directive Scanner**: If XML tag tokenization, attribute parsing, or CDATA/comment masking changes, update [`src/parser/directive-scanner.ts`](src/parser/directive-scanner.ts).
 - **Data Path Navigator & Scope Environment**: If deep data path traversal or scope stack resolution semantics change, update [`src/data-path.ts`](src/data-path.ts) and [`src/scope.ts`](src/scope.ts).
 - **Layout Versions**: If layout version heuristics change, update `domain_metadata.layout_versions` in [`catalogs/directives.json`](catalogs/directives.json) and [`src/version.ts`](src/version.ts).
