@@ -141,6 +141,7 @@ export interface BloggerAttributeNode extends BloggerNodeBase {
   readonly name: string
   readonly value: string | BloggerExpressionNode
   readonly isExpression: boolean
+  readonly quote?: '"' | '\''
 }
 
 export interface BloggerDirectiveNode extends BloggerNodeBase {
@@ -175,9 +176,19 @@ export interface BloggerCommentNode extends BloggerNodeBase {
   readonly value: string
 }
 
+export interface BloggerTemplateDiagnostic {
+  readonly message: string
+  readonly line: number
+  readonly column: number
+  readonly offset: number
+}
+
 export interface BloggerDocumentNode extends BloggerNodeBase {
   readonly type: 'Document'
   readonly children: BloggerTemplateNode[]
+  readonly xmlDeclaration?: string
+  readonly doctype?: string
+  readonly diagnostics?: BloggerTemplateDiagnostic[]
 }
 
 export type BloggerTemplateNode
@@ -197,3 +208,4 @@ export type BloggerASTNode
 export * from './parser/directive-scanner.js'
 export { type BloggerParseExpressionOptions, ExpressionParser, parseExpression } from './parser/expr-parser.js'
 export { Lexer, type Token, tokenize, type TokenPosition, type TokenType } from './parser/lexer.js'
+export { type BloggerParseTemplateOptions, BloggerTemplateSyntaxError, parseTemplate } from './parser/template-parser.js'
