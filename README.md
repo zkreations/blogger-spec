@@ -40,6 +40,20 @@ flowchart LR
 | `blogger-spec/runner` | `runConformance`, `runSpecConformance`, `normalizeHtmlString`. |
 | `blogger-spec/node` | Optional Node-only `FsCatalogStore`. |
 
+### How an expression flows
+
+The modules act on a single expression in this order:
+
+```mermaid
+flowchart LR
+  S["'data:posts filter ...'"] -->|tokenize| T["Tokens"]
+  T -->|parseExpression| A["BloggerExpressionNode"]
+  A --> Q{"quota ≤ 40 tokens?"}
+  Q -->|no| E1["BX1021"]
+  Q -->|yes| TY["inferExpressionType"]
+  TY -->|evaluateExpression| R["Result"]
+```
+
 ### Catalogs
 
 `directives`, `operators`, `types`, `widgets`, `settings`, `globals`, `messages`, `scopes`, `diagnostics` (BX1001–BX1062), `inclusions`, `locales`. Each has a Draft 2020-12 schema under `catalogs/schemas/`.
@@ -126,6 +140,25 @@ resolveDataPath('data:skin.vars.body_font.family', {
 
 ### Scopes and shadowing
 
+`resolveIdentifier` searches from the innermost scope outward and returns the first match:
+
+```mermaid
+flowchart LR
+  I["resolveIdentifier(name)"] --> L{lambda}
+  L -->|no| LO{loop}
+  LO -->|no| W{with}
+  W -->|no| IN{includable}
+  IN -->|no| WI{widget}
+  WI -->|no| G{global}
+  G -->|no| U["undefined"]
+  L -->|yes| F["resolved symbol"]
+  LO -->|yes| F
+  W -->|yes| F
+  IN -->|yes| F
+  WI -->|yes| F
+  G -->|yes| F
+```
+
 ```typescript
 import { ScopeEnvironment } from 'blogger-spec/scope'
 
@@ -140,6 +173,17 @@ env.resolveIdentifier('data:x') // undefined (BX1019)
 ```
 
 ### Validate structure and expressions
+
+Both validators start from the same directive scan and report through the same diagnostics catalog:
+
+```mermaid
+flowchart TD
+  X["Template XML"] --> SC["scanDirectiveTokens"]
+  SC --> VS["validateTemplateStructure"]
+  SC --> VE["validateTemplateExpressions"]
+  VS --> D["Diagnostics BX1001–BX1062"]
+  VE --> D
+```
 
 ```typescript
 import { canNest, validateTemplateExpressions, validateTemplateStructure } from 'blogger-spec/parser'
