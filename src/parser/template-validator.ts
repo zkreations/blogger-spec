@@ -662,17 +662,21 @@ function validateIncludeElement(
     return
   }
 
-  // 1. BX1031: Non-object scalar payload in data attribute
+  // 1. BX1031: Non-object scalar payload or direct bracket array in data attribute
   const dataAttr = token.attributes.data || token.attributes['expr:data']
-  if (dataAttr && isPrimitiveScalarLiteral(dataAttr.value)) {
-    const diagCode = (catalog.getStandardDiagnostic('non_object_include_data_payload') || 'BX1031') as BloggerDiagnosticCode
-    const diagRule = catalog.getDiagnostic(diagCode)
-    pushDiagnostic(diagnostics, catalog, diagCode, token, {
-      attribute: dataAttr.name,
-      start: dataAttr.start,
-      end: dataAttr.end,
-      message: diagRule?.message ?? 'The \'data\' attribute of <b:include> strictly requires an object reference or object literal { ... }; passing primitive scalars is prohibited.',
-    })
+  if (dataAttr) {
+    const val = dataAttr.value.trim()
+    const isDirectBracketArray = val.startsWith('[') && val.endsWith(']')
+    if (isPrimitiveScalarLiteral(val) || isDirectBracketArray) {
+      const diagCode = (catalog.getStandardDiagnostic('non_object_include_data_payload') || 'BX1031') as BloggerDiagnosticCode
+      const diagRule = catalog.getDiagnostic(diagCode)
+      pushDiagnostic(diagnostics, catalog, diagCode, token, {
+        attribute: dataAttr.name,
+        start: dataAttr.start,
+        end: dataAttr.end,
+        message: diagRule?.message ?? 'The \'data\' attribute of <b:include> strictly requires an object reference, object literal { ... }, or brace-delimited array { ... }; passing direct bracket arrays [ ... ] or primitive scalars is prohibited.',
+      })
+    }
   }
 
   const nameAttr = token.attributes.name
@@ -1344,13 +1348,16 @@ export function validateExpression(
       }
 
       if (node.type === 'ArrayExpression' && node.isBraced && node.loc) {
-        const diagRule = catalog.getDiagnostic('BX1046')
-        pushDiagnostic(diagnostics, catalog, 'BX1046', fakeToken, {
-          attribute: context?.attributeName,
-          start: baseStart + mapOffset(node.loc.start.offset ?? 0),
-          end: baseStart + mapOffset(node.loc.end.offset ?? 0),
-          message: diagRule?.message ?? 'Using curly braces \'{ ... }\' for array/set collections is non-standard in Blogger. Use bracket notation \'[ ... ]\' instead to ensure future compatibility.',
-        })
+        const isIncludeDataAttr = context?.tagName === 'b:include' && (context?.attributeName === 'data' || context?.attributeName === 'expr:data')
+        if (!isIncludeDataAttr) {
+          const diagRule = catalog.getDiagnostic('BX1046')
+          pushDiagnostic(diagnostics, catalog, 'BX1046', fakeToken, {
+            attribute: context?.attributeName,
+            start: baseStart + mapOffset(node.loc.start.offset ?? 0),
+            end: baseStart + mapOffset(node.loc.end.offset ?? 0),
+            message: diagRule?.message ?? 'Using curly braces \'{ ... }\' for array/set collections is non-standard in Blogger. Use bracket notation \'[ ... ]\' instead to ensure future compatibility.',
+          })
+        }
       }
 
       if (node.type === 'ObjectExpression') {

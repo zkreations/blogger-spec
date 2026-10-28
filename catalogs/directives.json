@@ -215,6 +215,58 @@
       "missing_diagnostic": "BX1061",
       "invalid_value_diagnostic": "BX1062"
     },
+    "includable_resolution_hierarchy": {
+      "model": "ontological_specificity_chain",
+      "description": "Order-independent ontological specificity chain for subroutine resolution.",
+      "levels": [
+        {
+          "level": 1,
+          "name": "local_widget",
+          "scope": "widget",
+          "description": "Direct child <b:includable> inside caller <b:widget>.",
+          "precedence_rule": "highest_precedence"
+        },
+        {
+          "level": 2,
+          "name": "gadget_specific",
+          "scope": "widget",
+          "description": "<b:includable> inside <b:defaultmarkup type='WidgetType'> matching the widget type (exact or comma-separated multi-type).",
+          "precedence_rule": "last_declaration_wins"
+        },
+        {
+          "level": 3,
+          "name": "universal_widget",
+          "scope": "widget",
+          "description": "<b:includable> inside <b:defaultmarkup type='All'>. Serves as widget fallback. Ignored in global template scope.",
+          "precedence_rule": "last_declaration_wins"
+        },
+        {
+          "level": 4,
+          "name": "shared_common",
+          "scope": "all",
+          "description": "<b:includable> inside <b:defaultmarkup type='Common'>. Base fallback for widgets, and exclusive subroutine source in global scope.",
+          "precedence_rule": "last_declaration_wins"
+        },
+        {
+          "level": 5,
+          "name": "platform_server",
+          "scope": "all",
+          "description": "Platform server inclusion catalog (super.* or un-overridden official inclusions).",
+          "precedence_rule": "immutable_delegator"
+        },
+        {
+          "level": 6,
+          "name": "unresolved",
+          "scope": "all",
+          "description": "Subroutine not found across any ontological layer.",
+          "diagnostic": "BX1037"
+        }
+      ],
+      "collision_rules": {
+        "same_level_containers": "last_container_wins",
+        "same_level_blocks": "last_block_wins"
+      }
+    },
     "html_void_elements": [
       "area",
       "base",
@@ -686,7 +738,7 @@
         },
         "var": {
           "type": "string",
-          "description": "Name of the scoped variable receiving the dataset forwarded by b:include data='...'.",
+          "description": "Name of the scoped variable receiving the dataset forwarded by b:include data='...'. When omitted, forwarded payloads bind directly to the implicit root identifier data:.",
           "attribute_kind": "prefixed_expression",
           "expr": true
         }
@@ -730,7 +782,7 @@
         "name": {
           "type": "string",
           "diagnostic": "BX1037",
-          "description": "Target includable identifier. Prefix super. calls the platform backend default.",
+          "description": "Target includable identifier. Supports static names (name='sub'), dynamic expressions (expr:name='...'), and server defaults with prefix super. (name='super.sub').",
           "required": true,
           "expr": true,
           "attribute_kind": "prefixed_expression"
@@ -738,7 +790,7 @@
         "data": {
           "type": "expression",
           "diagnostic": "BX1031",
-          "description": "Dataset or object forwarded to the includable's var. Properties become data:VAR.property. Strictly requires an object or object literal { ... }; scalar primitives are rejected at runtime.",
+          "description": "Dataset or object forwarded to the called includable. Strictly requires delimitation by curly braces { ... } (object literal or braced array) or a direct data object reference (data:post). Direct bracket arrays [ ... ] and primitive scalars (string, number, boolean) are rejected (BX1031).",
           "attribute_kind": "native_expression",
           "expr": true
         },
@@ -760,9 +812,10 @@
           "status": "enforced",
           "allowed_values": [
             "object reference",
-            "object literal"
+            "object literal",
+            "braced array"
           ],
-          "reason": "The data attribute strictly requires an object or object literal { ... } (or array wrapped in braces {[ ... ]}). Scalar primitives (string, number, boolean) cause runtime execution abort 'Error during evaluation of <name>'."
+          "reason": "The data attribute strictly requires an object reference, object literal { ... }, or brace-delimited array { ... }. Direct bracket arrays [ ... ] and scalar primitives (string, number, boolean) cause compiler rejection or runtime execution abort (BX1031)."
         },
         "data_alias": {
           "allowed_values": [
@@ -866,10 +919,16 @@
             "description": "New inclusions can also be defined by using new inclusion IDs."
           },
           "common": {
-            "description": "Using type='Common' defines common inclusions that can be called from arbitrary locations in the theme and can modify the Back-End versions of common inclusions."
+            "description": "Using type='Common' defines shared base inclusions accessible from widgets (as base fallback) and the only inclusions accessible from the global template scope outside widgets."
+          },
+          "all": {
+            "description": "Using type='All' defines universal widget fallbacks. Takes strict precedence over Common within widgets, but is completely ignored in global scope outside widgets."
           },
           "multiple_gadgets": {
-            "description": "A single b:defaultmarkup can target multiple gadget types by listing their types as a comma-separated value."
+            "description": "A single b:defaultmarkup can target multiple gadget types by listing their types as a comma-separated value (e.g. type='Blog,Header'). Resolves at the same ontological specificity as single-gadget blocks, with last-declaration-wins governing precedence among them."
+          },
+          "precedence_model": {
+            "description": "Gadget-specific blocks (Exact/Multi) take strict ontological precedence over All and Common regardless of declaration order. In case of identical-type or container collisions, last-block-wins and last-container-wins apply."
           }
         }
       },

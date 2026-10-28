@@ -73,7 +73,7 @@
       "shadowing": "local-wins",
       "evidence": "official",
       "verified_at": "2026-10-10",
-      "notes": "Standard entrypoint is id='main'. The 'var' attribute names the incoming data parameter (conventionally 'this' or custom name). Forwarding datasets via <b:include data='...'> strictly requires an object or object literal { ... } (or array wrapped in braces {[ ... ]}); passing raw scalar primitives is rejected. When <b:include> omits the 'data' attribute inside a widget, 'var' automatically binds to the host widget data dictionary. Calling an includable with 'var' from the global scope without 'data' aborts with 'Error during evaluation of <id>'."
+      "notes": "Standard entrypoint is id='main'. The 'var' attribute names the incoming data parameter (conventionally 'this' or custom name). Forwarding datasets via <b:include data='...'> strictly requires an object reference, object literal { ... }, or brace-delimited array { ... }; passing direct bracket arrays [ ... ] or primitive scalars is rejected (BX1031). When <b:includable> omits the 'var' attribute but receives a payload via <b:include data='...'>, the payload binds directly to the implicit root identifier data: (e.g. iterating directly with <b:loop values='data:' var='item'> or accessing index via <b:eval expr='data:[0]'/>). When <b:include> omits the 'data' attribute inside a widget, 'var' automatically binds to the host widget data dictionary. Calling an includable with 'var' from the global scope without 'data' aborts with 'Error during evaluation of <id>'."
     },
     "widget": {
       "name": "Host Widget Scope",

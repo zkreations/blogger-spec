@@ -31,4 +31,3 @@ describe('root <html> attributes (BX1061/BX1062)', () => {
     expect(rootCodes(`<b:if cond='true'>x</b:if>`)).toEqual([])
   })
 })
-

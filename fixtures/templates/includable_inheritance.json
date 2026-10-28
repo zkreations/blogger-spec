@@ -76,6 +76,156 @@
         "canonicalDom": true
       },
       "verified_at": "2026-10-14"
+    },
+    {
+      "id": "scopes/includable_inheritance/exact-type-overrides-all-independent-of-order",
+      "title": "Exact Gadget Includable Overrides Universal All Independent of Declaration Order",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "tag:b:defaultmarkups",
+        "tag:b:defaultmarkup",
+        "tag:b:includable",
+        "tag:b:include"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Header'><b:includable id='headerTest'>ExactHeader-Wins</b:includable></b:defaultmarkup><b:defaultmarkup type='All'><b:includable id='headerTest'>All-Overrode-Header</b:includable></b:defaultmarkup></b:defaultmarkups><b:include name='headerTest'/>",
+        "mode": "fragment",
+        "context": {
+          "widget": {
+            "type": "Header"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "ExactHeader-Wins",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "scopes/includable_inheritance/widget-invokes-shared-common-includable",
+      "title": "Widget Invokes Shared Common Includable as Base Fallback",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "tag:b:defaultmarkups",
+        "tag:b:defaultmarkup",
+        "tag:b:includable",
+        "tag:b:include"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='sharedHelper'><div>SharedHelperOutput</div></b:includable></b:defaultmarkup></b:defaultmarkups><b:include name='sharedHelper'/>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div>SharedHelperOutput</div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "scopes/includable_inheritance/dynamic-includable-invocation-via-expr-name",
+      "title": "Dynamic Includable Invocation via expr:name Evaluation",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "tag:b:defaultmarkups",
+        "tag:b:defaultmarkup",
+        "tag:b:includable",
+        "tag:b:include"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='subA'>Output-A</b:includable><b:includable id='subB'>Output-B</b:includable></b:defaultmarkup></b:defaultmarkups><b:include expr:name='\"sub\" + \"A\"'/>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "Output-A",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "scopes/includable_inheritance/include-braced-array-passed-to-implicit-data",
+      "title": "Braced Array Payload Forwarding to Implicit data: Root Without var",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "tag:b:defaultmarkups",
+        "tag:b:defaultmarkup",
+        "tag:b:includable",
+        "tag:b:include",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='rawParamTest'><b:loop values='data:' var='item'>[<data:item/>]</b:loop></b:includable></b:defaultmarkup></b:defaultmarkups><b:include data='{\"uno\", \"dos\", \"tres\"}' name='rawParamTest'/>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "[uno][dos][tres]",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "scopes/includable_inheritance/include-nested-braced-array-extracted-via-eval",
+      "title": "Nested Braced Array Elements Cleanly Extracted via b:eval Without Not-Singleton Warning",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "tag:b:defaultmarkups",
+        "tag:b:defaultmarkup",
+        "tag:b:includable",
+        "tag:b:include",
+        "tag:b:loop",
+        "tag:b:eval"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:defaultmarkups><b:defaultmarkup type='Common'><b:includable id='nestedExtract'><b:loop values='data:' var='row'>[<b:eval expr='data:row[0]'/>]</b:loop></b:includable></b:defaultmarkup></b:defaultmarkups><b:include data='{ [\"alfa\"], [\"beta\"] }' name='nestedExtract'/>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "[alfa][beta]",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "scopes/includable_inheritance/include-direct-bracket-array-rejected",
+      "title": "Direct Bracket Array in b:include data Attribute Rejected",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:includable_inheritance",
+        "rule:BX1031",
+        "tag:b:include"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:include data='[\"uno\", \"dos\", \"tres\"]' name='rawParamTest'/>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1031"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-28"
     }
   ]
 }

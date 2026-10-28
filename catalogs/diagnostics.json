@@ -301,9 +301,9 @@
       "name": "NON_OBJECT_INCLUDE_DATA_PAYLOAD",
       "category": "runtime",
       "severity": "error",
-      "message": "The 'data' attribute of <b:include> strictly requires an object reference or object literal { ... }; passing primitive scalars (string, number, boolean) aborts execution with runtime error 'Error during evaluation of <name>'.",
+      "message": "The 'data' attribute of <b:include> strictly requires an object reference, object literal { ... }, or brace-delimited array { ... }; passing direct bracket arrays [ ... ] or primitive scalars (string, number, boolean) aborts execution with compiler error or runtime fault.",
       "evidence": "observed",
-      "verified_at": "2026-10-14"
+      "verified_at": "2026-10-28"
     },
     "BX1032": {
       "code": "BX1032",
@@ -436,9 +436,9 @@
       "name": "NON_STANDARD_BRACED_COLLECTION",
       "category": "deprecation",
       "severity": "warning",
-      "message": "Using curly braces '{ ... }' for array/set collections is non-standard in Blogger. Use bracket notation '[ ... ]' instead to ensure future compatibility.",
+      "message": "Using curly braces '{ ... }' for array/set collections is non-standard in general expressions (use bracket notation '[ ... ]'), except in <b:include data='...'> where braced collections are canonically required to pass inline arrays.",
       "evidence": "observed",
-      "verified_at": "2026-10-19"
+      "verified_at": "2026-10-28"
     },
     "BX1047": {
       "code": "BX1047",

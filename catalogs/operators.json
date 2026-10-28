@@ -1,7 +1,7 @@
 {
   "$schema": "./schemas/operators.schema.json",
   "title": "Blogger Operators & Expressions Master Catalog",
-  "description": "Canonical machine-readable catalog of Blogger expression operators, dual-syntax execution grammar, 11-level precedence hierarchy, operand typing, and compiler quotas.",
+  "description": "Canonical machine-readable catalog of Blogger expression operators, dual-syntax execution grammar (including bracket [ ] and braced { } array instantiation), 11-level precedence hierarchy, operand typing, and compiler quotas.",
   "version": "1.0.0",
   "domain_metadata": {
     "precedence_hierarchy": [

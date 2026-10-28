@@ -250,3 +250,25 @@ export interface BloggerExpressionBudgetResult {
 export interface BloggerCompatibleOperator extends BloggerOperatorDefinition {
   name: string
 }
+
+export type BloggerIncludableResolutionTier
+  = | 'local_widget'
+    | 'gadget_specific'
+    | 'universal_widget'
+    | 'shared_common'
+    | 'platform_server'
+    | 'unresolved'
+
+export interface BloggerIncludableResolutionContext {
+  targetId: string
+  widgetId?: string
+  widgetType?: string
+  isGlobalScope?: boolean
+}
+
+export interface BloggerIncludableResolutionResult {
+  targetId: string
+  tier: BloggerIncludableResolutionTier
+  sourceContainer?: string
+  diagnostic?: BloggerDiagnosticCode
+}

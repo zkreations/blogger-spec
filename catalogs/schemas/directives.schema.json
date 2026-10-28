@@ -286,6 +286,80 @@
             }
           },
           "additionalProperties": false
+        },
+        "includable_resolution_hierarchy": {
+          "type": "object",
+          "description": "Deterministic hierarchy and order-independent ontological specificity chain for includable subroutine resolution.",
+          "required": [
+            "model",
+            "description",
+            "levels",
+            "collision_rules"
+          ],
+          "properties": {
+            "model": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "levels": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "level",
+                  "name",
+                  "scope",
+                  "description"
+                ],
+                "properties": {
+                  "level": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "scope": {
+                    "type": "string",
+                    "enum": [
+                      "widget",
+                      "global",
+                      "all"
+                    ]
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "precedence_rule": {
+                    "type": "string"
+                  },
+                  "diagnostic": {
+                    "type": "string",
+                    "pattern": "^BX\\d{4}$"
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "collision_rules": {
+              "type": "object",
+              "required": [
+                "same_level_containers",
+                "same_level_blocks"
+              ],
+              "properties": {
+                "same_level_containers": {
+                  "type": "string"
+                },
+                "same_level_blocks": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

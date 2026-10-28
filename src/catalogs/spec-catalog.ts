@@ -17,6 +17,7 @@ import type {
   BloggerGlobalObjectDefinition,
   BloggerGlobalsCatalog,
   BloggerHallucinatedDirectiveConfig,
+  BloggerIncludableResolutionHierarchy,
   BloggerInclusionDefinition,
   BloggerInclusionsCatalog,
   BloggerLayoutVersionsCatalog,
@@ -843,6 +844,11 @@ export class SpecCatalog {
     return directivesCatalog.domain_metadata?.root_attributes
   }
 
+  getIncludableResolutionHierarchy(): BloggerIncludableResolutionHierarchy | undefined {
+    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
+    return directivesCatalog.domain_metadata?.includable_resolution_hierarchy
+  }
+
   getHtmlVoidElements(): ReadonlySet<string> {
     return this.htmlVoidElements
   }
@@ -1587,6 +1593,10 @@ export function getDirectiveAttributes(tagName: string, catalog: SpecCatalog = g
 
 export function getLayoutVersions(catalog: SpecCatalog = getSpecCatalog()): BloggerLayoutVersionsCatalog | undefined {
   return catalog.getLayoutVersions()
+}
+
+export function getIncludableResolutionHierarchy(catalog: SpecCatalog = getSpecCatalog()): BloggerIncludableResolutionHierarchy | undefined {
+  return catalog.getIncludableResolutionHierarchy()
 }
 
 export function isOperator(op: string, catalog: SpecCatalog = getSpecCatalog()): op is BloggerOperatorName {

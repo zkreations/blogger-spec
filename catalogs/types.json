@@ -433,7 +433,7 @@
     },
     "array": {
       "category": "base",
-      "description": "Ordered homogeneous collection of 0 or more elements of the same type. Evaluating an array directly in scalar output contexts emits <!--Substitution is not a singleton for tag [...]-->; in boolean contexts (cond='...') it evaluates to true when non-empty and false when empty.",
+      "description": "Ordered homogeneous collection of 0 or more elements of the same type. In Blogger expressions, arrays support dual instantiation syntax: standard brackets (['a', 'b']) and curly braces ({'a', 'b'}). The brace form is canonically required when forwarding inline arrays to <b:include data='...'> to satisfy syntactic validation. Evaluating an array directly in scalar output contexts emits <!--Substitution is not a singleton for tag [...]-->; in boolean contexts (cond='...') it evaluates to true when non-empty and false when empty.",
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "any[]",
