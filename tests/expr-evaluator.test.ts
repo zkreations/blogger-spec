@@ -7,10 +7,11 @@ import {
   evaluateExpression,
   runConformance,
 } from '../src/index.js'
+import { getWorkspacePaths } from '../src/paths.js'
 
 describe('runtime expression evaluator (Plan 06)', () => {
   it('conforms 100% to all official and observed expression fixtures', () => {
-    const dir = join(process.cwd(), 'fixtures/expressions')
+    const dir = join(getWorkspacePaths().fixtures, 'expressions')
     expect(existsSync(dir)).toBe(true)
 
     const files = readdirSync(dir).filter(f => f.endsWith('.json'))

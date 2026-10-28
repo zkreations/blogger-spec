@@ -14,6 +14,7 @@ export interface BloggerWorkspacePaths {
   fixturesManifest: string
   dist: string
   dts: string
+  workbench: string
 }
 
 let customRootDir: string | null = null
@@ -55,5 +56,6 @@ export function getWorkspacePaths(overrideRoot?: string): BloggerWorkspacePaths 
     fixturesManifest: join(fixtures, 'index.json'),
     dist,
     dts: join(dist, 'index.d.ts'),
+    workbench: join(root, '.workbench'),
   }
 }

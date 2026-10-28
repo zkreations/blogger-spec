@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { getGlobals, getMockContext, getSpecCatalog } from '../src/index.js'
+import { getWorkspacePaths } from '../src/paths.js'
 
 describe('canonical mock contexts suite (Plan 05)', () => {
   const views: BloggerViewId[] = [
@@ -178,10 +179,10 @@ describe('canonical mock contexts suite (Plan 05)', () => {
     expect(() => getMockContext('unknown_view' as any)).toThrowError(/Unknown Blogger view ID/)
   })
 
-  it('supports real-world production template paths from basico.xml', () => {
-    const basicoPath = join(process.cwd(), 'audit/examples_prod/basico.xml')
-    expect(existsSync(basicoPath)).toBe(true)
-    const xml = readFileSync(basicoPath, 'utf-8')
+  it('supports real-world production template paths from hamlet.xml', () => {
+    const hamletPath = join(getWorkspacePaths().fixtures, 'templates/samples/hamlet.xml')
+    expect(existsSync(hamletPath)).toBe(true)
+    const xml = readFileSync(hamletPath, 'utf-8')
 
     const home = getMockContext('homepage')
     const post = getMockContext('post')

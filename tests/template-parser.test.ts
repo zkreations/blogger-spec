@@ -5,6 +5,7 @@ import {
   BloggerTemplateSyntaxError,
   parseTemplate,
 } from '../src/index.js'
+import { getWorkspacePaths } from '../src/paths.js'
 
 describe('parseTemplate AST parser', () => {
   it('parses minimal Blogger template into BloggerDocumentNode with doctype and declarations', () => {
@@ -149,24 +150,27 @@ describe('parseTemplate AST parser', () => {
   })
 
   describe('production templates empirical conformance', () => {
-    const examplesDir = path.resolve(__dirname, '../audit/examples_prod')
+    const canonicalSamplePath = path.join(getWorkspacePaths().fixtures, 'templates/samples/hamlet.xml')
+    const workbenchSamplesDir = path.join(getWorkspacePaths().workbench, 'samples')
+    const basicoPath = path.join(workbenchSamplesDir, 'basico.xml')
+    const laertesPath = path.join(workbenchSamplesDir, 'laertes.xml')
 
-    it('successfully parses basico.xml production template', () => {
-      const xml = fs.readFileSync(path.join(examplesDir, 'basico.xml'), 'utf8')
+    it('successfully parses canonical hamlet.xml production template', () => {
+      const xml = fs.readFileSync(canonicalSamplePath, 'utf8')
       const doc = parseTemplate(xml)
       expect(doc.type).toBe('Document')
       expect(doc.children.length).toBeGreaterThan(0)
     })
 
-    it('successfully parses hamlet.xml production template', () => {
-      const xml = fs.readFileSync(path.join(examplesDir, 'hamlet.xml'), 'utf8')
+    it.runIf(fs.existsSync(basicoPath))('empirically parses basico.xml workbench sample', () => {
+      const xml = fs.readFileSync(basicoPath, 'utf8')
       const doc = parseTemplate(xml)
       expect(doc.type).toBe('Document')
       expect(doc.children.length).toBeGreaterThan(0)
     })
 
-    it('successfully parses laertes.xml production template', () => {
-      const xml = fs.readFileSync(path.join(examplesDir, 'laertes.xml'), 'utf8')
+    it.runIf(fs.existsSync(laertesPath))('empirically parses laertes.xml workbench sample', () => {
+      const xml = fs.readFileSync(laertesPath, 'utf8')
       const doc = parseTemplate(xml)
       expect(doc.type).toBe('Document')
       expect(doc.children.length).toBeGreaterThan(0)

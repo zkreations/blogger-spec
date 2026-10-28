@@ -18,6 +18,7 @@ import { ExpressionParser, parseExpression, tokenize } from '../src/ast.js'
 import * as RootExports from '../src/index.js'
 import * as ParserExports from '../src/parser/index.js'
 import { unescapeXmlEntities } from '../src/parser/lexer.js'
+import { getWorkspacePaths } from '../src/paths.js'
 
 describe('canonical pratt expression parser (blogger-spec/ast)', () => {
   it('exposes parseExpression, tokenize and classes from ast, parser and root', () => {
@@ -678,7 +679,7 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
 
     for (const filePath of fixtureFiles) {
       it(`parses all expressions in ${filePath} without syntax errors`, () => {
-        const fullPath = join(process.cwd(), filePath)
+        const fullPath = join(getWorkspacePaths().root, filePath)
         const fileContent = JSON.parse(readFileSync(fullPath, 'utf-8'))
         const fixtures = fileContent.fixtures || []
         const validNodeTypes = new Set([

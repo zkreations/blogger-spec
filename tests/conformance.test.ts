@@ -1,5 +1,7 @@
 import type { BloggerFixture, BloggerFixturesManifest } from '../src/types.js'
 import { readFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
   getCoercionRules,
@@ -193,7 +195,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
 
     it('fails clearly when the default manifest is missing', () => {
       try {
-        setCustomWorkspaceRoot('C:\\missing-blogger-spec-fixtures')
+        setCustomWorkspaceRoot(join(tmpdir(), 'missing-blogger-spec-fixtures'))
         expect(() => runConformance({})).toThrow('Fixtures manifest not found:')
       }
       finally {
