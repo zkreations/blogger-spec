@@ -42,16 +42,13 @@ flowchart LR
 
 ### How an expression flows
 
-The modules act on a single expression in this order:
+Parse into an AST, then evaluate at runtime or analyze statically:
 
 ```mermaid
 flowchart LR
-  S["'data:posts filter ...'"] -->|tokenize| T["Tokens"]
-  T -->|parseExpression| A["BloggerExpressionNode"]
-  A --> Q{"quota ≤ 40 tokens?"}
-  Q -->|no| E1["BX1021"]
-  Q -->|yes| TY["inferExpressionType"]
-  TY -->|evaluateExpression| R["Result"]
+  S["Expression String"] --> PE["parseExpression"] --> AST["BloggerExpressionNode"]
+  AST --> EE["evaluateExpression(ast, ctx)"] --> R["Runtime Value"]
+  AST -.-> SA["inferExpressionType / quota budget (Linters)"]
 ```
 
 ### Catalogs
@@ -140,23 +137,16 @@ resolveDataPath('data:skin.vars.body_font.family', {
 
 ### Scopes and shadowing
 
-`resolveIdentifier` searches from the innermost scope outward and returns the first match:
+`resolveIdentifier` searches the active scope stack from the innermost frame outward and returns the first match:
 
 ```mermaid
 flowchart LR
-  I["resolveIdentifier(name)"] --> L{lambda}
-  L -->|no| LO{loop}
-  LO -->|no| W{with}
-  W -->|no| IN{includable}
-  IN -->|no| WI{widget}
-  WI -->|no| G{global}
-  G -->|no| U["undefined"]
-  L -->|yes| F["resolved symbol"]
-  LO -->|yes| F
-  W -->|yes| F
-  IN -->|yes| F
-  WI -->|yes| F
-  G -->|yes| F
+  subgraph Precedence["resolveIdentifier (Innermost → Outermost)"]
+    direction LR
+    A["1. Lambda"] --> B["2. Loop"] --> C["3. With"] --> D["4. Includable"] --> E["5. Widget"] --> F["6. Global"]
+  end
+  Precedence -->|Match| R["BloggerScopeSymbol"]
+  Precedence -->|Miss| U["undefined"]
 ```
 
 ```typescript
