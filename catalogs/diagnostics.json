@@ -8,6 +8,7 @@
       "arithmetic",
       "collections_and_lambdas",
       "conditional_rendering",
+      "full_templates",
       "helpers_and_transforms",
       "includable_inheritance",
       "locale_modifiers",

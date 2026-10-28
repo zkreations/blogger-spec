@@ -1,0 +1,249 @@
+{
+  "subsystem": "full_templates",
+  "fixtures": [
+    {
+      "id": "templates/full_templates/homepage",
+      "title": "Full Template Homepage Feed Rendering",
+      "evidence": "official",
+      "covers": [
+        "subsystem:full_templates",
+        "tag:b:section",
+        "tag:b:widget",
+        "tag:b:includable",
+        "tag:b:skin",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<!DOCTYPE html><html b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'><head><title><data:view.title.escaped/></title><b:skin><![CDATA[body { margin: 0; }]]></b:skin></head><body><header><h1><data:view.title/></h1></header><b:section id='main'><b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><div class='feed-view'><b:loop values='data:posts' var='post'><article><h2><data:post.title/></h2><p><data:post.snippets.short/></p></article></b:loop></div></b:includable></b:widget></b:section></body></html>",
+        "context": {
+          "view": {
+            "title": "Mi Blog de Pruebas",
+            "isHomepage": true
+          },
+          "posts": [
+            {
+              "id": "1001",
+              "title": "Guía Definitiva de Plantillas Blogger",
+              "snippets": {
+                "short": "Aprende las mejores prácticas para crear temas modernos en Blogger..."
+              }
+            },
+            {
+              "id": "1002",
+              "title": "Introducción al Motor de Expresiones",
+              "snippets": {
+                "short": "Exploramos la sintaxis de expresiones y los filtros lambda en Layouts v3..."
+              }
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "canonicalDom": true,
+        "html": "<!DOCTYPE html><html><head><title>Mi Blog de Pruebas</title><style id=\"page-skin-1\" type=\"text/css\">body { margin: 0; }</style></head><body><header><h1>Mi Blog de Pruebas</h1></header><div class=\"section\" id=\"main\"><div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><div class=\"feed-view\"><article><h2>Guía Definitiva de Plantillas Blogger</h2><p>Aprende las mejores prácticas para crear temas modernos en Blogger...</p></article><article><h2>Introducción al Motor de Expresiones</h2><p>Exploramos la sintaxis de expresiones y los filtros lambda en Layouts v3...</p></article></div></div></div></body></html>"
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "templates/full_templates/post",
+      "title": "Full Template Post View With Comments Rendering",
+      "evidence": "official",
+      "covers": [
+        "subsystem:full_templates",
+        "tag:b:section",
+        "tag:b:widget",
+        "tag:b:includable",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<!DOCTYPE html><html b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'><head><title><data:view.title.escaped/></title></head><body><b:section id='main'><b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><article class='post'><h1><data:post.title/></h1><div class='byline'><span>Author: <data:post.author.name/></span></div><div class='body'><data:post.body/></div><section class='comments'><h3>Comments (<data:post.numberOfComments/>)</h3><b:loop values='data:post.comments' var='comment'><div class='comment' expr:id='data:comment.id'><strong><data:comment.author/></strong>: <span><data:comment.body/></span></div></b:loop><iframe expr:src='data:post.commentFormIframeSrc' id='comment-editor'/></section></article></b:includable></b:widget></b:section></body></html>",
+        "context": {
+          "view": {
+            "title": "Guía Definitiva de Plantillas Blogger - Mi Blog",
+            "isPost": true
+          },
+          "post": {
+            "id": "1001",
+            "title": "Guía Definitiva de Plantillas Blogger",
+            "author": {
+              "name": "Abel"
+            },
+            "body": "<p>Contenido completo del artículo sobre Blogger.</p>",
+            "numberOfComments": 2,
+            "commentFormIframeSrc": "https://www.blogger.com/comment-iframe.g?blogID=123&postID=1001",
+            "comments": [
+              {
+                "id": "c1001",
+                "author": "Carlos",
+                "body": "Excelente especificación técnica."
+              },
+              {
+                "id": "c1002",
+                "author": "María",
+                "body": "¿Cuándo estará listo el compilador completo?"
+              }
+            ]
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "canonicalDom": true,
+        "html": "<!DOCTYPE html><html><head><title>Guía Definitiva de Plantillas Blogger - Mi Blog</title></head><body><div class=\"section\" id=\"main\"><div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><article class=\"post\"><h1>Guía Definitiva de Plantillas Blogger</h1><div class=\"byline\"><span>Author: Abel</span></div><div class=\"body\"><p>Contenido completo del artículo sobre Blogger.</p></div><section class=\"comments\"><h3>Comments (2)</h3><div class=\"comment\" id=\"c1001\"><strong>Carlos</strong>: <span>Excelente especificación técnica.</span></div><div class=\"comment\" id=\"c1002\"><strong>María</strong>: <span>¿Cuándo estará listo el compilador completo?</span></div><iframe id=\"comment-editor\" src=\"https://www.blogger.com/comment-iframe.g?blogID=123&amp;postID=1001\"></iframe></section></article></div></div></body></html>"
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "templates/full_templates/static_page",
+      "title": "Full Template Static Page View Rendering",
+      "evidence": "official",
+      "covers": [
+        "subsystem:full_templates",
+        "tag:b:section",
+        "tag:b:widget",
+        "tag:b:includable"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<!DOCTYPE html><html b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'><head><title><data:view.title.escaped/></title></head><body><b:section id='main'><b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><div class='page'><h1><data:post.title/></h1><div class='page-body'><data:post.body/></div></div></b:includable></b:widget></b:section></body></html>",
+        "context": {
+          "view": {
+            "title": "Acerca de - Mi Blog",
+            "isPage": true
+          },
+          "post": {
+            "id": "9001",
+            "title": "Acerca de",
+            "body": "<p>Esta es una página estática del blog.</p>"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "canonicalDom": true,
+        "html": "<!DOCTYPE html><html><head><title>Acerca de - Mi Blog</title></head><body><div class=\"section\" id=\"main\"><div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><div class=\"page\"><h1>Acerca de</h1><div class=\"page-body\"><p>Esta es una página estática del blog.</p></div></div></div></div></body></html>"
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "templates/full_templates/search",
+      "title": "Full Template Search Results View Rendering",
+      "evidence": "official",
+      "covers": [
+        "subsystem:full_templates",
+        "tag:b:section",
+        "tag:b:widget",
+        "tag:b:includable",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<!DOCTYPE html><html b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'><head><title><data:view.title.escaped/></title></head><body><div class='status-msg'><span><data:view.search.resultsMessage/></span></div><b:section id='main'><b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><div class='search-results'><b:loop values='data:posts' var='post'><div class='search-item'><a expr:href='data:post.url'><data:post.title/></a></div></b:loop></div></b:includable></b:widget></b:section></body></html>",
+        "context": {
+          "view": {
+            "title": "Resultados de búsqueda para 'blogger' - Mi Blog",
+            "isSearch": true,
+            "search": {
+              "query": "blogger",
+              "resultsMessage": "Mostrando entradas que coinciden con la búsqueda de blogger"
+            }
+          },
+          "posts": [
+            {
+              "id": "1001",
+              "title": "Guía Definitiva de Plantillas Blogger",
+              "url": "https://ejemplo.blogspot.com/2026/10/guia.html"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "canonicalDom": true,
+        "html": "<!DOCTYPE html><html><head><title>Resultados de búsqueda para 'blogger' - Mi Blog</title></head><body><div class=\"status-msg\"><span>Mostrando entradas que coinciden con la búsqueda de blogger</span></div><div class=\"section\" id=\"main\"><div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><div class=\"search-results\"><div class=\"search-item\"><a href=\"https://ejemplo.blogspot.com/2026/10/guia.html\">Guía Definitiva de Plantillas Blogger</a></div></div></div></div></body></html>"
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "templates/full_templates/archive",
+      "title": "Full Template Monthly Archive View Rendering",
+      "evidence": "official",
+      "covers": [
+        "subsystem:full_templates",
+        "tag:b:section",
+        "tag:b:widget",
+        "tag:b:includable",
+        "tag:b:loop"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<!DOCTYPE html><html b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'><head><title><data:view.title.escaped/></title></head><body><header class='archive-header'><h2>Archive: <data:view.archive.year/>/<data:view.archive.month/></h2></header><b:section id='main'><b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><ul class='archive-posts'><b:loop values='data:posts' var='post'><li><a expr:href='data:post.url'><data:post.title/></a></li></b:loop></ul></b:includable></b:widget></b:section></body></html>",
+        "context": {
+          "view": {
+            "title": "Archivos de octubre de 2026 - Mi Blog",
+            "isArchive": true,
+            "archive": {
+              "year": "2026",
+              "month": "10"
+            }
+          },
+          "posts": [
+            {
+              "id": "1001",
+              "title": "Guía Definitiva de Plantillas Blogger",
+              "url": "https://ejemplo.blogspot.com/2026/10/guia.html"
+            },
+            {
+              "id": "1002",
+              "title": "Introducción al Motor de Expresiones",
+              "url": "https://ejemplo.blogspot.com/2026/10/expresiones.html"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "canonicalDom": true,
+        "html": "<!DOCTYPE html><html><head><title>Archivos de octubre de 2026 - Mi Blog</title></head><body><header class=\"archive-header\"><h2>Archive: 2026/10</h2></header><div class=\"section\" id=\"main\"><div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><ul class=\"archive-posts\"><li><a href=\"https://ejemplo.blogspot.com/2026/10/guia.html\">Guía Definitiva de Plantillas Blogger</a></li><li><a href=\"https://ejemplo.blogspot.com/2026/10/expresiones.html\">Introducción al Motor de Expresiones</a></li></ul></div></div></body></html>"
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "templates/full_templates/error_404",
+      "title": "Full Template Error 404 View Rendering",
+      "evidence": "official",
+      "covers": [
+        "subsystem:full_templates",
+        "tag:b:section",
+        "tag:b:widget",
+        "tag:b:includable"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<!DOCTYPE html><html b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'><head><title><data:view.title.escaped/></title></head><body><div class='error-container'><h1>404</h1><p><data:messages.noResultsFound/></p><a expr:href='data:blog.homepageUrl'><data:messages.home/></a></div><b:section id='main'><b:widget id='Blog1' type='Blog' version='2'><b:includable id='main'><div class='empty'/></b:includable></b:widget></b:section></body></html>",
+        "context": {
+          "blog": {
+            "homepageUrl": "https://ejemplo.blogspot.com/"
+          },
+          "view": {
+            "title": "Página no encontrada - Mi Blog",
+            "isError": true
+          },
+          "messages": {
+            "noResultsFound": "No se han encontrado resultados",
+            "home": "Inicio"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "canonicalDom": true,
+        "html": "<!DOCTYPE html><html><head><title>Página no encontrada - Mi Blog</title></head><body><div class=\"error-container\"><h1>404</h1><p>No se han encontrado resultados</p><a href=\"https://ejemplo.blogspot.com/\">Inicio</a></div><div class=\"section\" id=\"main\"><div class=\"widget Blog\" data-version=\"2\" id=\"Blog1\"><div class=\"empty\"></div></div></div></body></html>"
+      },
+      "verified_at": "2026-10-28"
+    }
+  ]
+}

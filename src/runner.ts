@@ -18,13 +18,48 @@ function resolveDefaultManifest(): BloggerFixturesManifest {
   throw new Error(`Fixtures manifest not found: ${paths.fixturesManifest}`)
 }
 
-function normalizeHtmlString(html?: string): string {
+const VOID_ELEMENTS_REGEX = /<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)([^>]*?)\/>/gi
+const ATTR_PARSER_REGEX = /([a-z_:][\w.:-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/gi
+const TAG_WITH_ATTRS_REGEX = /<([a-z0-9:-]+)(\s[^>]+)>/gi
+
+export function normalizeHtmlString(html?: string): string {
   if (!html)
     return ''
-  return html
-    .replace(/>\s+</g, '><')
+
+  let result = html
+    .replace(/\r\n/g, '\n')
+    .replace(/>\s+/g, '>')
+    .replace(/\s+</g, '<')
     .replace(/\s+/g, ' ')
     .trim()
+
+  // Void tags self-closing normalization
+  result = result.replace(VOID_ELEMENTS_REGEX, (_m, tag, attrs) => `<${tag}${attrs.trimEnd()}>`)
+
+  // Attribute normalization and alphabetical sorting
+  result = result.replace(TAG_WITH_ATTRS_REGEX, (_fullMatch, tagName, attrsText) => {
+    const isSelfClosing = attrsText.trimEnd().endsWith('/')
+    const cleanAttrs = isSelfClosing ? attrsText.slice(0, attrsText.lastIndexOf('/')) : attrsText
+
+    const sortedAttrs: Array<{ name: string, value?: string }> = []
+    ATTR_PARSER_REGEX.lastIndex = 0
+    for (const match of cleanAttrs.matchAll(ATTR_PARSER_REGEX)) {
+      const name = match[1]
+      if (!name)
+        continue
+      const val = match[2] ?? match[3] ?? match[4]
+      sortedAttrs.push({ name, value: val })
+    }
+
+    sortedAttrs.sort((a, b) => a.name.localeCompare(b.name))
+
+    const formattedAttrs = sortedAttrs.map(a => (a.value !== undefined ? `${a.name}="${a.value}"` : a.name)).join(' ')
+    const attrsPart = formattedAttrs ? ` ${formattedAttrs}` : ''
+    const closingPart = isSelfClosing ? '/>' : '>'
+    return `<${tagName}${attrsPart}${closingPart}`
+  })
+
+  return result
 }
 
 export function runConformance(
