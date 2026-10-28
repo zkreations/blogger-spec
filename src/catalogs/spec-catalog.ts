@@ -28,6 +28,7 @@ import type {
   BloggerOperatorName,
   BloggerOperatorsCatalog,
   BloggerPrecedenceHierarchyLevel,
+  BloggerRootAttributesCatalog,
   BloggerRuntimeEvaluationState,
   BloggerScopeDefinition,
   BloggerScopesCatalog,
@@ -835,6 +836,11 @@ export class SpecCatalog {
   getLayoutVersions(): BloggerLayoutVersionsCatalog | undefined {
     const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
     return directivesCatalog.domain_metadata?.layout_versions
+  }
+
+  getRootAttributes(): BloggerRootAttributesCatalog | undefined {
+    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
+    return directivesCatalog.domain_metadata?.root_attributes
   }
 
   getHtmlVoidElements(): ReadonlySet<string> {

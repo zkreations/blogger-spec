@@ -565,6 +565,24 @@
       "message": "Defining or overriding an includable with a 'super.' prefix is prohibited. Platform super delegators are immutable and cannot be declared via <b:includable>.",
       "evidence": "official",
       "verified_at": "2026-10-27"
+    },
+    "BX1061": {
+      "code": "BX1061",
+      "name": "MISSING_ROOT_ATTRIBUTE",
+      "category": "structure",
+      "severity": "warning",
+      "message": "Missing recommended root attribute on <html>. Independent themes must declare b:css='false', b:js='false', b:defaultwidgetversion='2' and b:layoutsVersion='3'.",
+      "evidence": "observed",
+      "verified_at": "2026-10-28"
+    },
+    "BX1062": {
+      "code": "BX1062",
+      "name": "NON_RECOMMENDED_ROOT_ATTRIBUTE_VALUE",
+      "category": "structure",
+      "severity": "warning",
+      "message": "Non-recommended value for root attribute on <html>; the expected value prevents unmanaged platform resource injection.",
+      "evidence": "observed",
+      "verified_at": "2026-10-28"
     }
   }
 }

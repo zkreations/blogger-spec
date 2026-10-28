@@ -202,6 +202,19 @@
       "invalid_widget_setting": "BX1056",
       "adsense_monetization_required": "BX1057"
     },
+    "root_attributes": {
+      "required": {
+        "b:css": "false",
+        "b:js": "false",
+        "b:defaultwidgetversion": "2",
+        "b:layoutsVersion": "3"
+      },
+      "optional": [
+        "b:responsive"
+      ],
+      "missing_diagnostic": "BX1061",
+      "invalid_value_diagnostic": "BX1062"
+    },
     "html_void_elements": [
       "area",
       "base",

@@ -563,16 +563,16 @@ describe('helpers & canonical structure validation suite', () => {
     })
 
     it('permits flexible XML structure (b:include under html, b:skin and b:template-skin under b:if)', () => {
-      const xml1 = '<html><b:include name="foo"/></html>'
+      const xml1 = '<html b:css="false" b:js="false" b:defaultwidgetversion="2" b:layoutsVersion="3"><b:include name="foo"/></html>'
       expect(validateTemplateStructure(xml1)).toEqual([])
 
-      const xml2 = '<html><head><b:if cond="true"><b:skin><![CDATA[/* */]]></b:skin></b:if></head></html>'
+      const xml2 = '<html b:css="false" b:js="false" b:defaultwidgetversion="2" b:layoutsVersion="3"><head><b:if cond="true"><b:skin><![CDATA[/* */]]></b:skin></b:if></head></html>'
       expect(validateTemplateStructure(xml2)).toEqual([])
 
-      const xml3 = '<html><head><b:if cond="true"><b:template-skin><![CDATA[/* */]]></b:template-skin></b:if></head></html>'
+      const xml3 = '<html b:css="false" b:js="false" b:defaultwidgetversion="2" b:layoutsVersion="3"><head><b:if cond="true"><b:template-skin><![CDATA[/* */]]></b:template-skin></b:if></head></html>'
       expect(validateTemplateStructure(xml3)).toEqual([])
 
-      const xml4 = '<html><b:skin><![CDATA[/* */]]></b:skin><b:template-skin><![CDATA[/* */]]></b:template-skin></html>'
+      const xml4 = '<html b:css="false" b:js="false" b:defaultwidgetversion="2" b:layoutsVersion="3"><b:skin><![CDATA[/* */]]></b:skin><b:template-skin><![CDATA[/* */]]></b:template-skin></html>'
       expect(validateTemplateStructure(xml4)).toEqual([])
     })
 

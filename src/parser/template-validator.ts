@@ -1616,6 +1616,37 @@ export interface ValidateTemplateStructureOptions {
   readonly skinVariables?: Record<string, string | BloggerSkinVariableSymbol>
 }
 
+function validateRootAttributes(
+  token: BloggerDirectiveToken,
+  catalog: SpecCatalog,
+  diagnostics: BloggerStructureDiagnostic[],
+): void {
+  const root = catalog.getRootAttributes()
+  if (!root || token.isClosing || token.tagName !== 'html') {
+    return
+  }
+  for (const [attr, expected] of Object.entries(root.required)) {
+    const actual = token.attributes[attr]
+    const replacement = `${attr}='${expected}'`
+    if (!actual) {
+      pushDiagnostic(diagnostics, catalog, root.missing_diagnostic, token, {
+        message: `Missing recommended root attribute '${attr}' on <html>. Expected value: '${expected}'.`,
+        attribute: attr,
+        suggestedReplacement: replacement,
+      })
+    }
+    else if (actual.value.trim() !== expected) {
+      pushDiagnostic(diagnostics, catalog, root.invalid_value_diagnostic, token, {
+        message: `Non-recommended value '${actual.value}' for root attribute '${attr}' on <html>. Expected: '${expected}' to prevent unmanaged platform resource injection.`,
+        attribute: attr,
+        start: actual.start,
+        end: actual.end,
+        suggestedReplacement: replacement,
+      })
+    }
+  }
+}
+
 export function validateTemplateStructure(
   tokensOrXml: readonly BloggerDirectiveToken[] | string,
   catalog: SpecCatalog = getSpecCatalog(),
@@ -1720,6 +1751,7 @@ export function validateTemplateStructure(
     validateWidgetSettingElement(token, currentEnclosingWidget, tokensOrXml, catalog, diagnostics)
     validateDataElement(token, catalog, diagnostics, skinVariables, currentWidgetType)
     validateIncludeElement(token, catalog, diagnostics)
+    validateRootAttributes(token, catalog, diagnostics)
 
     if (token.tagName === 'b:includable' && !token.isClosing) {
       if (tagStack.some(t => t.tagName === 'b:defaultmarkup')) {

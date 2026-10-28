@@ -254,6 +254,38 @@
             }
           },
           "additionalProperties": false
+        },
+        "root_attributes": {
+          "type": "object",
+          "description": "Required and optional configuration attributes of the root <html> element with their expected values.",
+          "required": [
+            "required",
+            "missing_diagnostic",
+            "invalid_value_diagnostic"
+          ],
+          "properties": {
+            "required": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "optional": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "missing_diagnostic": {
+              "type": "string",
+              "pattern": "^BX\\d{4}$"
+            },
+            "invalid_value_diagnostic": {
+              "type": "string",
+              "pattern": "^BX\\d{4}$"
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

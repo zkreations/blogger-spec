@@ -1332,6 +1332,48 @@
         "stage": "linter"
       },
       "verified_at": "2026-10-27"
+    },
+    {
+      "id": "diagnostics/negative_syntax/root-attribute-missing",
+      "title": "Missing Required Root Attribute on html",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1061"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<html b:css='false' b:js='false' b:defaultwidgetversion='2'><head></head></html>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1061"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "diagnostics/negative_syntax/root-attribute-invalid-value",
+      "title": "Non-recommended Root Attribute Value on html",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1062"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<html b:css='true' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'><head></head></html>",
+        "mode": "fragment"
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1062"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-10-28"
     }
   ]
 }
