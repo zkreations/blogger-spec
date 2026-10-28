@@ -7,6 +7,7 @@ import type {
   BloggerFixturesManifest,
 } from './types.js'
 import { existsSync, readFileSync } from 'node:fs'
+import { evaluateExpression } from './parser/expr-evaluator.js'
 import { getWorkspacePaths } from './paths.js'
 
 function resolveDefaultManifest(): BloggerFixturesManifest {
@@ -198,6 +199,12 @@ export function runConformance(
   }
 
   return report
+}
+
+export function createDefaultEngineAdapter(): BloggerEngineAdapter {
+  return {
+    evaluateExpression: (expr: string, context?: Record<string, any>) => evaluateExpression(expr, context),
+  }
 }
 
 export type {

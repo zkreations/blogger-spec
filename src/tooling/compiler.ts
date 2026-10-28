@@ -43,6 +43,7 @@ export function generateDts(): string {
     'export * from \'./inclusion-expander.js\';',
     'export * from \'./parser/index.js\';',
     'export * from \'./quota.js\';',
+    'export * from \'./runner.js\';',
     'export * from \'./scope.js\';',
     'export * from \'./type-system.js\';',
     'export * from \'./types.js\';',
