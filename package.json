@@ -108,8 +108,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:spec": "tsx src/tooling/validate-spec.ts",
+    "check:hermetic": "tsx src/tooling/check-hermetic.ts",
+    "sync:samples": "tsx src/tooling/sync-samples.ts",
     "typecheck": "tsc --noEmit",
-    "verify": "pnpm run test:spec && pnpm run typecheck && pnpm run lint && pnpm run test",
+    "verify": "pnpm run check:hermetic && pnpm run test:spec && pnpm run typecheck && pnpm run lint && pnpm run test",
     "prepublishOnly": "pnpm run build"
   },
   "devDependencies": {
