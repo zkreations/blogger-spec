@@ -385,7 +385,8 @@ export function parseTemplate(
       const afterTag = xml.slice(tagEnd + 1)
       const expectedEndTag = `</${tagName}>`
       const trimmedAfter = afterTag.trimStart()
-      if (!trimmedAfter.toLowerCase().startsWith(expectedEndTag.toLowerCase())) {
+      const hostsMutations = trimmedAfter.startsWith('<b:')
+      if (!hostsMutations && !trimmedAfter.toLowerCase().startsWith(expectedEndTag.toLowerCase())) {
         const pos = getPositionAt(cursor, lineOffsets)
         const msg = `The element type '${tagName}' must be terminated by the matching end-tag '</${tagName}>'.`
         if (tolerant) {
