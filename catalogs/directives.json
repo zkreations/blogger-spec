@@ -217,7 +217,7 @@
     },
     "includable_resolution_hierarchy": {
       "model": "ontological_specificity_chain",
-      "description": "Order-independent ontological specificity chain for subroutine resolution.",
+      "description": "Order-independent ontological specificity chain for subroutine resolution across static name and dynamic expr:name dispatch.",
       "levels": [
         {
           "level": 1,
@@ -258,7 +258,7 @@
           "level": 6,
           "name": "unresolved",
           "scope": "all",
-          "description": "Subroutine not found across any ontological layer.",
+          "description": "Subroutine not found across any ontological layer. Causes the Blogger engine to abort rendering of the host gadget with an HTML comment error: <!--Failed to render gadget '[WidgetId]'...-->.",
           "diagnostic": "BX1037"
         }
       ],
@@ -331,7 +331,7 @@
         "recommended_guard": "<b:if cond='data:view.isLayoutMode'>"
       },
       "google_fonts_strategy": {
-        "local_compiler_policy": "Inject <link rel='stylesheet' href='https://fonts.googleapis.com/...'> into <head> instead of massive inlined @font-face blocks",
+        "local_compiler_policy": "Blogger production compiler inlines full @font-face stylesheets referencing fonts.gstatic.com. The normative local compiler adaptation replaces inlined @font-face blocks with a concise <link rel='stylesheet'> referencing fonts.googleapis.com in <head>.",
         "link_template": "<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family={family}:{weights}&amp;display=swap'/>"
       },
       "expression_projection": {
@@ -864,7 +864,7 @@
         "name": {
           "type": "string",
           "diagnostic": "BX1037",
-          "description": "Target includable identifier. Supports static names (name='sub'), dynamic expressions (expr:name='...'), and server defaults with prefix super. (name='super.sub').",
+          "description": "Target includable identifier. Supports static names (name='sub'), dynamic expressions (expr:name='...'), and server defaults with prefix super. (name='super.sub'). In dynamic mode (expr:name), resolves via the 6-tier ontological hierarchy; if unresolvable across all tiers, the engine aborts host gadget rendering with an HTML error comment.",
           "required": true,
           "expr": true,
           "attribute_kind": "prefixed_expression"
@@ -916,13 +916,22 @@
           "status": "allowed",
           "description": "Server-hosted universal subroutines (all-head-content, urlParamsAsFormInput, etc.), common library subroutines (responsiveImageStyle, openGraphMetaData, widget-title), and super.NAME resolve against platform backend defaults and do not require local includable declarations."
         },
+        "dynamic_resolution": {
+          "status": "supported",
+          "description": "Dynamic includable dispatch resolves expressions (syntax expr:name='...') including static strings, string concatenations like 'widget:' + data:widget.type, ternary conditions, and member lookups against the canonical 6-tier ontological specificity chain. If unresolvable across all tiers, execution aborts the host gadget, emitting <!--Failed to render gadget '[WidgetId]'...-->.",
+          "action": "abort_host_gadget"
+        },
+        "data_shadowing_without_var": {
+          "status": "supported",
+          "description": "When data payload is forwarded without an explicit var attribute, an object literal { key: val } binds properties directly into the local data scope (accessible via <data:key/> or data:key), and an array literal { [k, v], ... } binds to the root data: iterator, while retaining fallback access to outer widget and global scopes (data:blog.*, data:view.*)."
+        },
         "dom_mutation_hoisting": {
           "description": "b:class and b:attr elements executed within the invoked b:includable hoist across the include boundary to mutate the enclosing HTML ancestor at the call site."
         }
       },
       "closure_mode": "self_closing",
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-28"
     },
     "b:defaultmarkups": {
       "category": "Structuring",

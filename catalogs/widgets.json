@@ -1509,6 +1509,7 @@
     },
     "BlogSearch": {
       "description": "Internal site search form header and configuration.",
+      "runtime_rendering_policy": "standard",
       "canonical": {
         "title": {
           "type": "string",
@@ -1516,7 +1517,7 @@
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-28"
     },
     "BloggerButton": {
       "description": "Official Powered by Blogger badge URLs and graphic assets.",
@@ -1920,6 +1921,7 @@
     },
     "HTML": {
       "description": "Arbitrary user HTML/JS or plain formatted text blocks.",
+      "runtime_rendering_policy": "standard",
       "canonical": {
         "content": {
           "type": "string",
@@ -1931,7 +1933,7 @@
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-28"
     },
     "Header": {
       "description": "Blog title, header hero banner, description, and image placement flags.",
@@ -2112,6 +2114,7 @@
     },
     "LinkList": {
       "description": "Ordered list of custom hyperlinks (`links[i].name`, `links[i].target`).",
+      "runtime_rendering_policy": "suppress_when_empty",
       "canonical": {
         "links": {
           "type": "array[object]",
@@ -2146,7 +2149,7 @@
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-10-28"
     },
     "PageList": {
       "description": "Static standalone page navigation links, home link, and active selection state.",
