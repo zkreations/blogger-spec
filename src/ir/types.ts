@@ -36,7 +36,8 @@ export interface BirComment { readonly kind: 'comment', readonly value: string }
 
 export interface BirTag {
   readonly kind: 'tag'
-  readonly cond: BloggerExpressionNode
+  readonly tag: BirAttrValue
+  readonly cond?: BloggerExpressionNode
   readonly attributes: readonly BirAttribute[]
   readonly classes: readonly BirClassMutation[]
   readonly children: readonly BirNode[]

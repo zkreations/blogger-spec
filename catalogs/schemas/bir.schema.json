@@ -8,7 +8,7 @@
   "required": ["birVersion", "layoutVersion", "root", "symbolTable", "skin"],
   "properties": {
     "birVersion": { "const": "1" },
-    "layoutVersion": { "enum": ["v1", "v2", "v3"] },
+    "layoutVersion": { "enum": [1, 2, 3, "v1", "v2", "v3"] },
     "root": { "$ref": "#/$defs/nodeList" },
     "symbolTable": {
       "type": "object",
@@ -145,9 +145,10 @@
     "tag": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "cond", "attributes", "classes", "children"],
+      "required": ["kind", "tag", "attributes", "classes", "children"],
       "properties": {
         "kind": { "const": "tag" },
+        "tag": { "$ref": "#/$defs/attrValue" },
         "cond": { "$ref": "#/$defs/expression" },
         "attributes": { "type": "array", "items": { "$ref": "#/$defs/attribute" } },
         "classes": { "type": "array", "items": { "$ref": "#/$defs/classMutation" } },
