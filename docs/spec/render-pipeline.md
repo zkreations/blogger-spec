@@ -6,9 +6,9 @@
 
 ---
 
-## 1. Executive Architecture
+## 1. Overview
 
-The Blogger Layouts v3 template compiler executes an Abstract Syntax Tree (AST) walk using a stateful lexical scope environment and a continuous DOM mutation buffer. Any conforming local compiler or previewer consuming `blogger-spec` must implement this sequential 5-phase execution model.
+The compiler walks the AST using a stateful scope stack and a DOM mutation buffer. Any compiler or previewer built on `blogger-spec` must implement these 5 phases in order.
 
 ```mermaid
 flowchart TD
@@ -20,79 +20,74 @@ flowchart TD
     P5 --> HTML["Compiled Output HTML"]
 ```
 
-### Execution Invariants
-1. **Target Architecture:** Strictly optimized for **Layouts v3** (`b:layoutsVersion='3'`, `b:defaultwidgetversion='2'`). Monolithic Layouts v1/v2 widgets and tables are deprecated.
-2. **Deterministic Evaluation:** All dynamic attributes (`expr:*`, `cond`, `values`, `value`) are evaluated using `evaluateExpression` conforming to Blogger's relaxed equality (`isEqual`), collection lambdas, and null-safety.
-3. **Continuous Mutation Hoisting:** DOM attributes and CSS classes emitted via `b:attr` and `b:class` hoist across control boundaries (`b:if`, `b:loop`, `b:with`, `b:tag[cond=false]`) and subroutine boundaries (`b:include`) until attached to the nearest HTML element or synthetic widget wrapper.
+### Invariants
+1. **Target:** Layouts v3 only (`b:layoutsVersion='3'`, `b:defaultwidgetversion='2'`). Layouts v1/v2 widgets and tables are deprecated.
+2. **Evaluation:** Dynamic attributes (`expr:*`, `cond`, `values`, `value`) go through `evaluateExpression`, using Blogger's relaxed equality (`isEqual`), collection lambdas and null-safety.
+3. **Hoisting:** `b:attr` and `b:class` mutations cross control boundaries (`b:if`, `b:loop`, `b:with`, `b:tag[cond=false]`) and subroutine boundaries (`b:include`) until they reach the nearest HTML element or widget wrapper.
 
 ---
 
 ## 2. Phase 1: Subroutine & Template Registry
 
-Before traversing and rendering widgets, the compiler must scan and index all `<b:defaultmarkup>` blocks and local widget `<b:includable>` blocks to construct the dispatch table.
+Before rendering, index every `<b:defaultmarkup>` block and every local widget `<b:includable>` to build the dispatch table.
 
-### 2.1. The 6-Tier Ontological Specificity Chain
-Subroutine resolution for `<b:include name='...'>` and `<b:include expr:name='...'>` follows strict descending precedence:
+### 2.1. Resolution Order (6 Tiers)
+`<b:include name='...'>` and `<b:include expr:name='...'>` resolve in this order, first match wins:
 
-$$\text{Tier 1: local\_widget} \rightarrow \text{Tier 2: gadget\_specific} \rightarrow \text{Tier 3: universal\_widget} \rightarrow \text{Tier 4: shared\_common} \rightarrow \text{Tier 5: platform\_server} \rightarrow \text{Tier 6: unresolved}$$
-
-| Tier | Identifier / Level | Source in Template | Description |
+| Tier | Level | Source | Description |
 | :---: | :--- | :--- | :--- |
-| **1** | `local_widget` | Direct child of `<b:widget>` | Private subroutine defined inside the calling widget. |
-| **2** | `gadget_specific` | `<b:defaultmarkup type='WidgetType'>` | Shared default markup matching the specific widget type (or comma-separated multi-type list, e.g. `type='Blog,PopularPosts'`). |
-| **3** | `universal_widget` | `<b:defaultmarkup type='All'>` | Universal widget markup applicable across all widget types. |
-| **4** | `shared_common` | `<b:defaultmarkup type='Common'>` | Shared cross-cutting subroutines (utility macros, icons, shared components). |
-| **5** | `platform_server` | Platform built-in inclusions | Standard server macros (`all-head-content`) and portable platform subroutines. |
-| **6** | `unresolved` | Exhaustion of Tiers 1–5 | Resolution failure trigger. |
+| **1** | `local_widget` | Direct child of `<b:widget>` | Private subroutine of the calling widget. |
+| **2** | `gadget_specific` | `<b:defaultmarkup type='WidgetType'>` | Markup for a specific widget type, or a comma-separated list (`type='Blog,PopularPosts'`). |
+| **3** | `universal_widget` | `<b:defaultmarkup type='All'>` | Markup shared by all widget types. |
+| **4** | `shared_common` | `<b:defaultmarkup type='Common'>` | Cross-cutting subroutines (macros, icons, shared components). |
+| **5** | `platform_server` | Platform built-ins | Server macros (`all-head-content`) and portable platform subroutines. |
+| **6** | `unresolved` | Tiers 1–5 exhausted | Resolution failure. |
 
-### 2.2. Collision Handling Semantics
-When multiple blocks or subroutines are declared with the same identifier at the same tier:
-1. **`last_block_wins`:** If `<b:defaultmarkup type='All'>` is declared multiple times in `<b:defaultmarkups>`, the last declared block completely overrides any previously defined subroutines with matching `id`.
-2. **`last_container_wins`:** If identical subroutines exist in duplicate container blocks, the later container declaration takes precedence.
+### 2.2. Collisions
+When the same identifier is declared more than once at the same tier:
+1. **`last_block_wins`:** If `<b:defaultmarkup type='All'>` appears several times in `<b:defaultmarkups>`, the last block overrides earlier subroutines with the same `id`.
+2. **`last_container_wins`:** If duplicate container blocks define the same subroutine, the later container wins.
 
-### 2.3. Dynamic Includable Dispatch (`expr:name`) & Abort Policy
-When using dynamic expressions in inclusions (e.g. `expr:name='"widget:" + data:widget.type'`):
-1. The expression is evaluated against the current runtime context.
-2. The evaluated string is queried across Tiers 1 through 5.
-3. **Resolution Failure (Tier 6):** If no matching subroutine is found, Blogger **aborts the execution of the entire enclosing widget** and emits the canonical error diagnostic comment (`BX1063`):
+### 2.3. Dynamic Dispatch (`expr:name`) & Abort Policy
+For expressions like `expr:name='"widget:" + data:widget.type'`:
+1. Evaluate the expression in the current context.
+2. Look up the resulting string in Tiers 1–5.
+3. **If nothing matches (Tier 6):** abort the entire enclosing widget and emit the `BX1063` error comment. Nothing else in that widget is rendered.
    ```html
    <!--Failed to render gadget '[WidgetId]'.
 
    There was an error processing the markup.
    -->
    ```
-   No subsequent instructions of that widget are rendered.
 
 ---
 
-## 3. Phase 2: Theme Designer `<b:skin>` Compilation
+## 3. Phase 2: `<b:skin>` Compilation
 
-The `<b:skin>` block contains CSS enriched with Theme Designer tags (`<Variable>`, `<Group>`). The compiler transforms this block into clean, browser-compatible CSS.
+`<b:skin>` holds CSS mixed with Theme Designer tags (`<Variable>`, `<Group>`). The compiler turns it into plain CSS.
 
-### 2.1. Variable Substitution
-1. Parse all `<Variable name="..." type="..." default="..." value="..."/>` tags within the CDATA.
-2. Determine active value using precedence: `value` over `default`.
-3. Replace all variable references matching syntax `$(variable.name)`.
-4. Replace dotted names with underscored identifiers for template expression access (`data:skin.vars.body_font`).
+### 3.1. Variable Substitution
+1. Parse every `<Variable name="..." type="..." default="..." value="..."/>` in the CDATA.
+2. Active value: `value` if present, otherwise `default`.
+3. Replace each `$(variable.name)` reference with its value.
+4. Convert dotted names to underscores for template access (`data:skin.vars.body_font`).
 
-### 2.2. Composite Font Variables Decomposition
-Variables with `type="font"` decompose into four accessible sub-properties:
-- `$(font.name.family)` $\rightarrow$ Font family string.
-- `$(font.name.size)` $\rightarrow$ Font size with unit.
-- `$(font.name.style)` $\rightarrow$ Font style (`normal`, `italic`).
-- `$(font.name.weight)` $\rightarrow$ Font weight (`bold`, `400`, `700`).
+### 3.2. Font Variables
+A `type="font"` variable exposes four sub-properties:
+- `$(font.name.family)`: font family
+- `$(font.name.size)`: size with unit
+- `$(font.name.style)`: `normal` or `italic`
+- `$(font.name.weight)`: `bold`, `400`, `700`
 
-### 2.3. Google Fonts Modern Adaptation
-In production, Blogger embeds hundreds of lines of `@font-face` definitions. For offline and clean local compilation:
-- Identify Google Fonts declared in `type="font"` variables.
-- Emit a standard, lightweight stylesheet link into the `<head>` of the document:
-  ```html
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap"/>
-  ```
+### 3.3. Google Fonts
+Blogger embeds hundreds of lines of `@font-face` in production. For clean local output, detect Google Fonts in `type="font"` variables and add one stylesheet link to `<head>`:
+```html
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap"/>
+```
 
-### 2.4. Tag Stripping & Packaging
-1. Strip all `<Variable .../>` and `<Group>...</Group>` tags from the resulting CSS.
-2. Package the sanitized CSS into the canonical output tag:
+### 3.4. Cleanup & Output
+1. Remove all `<Variable .../>` and `<Group>...</Group>` tags from the CSS.
+2. Wrap the result:
    ```html
    <style id='page-skin-1' type='text/css'><!--
    /* Compiled CSS declarations */
@@ -103,31 +98,31 @@ In production, Blogger embeds hundreds of lines of `@font-face` definitions. For
 
 ## 4. Phase 3: Synthetic Layout Containers
 
-Blogger layout tags represent synthetic structural markup that expands into HTML elements before children are evaluated.
+Blogger layout tags expand into HTML elements before their children are evaluated.
 
 ### 4.1. Sections (`<b:section>`)
-1. **Container Element:** Expands to `<div class='section' id='[id]'>`.
-2. **Layouts v3 Deprecation Rule:** If a `<b:section>` in Layouts v3 declares `maxwidgets` or `showaddelement`, children widgets are suppressed, and the compiler outputs:
+1. Expands to `<div class='section' id='[id]'>`.
+2. **v3 deprecation:** if the section declares `maxwidgets` or `showaddelement`, its widgets are suppressed and the output is:
    ```html
    <div class='no-items section' id='[id]'></div>
    ```
-3. **Custom Semantic Tag:** If attribute `tag='header'` or `tag='aside'` is declared, the specified HTML tag is emitted instead of `<div>`.
+3. **Custom tag:** `tag='header'` or `tag='aside'` replaces `<div>` with that tag.
 
 ### 4.2. Widgets (`<b:widget>`)
-1. **Synthetic Wrapper:** Every widget outputs an outer synthetic wrapper:
+1. Every widget gets a wrapper:
    ```html
    <div class='widget [Type]' data-version='2' id='[id]'>
    ```
-2. **Runtime Rendering Policy:** If `runtime_rendering_policy: "suppress_when_empty"` and the widget's primary data collection is empty (e.g. `LinkList` with 0 links, `Blog` with 0 posts), the widget wrapper and all contents are completely omitted from the HTML output.
-3. **Entry Point Execution:** Render begins by resolving and invoking the widget's `main` includable through Phase 1 dispatch rules.
+2. **Empty widgets:** with `runtime_rendering_policy: "suppress_when_empty"` and an empty primary collection (e.g. `LinkList` with no links, `Blog` with no posts), omit the wrapper and its contents entirely.
+3. **Entry point:** rendering starts by resolving the widget's `main` includable via Phase 1 rules.
 
 ---
 
 ## 5. Phase 4: Lexical Scope Stack & Data Binding
 
-The compiler maintains a strict stack of lexical scope frames adhering to the resolution precedence:
+Variables resolve through a stack of scope frames, in this order:
 
-$$\text{lambda} \rightarrow \text{loop} \rightarrow \text{with} \rightarrow \text{includable} \rightarrow \text{widget} \rightarrow \text{global}$$
+`lambda → loop → with → includable → widget → global`
 
 ```mermaid
 sequenceDiagram
@@ -147,53 +142,51 @@ sequenceDiagram
 ```
 
 ### 5.1. Scope Frames
-- **Global Frame:** Universal properties (`data:blog.*`, `data:view.*`, `data:messages.*`, `data:skin.vars.*`).
-- **Widget Frame:** Widget data dictionary properties (`data:title`, `data:posts`, `data:allBylineItems`).
-- **`<b:with var='x' value='...'>`:** Creates a local scope frame binding symbol `x`.
-- **`<b:loop values='...' var='item' index='i'>`:** Creates a frame binding `item` and 0-based integer `i`.
+- **Global:** `data:blog.*`, `data:view.*`, `data:messages.*`, `data:skin.vars.*`.
+- **Widget:** the widget's data (`data:title`, `data:posts`, `data:allBylineItems`).
+- **`<b:with var='x' value='...'>`:** binds `x` locally.
+- **`<b:loop values='...' var='item' index='i'>`:** binds `item` and a 0-based `i`.
 
-### 5.2. Parameter Binding without `var` in `<b:include>`
-When `<b:include data='...'>` omits the `var` attribute:
-1. **Array Payload (`{ [k, v], ... }`):** Binds the array directly to the root identifier `data:` to allow expressions such as `<b:loop values='data:' var='item'>`.
-2. **Object Payload (`{ key: value }`):** Unpacks each key into the local scope frame (`<data:key/>` or `data:key`).
-3. **Global Fallback:** In both cases, global datasets (`data:blog.*`, `data:view.*`) remain fully accessible as fallbacks.
+### 5.2. `<b:include data='...'>` without `var`
+1. **Array** (`{ [k, v], ... }`): bound to the root identifier `data:`, so `<b:loop values='data:' var='item'>` works.
+2. **Object** (`{ key: value }`): each key is unpacked into the local frame (`<data:key/>` or `data:key`).
+3. In both cases, global data (`data:blog.*`, `data:view.*`) stays accessible.
 
 ---
 
-## 6. Phase 5: Continuous DOM Mutation Buffer & Hoisting
+## 6. Phase 5: DOM Mutation Buffer & Hoisting
 
-Mutations defined by `b:class` and `b:attr` operate continuously on the nearest open HTML ancestor element or widget synthetic wrapper.
+`b:class` and `b:attr` apply to the nearest open HTML element or widget wrapper.
 
-### 6.1. Target Resolution & Container Traversal
-Mutations hoist transparently through all flow containers:
+### 6.1. Hoisting Through Containers
+Mutations pass through:
 - `<b:if>`, `<b:elseif>`, `<b:else>`
 - `<b:switch>`, `<b:case>`, `<b:default>`
 - `<b:with>`
 - `<b:loop>`
-- `<b:tag cond='false'>` (unwrapping container)
-- `<b:include>` (subroutine boundary crossing)
+- `<b:tag cond='false'>` (unwrapped container)
+- `<b:include>` (subroutine boundary)
 
-### 6.2. `b:class` Mutation Rules
-- **Mode:** `accumulate`.
-- **Separator:** Single whitespace (` `).
-- **Existing Class Policy:** Preserves any static classes already defined on the HTML tag or synthetic wrapper.
-- **Loop Accumulation:** Classes emitted inside loops accumulate across all iterations.
+### 6.2. `b:class`
+- **Mode:** `accumulate`, joined by a single space.
+- Keeps static classes already on the tag or wrapper.
+- Classes emitted inside loops accumulate across all iterations.
 
-### 6.3. `b:attr` Mutation Rules
+### 6.3. `b:attr`
 - **Mode:** `upsert_or_omit`.
-- **Empty Policy:** If the attribute evaluates to an empty string (`""`), `null`, `undefined`, or `MISSING`, the attribute is completely omitted from the HTML tag.
-- **Overwrite Policy:** Existing attributes are overwritten by new evaluations. Overwriting the synthetic `id` attribute is explicitly permitted.
+- If the value is `""`, `null`, `undefined` or `MISSING`, the attribute is omitted.
+- New values overwrite existing attributes, including the synthetic `id`.
 
-### 6.4. Special Pseudo-Attribute `b:whitespace='remove'`
-- **Target:** Void HTML elements (`<input>`, `<img>`, `<hr>`, `<br>`).
-- **Behavior:** Strips trailing whitespace, suppresses the `b:whitespace` attribute from output, and forces clean XML-compliant self-closing tag syntax:
+### 6.4. `b:whitespace='remove'`
+- **Applies to:** void elements (`<input>`, `<img>`, `<hr>`, `<br>`).
+- Strips trailing whitespace, removes the `b:whitespace` attribute from the output, and forces XML-style self-closing syntax:
   ```html
   <img alt="Preview" src="https://example.com/img.png"/>
   ```
 
 ---
 
-## 7. Algorithm Reference: AST Compiler Walk
+## 7. Reference: AST Compiler Walk
 
 ```typescript
 function compileNode(node: BloggerTemplateNode, ctx: CompilerContext): string {
@@ -227,4 +220,3 @@ function compileElement(elem: BloggerElementNode, ctx: CompilerContext): string 
   return elem.selfClosing ? finalizedTag : `${finalizedTag}${innerHtml}</${elem.name}>`
 }
 ```
-
