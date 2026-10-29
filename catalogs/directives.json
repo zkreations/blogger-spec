@@ -265,6 +265,11 @@
       "collision_rules": {
         "same_level_containers": "last_container_wins",
         "same_level_blocks": "last_block_wins"
+      },
+      "unresolved_policy": {
+        "action": "abort_host_gadget",
+        "diagnostic": "BX1037",
+        "canonical_comment_pattern": "<!--Failed to render gadget '{widgetId}'.\n\nThere was an error processing the markup.\n-->"
       }
     },
     "dom_mutation_pipeline": {

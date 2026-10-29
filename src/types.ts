@@ -274,3 +274,31 @@ export interface BloggerIncludableResolutionResult {
   diagnostic?: BloggerDiagnosticCode
   failureComment?: string
 }
+
+/**
+ * Returns canonical error abort comment when an includable fails to resolve.
+ */
+export function formatGadgetAbortComment(widgetId: string): string {
+  return `<!--Failed to render gadget '${widgetId}'.\n\nThere was an error processing the markup.\n-->`
+}
+
+export type BloggerMutationTargetKind = 'container' | 'html_element' | 'widget_synthetic_wrapper'
+
+export interface BloggerMutationStackFrame {
+  readonly tagName?: string
+  readonly targetKind?: BloggerMutationTargetKind
+  readonly classes: string[]
+  readonly attributes: Record<string, string>
+  readonly isVoid?: boolean
+  readonly whitespaceRemove?: boolean
+}
+
+export interface BloggerDOMMutationBuffer {
+  pushTarget: (tagName?: string, initialClasses?: string[], initialAttrs?: Record<string, string>) => BloggerMutationStackFrame
+  popTarget: () => BloggerMutationStackFrame | undefined
+  peekTarget: () => BloggerMutationStackFrame | undefined
+  addClass: (className: string) => boolean
+  setAttribute: (name: string, value: string) => boolean
+  getDepth: () => number
+  hasActiveTarget: () => boolean
+}

@@ -150,6 +150,117 @@
         "canonicalDom": true
       },
       "verified_at": "2026-10-28"
+    },
+    {
+      "id": "templates/prod_fragments/header_branding",
+      "title": "Production Header Branding",
+      "evidence": "official",
+      "covers": [
+        "subsystem:prod_fragments",
+        "tag:b:if",
+        "tag:data:*"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<header class='header'><a class='header-brand' expr:href='data:blog.homepageUrl'><b:if cond='data:header.image'><img expr:alt='data:blog.title' expr:src='data:header.image'/></b:if><h1 class='header-title'><data:blog.title/></h1></a><p class='header-description'><data:blog.description/></p></header>",
+        "mode": "fragment",
+        "context": {
+          "blog": {
+            "homepageUrl": "https://dev.zkreations.com/",
+            "title": "Hamlet Blog",
+            "description": "Plantilla de producción para Blogger"
+          },
+          "header": {
+            "image": "https://dev.zkreations.com/logo.png"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<header class=\"header\"><a class=\"header-brand\" href=\"https://dev.zkreations.com/\"><img alt=\"Hamlet Blog\" src=\"https://dev.zkreations.com/logo.png\"/><h1 class=\"header-title\">Hamlet Blog</h1></a><p class=\"header-description\">Plantilla de producción para Blogger</p></header>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-29"
+    },
+    {
+      "id": "templates/prod_fragments/sidebar_search_and_links",
+      "title": "Production Sidebar Search and Links",
+      "evidence": "official",
+      "covers": [
+        "subsystem:prod_fragments",
+        "tag:b:loop",
+        "tag:data:*"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<aside class='sidebar'><form class='search' expr:action='data:blog.searchUrl' method='get'><input class='search-input' expr:placeholder='data:messages.search' name='q' type='text'/></form><nav class='links-nav'><b:loop values='data:widgetData.LinkList1.links' var='item'><a class='link-item' expr:href='data:item.target'><data:item.name/></a></b:loop></nav></aside>",
+        "mode": "fragment",
+        "context": {
+          "blog": {
+            "searchUrl": "https://dev.zkreations.com/search"
+          },
+          "messages": {
+            "search": "Buscar entradas..."
+          },
+          "widgetData": {
+            "LinkList1": {
+              "links": [
+                {
+                  "name": "Inicio",
+                  "target": "https://dev.zkreations.com/"
+                },
+                {
+                  "name": "Contacto",
+                  "target": "https://dev.zkreations.com/p/contacto.html"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<aside class=\"sidebar\"><form class=\"search\" action=\"https://dev.zkreations.com/search\" method=\"get\"><input class=\"search-input\" placeholder=\"Buscar entradas...\" name=\"q\" type=\"text\"/></form><nav class=\"links-nav\"><a class=\"link-item\" href=\"https://dev.zkreations.com/\">Inicio</a><a class=\"link-item\" href=\"https://dev.zkreations.com/p/contacto.html\">Contacto</a></nav></aside>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-29"
+    },
+    {
+      "id": "templates/prod_fragments/posts_feed_grid",
+      "title": "Production Posts Feed Grid",
+      "evidence": "official",
+      "covers": [
+        "subsystem:prod_fragments",
+        "tag:b:loop",
+        "tag:b:if",
+        "operator:resizeImage",
+        "tag:data:*"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div class='posts-grid'><b:loop values='data:posts' var='post'><article class='post-entry'><b:if cond='data:post.featuredImage'><a class='post-thumb' expr:href='data:post.url'><img expr:alt='data:post.title' expr:src='resizeImage(data:post.featuredImage, 400, \"16:9\")'/></a></b:if><h2 class='post-title'><a expr:href='data:post.url'><data:post.title/></a></h2></article></b:loop></div>",
+        "mode": "fragment",
+        "context": {
+          "posts": [
+            {
+              "title": "Primera Entrada",
+              "url": "https://dev.zkreations.com/2026/10/primera.html",
+              "featuredImage": "https://blogger.googleusercontent.com/img/a/post1.jpg"
+            },
+            {
+              "title": "Segunda Entrada",
+              "url": "https://dev.zkreations.com/2026/10/segunda.html",
+              "featuredImage": null
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"posts-grid\"><article class=\"post-entry\"><a class=\"post-thumb\" href=\"https://dev.zkreations.com/2026/10/primera.html\"><img alt=\"Primera Entrada\" src=\"https://blogger.googleusercontent.com/img/a/post1.jpg=w400-h225-p-k-no-nu\"/></a><h2 class=\"post-title\"><a href=\"https://dev.zkreations.com/2026/10/primera.html\">Primera Entrada</a></h2></article><article class=\"post-entry\"><h2 class=\"post-title\"><a href=\"https://dev.zkreations.com/2026/10/segunda.html\">Segunda Entrada</a></h2></article></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-29"
     }
   ]
 }

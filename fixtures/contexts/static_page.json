@@ -164,6 +164,38 @@
         "sectionId": "sidebar",
         "title": "Buscar en el blog"
       }
+    ],
+    "ContactForm": [
+      {
+        "id": "ContactForm1",
+        "type": "ContactForm",
+        "sectionId": "sidebar",
+        "title": "Formulario de contacto"
+      }
+    ],
+    "Stats": [
+      {
+        "id": "Stats1",
+        "type": "Stats",
+        "sectionId": "footer",
+        "title": "Estadísticas del blog"
+      }
+    ],
+    "Translate": [
+      {
+        "id": "Translate1",
+        "type": "Translate",
+        "sectionId": "sidebar",
+        "title": "Traducir"
+      }
+    ],
+    "Attribution": [
+      {
+        "id": "Attribution1",
+        "type": "Attribution",
+        "sectionId": "footer",
+        "title": "Atribución"
+      }
     ]
   },
   "widgetData": {
@@ -583,6 +615,38 @@
     },
     "BlogSearch1": {
       "title": "Buscar en el blog"
+    },
+    "ContactForm1": {
+      "title": "Formulario de contacto",
+      "submitUrl": "https://www.blogger.com/contact-form.do",
+      "contactFormNameMsg": "Nombre",
+      "contactFormEmailMsg": "Correo electrónico",
+      "contactFormMessageMsg": "Mensaje",
+      "contactFormSendMsg": "Enviar",
+      "contactFormSendingMsg": "Enviando...",
+      "contactFormSentMsg": "Tu mensaje ha sido enviado.",
+      "contactFormNotSentMsg": "No se pudo enviar el mensaje. Inténtalo de nuevo más tarde.",
+      "contactFormEmptyMessageMsg": "El campo de mensaje no puede estar vacío.",
+      "contactFormInvalidEmailMsg": "Es necesario un correo electrónico válido."
+    },
+    "Stats1": {
+      "title": "Estadísticas del blog",
+      "showAnimatedCounter": true,
+      "showGraphicalCounter": false,
+      "showSparkline": true,
+      "statsUrl": "//www.blogger.com/stats.g",
+      "totalVisits": 125430
+    },
+    "Translate1": {
+      "title": "Traducir",
+      "layout": "VERTICAL",
+      "pageLanguage": "es"
+    },
+    "Attribution1": {
+      "title": "Atribución",
+      "copyright": "© 2026 Hamlet Blog. Con tecnología de Blogger.",
+      "bloggerUrl": "https://www.blogger.com",
+      "imageAuthor": ""
     }
   }
 }

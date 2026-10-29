@@ -129,7 +129,11 @@
         "Profile1": { "type": "object" },
         "HTML1": { "type": "object" },
         "LinkList1": { "type": "object" },
-        "BlogSearch1": { "type": "object" }
+        "BlogSearch1": { "type": "object" },
+        "ContactForm1": { "type": "object" },
+        "Stats1": { "type": "object" },
+        "Translate1": { "type": "object" },
+        "Attribution1": { "type": "object" }
       },
       "additionalProperties": true
     }

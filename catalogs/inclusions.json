@@ -231,6 +231,18 @@
       "google-fonts": {
         "description": "Standard stylesheet link for Google Fonts extracted from Theme Designer font variables.",
         "tag_template": "<link rel='stylesheet' href='https://fonts.googleapis.com/css?family={family}:{weights}&display=swap'/>"
+      },
+      "cmtfpIframe": {
+        "description": "Visual placeholder container for threaded comment form iframe in offline preview mode.",
+        "stub_html": "<div class='comment-form-placeholder' data-stub='cmtfpIframe'><p>Blogger Comment Form (Offline Preview)</p></div>"
+      },
+      "server_scripts_bundle": {
+        "description": "Lightweight mock stub for _WidgetManager when template enables b:js='true'.",
+        "stub_html": "<script type='text/javascript'>window._WidgetManager = window._WidgetManager || { _Init: function(){}, _SetDataContext: function(){}, _RegisterWidget: function(){} };</script>"
+      },
+      "server_css_bundle": {
+        "description": "Official stylesheet bundle link injected by Blogger servers when b:css='true'.",
+        "tag_template": "<link href='https://www.blogger.com/static/v1/widgets/2872013778-css_bundle_v2.css' rel='stylesheet' type='text/css'/>"
       }
     }
   },
@@ -461,7 +473,8 @@
       "layout_versions": [
         2,
         3
-      ]
+      ],
+      "local_stub_markup": "<b:includable id='commentForm'>\n  <div class='comment-form-placeholder' data-stub='cmtfpIframe'>\n    <p>Blogger Comment Form (Offline Preview)</p>\n  </div>\n</b:includable>"
     },
     "commentFormIframeSrc": {
       "name": "commentFormIframeSrc",
@@ -1117,7 +1130,8 @@
       "layout_versions": [
         2,
         3
-      ]
+      ],
+      "local_stub_markup": "<b:includable id='iframeComments'>\n  <div class='comment-form-placeholder' data-stub='cmtfpIframe'>\n    <p>Blogger Comment Form (Offline Preview)</p>\n  </div>\n</b:includable>"
     },
     "image": {
       "name": "image",

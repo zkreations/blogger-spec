@@ -357,6 +357,27 @@
                 }
               },
               "additionalProperties": false
+            },
+            "unresolved_policy": {
+              "type": "object",
+              "required": [
+                "action",
+                "diagnostic",
+                "canonical_comment_pattern"
+              ],
+              "properties": {
+                "action": {
+                  "type": "string"
+                },
+                "diagnostic": {
+                  "type": "string",
+                  "pattern": "^BX\\d{4}$"
+                },
+                "canonical_comment_pattern": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
             }
           },
           "additionalProperties": false

@@ -16,12 +16,12 @@ describe('production template fragments suite (Priority 1)', () => {
   it('loads production fragments suite adhering to subsystem contract', () => {
     expect(suiteData.subsystem).toBe('prod_fragments')
     expect(Array.isArray(suiteData.fixtures)).toBe(true)
-    expect(suiteData.fixtures.length).toBe(5)
+    expect(suiteData.fixtures.length).toBe(8)
 
     for (const fixture of suiteData.fixtures) {
       expect(fixture.id).toMatch(/^templates\/prod_fragments\//)
       expect(fixture.evidence).toBe('official')
-      expect(fixture.verified_at).toBe('2026-10-28')
+      expect(fixture.verified_at).toMatch(/^2026-10-(28|29)$/)
       expect(fixture.covers).toContain('subsystem:prod_fragments')
       expect(fixture.expected.outcome).toBe('html')
       expect(fixture.expected.canonicalDom).toBe(true)
@@ -67,14 +67,14 @@ describe('production template fragments suite (Priority 1)', () => {
       },
     )
 
-    expect(report.total).toBe(5)
-    expect(report.passed).toBe(5)
+    expect(report.total).toBe(8)
+    expect(report.passed).toBe(8)
     expect(report.failed).toBe(0)
   })
 
   it('verifies that prod_fragments are indexed in the global fixtures manifest', () => {
     const manifest = JSON.parse(readFileSync(getWorkspacePaths().fixturesManifest, 'utf-8')) as BloggerFixturesManifest
     const manifestProdFixtures = manifest.fixtures.filter(f => f.id.startsWith('templates/prod_fragments/'))
-    expect(manifestProdFixtures.length).toBe(5)
+    expect(manifestProdFixtures.length).toBe(8)
   })
 })

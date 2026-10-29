@@ -16,6 +16,7 @@ import type {
 } from './types.js'
 import { getSpecCatalog } from './catalogs/spec-catalog.js'
 import { expandServerInclusion } from './inclusion-expander.js'
+import { formatGadgetAbortComment } from './types.js'
 
 export interface BloggerIncludableRegistry {
   /**
@@ -266,7 +267,7 @@ export function resolveIncludable(
   }
 
   // Tier 6: unresolved (abort widget execution with canonical error comment)
-  const failureComment = `<!--Failed to render gadget '${widgetId}'.\n\nThere was an error processing the markup.\n-->`
+  const failureComment = formatGadgetAbortComment(widgetId)
   return {
     targetId,
     tier: 'unresolved',
