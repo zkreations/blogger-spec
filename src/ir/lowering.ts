@@ -304,6 +304,39 @@ function extractElementMutations(
           continue
         }
       }
+      if (child.name === 'b:tag') {
+        const condAttr = child.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
+        const condVal = condAttr ? ensureExpression(condAttr.value, context.catalog) : undefined
+        const isStaticallyFalse = condVal?.type === 'Literal' && (condVal.value === false || condVal.value === 'false')
+        if (isStaticallyFalse) {
+          hadDirectives = true
+          for (const sub of child.children) {
+            if (sub.type === 'Directive') {
+              if (sub.name === 'b:class') {
+                const nameAttr = sub.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
+                if (nameAttr) {
+                  classes.push({ name: toBirAttrValue(nameAttr, context.catalog) })
+                }
+              }
+              else if (sub.name === 'b:attr') {
+                const nameAttr = sub.attributes.find(a => a.name === 'name')
+                const valAttr = sub.attributes.find(a => a.name === 'value' || a.name === 'expr:value')
+                const attrName = String(nameAttr?.value ?? '')
+                if (attrName && attrName !== 'b:whitespace') {
+                  attributes.push({ name: attrName, value: toBirAttrValue(valAttr, context.catalog) })
+                }
+              }
+              else {
+                retainedChildren.push(sub)
+              }
+            }
+            else {
+              retainedChildren.push(sub)
+            }
+          }
+          continue
+        }
+      }
     }
 
     if (child.type === 'Text' && isVoid) {

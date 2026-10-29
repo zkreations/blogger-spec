@@ -60,4 +60,3 @@ export function serializeIR(
 export function parseIR(json: string): BloggerIRDocument {
   return JSON.parse(json) as BloggerIRDocument
 }
-
