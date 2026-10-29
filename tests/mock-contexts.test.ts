@@ -123,6 +123,44 @@ describe('canonical mock contexts suite (Plan 05)', () => {
     expect(post.commentFormIframeSrc).toContain('comment-iframe.g')
   })
 
+  it('validates canonical structure of secondary widgets (HTML, LinkList, BlogSearch, PopularPosts)', () => {
+    const ctx = getMockContext('homepage')
+    const data = ctx.widgetData
+
+    // HTML1
+    expect(data.HTML1).toBeDefined()
+    expect(data.HTML1.title).toBe('HTML Personalizado')
+    expect(data.HTML1.content).toContain('Contenido HTML')
+    expect(ctx.widgets.HTML[0].id).toBe('HTML1')
+
+    // LinkList1
+    expect(data.LinkList1).toBeDefined()
+    expect(data.LinkList1.title).toBe('Enlaces Útiles')
+    expect(data.LinkList1.shownum).toBe(3)
+    expect(data.LinkList1.sorting).toBe('none')
+    expect(Array.isArray(data.LinkList1.links)).toBe(true)
+    expect(data.LinkList1.links[0].name).toBe('Inicio')
+    expect(data.LinkList1.links[0].target).toContain('ejemplo.blogspot.com')
+    expect(ctx.widgets.LinkList[0].id).toBe('LinkList1')
+
+    // BlogSearch1
+    expect(data.BlogSearch1).toBeDefined()
+    expect(data.BlogSearch1.title).toBe('Buscar en el blog')
+    expect(ctx.widgets.BlogSearch[0].id).toBe('BlogSearch1')
+
+    // PopularPosts1
+    expect(data.PopularPosts1).toBeDefined()
+    expect(typeof data.PopularPosts1.postDisplay).toBe('object')
+    expect(data.PopularPosts1.postDisplay.showSnippet).toBe(true)
+    expect(data.PopularPosts1.postDisplay.showTitle).toBe(true)
+    expect(data.PopularPosts1.postDisplay.showAuthor).toBe(true)
+
+    // Global blog canonical search and adsense properties
+    expect(ctx.blog.searchUrl).toBe('https://ejemplo.blogspot.com/search')
+    expect(ctx.blog.adsenseClientId).toBe('ca-pub-1234567890123456')
+    expect(ctx.blog.adsenseHostId).toBe('ca-host-pub-1556223355139109')
+  })
+
   it('validates canonical structure of BlogArchive, PageList, and Label gadgets', () => {
     const ctx = getMockContext('homepage')
     const data = ctx.widgetData

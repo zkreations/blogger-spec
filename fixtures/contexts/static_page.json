@@ -23,7 +23,10 @@
     "pageType": "static_page",
     "pageTitle": "Acerca de Nosotros - Mi Blog de Pruebas",
     "pageName": "Acerca de Nosotros - Mi Blog de Pruebas",
-    "pageId": 2001
+    "pageId": 2001,
+    "searchUrl": "https://ejemplo.blogspot.com/search",
+    "adsenseClientId": "ca-pub-1234567890123456",
+    "adsenseHostId": "ca-host-pub-1556223355139109"
   },
   "view": {
     "type": "item",
@@ -136,6 +139,30 @@
         "type": "Profile",
         "sectionId": "sidebar",
         "title": "Sobre el autor"
+      }
+    ],
+    "HTML": [
+      {
+        "id": "HTML1",
+        "type": "HTML",
+        "sectionId": "sidebar",
+        "title": "HTML Personalizado"
+      }
+    ],
+    "LinkList": [
+      {
+        "id": "LinkList1",
+        "type": "LinkList",
+        "sectionId": "sidebar",
+        "title": "Enlaces Útiles"
+      }
+    ],
+    "BlogSearch": [
+      {
+        "id": "BlogSearch1",
+        "type": "BlogSearch",
+        "sectionId": "sidebar",
+        "title": "Buscar en el blog"
       }
     ]
   },
@@ -388,7 +415,13 @@
     },
     "PopularPosts1": {
       "title": "Entradas populares",
-      "postDisplay": "SHOW_ALL",
+      "postDisplay": {
+        "showAuthor": true,
+        "showDate": true,
+        "showFeaturedImage": true,
+        "showSnippet": true,
+        "showTitle": true
+      },
       "posts": [
         {
           "id": "1001",
@@ -524,6 +557,32 @@
         "width": 80,
         "height": 80
       }
+    },
+    "HTML1": {
+      "title": "HTML Personalizado",
+      "content": "<div class=\"widget-content\">Contenido HTML de prueba</div>"
+    },
+    "LinkList1": {
+      "title": "Enlaces Útiles",
+      "shownum": 3,
+      "sorting": "none",
+      "links": [
+        {
+          "name": "Inicio",
+          "target": "https://ejemplo.blogspot.com/"
+        },
+        {
+          "name": "Acerca de",
+          "target": "https://ejemplo.blogspot.com/p/acerca-de.html"
+        },
+        {
+          "name": "Contacto",
+          "target": "https://ejemplo.blogspot.com/p/contacto.html"
+        }
+      ]
+    },
+    "BlogSearch1": {
+      "title": "Buscar en el blog"
     }
   }
 }
