@@ -42,6 +42,7 @@ export interface BloggerLowerOptions {
   readonly catalog?: SpecCatalog
   readonly layoutVersion?: BloggerLayoutVersion
   readonly sourceXml?: string
+  readonly skinOverrides?: Record<string, string>
 }
 
 interface LoweringContext {
@@ -125,46 +126,80 @@ function parseSkinCss(rawCss: string): Array<{ kind: 'text', value: string } | {
   return result
 }
 
-function extractSkin(doc: BloggerDocumentNode): BirSkin {
+function extractSkin(doc: BloggerDocumentNode, skinOverrides?: Record<string, string>): BirSkin {
   let skinNode: BloggerDirectiveNode | undefined
-  const findSkin = (nodes: readonly BloggerTemplateNode[]) => {
+  let templateSkinNode: BloggerDirectiveNode | undefined
+
+  const findSkinNodes = (nodes: readonly BloggerTemplateNode[]) => {
     for (const node of nodes) {
-      if (node.type === 'Directive' && (node.name === 'b:skin' || node.name === 'b:template-skin')) {
-        skinNode = node
-        return
+      if (node.type === 'Directive') {
+        if (node.name === 'b:skin') {
+          skinNode = node
+        }
+        else if (node.name === 'b:template-skin') {
+          templateSkinNode = node
+        }
       }
       if ('children' in node && Array.isArray(node.children)) {
-        findSkin(node.children)
-        if (skinNode)
-          return
+        findSkinNodes(node.children)
       }
     }
   }
-  findSkin(doc.children)
+  findSkinNodes(doc.children)
 
-  if (!skinNode) {
-    return { variables: [], css: [] }
-  }
+  let variables: BirSkin['variables'] = []
+  let css: BirSkin['css'] = []
+  let templateSkinCss: BirSkin['templateSkinCss']
 
-  let cdataContent = ''
-  for (const child of skinNode.children) {
-    if (child.type === 'CData' || child.type === 'Text') {
-      cdataContent += child.value
+  if (skinNode) {
+    let cdataContent = ''
+    for (const child of skinNode.children) {
+      if (child.type === 'CData' || child.type === 'Text') {
+        cdataContent += child.value
+      }
+    }
+    try {
+      const compiled = compileSkinCss(cdataContent, {
+        overrides: skinOverrides,
+        wrap: 'none',
+        stripMetadataTags: true,
+      })
+      variables = Object.entries(compiled.symbols).map(([name, sym]) => ({
+        name: sym.name ?? name,
+        type: sym.type,
+        default: sym.default ?? '',
+      }))
+      css = parseSkinCss(compiled.css)
+    }
+    catch {
+      css = [{ kind: 'text', value: cdataContent }]
     }
   }
 
-  try {
-    const compiled = compileSkinCss(cdataContent, { wrap: 'none', stripMetadataTags: true })
-    const variables = Object.entries(compiled.symbols).map(([name, sym]) => ({
-      name: sym.name ?? name,
-      type: sym.type,
-      default: sym.default ?? '',
-    }))
-    const css = parseSkinCss(compiled.css)
-    return { variables, css }
+  if (templateSkinNode) {
+    let cdataContent = ''
+    for (const child of templateSkinNode.children) {
+      if (child.type === 'CData' || child.type === 'Text') {
+        cdataContent += child.value
+      }
+    }
+    try {
+      const compiled = compileSkinCss(cdataContent, {
+        overrides: skinOverrides,
+        wrap: 'none',
+        stripMetadataTags: true,
+      })
+      templateSkinCss = parseSkinCss(compiled.css)
+    }
+    catch {
+      templateSkinCss = [{ kind: 'text', value: cdataContent }]
+    }
   }
-  catch {
-    return { variables: [], css: [{ kind: 'text', value: cdataContent }] }
+
+  return {
+    variables,
+    css,
+    ...(templateSkinCss ? { templateSkinCss } : {}),
   }
 }
 
@@ -833,7 +868,7 @@ export function lowerDocument(
   }
 
   const rootNodes = lowerNodes(doc.children, context)
-  const skin = extractSkin(doc)
+  const skin = extractSkin(doc, options?.skinOverrides)
 
   return {
     birVersion: '1',

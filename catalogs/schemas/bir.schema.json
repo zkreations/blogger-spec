@@ -40,7 +40,7 @@
       }
     },
     "attrValue": {
-      "oneOf": [
+      "anyOf": [
         {
           "type": "object",
           "additionalProperties": false,
@@ -85,7 +85,7 @@
       "items": { "$ref": "#/$defs/node" }
     },
     "node": {
-      "oneOf": [
+      "anyOf": [
         { "$ref": "#/$defs/element" },
         { "$ref": "#/$defs/text" },
         { "$ref": "#/$defs/cdata" },
@@ -330,7 +330,26 @@
         "css": {
           "type": "array",
           "items": {
-            "oneOf": [
+            "anyOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "value"],
+                "properties": { "kind": { "const": "text" }, "value": { "type": "string" } }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "variable"],
+                "properties": { "kind": { "const": "variable" }, "variable": { "type": "string", "minLength": 1 } }
+              }
+            ]
+          }
+        },
+        "templateSkinCss": {
+          "type": "array",
+          "items": {
+            "anyOf": [
               {
                 "type": "object",
                 "additionalProperties": false,

@@ -118,6 +118,7 @@ export interface BirIncludable {
 export interface BirSkin {
   readonly variables: ReadonlyArray<{ readonly name: string, readonly type: string, readonly default: string, readonly group?: string }>
   readonly css: ReadonlyArray<{ readonly kind: 'text', readonly value: string } | { readonly kind: 'variable', readonly variable: string }>
+  readonly templateSkinCss?: ReadonlyArray<{ readonly kind: 'text', readonly value: string } | { readonly kind: 'variable', readonly variable: string }>
 }
 
 export interface BloggerIRDocument {
