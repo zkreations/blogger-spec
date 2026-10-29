@@ -164,7 +164,7 @@ export function validateSpec(options?: BloggerValidateSpecOptions): BloggerSpecV
       errors.push(`Catalog '${name}.json' has no matching schema.`)
     }
   }
-  const SHARED_SCHEMAS = new Set(['common', 'fixture', 'mock-context'])
+  const SHARED_SCHEMAS = new Set(['bir', 'common', 'fixture', 'mock-context'])
   for (const schema of schemas) {
     if (!catalogNames.includes(schema.name as BloggerCatalogName) && !SHARED_SCHEMAS.has(schema.name)) {
       errors.push(`Schema '${schema.name}.schema.json' has no matching canonical catalog.`)
