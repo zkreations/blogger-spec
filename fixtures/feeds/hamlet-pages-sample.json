@@ -1,0 +1,187 @@
+{
+  "version": "1.0",
+  "encoding": "UTF-8",
+  "feed": {
+    "xmlns": "http://www.w3.org/2005/Atom",
+    "xmlns$openSearch": "http://a9.com/-/spec/opensearchrss/1.0/",
+    "xmlns$gd": "http://schemas.google.com/g/2005",
+    "id": {
+      "$t": "tag:blogger.com,1999:blog-5408826600056783247"
+    },
+    "updated": {
+      "$t": "2026-10-28T16:32:59.393-07:00"
+    },
+    "title": {
+      "type": "text",
+      "$t": "Hamlet"
+    },
+    "subtitle": {
+      "type": "html",
+      "$t": "Theme for development"
+    },
+    "link": [
+      {
+        "rel": "http://schemas.google.com/g/2005#feed",
+        "type": "application/atom+xml",
+        "href": "https://hamlet.zkreations.com/feeds/pages/default"
+      },
+      {
+        "rel": "self",
+        "type": "application/atom+xml",
+        "href": "https://www.blogger.com/feeds/5408826600056783247/pages/default?alt=json"
+      },
+      {
+        "rel": "alternate",
+        "type": "text/html",
+        "href": "https://hamlet.zkreations.com/"
+      }
+    ],
+    "author": [
+      {
+        "name": {
+          "$t": "Iveth"
+        },
+        "uri": {
+          "$t": "http://www.blogger.com/profile/05162121526782264118"
+        },
+        "email": {
+          "$t": "noreply@blogger.com"
+        },
+        "gd$image": {
+          "rel": "http://schemas.google.com/g/2005#thumbnail",
+          "width": "32",
+          "height": "32",
+          "src": "//blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh2_arOdF_6xLjOEaKR63hFWGqRcV9DoUrWdx1TLNCPeA29Gp1z1A1CzQSTLSbm28yBf4heS79dKKGO7KSn_FqIVYVNE6RFlwD_MZZecjOK__-RC04tgn5vHo_qdvA57UiBnOvISHO8j5zjzmV0UcZrgg0gx_ClEEpSJXZShICyPhY6iA/s220/IMG_20230925_145047.jpg"
+        }
+      }
+    ],
+    "generator": {
+      "version": "7.00",
+      "uri": "http://www.blogger.com",
+      "$t": "Blogger"
+    },
+    "openSearch$totalResults": {
+      "$t": "2"
+    },
+    "openSearch$startIndex": {
+      "$t": "1"
+    },
+    "openSearch$itemsPerPage": {
+      "$t": "25"
+    },
+    "entry": [
+      {
+        "id": {
+          "$t": "tag:blogger.com,1999:blog-5408826600056783247.page-2772603359269059586"
+        },
+        "published": {
+          "$t": "2023-03-29T08:40:00.000-07:00"
+        },
+        "updated": {
+          "$t": "2025-04-01T18:06:54.048-07:00"
+        },
+        "title": {
+          "type": "text",
+          "$t": "Typography"
+        },
+        "content": {
+          "type": "html",
+          "$t": "<p>Typography plays a crucial role in shaping the reading experience on the web. Whether you’re crafting an in-depth article, a blog post, or an editorial piece, the way you structure and style text impacts readability, engagement, and visual appeal. Let's explore some fundamental elements of typography and how they contribute to an engaging reading experience.</p>\n\n<h2>Paragraphs: The Backbone of Content</h2>\n\n<p>A well-structured article relies on paragraphs. These blocks of text help readers navigate through the content logically and cohesively:</p>\n\n<blockquote>Paragraphs use the <code>&lt;p></code> tag to create a block of text.</blockquote>\n\n<p>Paragraphs break information into digestible sections, making it easier for users to scan and absorb key points.</p>\n\n<h2>Making an Impact with Drop Caps</h2>\n\n<p class=\"typo-drop-cap\">Drop caps add a touch of elegance to an article by enlarging the first letter of a paragraph. Traditionally seen in print media, they bring a sense of sophistication and style to digital content as well:</p>\n\n<blockquote>They are created using the <code>.typo-drop-cap</code> class in the <code>&lt;p></code> tag.</blockquote>\n\n<h2>Adding Depth with Blockquotes</h2>\n\n<p>Sometimes, a single statement deserves extra attention. Blockquotes help highlight key takeaways:</p>\n\n<blockquote>\"Good typography is invisible. Bad typography is everywhere.\" — Somebody Wise</blockquote>\n\n<p>A well-placed blockquote enhances readability and adds credibility to an article.</p>\n\n<h2>Organizing Information with Lists</h2>\n\n<p>Lists make content easy to digest, whether presenting items in order or grouping related concepts:</p>\n\n<h5>Unordered List:</h5>\n<ul>\n  <li>Bullet points simplify complex ideas.</li>\n  <li>They improve readability.</li>\n  <li>They make scanning easier.</li>\n</ul>\n\n<h5>Ordered List:</h5>\n<ol>\n  <li>Step-by-step guides become clearer.</li>\n  <li>Readers follow a logical sequence.</li>\n  <li>Instructions remain structured.</li>\n</ol>\n\n<h2>Displaying Code Snippets</h2>\n\n<p>For technical content, displaying code in a readable format is essential. The <code>&lt;pre></code> and <code>&lt;code></code> tags ensure proper indentation and styling:</p>\n\n<pre><code>&lt;div class=\"typography\">\n    &lt;h1>Heading&lt;/h1>\n    &lt;p>This is a paragraph...&lt;/p>\n  &lt;/div></code></pre>\n\n<p>This format makes it easier for developers to copy and understand the code. Remember to be careful with spaces, as they are interpreted in this block.</p>\n\n<h2>Presenting Data with Tables</h2>\n<p>Tables are a great way to present data clearly and concisely. They help organize information into rows and columns, making it easy to compare values:</p>\n\n<div class=\"typo-table\">\n  <table class=\"typo-table-fixed\">\n    <thead>\n      <tr>\n        <th>Item</th>\n        <th>Price</th>\n        <th>Quantity</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td>Apples</td>\n        <td>$1.00</td>\n        <td>10</td>\n      </tr>\n      <tr>\n        <td>Bananas</td>\n        <td>$0.50</td>\n        <td>20</td>\n      </tr>\n    </tbody>\n  </table>\n</div>\n\n<blockquote>Tables are not responsive elements. Use the class <code>.typo-table</code> to fix this.</blockquote>\n\n<h2>Spoilers and Accordions: Revealing Content Selectively</h2>\n<p>Sometimes, you want to hide content until the reader is ready to see it. Spoilers and accordions are great for this:</p>\n\n<details class=\"typo-spoiler\">\n  <summary>Click to reveal the spoiler</summary>\n  <p>This is a spoiler content that can be revealed by clicking the summary.</p>\n</details>\n\n<p>But the spoiler doesn't always work alone; sometimes it needs a little help. That's why the spoiler can be part of an <strong>accordion</strong>. To do this, you just need to use several spoilers with the <code>name</code> attribute and the same name:</p>\n\n<details class=\"typo-spoiler\" name=\"spoiler1\">\n  <summary>Reveal the first segment</summary>\n  <p>Click on another segment to dive deeper 🐋</p>\n</details>\n<details class=\"typo-spoiler\" name=\"spoiler1\">\n  <summary>Another segment...  </summary>\n  <p>This segment is totally different. 🦄 It's like discovering a new world!</p>\n</details>\n\n<p>Accordions are a great way to present information without overwhelming the reader. They allow users to expand and collapse sections of content as needed.</p>\n\n<blockquote>Accordions are created using the <code>&lt;details></code> tag with the <code>.typo-spoiler</code> class.</blockquote>\n\n<h2>Enhancing Layouts</h2>\n\n<div class=\"typo-columns\">\n  <p>The columns improve content presentation by creating structured layouts. Whether for text or media, they enhance readability and aesthetics.</p>\n\n  <p>On the other hand, the alignment of elements, is a resource widely used in news or for storytelling because of how great it is for illustrating what is being shown.</p>\n</div>\n\n<blockquote>Columns are created using the <code>.typo-columns</code> class in the <code>&lt;div></code> tag.</blockquote>\n\n<h2>Diana's Discovery: A Glimpse into the Unknown</h2>\n\n<p>The perfectly circular ring of light appeared out of nowhere, tearing through the starry mantle above the mountains while Diana held her breath, petrified next to her pickup truck in that remote clearing. There was no sound, no vibration, just an imposing presence that seemed to observe her with an ancient and <em>inscrutable</em> intelligence.</p>\n\n<figure class=\"typo-align-right\">\n  <img src=\"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEix7GervuGdRw8TLwA9D08MwT10N80RHAjTUvkDiln5qQnwHmhEJCFHcFxVTIqe5Erwr4vt909RYYZ4s01NW3jckfybgjCMGdaojmpSSU5INTs3XTyrD5o2y1pjQf4FEwU9VUXYBXUyKrwswYfh2p2jLdQWgCjEZaqrOv445R_d2282RR-j_QFe8AC19cz6/s426-e30-rw-l80/image.webp\" alt=\"ufo\" width=\"340\" height=\"426\" loading=\"lazy\">\n  <figcaption>Photo by <a href=\"https://www.pexels.com/es-es/foto/montanas-galaxy-galaxia-circulo-9737557/\">Jakob Rosen</a> on Pexels</figcaption>\n</figure>\n\n<p>Diana had driven to this secluded place following coordinates found in an enigmatic coded message that had been appearing on her computer for weeks, a message that all experts considered impossible to decipher but that she, an astrophysicist marginalized for her theories about <u>interdimensional civilizations</u>, had managed to interpret.</p>\n\n<p>The luminous circle pulsed three times and suddenly Diana's mind was flooded with symbols and equations that rewrote everything humanity believed it knew about space-time; <s>forbidden</s> knowledge that advanced civilizations had deliberately hidden from Earth for millennia, considering us too primitive and dangerous.</p>\n\n<blockquote>Alignment is created using the <code>.typo-align-right</code>, <code>.typo-align-left</code>, <code>.typo-align-center</code> and <code>.typo-align-full</code> class in any block element.</blockquote>\n\n<h2>Galleries: A Visual Journey</h2>\n<p>Galleries are a fantastic way to showcase images in a structured format. They allow users to explore visual content without overwhelming them with too many images at once:</p>\n\n<div class=\"typo-gallery\">\n  <figure>\n    <img loading=\"lazy\" src=\"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgmU7RoNIwNJytov0AyFhztpL2HwxScf96UgeqXUM7c3-WvI8jLbCj2apQjuPnQ48N_-G2yhFh1ad3EThr_vYwzW6tdQp5nsbUAABy3AXOC6rIYZtMEBTlpC9yi7iyWE9oi0d4kQFeGztk6WMXei2sSWbX8IF17DJ7v99fu3z7BtL6wbvBJAJdqvJsOShum/s400-e30-rw-l80/gallery-1.webp\" width=\"400\" height=\"300\">\n    <figcaption>Figure 1</figcaption>\n  </figure>\n  <figure>\n    <img loading=\"lazy\" src=\"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg3IdJI9IVtreg0xeLRn6Pfjdv94udVDc6cZZe2X6IAIODKEiO2Co_GL72GIcpZsJ3hm8PK7ASohehLkN_H8aZZuI3HWc41StwH3MosjB34jHiwfCcMnSdg5RAik6g6wcQdyMbADKlDindGQv2W9ghkT3vmpD5x3qxUYgFIHkyzajKikDMNthR9VpfONvtH/s400-e30-rw-l80/gallery-2.webp\" width=\"400\" height=\"300\">\n    <figcaption>Figure 2</figcaption>\n  </figure>\n  <figure>\n    <img loading=\"lazy\" src=\"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEidIKe0-zXiX5XOLPW7rCPSVa0hcRLi1HAQv9FwnEWqAAgMOm2L4rekn4_AX_qcmTrmPt_teokW8HsamQyz1FNfpp13V2jyBlUosf-MVFFpprHCZIcqJJTvCxkYy3CGv6d-Q0mcvgNsC4lCrUvGNAmSXeTWUuYwUp5zHBAc_APD-b4ZEzymTPSt7nwAzZjm/s400-e30-rw-l80/gallery-3.webp\" width=\"400\" height=\"300\">\n    <figcaption>Figure 3</figcaption>\n  </figure>\n  <figure>\n    <img loading=\"lazy\" src=\"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjL6q4w6S8YlvnONJNMWmtWVw-nzrUXXFSGL9Lgai9ZIBQB6uTpasa8QlXwb9-Gc_808tc9CwA6QwqfEtB7Nwt4IsBO-Ku_ExMOO6iWhUynGyOamSOY_tMlsJYNtmRKB7ade0UgHE8B3ObYWH_KsbbswYY9QdjRrCJWMnHoA5QxuGdqkeecsF6_1z3-OC-A/s400-e30-rw-l80/gallery-4.webp\" width=\"400\" height=\"300\">\n    <figcaption>Figure 4</figcaption>\n  </figure>\n  <figure>\n    <img loading=\"lazy\" src=\"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgmU-6nZbU3H508F9XPupxlxa2wOr7JT7HwndBN9ItuGx_0R6Qcg83r4HypyTbJX8rUcyx5beBy6FGioEGW8PWGIyB85X-bDSB99dIKg3P4TigsbDAMZ-PaMlWfhmxIzqVsv9yo-wWBbRKCYZzBhOrcEx2zi_eaPQAo39N6QfO0vjFwih0l2naiZ4i0bzqG/s400-e30-rw-l80/gallery-5.webp\" width=\"400\" height=\"300\">\n    <figcaption>Figure 5</figcaption>\n  </figure>\n</div>\n\n<blockquote>Galleries are created using the <code>.typo-gallery</code> class in the <code>&lt;div></code> tag.</blockquote>\n\n<hr>\n\n<h2>License</h2>\n<p>Typography is licensed under the MIT License. You can use it freely in your projects, but please keep the attribution to the original authors.</p>\n"
+        },
+        "link": [
+          {
+            "rel": "edit",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/pages/default/2772603359269059586"
+          },
+          {
+            "rel": "self",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/pages/default/2772603359269059586"
+          },
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://hamlet.zkreations.com/p/typography.html",
+            "title": "Typography"
+          }
+        ],
+        "author": [
+          {
+            "name": {
+              "$t": "Unknown"
+            },
+            "email": {
+              "$t": "noreply@blogger.com"
+            },
+            "gd$image": {
+              "rel": "http://schemas.google.com/g/2005#thumbnail",
+              "width": "16",
+              "height": "16",
+              "src": "https://img1.blogblog.com/img/b16-rounded.gif"
+            }
+          }
+        ],
+        "media$thumbnail": {
+          "xmlns$media": "http://search.yahoo.com/mrss/",
+          "url": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEix7GervuGdRw8TLwA9D08MwT10N80RHAjTUvkDiln5qQnwHmhEJCFHcFxVTIqe5Erwr4vt909RYYZ4s01NW3jckfybgjCMGdaojmpSSU5INTs3XTyrD5o2y1pjQf4FEwU9VUXYBXUyKrwswYfh2p2jLdQWgCjEZaqrOv445R_d2282RR-j_QFe8AC19cz6/s72-c-e30-rw-l80/image.webp",
+          "height": "72",
+          "width": "72"
+        }
+      },
+      {
+        "id": {
+          "$t": "tag:blogger.com,1999:blog-5408826600056783247.page-3930577390084377949"
+        },
+        "published": {
+          "$t": "2023-03-24T14:44:00.000-07:00"
+        },
+        "updated": {
+          "$t": "2023-04-22T16:20:56.492-07:00"
+        },
+        "title": {
+          "type": "text",
+          "$t": "Contact"
+        },
+        "content": {
+          "type": "html",
+          "$t": "<p>\n  This is a sample contact page. You can modify all the changes and add custom\n  fields. The forms in this theme are based on\n  <a href=\"https://formspree.io/\" target=\"_blank\" rel=\"nofollow\"\n    >formspree.io</a\n  >\n</p>\n<form\n  action=\"https://formspree.icon/f/YourID\"\n  class=\"sy-1.5 i-bold\"\n  method=\"POST\"\n>\n  <!-- Sección -->\n  <div class=\"form-section\">\n    <label class=\"form-label\">Nombre completo</label>\n    <input class=\"form-control\" type=\"text\" name=\"name\" required />\n  </div>\n  <!-- Sección -->\n  <div class=\"form-section\">\n    <label class=\"form-label\">Correo electrónico</label>\n    <input class=\"form-control\" type=\"email\" name=\"email\" required />\n  </div>\n  <!-- Sección -->\n  <div class=\"form-section\">\n    <label class=\"form-label\">Asunto del envio</label>\n    <input class=\"form-control\" type=\"text\" name=\"subject\" required />\n  </div>\n  <!-- Sección -->\n  <div class=\"form-section\">\n    <label class=\"form-label\">Contenido del mensaje</label>\n    <textarea class=\"form-control form-big\" name=\"Message\" required></textarea>\n  </div>\n  <!-- Sección -->\n  <div class=\"form-section\">\n    <label class=\"form-label\">Política de privacidad</label>\n    <div class=\"form-check\">\n      <input\n        type=\"checkbox\"\n        name=\"RPGD\"\n        value=\"Acepté la política de datos\"\n        id=\"RPGD\"\n        required\n      />\n      <label for=\"RPGD\">\n        He leído y estoy de acuerdo con la\n        <a href=\"#TU_URL_LEGAL\">política de datos</a>\n      </label>\n    </div>\n  </div>\n  <!-- Sección -->\n  <div class=\"form-section\">\n    <button class=\"btn\" type=\"submit\">\n      <svg class=\"i i-paper-plane\" viewBox=\"0 0 24 24\">\n        <path d=\"m22 2-7 20-4-9-9-4zm0 0L11 13\"></path>\n      </svg>\n      Enviar mensaje\n    </button>\n  </div>\n</form>\n"
+        },
+        "link": [
+          {
+            "rel": "edit",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/pages/default/3930577390084377949"
+          },
+          {
+            "rel": "self",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/pages/default/3930577390084377949"
+          },
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://hamlet.zkreations.com/p/contact.html",
+            "title": "Contact"
+          }
+        ],
+        "author": [
+          {
+            "name": {
+              "$t": "Unknown"
+            },
+            "email": {
+              "$t": "noreply@blogger.com"
+            },
+            "gd$image": {
+              "rel": "http://schemas.google.com/g/2005#thumbnail",
+              "width": "16",
+              "height": "16",
+              "src": "https://img1.blogblog.com/img/b16-rounded.gif"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
