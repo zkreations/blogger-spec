@@ -1,0 +1,351 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bir.schema.json",
+  "title": "Blogger Intermediate Representation (BIR)",
+  "description": "Language-neutral semantic IR produced from a Blogger XML template. Void elements are normalized, mutations collapsed into target nodes, expressions pre-parsed and includables extracted into a symbol table.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["birVersion", "layoutVersion", "root", "symbolTable", "skin"],
+  "properties": {
+    "birVersion": { "const": "1" },
+    "layoutVersion": { "enum": ["v1", "v2", "v3"] },
+    "root": { "$ref": "#/$defs/nodeList" },
+    "symbolTable": {
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/includable" }
+    },
+    "skin": { "$ref": "#/$defs/skin" }
+  },
+  "$defs": {
+    "expression": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "enum": [
+            "Literal",
+            "Identifier",
+            "DataPath",
+            "UnaryExpression",
+            "BinaryExpression",
+            "LogicalExpression",
+            "ConditionalExpression",
+            "CallExpression",
+            "LambdaExpression",
+            "ObjectExpression",
+            "ArrayExpression",
+            "MemberExpression"
+          ]
+        }
+      }
+    },
+    "attrValue": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "value"],
+          "properties": {
+            "kind": { "const": "static" },
+            "value": { "type": "string" }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["kind", "expr"],
+          "properties": {
+            "kind": { "const": "expr" },
+            "expr": { "$ref": "#/$defs/expression" }
+          }
+        }
+      ]
+    },
+    "attribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "value"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "value": { "$ref": "#/$defs/attrValue" },
+        "cond": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "classMutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name"],
+      "properties": {
+        "name": { "$ref": "#/$defs/attrValue" },
+        "cond": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "nodeList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/node" }
+    },
+    "node": {
+      "oneOf": [
+        { "$ref": "#/$defs/element" },
+        { "$ref": "#/$defs/text" },
+        { "$ref": "#/$defs/cdata" },
+        { "$ref": "#/$defs/comment" },
+        { "$ref": "#/$defs/tag" },
+        { "$ref": "#/$defs/if" },
+        { "$ref": "#/$defs/loop" },
+        { "$ref": "#/$defs/with" },
+        { "$ref": "#/$defs/switch" },
+        { "$ref": "#/$defs/include" },
+        { "$ref": "#/$defs/output" },
+        { "$ref": "#/$defs/container" }
+      ]
+    },
+    "element": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "tag", "isVoid", "attributes", "classes", "children"],
+      "properties": {
+        "kind": { "const": "element" },
+        "tag": { "type": "string", "minLength": 1 },
+        "isVoid": { "type": "boolean" },
+        "attributes": { "type": "array", "items": { "$ref": "#/$defs/attribute" } },
+        "classes": { "type": "array", "items": { "$ref": "#/$defs/classMutation" } },
+        "children": { "$ref": "#/$defs/nodeList" }
+      },
+      "if": { "properties": { "isVoid": { "const": true } } },
+      "then": { "properties": { "children": { "maxItems": 0 } } }
+    },
+    "text": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "const": "text" },
+        "value": { "type": "string" }
+      }
+    },
+    "cdata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "const": "cdata" },
+        "value": { "type": "string" }
+      }
+    },
+    "comment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "const": "comment" },
+        "value": { "type": "string" }
+      }
+    },
+    "tag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "cond", "attributes", "classes", "children"],
+      "properties": {
+        "kind": { "const": "tag" },
+        "cond": { "$ref": "#/$defs/expression" },
+        "attributes": { "type": "array", "items": { "$ref": "#/$defs/attribute" } },
+        "classes": { "type": "array", "items": { "$ref": "#/$defs/classMutation" } },
+        "children": { "$ref": "#/$defs/nodeList" }
+      }
+    },
+    "if": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "branches"],
+      "properties": {
+        "kind": { "const": "if" },
+        "branches": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["children"],
+            "properties": {
+              "test": { "$ref": "#/$defs/expression" },
+              "children": { "$ref": "#/$defs/nodeList" }
+            }
+          }
+        }
+      }
+    },
+    "loop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "values", "var", "children"],
+      "properties": {
+        "kind": { "const": "loop" },
+        "values": { "$ref": "#/$defs/expression" },
+        "var": { "type": "string", "minLength": 1 },
+        "index": { "type": "string" },
+        "reverse": { "type": "boolean" },
+        "children": { "$ref": "#/$defs/nodeList" }
+      }
+    },
+    "with": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "bindings", "children"],
+      "properties": {
+        "kind": { "const": "with" },
+        "bindings": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["var", "value"],
+            "properties": {
+              "var": { "type": "string", "minLength": 1 },
+              "value": { "$ref": "#/$defs/expression" }
+            }
+          }
+        },
+        "children": { "$ref": "#/$defs/nodeList" }
+      }
+    },
+    "switch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "on", "cases"],
+      "properties": {
+        "kind": { "const": "switch" },
+        "on": { "$ref": "#/$defs/expression" },
+        "cases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["children"],
+            "properties": {
+              "match": { "$ref": "#/$defs/expression" },
+              "children": { "$ref": "#/$defs/nodeList" }
+            }
+          }
+        }
+      }
+    },
+    "resolution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier", "resolved"],
+      "properties": {
+        "tier": {
+          "enum": [
+            "local_widget",
+            "gadget_specific",
+            "universal_widget",
+            "shared_common",
+            "platform_server",
+            "unresolved"
+          ]
+        },
+        "resolved": { "type": "boolean" },
+        "failureComment": { "type": "string" }
+      }
+    },
+    "include": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "args"],
+      "properties": {
+        "kind": { "const": "include" },
+        "target": { "type": "string", "minLength": 1 },
+        "dynamicTarget": { "$ref": "#/$defs/expression" },
+        "resolution": { "$ref": "#/$defs/resolution" },
+        "args": {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/$defs/attrValue" }
+        }
+      },
+      "oneOf": [{ "required": ["target"] }, { "required": ["dynamicTarget"] }]
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "expr"],
+      "properties": {
+        "kind": { "const": "output" },
+        "expr": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "container": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "role", "children"],
+      "properties": {
+        "kind": { "const": "container" },
+        "role": { "enum": ["section", "widget"] },
+        "id": { "type": "string" },
+        "widgetType": { "type": "string" },
+        "children": { "$ref": "#/$defs/nodeList" }
+      }
+    },
+    "includable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "tier", "params", "body"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "tier": {
+          "enum": [
+            "local_widget",
+            "gadget_specific",
+            "universal_widget",
+            "shared_common",
+            "platform_server"
+          ]
+        },
+        "ownerWidgetId": { "type": "string" },
+        "params": { "type": "array", "items": { "type": "string" } },
+        "body": { "$ref": "#/$defs/nodeList" }
+      }
+    },
+    "skin": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["variables", "css"],
+      "properties": {
+        "variables": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "type", "default"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "type": { "type": "string", "minLength": 1 },
+              "default": { "type": "string" },
+              "group": { "type": "string" }
+            }
+          }
+        },
+        "css": {
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "value"],
+                "properties": { "kind": { "const": "text" }, "value": { "type": "string" } }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["kind", "variable"],
+                "properties": { "kind": { "const": "variable" }, "variable": { "type": "string", "minLength": 1 } }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
