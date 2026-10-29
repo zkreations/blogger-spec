@@ -30,6 +30,7 @@ import type {
   BloggerOperatorName,
   BloggerOperatorsCatalog,
   BloggerPrecedenceHierarchyLevel,
+  BloggerRenderPipelineCatalog,
   BloggerRootAttributesCatalog,
   BloggerRuntimeEvaluationState,
   BloggerScopeDefinition,
@@ -865,6 +866,11 @@ export class SpecCatalog {
     return directivesCatalog.domain_metadata?.skin_compilation
   }
 
+  getRenderPipeline(): BloggerRenderPipelineCatalog | undefined {
+    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
+    return directivesCatalog.domain_metadata?.render_pipeline
+  }
+
   getHtmlVoidElements(): ReadonlySet<string> {
     return this.htmlVoidElements
   }
@@ -1625,6 +1631,10 @@ export function getDomMutationPipeline(catalog: SpecCatalog = getSpecCatalog()):
 
 export function getSkinCompilation(catalog: SpecCatalog = getSpecCatalog()): BloggerSkinCompilationCatalog | undefined {
   return catalog.getSkinCompilation()
+}
+
+export function getRenderPipeline(catalog: SpecCatalog = getSpecCatalog()): BloggerRenderPipelineCatalog | undefined {
+  return catalog.getRenderPipeline()
 }
 
 export function isOperator(op: string, catalog: SpecCatalog = getSpecCatalog()): op is BloggerOperatorName {

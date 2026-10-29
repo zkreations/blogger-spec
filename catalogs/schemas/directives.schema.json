@@ -596,6 +596,58 @@
             }
           },
           "additionalProperties": false
+        },
+        "render_pipeline": {
+          "type": "object",
+          "description": "Step-by-step rendering machine specification for compiling Blogger XML AST into preview/production HTML.",
+          "required": [
+            "execution_model",
+            "description",
+            "phases"
+          ],
+          "properties": {
+            "execution_model": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "phases": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": [
+                  "phase",
+                  "name",
+                  "title",
+                  "description",
+                  "operations"
+                ],
+                "properties": {
+                  "phase": {
+                    "type": "integer"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "operations": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
