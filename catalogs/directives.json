@@ -537,13 +537,13 @@
         },
         "maxwidgets": {
           "type": "number",
-          "description": "Maximum allowed widgets. Deprecated in Layouts v3.",
+          "description": "Maximum allowed widgets. Deprecated in Layouts v3. Its presence causes the section to suppress widget rendering and emit <div class='no-items section'>.",
           "attribute_kind": "static_literal",
           "expr": false
         },
         "showaddelement": {
           "type": "boolean",
-          "description": "Shows the 'Add a Gadget' button in Layout UI. Values: 'yes' / 'true' (default, visible), 'no' / 'false' (hidden).",
+          "description": "Shows the 'Add a Gadget' button in legacy Layout UI. Deprecated in Layouts v3. Its presence causes the section to suppress widget rendering and emit <div class='no-items section'>.",
           "attribute_kind": "static_literal",
           "expr": false,
           "allowed_values": [
@@ -607,10 +607,17 @@
       "deprecated_attributes": {
         "maxwidgets": {
           "status": "deprecated_in_layout_v3",
-          "action": "migrate",
+          "action": "remove",
           "type": "number",
-          "replacement": "showaddelement='no' (or 'false') and CSS layout",
-          "reason": "Hard ceiling on widget addition deprecated in Layouts v3."
+          "replacement": null,
+          "reason": "Deprecated in Layouts v3. In Layouts v3 (b:layoutsVersion='3'), its presence suppresses section rendering into <div class='no-items section'>. Remove this attribute."
+        },
+        "showaddelement": {
+          "status": "deprecated_in_layout_v3",
+          "action": "remove",
+          "type": "boolean",
+          "replacement": null,
+          "reason": "Deprecated in Layouts v3. In Layouts v3 (b:layoutsVersion='3'), its presence suppresses section rendering into <div class='no-items section'>. Remove this attribute."
         },
         "growth": {
           "status": "deprecated_in_layout_v3",

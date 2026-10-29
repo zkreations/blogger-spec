@@ -344,6 +344,17 @@ function validateDirectiveAttributeRules(
         }],
       })
     }
+    else if (!dep.replacement && dep.start !== undefined && dep.end !== undefined) {
+      fixes.push({
+        title: `Remove deprecated attribute '${dep.name}'`,
+        isPreferred: true,
+        edits: [{
+          start: dep.start,
+          end: dep.end,
+          newText: '',
+        }],
+      })
+    }
     pushDiagnostic(diagnostics, catalog, deprecatedDiag, token, {
       message: `Attribute '${dep.name}' on <${token.tagName}> is deprecated. ${dep.reason || ''}`.trim(),
       start: dep.start ?? token.tagStart,

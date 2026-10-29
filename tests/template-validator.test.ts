@@ -536,6 +536,20 @@ describe('helpers & canonical structure validation suite', () => {
       const xml = '<b:widget id="Header1" type="Header" mobile="yes"/>'
       const diags = validateTemplateStructure(xml)
       expect(diags.some(d => d.code === 'BX1024')).toBe(true)
+
+      // Test deprecated section attributes in Layouts v3
+      const sectionXml = '<b:section id="main" maxwidgets="1" showaddelement="no"/>'
+      const sectionDiags = validateTemplateStructure(sectionXml)
+      const maxwidgetsDiag = sectionDiags.find(d => d.code === 'BX1024' && d.attribute === 'maxwidgets')
+      const showaddelementDiag = sectionDiags.find(d => d.code === 'BX1024' && d.attribute === 'showaddelement')
+
+      expect(maxwidgetsDiag).toBeDefined()
+      expect(maxwidgetsDiag?.message).toContain('deprecated')
+      expect(maxwidgetsDiag?.fixes?.[0]?.title).toBe('Remove deprecated attribute \'maxwidgets\'')
+
+      expect(showaddelementDiag).toBeDefined()
+      expect(showaddelementDiag?.message).toContain('deprecated')
+      expect(showaddelementDiag?.fixes?.[0]?.title).toBe('Remove deprecated attribute \'showaddelement\'')
     })
 
     it('detects invalid expressions on static literal attributes (BX1042)', () => {
