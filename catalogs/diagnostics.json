@@ -17,6 +17,7 @@
       "loop_shadowing",
       "message_rendering",
       "negative_syntax",
+      "prod_fragments",
       "runtime_coercion",
       "subtype_modifiers",
       "types",

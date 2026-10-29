@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "mock-context.schema.json",
+  "title": "Blogger Canonical Mock Context Schema",
+  "description": "JSON Schema specification for view-specific mock runtime contexts conforming to Blogger Layouts v3.",
+  "type": "object",
+  "required": [
+    "blog",
+    "view",
+    "messages",
+    "skin",
+    "widgets",
+    "widgetData"
+  ],
+  "properties": {
+    "blog": {
+      "type": "object",
+      "required": [
+        "title",
+        "url",
+        "locale",
+        "encoding"
+      ],
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "url": { "type": "string" },
+        "canonicalUrl": { "type": "string" },
+        "homepageUrl": { "type": "string" },
+        "bloggerUrl": { "type": "string" },
+        "blogId": { "type": "string" },
+        "blogspotFaviconUrl": { "type": "string" },
+        "locale": { "type": "string" },
+        "localeUnderscoreDelimited": { "type": "string" },
+        "languageDirection": { "type": "string", "enum": ["ltr", "rtl"] },
+        "encoding": { "type": "string" },
+        "isMobileRequest": { "type": "boolean" },
+        "adultContent": { "type": "boolean" },
+        "httpsEnabled": { "type": "boolean" },
+        "hasCustomDomain": { "type": "boolean" },
+        "adsenseHasAds": { "type": "boolean" },
+        "adsenseAutoAds": { "type": "boolean" },
+        "enabledCommentProfileImages": { "type": "boolean" },
+        "metaDescription": { "type": "string" },
+        "pageType": { "type": "string" },
+        "pageTitle": { "type": "string" },
+        "pageName": { "type": "string" },
+        "searchUrl": { "type": "string" },
+        "adsenseClientId": { "type": "string" },
+        "adsenseHostId": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+    "view": {
+      "type": "object",
+      "required": [
+        "type",
+        "title",
+        "url"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["feed", "item", "error", "archive", "search", "preview", "layoutMode"]
+        },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "url": { "type": "string" },
+        "isHomepage": { "type": "boolean" },
+        "isPost": { "type": "boolean" },
+        "isPage": { "type": "boolean" },
+        "isArchive": { "type": "boolean" },
+        "isSearch": { "type": "boolean" },
+        "isLabelSearch": { "type": "boolean" },
+        "isError": { "type": "boolean" },
+        "isPreview": { "type": "boolean" },
+        "isLayoutMode": { "type": "boolean" },
+        "isMultipleItems": { "type": "boolean" },
+        "isSingleItem": { "type": "boolean" },
+        "featuredImage": { "type": "string" },
+        "postId": { "type": "number" },
+        "search": { "type": "object" }
+      },
+      "additionalProperties": true
+    },
+    "messages": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "skin": {
+      "type": "object",
+      "required": ["vars"],
+      "properties": {
+        "vars": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "widgets": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["id"],
+          "properties": {
+            "id": { "type": "string" },
+            "type": { "type": "string" },
+            "sectionId": { "type": "string" },
+            "title": { "type": "string" }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "widgetData": {
+      "type": "object",
+      "required": ["Blog1"],
+      "properties": {
+        "Blog1": { "type": "object" },
+        "Header1": { "type": "object" },
+        "PageList1": { "type": "object" },
+        "Label1": { "type": "object" },
+        "BlogArchive1": { "type": "object" },
+        "FeaturedPost1": { "type": "object" },
+        "PopularPosts1": { "type": "object" },
+        "Profile1": { "type": "object" },
+        "HTML1": { "type": "object" },
+        "LinkList1": { "type": "object" },
+        "BlogSearch1": { "type": "object" }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
+

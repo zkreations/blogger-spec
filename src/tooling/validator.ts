@@ -164,10 +164,29 @@ export function validateSpec(options?: BloggerValidateSpecOptions): BloggerSpecV
       errors.push(`Catalog '${name}.json' has no matching schema.`)
     }
   }
-  const SHARED_SCHEMAS = new Set(['common', 'fixture'])
+  const SHARED_SCHEMAS = new Set(['common', 'fixture', 'mock-context'])
   for (const schema of schemas) {
     if (!catalogNames.includes(schema.name as BloggerCatalogName) && !SHARED_SCHEMAS.has(schema.name)) {
       errors.push(`Schema '${schema.name}.schema.json' has no matching canonical catalog.`)
+    }
+  }
+
+  log('-> 1.1. Validating canonical mock contexts against mock-context.schema.json...')
+  const mockContextSchema = schemas.find(s => s.name === 'mock-context')
+  if (mockContextSchema) {
+    const validateContext = ajv.getSchema(mockContextSchema.schema.$id) || ajv.compile(mockContextSchema.schema)
+    const contextsDir = getWorkspacePaths().contexts
+    if (existsSync(contextsDir)) {
+      for (const file of readdirSync(contextsDir).filter(f => f.endsWith('.json'))) {
+        const contextData = JSON.parse(readFileSync(join(contextsDir, file), 'utf-8'))
+        const valid = validateContext(contextData)
+        if (!valid) {
+          for (const err of validateContext.errors || []) {
+            errors.push(`fixtures/contexts/${file}: ${err.instancePath || '/'} ${err.message}`)
+          }
+        }
+      }
+      log('  [PASS] All canonical mock contexts match mock-context.schema.json.')
     }
   }
 

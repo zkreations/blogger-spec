@@ -1,0 +1,155 @@
+{
+  "subsystem": "prod_fragments",
+  "fixtures": [
+    {
+      "id": "templates/prod_fragments/byline_render",
+      "title": "Production Post Byline Render",
+      "evidence": "official",
+      "covers": [
+        "subsystem:prod_fragments",
+        "tag:b:if",
+        "tag:data:*"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div class='byline'><b:if cond='data:show.author'><span class='byline-author'><data:post.author.name/></span></b:if><b:if cond='data:show.comments and data:post.numberOfComments &gt; 0'><span class='byline-comments'><data:post.numberOfComments/> comments</span></b:if></div>",
+        "mode": "fragment",
+        "context": {
+          "show": {
+            "author": true,
+            "comments": true
+          },
+          "post": {
+            "author": {
+              "name": "Blogger Team"
+            },
+            "numberOfComments": 3
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"byline\"><span class=\"byline-author\">Blogger Team</span><span class=\"byline-comments\">3 comments</span></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "templates/prod_fragments/post_card",
+      "title": "Production Post Card with Image Resizing",
+      "evidence": "official",
+      "covers": [
+        "subsystem:prod_fragments",
+        "tag:b:if",
+        "operator:resizeImage",
+        "tag:data:*"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<article class='card'><b:if cond='data:post.featuredImage'><img expr:src='resizeImage(data:post.featuredImage, 300, \"1:1\")' expr:alt='data:post.title'/></b:if><h2 class='card-title'><data:post.title/></h2><p class='card-snippet'><data:post.snippets.short/></p></article>",
+        "mode": "fragment",
+        "context": {
+          "post": {
+            "title": "Hamlet Theme Release",
+            "featuredImage": "https://blogger.googleusercontent.com/img/a/AVvXsEjxyz=s1600",
+            "snippets": {
+              "short": "Modern responsive Blogger XML template engine."
+            }
+          }
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<article class=\"card\"><img src=\"https://blogger.googleusercontent.com/img/a/AVvXsEjxyz=w300-h300-p-k-no-nu\" alt=\"Hamlet Theme Release\"/><h2 class=\"card-title\">Hamlet Theme Release</h2><p class=\"card-snippet\">Modern responsive Blogger XML template engine.</p></article>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "templates/prod_fragments/dom_hoisting",
+      "title": "Continuous DOM Mutation Hoisting with Void Element",
+      "evidence": "official",
+      "covers": [
+        "subsystem:prod_fragments",
+        "tag:b:tag",
+        "tag:b:class",
+        "tag:b:attr"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div class='card'><b:class cond='data:isFeatured' name='card-featured'/><b:attr name='id' expr:value='data:customId'/><b:tag cond='data:useHeader' name='header'><h1>Title</h1></b:tag><b:tag name='input'><b:attr name='b:whitespace' value='remove'/><b:attr name='type' value='text'/><b:class name='field-input'/><b:attr name='value' expr:value='data:inputValue'/></b:tag></div>",
+        "mode": "fragment",
+        "context": {
+          "isFeatured": true,
+          "customId": "lead-input",
+          "useHeader": false,
+          "inputValue": "Draft Content"
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"card card-featured\" id=\"lead-input\"><h1>Title</h1><input type=\"text\" class=\"field-input\" value=\"Draft Content\"/></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "templates/prod_fragments/secondary_widgets",
+      "title": "Production Secondary Widget LinkList Loop",
+      "evidence": "official",
+      "covers": [
+        "subsystem:prod_fragments",
+        "tag:b:loop",
+        "tag:data:*"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<div class='widget-content'><ul><b:loop values='data:links' var='link'><li><a expr:href='data:link.target'><data:link.name/></a></li></b:loop></ul></div>",
+        "mode": "fragment",
+        "context": {
+          "links": [
+            {
+              "name": "Documentation",
+              "target": "https://example.com/docs"
+            },
+            {
+              "name": "GitHub",
+              "target": "https://example.com/repo"
+            }
+          ]
+        }
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<div class=\"widget-content\"><ul><li><a href=\"https://example.com/docs\">Documentation</a></li><li><a href=\"https://example.com/repo\">GitHub</a></li></ul></div>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    },
+    {
+      "id": "templates/prod_fragments/subroutine_call",
+      "title": "Production Subroutine Includable Invocation",
+      "evidence": "official",
+      "covers": [
+        "subsystem:prod_fragments",
+        "tag:b:widget",
+        "tag:b:includable",
+        "tag:b:include",
+        "tag:b:if",
+        "tag:data:*"
+      ],
+      "input": {
+        "kind": "template",
+        "source": "<b:widget id='Blog1' type='Blog'><b:includable id='main'><b:include name='badge' data='{ label: \"VIP\", active: true }'/></b:includable><b:includable id='badge' var='item'><b:if cond='data:item.active'><span class='badge'><data:item.label/></span></b:if></b:includable></b:widget>",
+        "mode": "fragment",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "html",
+        "html": "<span class=\"badge\">VIP</span>",
+        "canonicalDom": true
+      },
+      "verified_at": "2026-10-28"
+    }
+  ]
+}

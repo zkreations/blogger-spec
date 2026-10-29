@@ -12,6 +12,7 @@ export interface BloggerWorkspacePaths {
   schemas: string
   fixtures: string
   fixturesManifest: string
+  contexts: string
   dist: string
   dts: string
   workbench: string
@@ -54,6 +55,7 @@ export function getWorkspacePaths(overrideRoot?: string): BloggerWorkspacePaths 
     schemas: join(catalogs, 'schemas'),
     fixtures,
     fixturesManifest: join(fixtures, 'index.json'),
+    contexts: join(fixtures, 'contexts'),
     dist,
     dts: join(dist, 'index.d.ts'),
     workbench: join(root, '.workbench'),
