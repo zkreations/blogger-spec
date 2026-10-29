@@ -117,7 +117,6 @@ export function detectTemplateVersion(
     versionMarkers.set(v, collectMarkersForVersion(markers, sanitized))
   }
 
-  // Resolution
   if (explicitVersion !== null && explicitFeature !== null) {
     const detectedFeatures = [explicitFeature]
     for (const v of versionKeys) {

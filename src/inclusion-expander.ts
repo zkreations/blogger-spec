@@ -43,9 +43,6 @@ export function extractIncludableBody(markup: string): string {
   return withoutOpen.replace(INCLUDABLE_CLOSE_REGEX, '').trim()
 }
 
-/**
- * Parses directive attributes from attribute string.
- */
 function parseAttributes(attrString: string): Record<string, string> {
   const result: Record<string, string> = {}
   for (const match of attrString.matchAll(ATTR_REGEX)) {

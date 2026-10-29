@@ -54,7 +54,6 @@ export function mapPropertyTypeToTs(type: string, typeDefinitions?: Record<strin
 
 export function generateCanonicalSchemaTypes(): string {
   const paths = getWorkspacePaths()
-  // 1. Read Catalogs for dynamic domain union types and models
   const directivesData = readCatalog('directives')
   const operatorsData = readCatalog('operators')
   const diagnosticsData = readCatalog('diagnostics')
@@ -71,7 +70,6 @@ export function generateCanonicalSchemaTypes(): string {
   const msgKeys = Object.keys(messagesData.messages || {}).sort()
   const layoutVersions = directivesData.domain_metadata?.layout_versions?.supported_versions || [1, 2, 3]
 
-  // 2. Read Schemas for canonical enums & definitions
   const commonSchema = readSchema('common')
   const diagSchema = readSchema('diagnostics')
   const dirSchema = readSchema('directives')
@@ -84,7 +82,6 @@ export function generateCanonicalSchemaTypes(): string {
   const messagesSchema = readSchema('messages')
   const scopesSchema = readSchema('scopes')
 
-  // Extract enums directly from schemas
   const evidenceEnum = (commonSchema.$defs?.evidenceLevel?.enum as string[]) || ['official', 'observed', 'approximate', 'unknown']
   const viewIdEnum = (commonSchema.$defs?.viewId?.enum as string[]) || ['homepage', 'post_listing', 'search_query', 'label_search', 'archive_yearly', 'archive_monthly', 'archive_weekly_daily', 'post', 'static_page', 'error_404', 'preview', 'layout_mode']
   const viewFlagStateEnum = (globalsSchema.$defs?.viewFlagState?.enum as string[]) || ['true', 'false', 'missing']
@@ -276,7 +273,6 @@ export function generateCanonicalSchemaTypes(): string {
     return out.join('\n')
   }
 
-  // --- Common Reusable Schema Models ---
   lines.push('// =========================================================================')
   lines.push('// Common Reusable Schema Models (SSoT: common.schema.json)')
   lines.push('// =========================================================================')
@@ -286,7 +282,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push(generateInterface('BloggerCanonicalProperty', commonSchema.$defs.canonicalProperty))
   lines.push(generateInterface('BloggerEmpiricalMetadata', commonSchema.$defs.empiricalMetadata))
 
-  // --- Diagnostics Catalog Models ---
   lines.push('// =========================================================================')
   lines.push('// Diagnostics Catalog Models (SSoT: diagnostics.schema.json)')
   lines.push('// =========================================================================')
@@ -304,7 +299,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('}')
   lines.push('')
 
-  // --- Directives Catalog Models ---
   lines.push('// =========================================================================')
   lines.push('// Directives & Nesting Catalog Models (SSoT: directives.schema.json)')
   lines.push('// =========================================================================')
@@ -463,7 +457,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('}')
   lines.push('')
 
-  // --- Operators Catalog Models ---
   lines.push('// =========================================================================')
   lines.push('// Operators & Expressions Catalog Models (SSoT: operators.schema.json)')
   lines.push('// =========================================================================')
@@ -504,7 +497,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('}')
   lines.push('')
 
-  // --- Types Catalog Models ---
   lines.push('// =========================================================================')
   lines.push('// Types & Coercion Catalog Models (SSoT: types.schema.json)')
   lines.push('// =========================================================================')
@@ -537,7 +529,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('}')
   lines.push('')
 
-  // --- Globals & Widgets Models ---
   lines.push('// =========================================================================')
   lines.push('// Globals & Data Properties Catalog Models (SSoT: globals.schema.json)')
   lines.push('// =========================================================================')
@@ -614,7 +605,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('}')
   lines.push('')
 
-  // --- Messages Models ---
   lines.push('// =========================================================================')
   lines.push('// Messages Catalog Models (SSoT: messages.schema.json)')
   lines.push('// =========================================================================')
@@ -633,7 +623,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('}')
   lines.push('')
 
-  // --- Scopes Models ---
   lines.push('// =========================================================================')
   lines.push('// Scopes Catalog Models (SSoT: scopes.schema.json)')
   lines.push('// =========================================================================')
@@ -651,7 +640,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('}')
   lines.push('')
 
-  // --- Inclusions Models ---
   lines.push('// =========================================================================')
   lines.push('// Inclusions Catalog Models (SSoT: inclusions.schema.json)')
   lines.push('// =========================================================================')
@@ -689,7 +677,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('}')
   lines.push('')
 
-  // --- Locales Catalog Models ---
   lines.push('// =========================================================================')
   lines.push('// Locales Catalog Models (SSoT: locales.schema.json)')
   lines.push('// =========================================================================')
@@ -745,7 +732,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('}')
   lines.push('')
 
-  // --- Subtypes & Modifiers ---
   lines.push('// =========================================================================')
   lines.push('// Subtypes & Modifiers')
   lines.push('// =========================================================================')
@@ -801,7 +787,6 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('export type BloggerExpression = string;')
   lines.push('')
 
-  // --- Directive Attribute Models ---
   lines.push('// =========================================================================')
   lines.push('// Directive Attribute Models')
   lines.push('// =========================================================================')
@@ -843,7 +828,6 @@ export function generateCanonicalSchemaTypes(): string {
     lines.push('')
   }
 
-  // --- Global Data Models ---
   lines.push('// =========================================================================')
   lines.push('// Global Data Models')
   lines.push('// =========================================================================')
@@ -900,7 +884,6 @@ export function generateCanonicalSchemaTypes(): string {
     lines.push('')
   }
 
-  // --- Widget Data Models ---
   lines.push('// =========================================================================')
   lines.push('// Widget Data Dictionaries')
   lines.push('// =========================================================================')
@@ -925,7 +908,6 @@ export function generateCanonicalSchemaTypes(): string {
     lines.push('')
   }
 
-  // --- Widget Settings Models ---
   lines.push('// =========================================================================')
   lines.push('// Widget Settings Dictionaries')
   lines.push('// =========================================================================')
@@ -950,7 +932,6 @@ export function generateCanonicalSchemaTypes(): string {
     lines.push('')
   }
 
-  // --- Aggregate Catalog Names & Maps ---
   lines.push('// =========================================================================')
   lines.push('// Aggregate Catalog Names & Maps')
   lines.push('// =========================================================================')

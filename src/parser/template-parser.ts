@@ -161,7 +161,6 @@ export function parseTemplate(
       cursor = nextLt
     }
 
-    // 1. Comments: <!-- ... -->
     if (xml.startsWith('<!--', cursor)) {
       const end = xml.indexOf('-->', cursor + 4)
       if (end === -1) {
@@ -190,7 +189,6 @@ export function parseTemplate(
       continue
     }
 
-    // 2. CDATA: <![CDATA[ ... ]]>
     if (xml.startsWith('<![CDATA[', cursor)) {
       const end = xml.indexOf(']]>', cursor + 9)
       if (end === -1) {
@@ -219,7 +217,6 @@ export function parseTemplate(
       continue
     }
 
-    // 3. Processing instructions: <? ... ?>
     if (xml.startsWith('<?', cursor)) {
       const end = xml.indexOf('?>', cursor + 2)
       if (end === -1) {
@@ -239,7 +236,6 @@ export function parseTemplate(
       continue
     }
 
-    // 4. DOCTYPE: <!DOCTYPE ...> or <!doctype ...>
     if (xml.startsWith('<!DOCTYPE', cursor) || xml.startsWith('<!doctype', cursor)) {
       let end = cursor + 9
       let hasSubset = false
@@ -270,7 +266,6 @@ export function parseTemplate(
       continue
     }
 
-    // 5. Closing tag: </tagName>
     if (xml.startsWith('</', cursor)) {
       const closeGt = xml.indexOf('>', cursor + 2)
       if (closeGt === -1) {
@@ -334,7 +329,6 @@ export function parseTemplate(
       continue
     }
 
-    // 6. Open or Self-closing tag: <tagName ...>
     let nameEnd = cursor + 1
     while (nameEnd < len && /[\w:.-]/.test(xml[nameEnd]!)) {
       nameEnd++

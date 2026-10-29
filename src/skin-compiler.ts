@@ -157,7 +157,6 @@ export function compileSkinCss(
     }
   }
 
-  // Scan Theme Designer <Variable> tags
   const varRegex = /<Variable\b([^>]*?)(?:\/>|>[\s\S]*?<\/Variable>)/gi
   for (const match of content.matchAll(varRegex)) {
     const rawAttrs = match[1] ?? ''
@@ -178,7 +177,6 @@ export function compileSkinCss(
     }
   }
 
-  // Compute resolved variable values
   const resolvedVariables: Record<string, string> = {}
   const parsedFonts: Record<string, BloggerParsedFont> = {}
 
@@ -215,7 +213,6 @@ export function compileSkinCss(
     }
   }
 
-  // Strip Theme Designer metadata tags if requested (default: true)
   let processedCss = content
   if (options?.stripMetadataTags !== false) {
     processedCss = processedCss
@@ -274,7 +271,6 @@ export function compileSkinCss(
     return fullMatch
   })
 
-  // Determine wrapper mode
   let wrapMode = options?.wrap
   if (wrapMode === undefined) {
     wrapMode = isTemplateSkin ? 'template-skin' : 'page-skin'

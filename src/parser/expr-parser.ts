@@ -311,7 +311,7 @@ export class ExpressionParser {
 
         // Functional call expression: resizeImage(...), format(...), etc.
         if (this.check('LPAREN')) {
-          this.advance() // '('
+          this.advance()
           const args = this.parseArgumentList()
           const closeParen = this.consume('RPAREN', 'Expected \')\' after function arguments')
           const node: BloggerCallExpressionNode = {
@@ -404,7 +404,7 @@ export class ExpressionParser {
 
     // 1. Member dot access: object.property
     if (opInfo.isMemberDot) {
-      this.advance() // '.'
+      this.advance()
       const propToken = this.consumePropertyName('Expected property name after \'.\'')
       const node: BloggerMemberExpressionNode = {
         type: 'MemberExpression',
@@ -422,7 +422,7 @@ export class ExpressionParser {
 
     // 2. Member bracket indexing: object[expr]
     if (opInfo.isMemberBracket) {
-      this.advance() // '['
+      this.advance()
       const indexExpr = this.parseExpression(0)
       const closeBracket = this.consume('RBRACKET', 'Expected \']\' after index expression')
       const node: BloggerMemberExpressionNode = {
@@ -437,7 +437,7 @@ export class ExpressionParser {
 
     // 3. Elvis operator: left ?: right
     if (opInfo.isElvis) {
-      this.advance() // '?:'
+      this.advance()
       const right = this.parseExpression(opInfo.bindingPower - 1)
       const endLoc = right.loc ? { line: right.loc.end.line, column: right.loc.end.column, offset: right.loc.end.offset ?? 0 } : this.peek().end
       const node: BloggerConditionalExpressionNode = {
@@ -452,7 +452,7 @@ export class ExpressionParser {
 
     // 4. Ternary operator: test ? consequent : alternate
     if (opInfo.isTernary) {
-      this.advance() // '?'
+      this.advance()
       const consequent = this.parseExpression(0)
       this.consume('COLON', 'Expected \':\' after consequent in ternary expression')
       const alternate = this.parseExpression(opInfo.bindingPower - 1)

@@ -243,7 +243,6 @@ export class Lexer {
     const startPos = this.currentPosition()
     const ch = this.source[this.pos]!
 
-    // String literals: "..." or '...'
     if (ch === '"' || ch === '\'') {
       const token = this.readString(startPos, ch)
       this.lastToken = token
@@ -263,7 +262,6 @@ export class Lexer {
       }
     }
 
-    // Two-character operators & sequences
     if (this.pos + 1 < this.length) {
       const two = this.source.slice(this.pos, this.pos + 2)
       if (two === '=>') {
@@ -300,7 +298,6 @@ export class Lexer {
       }
     }
 
-    // Data prefix: "data:"
     if (this.source.slice(this.pos, this.pos + 5) === 'data:') {
       this.advance(5)
       return this.makeToken('DATA_PREFIX', 'data:', startPos)
@@ -313,7 +310,6 @@ export class Lexer {
       return token
     }
 
-    // Single-character punctuation & symbols
     switch (ch) {
       case '+':
         this.advance(1)

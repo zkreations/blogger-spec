@@ -173,7 +173,6 @@ export function resolveIncludable(
     }
   }
 
-  // Collect defaultmarkups
   let defaultmarkups: readonly BloggerDirectiveNode[] = registry?.defaultmarkups || []
   if (defaultmarkups.length === 0 && registry?.document) {
     defaultmarkups = collectDefaultMarkups(registry.document)

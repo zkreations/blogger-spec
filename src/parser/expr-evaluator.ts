@@ -125,7 +125,6 @@ export function applyModifier(target: any, modifier: string): any {
     return target[modifier]
   }
 
-  // String modifiers
   if (typeof target === 'string') {
     switch (modifier) {
       case 'length':
@@ -156,7 +155,6 @@ export function applyModifier(target: any, modifier: string): any {
     }
   }
 
-  // Array modifiers
   if (Array.isArray(target)) {
     switch (modifier) {
       case 'length':
@@ -174,7 +172,6 @@ export function applyModifier(target: any, modifier: string): any {
     }
   }
 
-  // Number / Date / Variant / Object properties
   if (typeof target === 'object') {
     switch (modifier) {
       case 'variant':
@@ -584,7 +581,6 @@ export class ExpressionEvaluator {
   ): any {
     const op = node.operator
 
-    // Addition / Concatenation
     if (op === '+') {
       const isLeftLiteralString = node.left.type === 'Literal' && typeof (node.left as BloggerLiteralNode).value === 'string'
       const isRightLiteralString = node.right.type === 'Literal' && typeof (node.right as BloggerLiteralNode).value === 'string'
@@ -608,7 +604,6 @@ export class ExpressionEvaluator {
       return String(leftVal ?? '') + String(rightVal ?? '')
     }
 
-    // Arithmetic
     if (op === '-' || op === '*' || op === '/' || op === '%') {
       const leftVal = Number(this.evaluate(node.left, context, locals))
       const rightVal = Number(this.evaluate(node.right, context, locals))
@@ -631,7 +626,6 @@ export class ExpressionEvaluator {
       }
     }
 
-    // Equality
     if (op === '==' || op === '!=') {
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
@@ -639,14 +633,12 @@ export class ExpressionEvaluator {
       return op === '==' ? eq : !eq
     }
 
-    // Strict Equality
     if (op === '===' || op === '!==') {
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
       return op === '===' ? leftVal === rightVal : leftVal !== rightVal
     }
 
-    // Relational
     if (op === '<' || op === '>' || op === '<=' || op === '>=') {
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
@@ -660,7 +652,6 @@ export class ExpressionEvaluator {
         return leftVal >= rightVal
     }
 
-    // Membership
     if (op === 'in' || op === 'not in') {
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
@@ -675,7 +666,6 @@ export class ExpressionEvaluator {
       return op === 'contains' ? inside : !inside
     }
 
-    // Infix collection slice
     if (op === 'take') {
       const leftVal = this.evaluate(node.left, context, locals)
       const count = Number(this.evaluate(node.right, context, locals))
@@ -701,7 +691,6 @@ export class ExpressionEvaluator {
       return result
     }
 
-    // Infix helpers
     if (op === 'params') {
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)

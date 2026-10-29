@@ -136,7 +136,6 @@ export function checkSchemaCompatibility(
     }
   }
 
-  // Recursively inspect definitions / defs
   const oldDefs = oldSchema.$defs || oldSchema.definitions || {}
   const newDefs = newSchema.$defs || newSchema.definitions || {}
   for (const [defKey, oldDef] of Object.entries(oldDefs)) {
@@ -145,7 +144,6 @@ export function checkSchemaCompatibility(
     }
   }
 
-  // Recursively inspect object properties
   if (oldSchema.properties && newSchema.properties) {
     for (const [propKey, oldProp] of Object.entries(oldSchema.properties)) {
       if (newSchema.properties[propKey]) {
@@ -154,7 +152,6 @@ export function checkSchemaCompatibility(
     }
   }
 
-  // Recursively inspect array items
   if (oldSchema.items && newSchema.items) {
     errors.push(...checkSchemaCompatibility(oldSchema.items, newSchema.items, `${jsonPath}/items`, context))
   }
@@ -174,7 +171,6 @@ export function verifySchemasBackwardCompatibility(
     return { valid: true, errors: [], skipped: true }
   }
 
-  // Check if Git is available and has history
   let hasGit = false
   try {
     execSync('git rev-parse --is-inside-work-tree', { stdio: 'pipe' })

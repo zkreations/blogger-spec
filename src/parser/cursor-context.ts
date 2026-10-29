@@ -189,7 +189,6 @@ export function getExpressionCursorContext(
     }
   }
 
-  // Default fallback
   const fallbackOperand = extractPrecedingOperand(textBefore)
   return {
     offset: safeOffset,
