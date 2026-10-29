@@ -46,6 +46,7 @@ export function generateDts(): string {
     'export * from \'./quota.js\';',
     'export * from \'./runner.js\';',
     'export * from \'./scope.js\';',
+    'export * from \'./skin-compiler.js\';',
     'export * from \'./type-system.js\';',
     'export * from \'./types.js\';',
     'export * from \'./version.js\';',

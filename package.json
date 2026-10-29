@@ -71,6 +71,10 @@
       "types": "./dist/includable-resolver.d.ts",
       "default": "./dist/includable-resolver.js"
     },
+    "./skin-compiler": {
+      "types": "./dist/skin-compiler.d.ts",
+      "default": "./dist/skin-compiler.js"
+    },
     "./schemas/*": "./catalogs/schemas/*",
     "./directives": "./catalogs/directives.json",
     "./operators": "./catalogs/operators.json",
