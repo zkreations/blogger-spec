@@ -73,7 +73,7 @@ export function generateFixturesManifest(): BloggerFixturesManifest {
     : []
 
   for (const cat of categories) {
-    if (cat === 'contexts')
+    if (cat === 'contexts' || cat === 'feeds')
       continue
     const catDir = join(paths.fixtures, cat)
     if (!existsSync(catDir))

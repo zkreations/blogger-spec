@@ -53,6 +53,7 @@ export {
 
 export * from './ast.js'
 export * from './catalogs/index.js'
+export * from './context/index.js'
 export * from './data-path.js'
 export * from './includable-resolver.js'
 export * from './inclusion-expander.js'

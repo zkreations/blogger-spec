@@ -733,6 +733,10 @@ export function validateSpec(options?: BloggerValidateSpecOptions): BloggerSpecV
         .map(d => d.name)
 
       for (const cat of suiteCategories) {
+        if (cat === 'feeds') {
+          continue
+        }
+
         if (cat === 'contexts') {
           const catDir = join(fixturePaths, cat)
           const contextFiles = readdirSync(catDir).filter(f => f.endsWith('.json')).sort()
