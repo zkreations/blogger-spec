@@ -357,6 +357,7 @@
       "category": "runtime",
       "severity": "error",
       "message": "Unresolved inclusion: referenced includable does not exist in the current widget, defaultmarkups, or global server inclusions.",
+      "html_comment_template": "<!--Failed to render gadget '{widgetId}'.\n\nThere was an error processing the markup.\n-->",
       "evidence": "official",
       "verified_at": "2026-10-15"
     },

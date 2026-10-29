@@ -94,6 +94,9 @@
         "replacement": {
           "type": "string"
         },
+        "html_comment_template": {
+          "type": "string"
+        },
         "evidence": {
           "$ref": "common.schema.json#/$defs/evidenceLevel"
         },
