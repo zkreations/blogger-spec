@@ -99,6 +99,10 @@
             }
           },
           "description": "Registry of canonical default includable subroutine identifiers available per widget type (and 'All') in Blogger's platform rendering engine."
+        },
+        "local_stubs": {
+          "type": "object",
+          "description": "Contracts for runtime server assets and placeholders in offline development mode."
         }
       },
       "additionalProperties": false
@@ -193,6 +197,10 @@
         "server_markup": {
           "type": "string",
           "description": "Verified server-side XML includable body injected by Blogger's backend rendering engine."
+        },
+        "local_stub_markup": {
+          "type": "string",
+          "description": "Normalized, lightweight template markup for offline local compilation."
         }
       },
       "additionalProperties": false

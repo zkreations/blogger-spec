@@ -218,6 +218,20 @@
       "Subscribe": [
         "feeds"
       ]
+    },
+    "local_stubs": {
+      "all-head-content": {
+        "description": "Clean, modern viewport and metadata stub for offline local compilation.",
+        "target_inclusion": "all-head-content"
+      },
+      "comment-form-iframe": {
+        "description": "Visual placeholder for Google comment iframe in offline preview mode.",
+        "stub_html": "<div class='comment-form-placeholder'><p>Blogger Comment Form (Offline Preview)</p></div>"
+      },
+      "google-fonts": {
+        "description": "Standard stylesheet link for Google Fonts extracted from Theme Designer font variables.",
+        "tag_template": "<link rel='stylesheet' href='https://fonts.googleapis.com/css?family={family}:{weights}&display=swap'/>"
+      }
     }
   },
   "inclusions": {
@@ -263,7 +277,8 @@
         3
       ],
       "safety": "portable",
-      "server_markup": "<b:includable id='all-head-content'>\n  <meta expr:content='\"text/html; charset=\" + data:blog.encoding' http-equiv='Content-Type'/>\n  <b:if cond='data:widgets'>\n    <b:comment>Chrome, Firefox OS and Opera</b:comment>\n    <meta expr:content='data:skin.vars.body_background_color' name='theme-color'/>\n    <b:comment>Windows Phone</b:comment>\n    <meta expr:content='data:skin.vars.body_background_color' name='msapplication-navbutton-color'/>\n  </b:if>\n  <data:blog.latencyHeadScript/>\n  <data:blog.mobileHeadScript/>\n  <meta content='blogger' name='generator'/>\n  <link expr:href='data:blog.blogspotFaviconUrl' rel='icon' type='image/x-icon'/>\n  <b:if cond='data:blog.adultContent'>\n    <meta content='adult' name='rating'/>\n  </b:if>\n  <link expr:href='data:view.url.canonical' rel='canonical'/>\n  <data:blog.feedLinks/>\n  <b:tag name='link' cond='data:view.featuredImage' expr:href='data:view.featuredImage' rel='image_src'/>\n  <b:if cond='data:blog.metaDescription'>\n    <meta expr:content='data:blog.metaDescription' name='description'/>\n  </b:if>\n  <b:include name='openGraphMetaData'/>\n  <data:blog.ieCssRetrofitLinks/>\n  <!--[if IE]><script> (function() { var html5 = (\"abbr,article,aside,audio,canvas,datalist,details,\" + \"figure,footer,header,hgroup,mark,menu,meter,nav,output,\" + \"progress,section,time,video\").split(','); for (var i = 0; i < html5.length; i++) { document.createElement(html5[i]); } try { document.execCommand('BackgroundImageCache', false, true); } catch(e) {} })(); </script>\n<![endif]-->\n</b:includable>"
+      "server_markup": "<b:includable id='all-head-content'>\n  <meta expr:content='\"text/html; charset=\" + data:blog.encoding' http-equiv='Content-Type'/>\n  <b:if cond='data:widgets'>\n    <b:comment>Chrome, Firefox OS and Opera</b:comment>\n    <meta expr:content='data:skin.vars.body_background_color' name='theme-color'/>\n    <b:comment>Windows Phone</b:comment>\n    <meta expr:content='data:skin.vars.body_background_color' name='msapplication-navbutton-color'/>\n  </b:if>\n  <data:blog.latencyHeadScript/>\n  <data:blog.mobileHeadScript/>\n  <meta content='blogger' name='generator'/>\n  <link expr:href='data:blog.blogspotFaviconUrl' rel='icon' type='image/x-icon'/>\n  <b:if cond='data:blog.adultContent'>\n    <meta content='adult' name='rating'/>\n  </b:if>\n  <link expr:href='data:view.url.canonical' rel='canonical'/>\n  <data:blog.feedLinks/>\n  <b:tag name='link' cond='data:view.featuredImage' expr:href='data:view.featuredImage' rel='image_src'/>\n  <b:if cond='data:blog.metaDescription'>\n    <meta expr:content='data:blog.metaDescription' name='description'/>\n  </b:if>\n  <b:include name='openGraphMetaData'/>\n  <data:blog.ieCssRetrofitLinks/>\n  <!--[if IE]><script> (function() { var html5 = (\"abbr,article,aside,audio,canvas,datalist,details,\" + \"figure,footer,header,hgroup,mark,menu,meter,nav,output,\" + \"progress,section,time,video\").split(','); for (var i = 0; i < html5.length; i++) { document.createElement(html5[i]); } try { document.execCommand('BackgroundImageCache', false, true); } catch(e) {} })(); </script>\n<![endif]-->\n</b:includable>",
+      "local_stub_markup": "<b:includable id='all-head-content'>\n  <meta charset='UTF-8'/>\n  <meta content='width=device-width,initial-scale=1' name='viewport'/>\n  <b:if cond='data:blog.canonicalUrl'>\n    <link expr:href='data:blog.canonicalUrl' rel='canonical'/>\n  </b:if>\n  <b:if cond='data:blog.blogspotFaviconUrl'>\n    <link expr:href='data:blog.blogspotFaviconUrl' rel='icon' type='image/x-icon'/>\n  </b:if>\n  <b:if cond='data:blog.metaDescription'>\n    <meta expr:content='data:blog.metaDescription' name='description'/>\n  </b:if>\n</b:includable>"
     },
     "authorProfileImage": {
       "name": "authorProfileImage",
