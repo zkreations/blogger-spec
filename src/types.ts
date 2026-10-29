@@ -269,6 +269,8 @@ export interface BloggerIncludableResolutionContext {
 export interface BloggerIncludableResolutionResult {
   targetId: string
   tier: BloggerIncludableResolutionTier
+  resolved: boolean
   sourceContainer?: string
   diagnostic?: BloggerDiagnosticCode
+  failureComment?: string
 }

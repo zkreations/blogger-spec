@@ -54,6 +54,7 @@ export {
 export * from './ast.js'
 export * from './catalogs/index.js'
 export * from './data-path.js'
+export * from './includable-resolver.js'
 export * from './inclusion-expander.js'
 export * from './parser/index.js'
 export * from './quota.js'

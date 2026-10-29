@@ -67,6 +67,10 @@
       "types": "./dist/inclusion-expander.d.ts",
       "default": "./dist/inclusion-expander.js"
     },
+    "./includable-resolver": {
+      "types": "./dist/includable-resolver.d.ts",
+      "default": "./dist/includable-resolver.js"
+    },
     "./schemas/*": "./catalogs/schemas/*",
     "./directives": "./catalogs/directives.json",
     "./operators": "./catalogs/operators.json",

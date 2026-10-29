@@ -17,6 +17,7 @@ export interface BloggerInclusionExpansionOptions {
   readonly unwrap?: boolean
   readonly recursive?: boolean
   readonly maxDepth?: number
+  readonly useLocalStub?: boolean
 }
 
 export interface BloggerInclusionExpansionResult {
@@ -144,12 +145,14 @@ export function expandServerInclusion(
     }
   }
 
-  const rawMarkup = incDef?.server_markup ?? ''
+  const rawMarkup = (options?.useLocalStub && (incDef as any)?.local_stub_markup)
+    ? (incDef as any).local_stub_markup
+    : (incDef?.server_markup ?? '')
   let expandedMarkup = unwrap && rawMarkup ? extractIncludableBody(rawMarkup) : rawMarkup
 
   // Handle recursive inclusion inlining (e.g. openGraphMetaData inside all-head-content)
   if (recursive && expandedMarkup && maxDepth > 0) {
-    expandedMarkup = expandedMarkup.replace(INCLUDE_TAG_REGEX, (fullMatch, attrString) => {
+    expandedMarkup = expandedMarkup.replace(INCLUDE_TAG_REGEX, (fullMatch: string, attrString: string) => {
       const attrs = parseAttributes(attrString)
       const childName = attrs.name?.trim()
       if (childName && catalog.getInclusion(childName)) {
@@ -184,4 +187,21 @@ export function getInclusionParameterContracts(
 ): Record<string, BloggerInclusionParameter> | undefined {
   const inc = catalog.getInclusion(name)
   return inc?.parameters
+}
+
+/**
+ * Returns normalized lightweight template markup for offline local compilation if defined.
+ */
+export function getLocalStubInclusion(
+  name: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+  options?: { unwrap?: boolean },
+): string | undefined {
+  const inc = catalog.getInclusion(name)
+  const stubMarkup = (inc as any)?.local_stub_markup
+  if (!stubMarkup)
+    return undefined
+
+  const unwrap = options?.unwrap ?? true
+  return unwrap ? extractIncludableBody(stubMarkup) : stubMarkup
 }
