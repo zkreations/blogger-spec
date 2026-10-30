@@ -1,4 +1,5 @@
 import type {
+  BloggerCommentData,
   BloggerHeaderData,
   BloggerLabelData,
   BloggerPageLink,
@@ -46,7 +47,10 @@ export function extractFirstImage(html: string): string {
   return match ? match[1] : ''
 }
 
-export function formatBloggerDate(isoString: string | undefined): { date: string, timestamp: number } {
+export function formatBloggerDate(
+  isoString: string | undefined,
+  locale = 'en',
+): { date: string, timestamp: number } {
   if (!isoString) {
     return { date: '', timestamp: 0 }
   }
@@ -58,7 +62,8 @@ export function formatBloggerDate(isoString: string | undefined): { date: string
 
   const timestamp = parsed.getTime()
   try {
-    const formatter = new Intl.DateTimeFormat('es-ES', {
+    const intlLocale = locale === 'en' ? 'en-US' : (locale === 'es' ? 'es-ES' : locale)
+    const formatter = new Intl.DateTimeFormat(intlLocale, {
       day: 'numeric',
       month: 'long',
       year: 'numeric',
@@ -74,6 +79,7 @@ export function normalizePostEntry(
   entry: BloggerRawEntry,
   mapper: UrlMapper,
   blogId: string,
+  locale = 'en',
 ): BloggerPostData {
   const id = extractId(entry.id?.$t)
   const title = entry.title?.$t || ''
@@ -82,8 +88,8 @@ export function normalizePostEntry(
   const body = entry.content?.$t || entry.summary?.$t || ''
   const snippets = createSnippets(entry.summary?.$t || entry.content?.$t || '')
 
-  const published = formatBloggerDate(entry.published?.$t)
-  const updated = formatBloggerDate(entry.updated?.$t)
+  const published = formatBloggerDate(entry.published?.$t, locale)
+  const updated = formatBloggerDate(entry.updated?.$t, locale)
 
   const thumbnail = entry.media$thumbnail?.url || ''
   const featuredImage = thumbnail
@@ -165,9 +171,77 @@ export function normalizePageEntry(
   }
 }
 
+export function normalizeCommentEntry(
+  entry: BloggerRawEntry,
+  mapper: UrlMapper,
+  blogId: string,
+  locale = 'en',
+): BloggerCommentData {
+  const id = extractId(entry.id?.$t)
+  const rawAuthor = entry.author?.[0]
+  const author = rawAuthor?.name?.$t || 'Anonymous'
+  const authorAvatarSrc = rawAuthor?.gd$image?.src || 'https://img1.blogblog.com/img/blank.gif'
+  const rawAuthorUri = rawAuthor?.uri?.$t || ''
+  const authorUrl = rawAuthorUri ? mapper.mapUrl(rawAuthorUri) : ''
+
+  let authorUserType = 'ANONYMOUS'
+  if (authorUrl.includes('blogger.com/profile')) {
+    authorUserType = 'BLOGGER'
+  }
+  else if (authorUrl) {
+    authorUserType = 'OPENID'
+  }
+
+  const body = entry.content?.$t || entry.summary?.$t || ''
+
+  const extProps = entry.gd$extendedProperty || []
+  const displayTimeProp = extProps.find(p => p.name === 'blogger.displayTime')
+  const timestamp = displayTimeProp?.value || formatBloggerDate(entry.published?.$t, locale).date
+
+  const pubDate = new Date(entry.published?.$t || Date.now())
+  const timestampValue = Number.isNaN(pubDate.getTime()) ? 0 : pubDate.getTime()
+  const timestampAbs = Math.floor(timestampValue / 1000)
+
+  const relatedLink = entry.link?.find(l => l.rel === 'related')?.href
+  let inReplyTo = ''
+  if (relatedLink) {
+    const match = relatedLink.match(/\/(\d+)$/)
+    if (match) {
+      inReplyTo = match[1]
+    }
+  }
+
+  const itemClassProp = extProps.find(p => p.name === 'blogger.itemClass')
+  const adminClass = itemClassProp?.value ? `blog-admin ${itemClassProp.value}` : ''
+
+  const deleteUrl = `https://www.blogger.com/comment/delete/${blogId}/${id}`
+  const alternateLink = entry.link?.find(l => l.rel === 'alternate')?.href || ''
+  const url = alternateLink ? mapper.mapUrl(alternateLink) : ''
+  const anchorName = `c${id}`
+
+  return {
+    id,
+    author,
+    authorAvatarSrc,
+    authorUrl,
+    authorUserType,
+    body,
+    timestamp,
+    timestampValue,
+    timestampAbs,
+    inReplyTo,
+    isDeleted: false,
+    adminClass,
+    deleteUrl,
+    url,
+    anchorName,
+  }
+}
+
 export function normalizeLabels(
   entries: readonly BloggerRawEntry[],
   mapper: UrlMapper,
+  sorting: 'ALPHA' | 'FREQUENCY' = 'ALPHA',
 ): readonly BloggerLabelData[] {
   const counts = new Map<string, number>()
 
@@ -194,7 +268,10 @@ export function normalizeLabels(
     })
   }
 
-  return result.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+  if (sorting === 'FREQUENCY') {
+    return result.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+  }
+  return result.sort((a, b) => a.name.localeCompare(b.name))
 }
 
 export function normalizeHeader(

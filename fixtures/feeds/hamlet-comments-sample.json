@@ -1,0 +1,371 @@
+{
+  "version": "1.0",
+  "encoding": "UTF-8",
+  "feed": {
+    "xmlns": "http://www.w3.org/2005/Atom",
+    "xmlns$openSearch": "http://a9.com/-/spec/opensearchrss/1.0/",
+    "xmlns$gd": "http://schemas.google.com/g/2005",
+    "id": {
+      "$t": "tag:blogger.com,1999:blog-5408826600056783247.post8389032230243957219..comments"
+    },
+    "updated": {
+      "$t": "2026-02-01T11:17:49.490-08:00"
+    },
+    "title": {
+      "type": "text",
+      "$t": "Comments on Hamlet: The Importance of Environmental Care"
+    },
+    "link": [
+      {
+        "rel": "http://schemas.google.com/g/2005#feed",
+        "type": "application/atom+xml",
+        "href": "https://hamlet.zkreations.com/feeds/comments/default"
+      },
+      {
+        "rel": "self",
+        "type": "application/atom+xml",
+        "href": "https://www.blogger.com/feeds/5408826600056783247/8389032230243957219/comments/default?alt=json"
+      },
+      {
+        "rel": "alternate",
+        "type": "text/html",
+        "href": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html"
+      },
+      {
+        "rel": "hub",
+        "href": "http://pubsubhubbub.appspot.com/"
+      }
+    ],
+    "author": [
+      {
+        "name": {
+          "$t": "Iveth"
+        },
+        "uri": {
+          "$t": "http://www.blogger.com/profile/05162121526782264118"
+        },
+        "email": {
+          "$t": "noreply@blogger.com"
+        },
+        "gd$image": {
+          "rel": "http://schemas.google.com/g/2005#thumbnail",
+          "width": "32",
+          "height": "32",
+          "src": "//blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh2_arOdF_6xLjOEaKR63hFWGqRcV9DoUrWdx1TLNCPeA29Gp1z1A1CzQSTLSbm28yBf4heS79dKKGO7KSn_FqIVYVNE6RFlwD_MZZecjOK__-RC04tgn5vHo_qdvA57UiBnOvISHO8j5zjzmV0UcZrgg0gx_ClEEpSJXZShICyPhY6iA/s220/IMG_20230925_145047.jpg"
+        }
+      }
+    ],
+    "generator": {
+      "version": "7.00",
+      "uri": "http://www.blogger.com",
+      "$t": "Blogger"
+    },
+    "openSearch$totalResults": {
+      "$t": "4"
+    },
+    "openSearch$startIndex": {
+      "$t": "1"
+    },
+    "openSearch$itemsPerPage": {
+      "$t": "25"
+    },
+    "entry": [
+      {
+        "id": {
+          "$t": "tag:blogger.com,1999:blog-5408826600056783247.post-6338731498833178146"
+        },
+        "published": {
+          "$t": "2024-10-30T07:19:43.837-07:00"
+        },
+        "updated": {
+          "$t": "2024-10-30T07:19:43.837-07:00"
+        },
+        "title": {
+          "type": "text",
+          "$t": "testo"
+        },
+        "content": {
+          "type": "html",
+          "$t": "testo"
+        },
+        "link": [
+          {
+            "rel": "edit",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/8389032230243957219/comments/default/6338731498833178146"
+          },
+          {
+            "rel": "self",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/8389032230243957219/comments/default/6338731498833178146"
+          },
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html?showComment=1730297983837#c6338731498833178146",
+            "title": ""
+          },
+          {
+            "rel": "related",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/8389032230243957219/comments/default/4084576595224636469"
+          }
+        ],
+        "author": [
+          {
+            "name": {
+              "$t": "Anonymous"
+            },
+            "email": {
+              "$t": "noreply@blogger.com"
+            },
+            "gd$image": {
+              "rel": "http://schemas.google.com/g/2005#thumbnail",
+              "width": "16",
+              "height": "16",
+              "src": "https://img1.blogblog.com/img/blank.gif"
+            }
+          }
+        ],
+        "thr$in-reply-to": {
+          "xmlns$thr": "http://purl.org/syndication/thread/1.0",
+          "href": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html",
+          "ref": "tag:blogger.com,1999:blog-5408826600056783247.post-8389032230243957219",
+          "source": "http://www.blogger.com/feeds/5408826600056783247/posts/default/8389032230243957219",
+          "type": "text/html"
+        },
+        "gd$extendedProperty": [
+          {
+            "name": "blogger.itemClass",
+            "value": "pid-1793582710"
+          },
+          {
+            "name": "blogger.displayTime",
+            "value": "October 30, 2024 at 7:19\u202fAM"
+          }
+        ]
+      },
+      {
+        "id": {
+          "$t": "tag:blogger.com,1999:blog-5408826600056783247.post-4084576595224636469"
+        },
+        "published": {
+          "$t": "2024-10-30T07:18:31.854-07:00"
+        },
+        "updated": {
+          "$t": "2024-10-30T07:18:31.854-07:00"
+        },
+        "title": {
+          "type": "text",
+          "$t": "same"
+        },
+        "content": {
+          "type": "html",
+          "$t": "same"
+        },
+        "link": [
+          {
+            "rel": "edit",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/8389032230243957219/comments/default/4084576595224636469"
+          },
+          {
+            "rel": "self",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/8389032230243957219/comments/default/4084576595224636469"
+          },
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html?showComment=1730297911854#c4084576595224636469",
+            "title": ""
+          },
+          {
+            "rel": "related",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/8389032230243957219/comments/default/5032424365300934236"
+          }
+        ],
+        "author": [
+          {
+            "name": {
+              "$t": "Kai Haruto"
+            },
+            "uri": {
+              "$t": "https://www.blogger.com/profile/05991519695825559144"
+            },
+            "email": {
+              "$t": "noreply@blogger.com"
+            },
+            "gd$image": {
+              "rel": "http://schemas.google.com/g/2005#thumbnail",
+              "width": "32",
+              "height": "32",
+              "src": "//blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhmAOmEAx6s1Pd1Q-M9wgfGnNxoXrk665PYggNZNC5zhNytK7ATLopLtOesiru_MEOd6xSC5Yqt7voq7EnrRFAa-LSHzddQxGEOh_xbE0-7Vj7RoUHx4N1uAgZI_voJFdoVQxcLS8MJtH_WbT_SraAk_e8fj6RKyk6AILNPLjOwBZpeadI/s220/2a253d414f891210a36b5fc9682a6bd6.jpg"
+            }
+          }
+        ],
+        "thr$in-reply-to": {
+          "xmlns$thr": "http://purl.org/syndication/thread/1.0",
+          "href": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html",
+          "ref": "tag:blogger.com,1999:blog-5408826600056783247.post-8389032230243957219",
+          "source": "http://www.blogger.com/feeds/5408826600056783247/posts/default/8389032230243957219",
+          "type": "text/html"
+        },
+        "gd$extendedProperty": [
+          {
+            "name": "blogger.itemClass",
+            "value": "pid-1462240053"
+          },
+          {
+            "name": "blogger.displayTime",
+            "value": "October 30, 2024 at 7:18\u202fAM"
+          }
+        ]
+      },
+      {
+        "id": {
+          "$t": "tag:blogger.com,1999:blog-5408826600056783247.post-9049161563604204224"
+        },
+        "published": {
+          "$t": "2024-05-01T13:38:18.172-07:00"
+        },
+        "updated": {
+          "$t": "2024-05-01T13:38:18.172-07:00"
+        },
+        "title": {
+          "type": "text",
+          "$t": "selamlar"
+        },
+        "content": {
+          "type": "html",
+          "$t": "selamlar"
+        },
+        "link": [
+          {
+            "rel": "edit",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/8389032230243957219/comments/default/9049161563604204224"
+          },
+          {
+            "rel": "self",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/8389032230243957219/comments/default/9049161563604204224"
+          },
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html?showComment=1714595898172#c9049161563604204224",
+            "title": ""
+          }
+        ],
+        "author": [
+          {
+            "name": {
+              "$t": "FATIH"
+            },
+            "uri": {
+              "$t": "https://www.blogger.com/profile/00504563198225817347"
+            },
+            "email": {
+              "$t": "noreply@blogger.com"
+            },
+            "gd$image": {
+              "rel": "http://schemas.google.com/g/2005#thumbnail",
+              "width": "-1",
+              "height": "-1",
+              "src": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEheuFXCQPRK4CwME8Mm8aKyTSLn5bkuDwsqQEfOOhoijxkTHv3t16UTsRx9E2QVMB78GO4XeXbTvem3mfoYH9VhB-USKb__bt11uPYYXZKzb3l4mv52gexdG4OSW0xDtlZP5Jotq7JauJIrcqCj3riiPVijIfFjrGUV9CV5H6erTHJDw7E/s1600/8bit-m.png"
+            }
+          }
+        ],
+        "thr$in-reply-to": {
+          "xmlns$thr": "http://purl.org/syndication/thread/1.0",
+          "href": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html",
+          "ref": "tag:blogger.com,1999:blog-5408826600056783247.post-8389032230243957219",
+          "source": "http://www.blogger.com/feeds/5408826600056783247/posts/default/8389032230243957219",
+          "type": "text/html"
+        },
+        "gd$extendedProperty": [
+          {
+            "name": "blogger.itemClass",
+            "value": "pid-1491474593"
+          },
+          {
+            "name": "blogger.displayTime",
+            "value": "May 1, 2024 at 1:38\u202fPM"
+          }
+        ]
+      },
+      {
+        "id": {
+          "$t": "tag:blogger.com,1999:blog-5408826600056783247.post-5032424365300934236"
+        },
+        "published": {
+          "$t": "2024-03-10T13:14:31.509-07:00"
+        },
+        "updated": {
+          "$t": "2024-03-10T13:14:31.509-07:00"
+        },
+        "title": {
+          "type": "text",
+          "$t": "I like this template."
+        },
+        "content": {
+          "type": "html",
+          "$t": "I like this template."
+        },
+        "link": [
+          {
+            "rel": "edit",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/8389032230243957219/comments/default/5032424365300934236"
+          },
+          {
+            "rel": "self",
+            "type": "application/atom+xml",
+            "href": "https://www.blogger.com/feeds/5408826600056783247/8389032230243957219/comments/default/5032424365300934236"
+          },
+          {
+            "rel": "alternate",
+            "type": "text/html",
+            "href": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html?showComment=1710101671509#c5032424365300934236",
+            "title": ""
+          }
+        ],
+        "author": [
+          {
+            "name": {
+              "$t": "Anonymous"
+            },
+            "email": {
+              "$t": "noreply@blogger.com"
+            },
+            "gd$image": {
+              "rel": "http://schemas.google.com/g/2005#thumbnail",
+              "width": "16",
+              "height": "16",
+              "src": "https://img1.blogblog.com/img/blank.gif"
+            }
+          }
+        ],
+        "thr$in-reply-to": {
+          "xmlns$thr": "http://purl.org/syndication/thread/1.0",
+          "href": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html",
+          "ref": "tag:blogger.com,1999:blog-5408826600056783247.post-8389032230243957219",
+          "source": "http://www.blogger.com/feeds/5408826600056783247/posts/default/8389032230243957219",
+          "type": "text/html"
+        },
+        "gd$extendedProperty": [
+          {
+            "name": "blogger.itemClass",
+            "value": "pid-1793582710"
+          },
+          {
+            "name": "blogger.displayTime",
+            "value": "March 10, 2024 at 1:14\u202fPM"
+          }
+        ]
+      }
+    ]
+  }
+}

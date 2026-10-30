@@ -5,6 +5,7 @@ import {
   createSnippets,
   extractId,
   normalizeBlogMetadata,
+  normalizeCommentEntry,
   normalizeHeader,
   normalizeLabels,
   normalizePageEntry,
@@ -20,6 +21,9 @@ describe('context normalizer suite with real Hamlet fixtures', () => {
   )
   const pagesFeedJson = JSON.parse(
     readFileSync(join(getWorkspacePaths().fixtures, 'feeds/hamlet-pages-sample.json'), 'utf8'),
+  )
+  const commentsFeedJson = JSON.parse(
+    readFileSync(join(getWorkspacePaths().fixtures, 'feeds/hamlet-comments-sample.json'), 'utf8'),
   )
 
   const blogId = '5408826600056783247'
@@ -96,12 +100,39 @@ describe('context normalizer suite with real Hamlet fixtures', () => {
   })
 
   describe('normalizeLabels', () => {
-    it('aggregates category occurrences and sorts descending by frequency', () => {
+    it('sorts alphabetically by default per Blogger canonical specification', () => {
       const labels = normalizeLabels(postsFeedJson.feed.entry, mapper)
+      expect(labels.length).toBeGreaterThan(0)
+      expect(labels[0].name.localeCompare(labels[1].name)).toBeLessThanOrEqual(0)
+      expect(labels[0].url).toContain('/search/label/')
+    })
 
+    it('aggregates category occurrences and sorts descending by frequency when requested', () => {
+      const labels = normalizeLabels(postsFeedJson.feed.entry, mapper, 'FREQUENCY')
       expect(labels.length).toBeGreaterThan(0)
       expect(labels[0].count).toBeGreaterThanOrEqual(labels[labels.length - 1].count)
       expect(labels[0].url).toContain('/search/label/')
+    })
+  })
+
+  describe('normalizeCommentEntry', () => {
+    it('normalizes comment entry with threading, admin classes, and author data', () => {
+      const entries = commentsFeedJson.feed.entry
+      const rootComment = normalizeCommentEntry(entries[3], mapper, blogId)
+      const replyComment = normalizeCommentEntry(entries[1], mapper, blogId)
+
+      expect(rootComment.id).toBe('5032424365300934236')
+      expect(rootComment.author).toBe('Anonymous')
+      expect(rootComment.inReplyTo).toBe('')
+      expect(rootComment.adminClass).toBe('blog-admin pid-1793582710')
+      expect(rootComment.deleteUrl).toBe(`https://www.blogger.com/comment/delete/${blogId}/5032424365300934236`)
+
+      expect(replyComment.id).toBe('4084576595224636469')
+      expect(replyComment.author).toBe('Kai Haruto')
+      expect(replyComment.authorUrl).toBe('https://www.blogger.com/profile/05991519695825559144')
+      expect(replyComment.authorUserType).toBe('BLOGGER')
+      expect(replyComment.inReplyTo).toBe('5032424365300934236')
+      expect(replyComment.adminClass).toBe('blog-admin pid-1462240053')
     })
   })
 

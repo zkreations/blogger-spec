@@ -9,6 +9,8 @@ export interface BloggerContextConfig {
   readonly view?: BloggerViewId
   /** ID del post o página activo si la vista es 'post' o 'static_page' */
   readonly targetId?: string
+  /** URL o path del post o página activo si la vista es 'post' o 'static_page' */
+  readonly targetUrl?: string
   /** Modo de re-mapeo de URLs internas (Default: 'relative') */
   readonly urlMode?: BloggerUrlMode
   /** URL base para re-mapeo en modo 'local' (ej. 'http://localhost:3000') */
@@ -65,6 +67,7 @@ export interface BloggerRawEntry {
   readonly category?: readonly BloggerRawCategory[]
   readonly author?: readonly BloggerRawAuthor[]
   readonly thr$total?: BloggerRawText
+  readonly gd$extendedProperty?: ReadonlyArray<{ readonly name: string, readonly value: string }>
   readonly media$thumbnail?: {
     readonly url: string
     readonly height?: string

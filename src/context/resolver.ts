@@ -4,6 +4,7 @@ import { getMockContext } from '../catalogs/index.js'
 import { BloggerFeedClient } from './client.js'
 import {
   normalizeBlogMetadata,
+  normalizeCommentEntry,
   normalizeHeader,
   normalizeLabels,
   normalizePageEntry,
@@ -94,13 +95,15 @@ export async function resolveBloggerContext(
       baseUrl,
     })
 
+    const blogLocale = config.overrides?.blog?.locale || 'en'
     const rawPosts: readonly BloggerRawEntry[] = feed.entry || []
-    const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, blogId))
+    const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, blogId, blogLocale))
 
     const rawPages: readonly BloggerRawEntry[] = pagesResponse?.feed?.entry || []
     const normalizedPages = rawPages.map(e => normalizePageEntry(e, mapper))
 
-    const normalizedLabels = normalizeLabels(rawPosts, mapper)
+    const labelSorting = (config.overrides?.widgetData?.Label1?.sorting || 'ALPHA') as 'ALPHA' | 'FREQUENCY'
+    const normalizedLabels = normalizeLabels(rawPosts, mapper, labelSorting)
     const blogMeta = normalizeBlogMetadata(feed, mapper, blogId)
     const headerData = normalizeHeader(feed, mapper)
 
@@ -125,7 +128,11 @@ export async function resolveBloggerContext(
       if (viewId === 'post') {
         const targetPost = (config.targetId
           ? normalizedPosts.find(p => p.id === config.targetId)
-          : normalizedPosts[0]) || normalizedPosts[0]
+          : (config.targetUrl
+              ? normalizedPosts.find(p => p.url === config.targetUrl || p.absoluteUrl === config.targetUrl)
+              : (config.overrides?.view?.url
+                  ? normalizedPosts.find(p => p.url === config.overrides?.view?.url || p.absoluteUrl === config.overrides?.view?.url)
+                  : normalizedPosts[0]))) || normalizedPosts[0]
 
         if (targetPost) {
           activePosts = [targetPost]
@@ -134,6 +141,17 @@ export async function resolveBloggerContext(
           context.view.title = targetPost.title
           context.view.url = targetPost.url
           context.view.description = targetPost.snippets.short
+
+          // Fetch and attach comments for post
+          const commentsResponse = await client.fetchComments(blogId, targetPost.id)
+          const rawComments: readonly BloggerRawEntry[] = commentsResponse?.feed?.entry || []
+          if (rawComments.length > 0) {
+            const normalizedComments = rawComments
+              .map(c => normalizeCommentEntry(c, mapper, blogId, blogLocale))
+              .sort((a, b) => a.timestampValue - b.timestampValue)
+            ;(targetPost as any).comments = normalizedComments
+            ;(targetPost as any).numberOfComments = normalizedComments.length
+          }
         }
       }
     }
@@ -161,11 +179,15 @@ export async function resolveBloggerContext(
     // Inyectar datos en Label1
     if (context.widgetData.Label1) {
       context.widgetData.Label1.labels = normalizedLabels
+      if (config.overrides?.widgetData?.Label1?.showFreqNumbers === undefined) {
+        context.widgetData.Label1.showFreqNumbers = false
+      }
     }
     else {
       context.widgetData.Label1 = {
         title: 'Etiquetas',
         labels: normalizedLabels,
+        showFreqNumbers: false,
       }
     }
 
