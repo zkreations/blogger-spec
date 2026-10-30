@@ -239,9 +239,15 @@ function extractElementMutations(
       }
       if (child.name === 'b:attr') {
         const nameAttr = child.attributes.find(a => a.name === 'name')
+        const exprNameAttr = child.attributes.find(a => a.name === 'expr:name')
         const valAttr = child.attributes.find(a => a.name === 'value' || a.name === 'expr:value')
         const condAttr = child.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
         const attrName = String(nameAttr?.value ?? '')
+
+        if (exprNameAttr) {
+          retainedChildren.push(child)
+          continue
+        }
 
         if (attrName === 'b:whitespace') {
           if (String(valAttr?.value) === 'remove') {

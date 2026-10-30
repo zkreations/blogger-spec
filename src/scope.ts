@@ -221,7 +221,7 @@ export class ScopeEnvironment {
     const activeWidgetType = options?.widgetType ?? this.getActiveWidgetType() ?? 'Blog'
 
     if (tagName === 'b:loop') {
-      const valuesAttr = token.attributes.values?.value ?? token.attributes.value?.value
+      const valuesAttr = token.attributes.values?.value ?? token.attributes['expr:values']?.value ?? token.attributes.value?.value
       const varAttr = token.attributes.var?.value
       const indexAttr = token.attributes.index?.value
 
@@ -278,7 +278,7 @@ export class ScopeEnvironment {
       }
     }
     else if (tagName === 'b:with') {
-      const valueAttr = token.attributes.value?.value ?? token.attributes.expr?.value
+      const valueAttr = token.attributes.value?.value ?? token.attributes['expr:value']?.value ?? token.attributes.expr?.value
       const varAttr = token.attributes.var?.value
 
       if (varAttr && valueAttr) {
@@ -293,6 +293,25 @@ export class ScopeEnvironment {
         }
         result[cleanName] = sym
         result[`data:${cleanName}`] = sym
+      }
+
+      for (let i = 2; i <= 9; i++) {
+        const vKey = `var${i}`
+        const vVal = token.attributes[vKey]?.value
+        const valVal = token.attributes[`value${i}`]?.value ?? token.attributes[`expr:value${i}`]?.value
+        if (vVal && valVal) {
+          const inferred = inferDirectiveExpressionType(valVal, this.catalog, this, activeWidgetType)
+          const cleanName = vVal.startsWith('data:') ? vVal.slice(5) : vVal
+          const sym: BloggerScopeSymbol = {
+            name: cleanName,
+            type: inferred.type,
+            scopeType: 'with',
+            requiresDataPrefix: true,
+            metadata: inferred.metadata,
+          }
+          result[cleanName] = sym
+          result[`data:${cleanName}`] = sym
+        }
       }
     }
 

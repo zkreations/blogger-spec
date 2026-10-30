@@ -786,6 +786,38 @@ export class ExpressionEvaluator {
       return !isTruthy(args[0])
     }
 
+    if (fn === 'and') {
+      return args.every(a => isTruthy(a))
+    }
+
+    if (fn === 'or') {
+      return args.some(a => isTruthy(a))
+    }
+
+    if (fn === 'eq') {
+      return isEqual(args[0], args[1])
+    }
+
+    if (fn === 'neq') {
+      return !isEqual(args[0], args[1])
+    }
+
+    if (fn === 'lt') {
+      return args[0] < args[1]
+    }
+
+    if (fn === 'gt') {
+      return args[0] > args[1]
+    }
+
+    if (fn === 'le' || fn === 'lte') {
+      return args[0] <= args[1]
+    }
+
+    if (fn === 'ge' || fn === 'gte') {
+      return args[0] >= args[1]
+    }
+
     if (fn === 'in') {
       return isMemberOf(args[0], args[1])
     }
@@ -799,7 +831,22 @@ export class ExpressionEvaluator {
     }
 
     if (fn === '?:') {
-      return args[0] ?? args[1]
+      return args.find(a => a !== null && a !== undefined) ?? args[args.length - 1]
+    }
+
+    if (fn === '%') {
+      const d = Number(args[1])
+      if (d === 0)
+        throw new BloggerDivisionByZeroError('Division by zero in functional operator %')
+      return Number(args[0]) % d
+    }
+
+    if (fn === 'take' || fn === 'limit') {
+      return Array.isArray(args[0]) ? args[0].slice(0, Number(args[1])) : []
+    }
+
+    if (fn === 'skip' || fn === 'offset') {
+      return Array.isArray(args[0]) ? args[0].slice(Number(args[1])) : []
     }
 
     if (fn === '-') {
