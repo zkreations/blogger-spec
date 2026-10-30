@@ -215,6 +215,14 @@ export function compileSkinCss(
 
   let processedCss = content
   if (options?.stripMetadataTags !== false) {
+    // In Blogger, CSS comments enclosing Theme Designer <Variable> or <Group> declarations
+    // are completely stripped from the final render along with all internal text.
+    processedCss = processedCss.replace(/\/\*[\s\S]*?\*\//g, (comment) => {
+      if (/<(?:Variable|Group)\b/i.test(comment)) {
+        return ''
+      }
+      return comment
+    })
     processedCss = processedCss
       .replace(/<Group\b[^>]*>/gi, '')
       .replace(/<\/Group>/gi, '')

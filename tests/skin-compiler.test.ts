@@ -112,4 +112,27 @@ describe('skin compiler & variable substitution engine (Priority 2)', () => {
     expect(result.css).toBe('.card { border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }')
     expect(Object.keys(result.symbols).length).toBe(0)
   })
+
+  it('strips entire CSS comments enclosing Theme Designer variables and metadata', () => {
+    const skinXml = `
+      <b:skin><![CDATA[
+        /* Header Comment */
+        /*!
+          Theme Configuration
+          <Variable name="theme.color" type="color" default="#123456" value="#123456"/>
+        */
+        :root {
+          /* Regular comment */
+          --color: $(theme.color);
+        }
+      ]]></b:skin>
+    `
+
+    const result = compileSkinCss(skinXml, { wrap: 'none' })
+    expect(result.css).toContain('/* Header Comment */')
+    expect(result.css).toContain('/* Regular comment */')
+    expect(result.css).not.toContain('Theme Configuration')
+    expect(result.css).not.toContain('<Variable')
+    expect(result.css).toContain('--color: #123456;')
+  })
 })
