@@ -73,13 +73,17 @@ export function isEqual(left: any, right: any): boolean {
   return false
 }
 
+function isStringLike(val: any): boolean {
+  return typeof val === 'string' || Object.prototype.toString.call(val) === '[object String]'
+}
+
 export function isMemberOf(item: any, collection: any): boolean {
   if (collection === null || collection === undefined)
     return false
 
-  if (typeof collection === 'string') {
+  if (isStringLike(collection)) {
     const target = item === null || item === undefined ? '' : String(item)
-    return collection.includes(target)
+    return String(collection).includes(target)
   }
 
   if (Array.isArray(collection)) {
@@ -532,6 +536,14 @@ export class ExpressionEvaluator {
         current = locals[firstProp]
         startIndex = 1
       }
+      else if (context.data && typeof context.data === 'object' && firstProp in context.data) {
+        current = context.data[firstProp]
+        startIndex = 1
+      }
+      else if (context.this && typeof context.this === 'object' && firstProp in context.this) {
+        current = context.this[firstProp]
+        startIndex = 1
+      }
       else if (firstProp in context) {
         current = context[firstProp]
         startIndex = 1
@@ -551,6 +563,21 @@ export class ExpressionEvaluator {
       }
     }
     else {
+      if ('data' in locals) {
+        return locals.data
+      }
+      if ('data' in context) {
+        return context.data
+      }
+      if ('data:' in context) {
+        return context['data:']
+      }
+      if (cleanPath && cleanPath in context) {
+        return context[cleanPath]
+      }
+      if (raw in context) {
+        return context[raw]
+      }
       return undefined
     }
 
@@ -626,11 +653,11 @@ export class ExpressionEvaluator {
       }
     }
 
-    if (op === '==' || op === '!=') {
+    if (op === '==' || op === '!=' || op === 'eq' || op === 'ne') {
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
       const eq = isEqual(leftVal, rightVal)
-      return op === '==' ? eq : !eq
+      return (op === '==' || op === 'eq') ? eq : !eq
     }
 
     if (op === '===' || op === '!==') {
@@ -639,16 +666,16 @@ export class ExpressionEvaluator {
       return op === '===' ? leftVal === rightVal : leftVal !== rightVal
     }
 
-    if (op === '<' || op === '>' || op === '<=' || op === '>=') {
+    if (op === '<' || op === 'lt' || op === '>' || op === 'gt' || op === '<=' || op === 'le' || op === 'lte' || op === '>=' || op === 'ge' || op === 'gte') {
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
-      if (op === '<')
+      if (op === '<' || op === 'lt')
         return leftVal < rightVal
-      if (op === '>')
+      if (op === '>' || op === 'gt')
         return leftVal > rightVal
-      if (op === '<=')
+      if (op === '<=' || op === 'le' || op === 'lte')
         return leftVal <= rightVal
-      if (op === '>=')
+      if (op === '>=' || op === 'ge' || op === 'gte')
         return leftVal >= rightVal
     }
 
@@ -782,6 +809,12 @@ export class ExpressionEvaluator {
     }
 
     if (fn === '+') {
+      if (args.length === 0)
+        return 0
+      const hasString = args.some(a => isStringLike(a))
+      if (hasString) {
+        return args.map(a => String(a ?? '')).join('')
+      }
       return args.reduce((acc, curr) => acc + Number(curr), 0)
     }
 

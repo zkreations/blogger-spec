@@ -90,7 +90,24 @@ export interface BirContainer {
   readonly role: 'section' | 'widget'
   readonly id?: string
   readonly widgetType?: string
+  readonly sectionId?: string
+  readonly title?: string
+  readonly className?: string
+  readonly tag?: string
   readonly children: readonly BirNode[]
+}
+
+export interface BirAttrMutation {
+  readonly kind: 'attrMutation'
+  readonly name: BirAttrValue
+  readonly value: BirAttrValue
+  readonly cond?: BloggerExpressionNode
+}
+
+export interface BirClassMutationNode {
+  readonly kind: 'classMutation'
+  readonly name: BirAttrValue
+  readonly cond?: BloggerExpressionNode
 }
 
 export type BirNode
@@ -106,6 +123,8 @@ export type BirNode
     | BirInclude
     | BirOutput
     | BirContainer
+    | BirAttrMutation
+    | BirClassMutationNode
 
 export interface BirIncludable {
   readonly id: string
@@ -116,7 +135,7 @@ export interface BirIncludable {
 }
 
 export interface BirSkin {
-  readonly variables: ReadonlyArray<{ readonly name: string, readonly type: string, readonly default: string, readonly group?: string }>
+  readonly variables: ReadonlyArray<{ readonly name: string, readonly type: string, readonly default: string, readonly value?: string, readonly group?: string }>
   readonly css: ReadonlyArray<{ readonly kind: 'text', readonly value: string } | { readonly kind: 'variable', readonly variable: string }>
   readonly templateSkinCss?: ReadonlyArray<{ readonly kind: 'text', readonly value: string } | { readonly kind: 'variable', readonly variable: string }>
 }

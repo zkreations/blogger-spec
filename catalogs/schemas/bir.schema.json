@@ -80,6 +80,27 @@
         "cond": { "$ref": "#/$defs/expression" }
       }
     },
+    "attrMutation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name", "value"],
+      "properties": {
+        "kind": { "const": "attrMutation" },
+        "name": { "$ref": "#/$defs/attrValue" },
+        "value": { "$ref": "#/$defs/attrValue" },
+        "cond": { "$ref": "#/$defs/expression" }
+      }
+    },
+    "classMutationNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "name"],
+      "properties": {
+        "kind": { "const": "classMutation" },
+        "name": { "$ref": "#/$defs/attrValue" },
+        "cond": { "$ref": "#/$defs/expression" }
+      }
+    },
     "nodeList": {
       "type": "array",
       "items": { "$ref": "#/$defs/node" }
@@ -97,7 +118,9 @@
         { "$ref": "#/$defs/switch" },
         { "$ref": "#/$defs/include" },
         { "$ref": "#/$defs/output" },
-        { "$ref": "#/$defs/container" }
+        { "$ref": "#/$defs/container" },
+        { "$ref": "#/$defs/attrMutation" },
+        { "$ref": "#/$defs/classMutationNode" }
       ]
     },
     "element": {
@@ -285,6 +308,10 @@
         "role": { "enum": ["section", "widget"] },
         "id": { "type": "string" },
         "widgetType": { "type": "string" },
+        "sectionId": { "type": "string" },
+        "title": { "type": "string" },
+        "className": { "type": "string" },
+        "tag": { "type": "string" },
         "children": { "$ref": "#/$defs/nodeList" }
       }
     },
@@ -323,6 +350,7 @@
               "name": { "type": "string", "minLength": 1 },
               "type": { "type": "string", "minLength": 1 },
               "default": { "type": "string" },
+              "value": { "type": "string" },
               "group": { "type": "string" }
             }
           }

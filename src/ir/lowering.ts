@@ -53,6 +53,7 @@ interface LoweringContext {
   currentWidgetType?: string
   currentWidgetLocals?: Map<string, BloggerDirectiveNode>
   currentDefaultMarkupType?: string
+  currentSectionId?: string
 }
 
 function isWhitespaceOnly(node: BloggerTemplateNode): boolean {
@@ -167,7 +168,8 @@ function extractSkin(doc: BloggerDocumentNode, skinOverrides?: Record<string, st
       variables = Object.entries(compiled.symbols).map(([name, sym]) => ({
         name: sym.name ?? name,
         type: sym.type,
-        default: sym.default ?? '',
+        default: sym.default ?? sym.value ?? '',
+        ...(sym.value !== undefined ? { value: sym.value } : {}),
       }))
       css = parseSkinCss(compiled.css)
     }
@@ -767,17 +769,28 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
     }
     case 'b:section': {
       const idAttr = node.attributes.find(a => a.name === 'id')
+      const classAttr = node.attributes.find(a => a.name === 'class')
+      const tagAttr = node.attributes.find(a => a.name === 'tag')
+      const sectionId = idAttr?.value ? String(idAttr.value) : undefined
+      const className = classAttr?.value ? String(classAttr.value) : undefined
+      const tag = tagAttr?.value ? String(tagAttr.value) : undefined
+      const prevSection = context.currentSectionId
+      context.currentSectionId = sectionId
       const container: BirContainer = {
         kind: 'container',
         role: 'section',
-        ...(idAttr?.value ? { id: String(idAttr.value) } : {}),
+        ...(sectionId ? { id: sectionId } : {}),
+        ...(className ? { className } : {}),
+        ...(tag ? { tag } : {}),
         children: lowerNodes(filterContainerChildren(node.children), context),
       }
+      context.currentSectionId = prevSection
       return [container]
     }
     case 'b:widget': {
       const idAttr = node.attributes.find(a => a.name === 'id')
       const typeAttr = node.attributes.find(a => a.name === 'type')
+      const titleAttr = node.attributes.find(a => a.name === 'title')
       const widgetId = String(idAttr?.value ?? '')
       const widgetType = String(typeAttr?.value ?? '')
       const prevWidget = context.currentWidgetId
@@ -803,6 +816,8 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
         role: 'widget',
         ...(widgetId ? { id: widgetId } : {}),
         ...(widgetType ? { widgetType } : {}),
+        ...(context.currentSectionId ? { sectionId: context.currentSectionId } : {}),
+        ...(titleAttr !== undefined ? { title: String(titleAttr.value) } : {}),
         children: lowerNodes(nonIncludableChildren, context),
       }
       context.currentWidgetId = prevWidget
@@ -820,6 +835,30 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
     case 'b:defaultmarkup':
       lowerDefaultMarkup(node, context)
       return []
+    case 'b:attr': {
+      const nameAttr = node.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
+      const valAttr = node.attributes.find(a => a.name === 'value' || a.name === 'expr:value')
+      const condAttr = node.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
+      if (!nameAttr)
+        return []
+      return [{
+        kind: 'attrMutation',
+        name: toBirAttrValue(nameAttr, context.catalog),
+        value: toBirAttrValue(valAttr, context.catalog),
+        ...(condAttr ? { cond: ensureExpression(condAttr.value, context.catalog) } : {}),
+      }]
+    }
+    case 'b:class': {
+      const nameAttr = node.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
+      const condAttr = node.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
+      if (!nameAttr)
+        return []
+      return [{
+        kind: 'classMutation',
+        name: toBirAttrValue(nameAttr, context.catalog),
+        ...(condAttr ? { cond: ensureExpression(condAttr.value, context.catalog) } : {}),
+      }]
+    }
     case 'b:includable':
       lowerIncludableDirective(node, context)
       return []

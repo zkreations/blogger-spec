@@ -260,4 +260,22 @@ describe('bir lowering engine (phase 2)', () => {
     const parsed = JSON.parse(jsonStr)
     expect(validateBir(parsed), JSON.stringify(validateBir.errors)).toBe(true)
   })
+
+  it('preserves b:attr and b:class as mutations inside an includable', () => {
+    const xml = `<b:defaultmarkups>
+  <b:defaultmarkup type='Common'>
+    <b:includable id='widget-title'>
+      <b:attr name='id' value=''/>
+      <b:class expr:name='data:widget.instanceId'/>
+    </b:includable>
+  </b:defaultmarkup>
+</b:defaultmarkups>`
+    const ir = lowerTemplate(xml)
+    expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
+    const wt = ir.symbolTable['widget-title']
+    expect(wt).toBeDefined()
+    expect(wt.body).toHaveLength(2)
+    expect(wt.body[0].kind).toBe('attrMutation')
+    expect(wt.body[1].kind).toBe('classMutation')
+  })
 })

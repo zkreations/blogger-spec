@@ -138,6 +138,11 @@ export async function resolveBloggerContext(
       }
     }
 
+    const nextLink = feed.link?.find(l => l.rel === 'next')?.href
+    const prevLink = feed.link?.find(l => l.rel === 'previous')?.href
+    blog1.olderPageUrl = nextLink ? mapper.mapUrl(nextLink) : ''
+    blog1.newerPageUrl = prevLink ? mapper.mapUrl(prevLink) : ''
+
     blog1.posts = activePosts
     blog1.numPosts = activePosts.length
     context.widgetData.Blog1 = blog1
