@@ -29,6 +29,9 @@ export function createUrlMapper(options: UrlMapperOptions = {}): UrlMapper {
   function map(raw: string | undefined): string {
     if (!raw)
       return ''
+    if (raw.startsWith('//')) {
+      raw = `https:${raw}`
+    }
     if (
       raw.startsWith('/')
       || raw.startsWith('#')

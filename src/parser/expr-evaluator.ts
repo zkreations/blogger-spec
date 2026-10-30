@@ -205,7 +205,10 @@ export function resizeImage(url: any, size: any, ratio?: string): any {
   if (url === null || url === undefined)
     return undefined
 
-  const urlStr = String(url)
+  let urlStr = String(url)
+  if (urlStr.startsWith('//')) {
+    urlStr = `https:${urlStr}`
+  }
   const isGoogleHost = /googleusercontent\.com|blogspot\.com|ggpht\.com/i.test(urlStr)
   if (!isGoogleHost) {
     return urlStr

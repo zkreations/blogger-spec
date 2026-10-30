@@ -25,6 +25,11 @@ describe('context UrlMapper suite', () => {
       expect(mapper.mapUrl('https://lh3.googleusercontent.com/a/photo.jpg')).toBe('https://lh3.googleusercontent.com/a/photo.jpg')
     })
 
+    it('normalizes protocol-relative URLs starting with // to https:', () => {
+      expect(mapper.mapUrl('//4.bp.blogspot.com/img.jpg')).toBe('https://4.bp.blogspot.com/img.jpg')
+      expect(mapper.mapUrl('//blogger.googleusercontent.com/avatar.jpg')).toBe('https://blogger.googleusercontent.com/avatar.jpg')
+    })
+
     it('preserves relative, anchor and special protocol URLs', () => {
       expect(mapper.mapUrl('/already/relative')).toBe('/already/relative')
       expect(mapper.mapUrl('#anchor')).toBe('#anchor')

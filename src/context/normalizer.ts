@@ -44,7 +44,10 @@ export function extractFirstImage(html: string): string {
   if (!html)
     return ''
   const match = html.match(/<img[^>]+src=["']([^"']+)["']/i)
-  return match ? match[1] : ''
+  if (!match)
+    return ''
+  const src = match[1]
+  return src.startsWith('//') ? `https:${src}` : src
 }
 
 export function formatBloggerDate(
@@ -91,15 +94,24 @@ export function normalizePostEntry(
   const published = formatBloggerDate(entry.published?.$t, locale)
   const updated = formatBloggerDate(entry.updated?.$t, locale)
 
-  const thumbnail = entry.media$thumbnail?.url || ''
-  const featuredImage = thumbnail
+  let thumbnail = entry.media$thumbnail?.url || ''
+  if (thumbnail.startsWith('//')) {
+    thumbnail = `https:${thumbnail}`
+  }
+  let featuredImage = thumbnail
     ? thumbnail.replace(/\/s\d+(-c)?\//, '/s1600/')
     : extractFirstImage(body)
+  if (featuredImage.startsWith('//')) {
+    featuredImage = `https:${featuredImage}`
+  }
 
   const rawAuthor = entry.author?.[0]
   const authorName = rawAuthor?.name?.$t || 'Blogger'
   const authorProfile = rawAuthor?.uri?.$t || ''
-  const authorAvatar = rawAuthor?.gd$image?.src || 'https://lh3.googleusercontent.com/a/default-user=s80-c'
+  let authorAvatar = rawAuthor?.gd$image?.src || 'https://lh3.googleusercontent.com/a/default-user=s80-c'
+  if (authorAvatar.startsWith('//')) {
+    authorAvatar = `https:${authorAvatar}`
+  }
 
   const labels: BloggerPostLabel[] = (entry.category || []).map((cat) => {
     const term = cat.term
@@ -180,7 +192,10 @@ export function normalizeCommentEntry(
   const id = extractId(entry.id?.$t)
   const rawAuthor = entry.author?.[0]
   const author = rawAuthor?.name?.$t || 'Anonymous'
-  const authorAvatarSrc = rawAuthor?.gd$image?.src || 'https://img1.blogblog.com/img/blank.gif'
+  let authorAvatarSrc = rawAuthor?.gd$image?.src || 'https://img1.blogblog.com/img/blank.gif'
+  if (authorAvatarSrc.startsWith('//')) {
+    authorAvatarSrc = `https:${authorAvatarSrc}`
+  }
   const rawAuthorUri = rawAuthor?.uri?.$t || ''
   const authorUrl = rawAuthorUri ? mapper.mapUrl(rawAuthorUri) : ''
 
