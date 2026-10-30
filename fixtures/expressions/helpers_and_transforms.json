@@ -344,7 +344,7 @@
     },
     {
       "id": "expressions/helpers_and_transforms/url-params-overwrite-existing",
-      "title": "Url Params Operator Replaces Existing Query Parameters",
+      "title": "Url Params Operator Preserves Existing Query Parameters And Merges New Ones",
       "evidence": "observed",
       "covers": [
         "subsystem:helpers_and_transforms",
@@ -357,7 +357,7 @@
       },
       "expected": {
         "outcome": "value",
-        "value": "https://dev.zkreations.com/?hl=es&m=1"
+        "value": "https://dev.zkreations.com/?old=1&hl=es&m=1"
       },
       "verified_at": "2026-10-26"
     }

@@ -364,7 +364,7 @@ function extractElementMutations(
 
 function lowerElement(node: BloggerElementNode, context: LoweringContext): BirElement {
   const tagName = node.namespace ? `${node.namespace}:${node.name}` : node.name
-  const isVoid = node.selfClosing || context.catalog.getHtmlVoidElements().has(node.name.toLowerCase())
+  const isVoid = context.catalog.getHtmlVoidElements().has(node.name.toLowerCase())
 
   const baseClasses: BirClassMutation[] = []
   const baseAttributes: BirAttribute[] = []

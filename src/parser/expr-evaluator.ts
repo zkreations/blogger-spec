@@ -267,42 +267,57 @@ export function sourceSet(url: any, sizes: any, ratio?: string): string {
     .join(', ')
 }
 
-export function params(url: any, paramsMap: any): string {
-  const urlStr = String(url ?? '')
-  const base = urlStr.split('?')[0].split('#')[0]
-  const keys = Object.keys(paramsMap || {}).sort()
-  const query = keys
-    .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(paramsMap[k])}`)
-    .join('&')
-  return query ? `${base}?${query}` : base
-}
-
 export function appendParams(url: any, paramsMap: any): string {
   const urlStr = String(url ?? '')
   const [baseAndQuery, hash] = urlStr.split('#')
   const [base, existingQuery] = baseAndQuery.split('?')
 
-  const merged = new Map<string, string>()
+  const existingOrder: string[] = []
+  const params = new Map<string, string>()
+
   if (existingQuery) {
     for (const part of existingQuery.split('&')) {
       if (!part)
         continue
       const [k, v] = part.split('=')
-      merged.set(decodeURIComponent(k), decodeURIComponent(v || ''))
+      const decodedKey = decodeURIComponent(k)
+      if (!params.has(decodedKey)) {
+        existingOrder.push(decodedKey)
+      }
+      params.set(decodedKey, decodeURIComponent(v || ''))
     }
   }
 
+  const newKeys: string[] = []
   for (const [k, v] of Object.entries(paramsMap || {})) {
-    merged.set(k, String(v))
+    if (params.has(k)) {
+      params.set(k, String(v))
+    }
+    else {
+      newKeys.push(k)
+      params.set(k, String(v))
+    }
   }
 
-  const sortedKeys = Array.from(merged.keys()).sort()
-  const query = sortedKeys
-    .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(merged.get(k) || '')}`)
+  newKeys.sort()
+
+  const finalKeys = [...existingOrder, ...newKeys]
+  const query = finalKeys
+    .map((k) => {
+      const val = params.get(k) || ''
+      const encodedVal = val.startsWith('http://') || val.startsWith('https://')
+        ? encodeURI(val)
+        : encodeURIComponent(val)
+      return `${encodeURIComponent(k)}=${encodedVal}`
+    })
     .join('&')
 
   const result = query ? `${base}?${query}` : base
   return hash ? `${result}#${hash}` : result
+}
+
+export function params(url: any, paramsMap: any): string {
+  return appendParams(url, paramsMap)
 }
 
 export function fragment(url: any, frag: any): string {

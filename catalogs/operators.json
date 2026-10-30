@@ -2139,7 +2139,7 @@
     },
     "params": {
       "family": "url",
-      "description": "Sets or replaces the entire query string on a URL using key-value pairs from a dictionary object, deterministically serializing parameters in alphabetical key order (?k1=v1&k2=v2).",
+      "description": "Sets or replaces query parameters on a URL using key-value pairs from a dictionary object while preserving existing query parameters, deterministically serializing new parameters in alphabetical key order (?k1=v1&k2=v2).",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,

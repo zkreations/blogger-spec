@@ -96,8 +96,9 @@ export async function resolveBloggerContext(
     })
 
     const blogLocale = config.overrides?.blog?.locale || 'en'
+    const postSaa = config.overrides?.view?.saa || config.overrides?.saa || (config.overrides?.blog as any)?.saa
     const rawPosts: readonly BloggerRawEntry[] = feed.entry || []
-    const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, blogId, blogLocale))
+    const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, blogId, blogLocale, postSaa))
 
     const rawPages: readonly BloggerRawEntry[] = pagesResponse?.feed?.entry || []
     const normalizedPages = rawPages.map(e => normalizePageEntry(e, mapper))
