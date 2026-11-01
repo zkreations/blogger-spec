@@ -175,21 +175,18 @@ describe('dataPath Navigator (resolveDataPath)', () => {
       'site.title': { type: 'string', name: 'site.title' },
     }
 
-    // 1. Resolve variable node directly
     const fontVar = resolveDataPath('data:skin.vars.body_font', { skinVariables: skinVars })
     expect(fontVar).toBeDefined()
     expect(fontVar?.name).toBe('body_font')
     expect(fontVar?.type).toBe('skin:font')
     expect(fontVar?.sourceCatalog).toBe('variables')
 
-    // 2. Resolve modifier on skin variable (e.g. .family on font)
     const fontFamily = resolveDataPath('data:skin.vars.body_font.family', { skinVariables: skinVars })
     expect(fontFamily).toBeDefined()
     expect(fontFamily?.name).toBe('family')
     expect(fontFamily?.type).toBe('string')
     expect(fontFamily?.sourceCatalog).toBe('types')
 
-    // 3. Resolve modifier on color variable (e.g. .red on color)
     const colorRed = resolveDataPath('data:skin.vars.keycolor.red', { skinVariables: skinVars })
     expect(colorRed).toBeDefined()
     expect(colorRed?.name).toBe('red')
@@ -205,7 +202,6 @@ describe('dataPath Navigator (resolveDataPath)', () => {
     // 5. Skin string variables do not have platform string modifiers (.length is invalid)
     expect(resolveDataPath('data:skin.vars.site_title.length', { skinVariables: skinVars })).toBeUndefined()
 
-    // 6. Works without 'data:' prefix
     const noPrefixFamily = resolveDataPath('skin.vars.body_font.family', { skinVariables: skinVars })
     expect(noPrefixFamily).toBeDefined()
     expect(noPrefixFamily?.name).toBe('family')

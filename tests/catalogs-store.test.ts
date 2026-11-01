@@ -844,7 +844,6 @@ describe('catalogs and store formal verification suite', () => {
         expect(customSpec.getStandardDiagnostic('missing_required_attribute')).toBe('BX9991')
         expect(customSpec.getStandardDiagnostic('prohibited_nesting')).toBe('BX9992')
 
-        // Missing id on b:section should emit custom code BX9991
         const missingAttrXml = '<b:section></b:section>'
         const diags1 = RootExports.validateTemplateStructure(missingAttrXml, customSpec)
         expect(diags1.some(d => (d.code as string) === 'BX9991')).toBe(true)
@@ -978,18 +977,15 @@ describe('catalogs and store formal verification suite', () => {
         const customStore = new MemoryCatalogStore(catalogs)
         const customSpec = new SpecCatalog(customStore)
 
-        // Custom default version fallback
         expect(RootExports.detectTemplateVersion('<html/>', customSpec).version).toBe(1)
         expect(RootExports.detectTemplateVersion('<html/>').version).toBe(3)
 
-        // Custom explicit attribute
         const explicitXml = '<html custom-layout-attr="2"></html>'
         const resExplicit = RootExports.detectTemplateVersion(explicitXml, customSpec)
         expect(resExplicit.version).toBe(2)
         expect(resExplicit.confidence).toBe('explicit')
         expect(resExplicit.detectedFeatures).toContain('custom-layout-attr="2"')
 
-        // Custom structural marker
         const markerXml = '<b:widget custom-marker="val"/>'
         const resMarker = RootExports.detectTemplateVersion(markerXml, customSpec)
         expect(resMarker.version).toBe(2)
@@ -1053,7 +1049,6 @@ describe('catalogs and store formal verification suite', () => {
           setDefaultCatalogStore(originalStore)
         }
 
-        // Restored to defaults
         expect(RootExports.COMPILER_QUOTA_LIMIT).toBe(40)
         expect(RootExports.COMPILER_NESTING_LIMIT).toBe(50)
         expect(RootExports.HTML_VOID_ELEMENTS.has('custom-void')).toBe(false)

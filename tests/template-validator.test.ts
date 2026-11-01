@@ -31,7 +31,6 @@ describe('helpers & canonical structure validation suite', () => {
     })
 
     it('validates variable attributes by variable type', () => {
-      // 1. Valid color variable
       const validColor = validateVariableAttributes('color', ['name', 'description', 'type', 'default', 'value'])
       expect(validColor.valid).toBe(true)
       expect(validColor.invalidAttributes).toHaveLength(0)
@@ -44,15 +43,12 @@ describe('helpers & canonical structure validation suite', () => {
       expect(invalidColor.invalidAttributes).toContain('green')
       expect(invalidColor.invalidAttributes).toContain('blue')
 
-      // 3. Length attributes (min, max)
       const validLength = validateVariableAttributes('length', ['name', 'description', 'type', 'min', 'max', 'default', 'value'])
       expect(validLength.valid).toBe(true)
 
-      // 4. Background attributes (color)
       const validBg = validateVariableAttributes('background', ['name', 'description', 'type', 'color', 'default', 'value'])
       expect(validBg.valid).toBe(true)
 
-      // 5. Missing mandatory attributes
       const missingAttrs = validateVariableAttributes('color', ['description', 'value'])
       expect(missingAttrs.valid).toBe(false)
       expect(missingAttrs.missingAttributes).toContain('name')
@@ -145,7 +141,6 @@ describe('helpers & canonical structure validation suite', () => {
     })
 
     it('validates strictly scoped styling directives (Group and Variable)', () => {
-      // Valid styling hierarchy in skin
       expect(validateDirectiveNesting('b:skin', 'CDATA')).toBeNull()
       expect(validateDirectiveNesting('b:skin', 'Group')).toBeNull()
       expect(validateDirectiveNesting('b:skin', 'Variable')).toBeNull()
@@ -157,7 +152,6 @@ describe('helpers & canonical structure validation suite', () => {
       expect(validateDirectiveNesting('CDATA', 'Group')?.code).toBe('BX1023')
       expect(validateDirectiveNesting('CDATA', 'Variable')?.code).toBe('BX1023')
 
-      // Invalid styling nesting
       const v1 = validateDirectiveNesting('Group', 'div')
       expect(v1).not.toBeNull()
       expect(v1?.code).toBe('BX1023')
@@ -537,7 +531,6 @@ describe('helpers & canonical structure validation suite', () => {
       const diags = validateTemplateStructure(xml)
       expect(diags.some(d => d.code === 'BX1024')).toBe(true)
 
-      // Test deprecated section attributes in Layouts v3
       const sectionXml = '<b:section id="main" maxwidgets="1" showaddelement="no"/>'
       const sectionDiags = validateTemplateStructure(sectionXml)
       const maxwidgetsDiag = sectionDiags.find(d => d.code === 'BX1024' && d.attribute === 'maxwidgets')
@@ -860,7 +853,6 @@ describe('helpers & canonical structure validation suite', () => {
     })
 
     it('detects unescaped && operator as error and escaped &amp;&amp; as warning (BX1055)', () => {
-      // 1. Unescaped && -> error
       const unescapedXml = '<b:eval expr=\'(true && true) ? 1 : 0\'/>'
       const unescapedDiags = validateTemplateStructure(unescapedXml, undefined, { validateExpressions: true })
       const errorDiag = unescapedDiags.find(d => d.code === 'BX1055')
@@ -870,7 +862,6 @@ describe('helpers & canonical structure validation suite', () => {
       expect(errorDiag?.fixes?.[0]?.edits[0]?.newText).toBe('and')
       expect(unescapedXml.slice(errorDiag!.tagStart, errorDiag!.tagEnd)).toBe('&&')
 
-      // 2. Escaped &amp;&amp; -> warning
       const escapedXml = '<b:eval expr=\'(true &amp;&amp; true) ? 1 : 0\'/>'
       const escapedDiags = validateTemplateStructure(escapedXml, undefined, { validateExpressions: true })
       const warnDiag = escapedDiags.find(d => d.code === 'BX1055')
@@ -880,12 +871,10 @@ describe('helpers & canonical structure validation suite', () => {
       expect(warnDiag?.fixes?.[0]?.edits[0]?.newText).toBe('and')
       expect(escapedXml.slice(warnDiag!.tagStart, warnDiag!.tagEnd)).toBe('&amp;&amp;')
 
-      // 3. Keyword and -> no diagnostics
       const validXml = '<b:eval expr=\'(true and true) ? 1 : 0\'/>'
       const validDiags = validateTemplateStructure(validXml, undefined, { validateExpressions: true })
       expect(validDiags.filter(d => d.code === 'BX1055')).toHaveLength(0)
 
-      // Direct expression validation
       const exprError = validateExpression('(true && true) ? 1 : 0')
       expect(exprError.find(d => d.code === 'BX1055')?.severity).toBe('error')
       const exprWarn = validateExpression('(true &amp;&amp; true) ? 1 : 0')
@@ -1263,7 +1252,6 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diags.some(d => d.code === 'BX1059')).toBe(true)
       expect(diags.find(d => d.code === 'BX1059')?.severity).toBe('warning')
 
-      // Clean portable inclusion has no BX1059
       const portableXml = `
         <b:widget id='Blog1' type='Blog'>
           <b:includable id='main'>

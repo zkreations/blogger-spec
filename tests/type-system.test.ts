@@ -313,7 +313,6 @@ describe('canonical type system & coercion engine', () => {
       expect(resolveOperatorReturnType('first', 'array[image]')).toBe('image')
       expect(resolveOperatorReturnType('first', 'array')).toBe('unknown')
 
-      // Property modifier unwrapping (.first, .last)
       expect(resolveModifierReturnType('array[image]', 'first')).toBe('image')
       expect(resolveModifierReturnType('array[string]', 'last')).toBe('string')
       expect(resolveModifierReturnType('array', 'first')).toBe('unknown')
@@ -324,7 +323,6 @@ describe('canonical type system & coercion engine', () => {
       expect(resolveModifierReturnType('array', 'size')).toBe('number')
       expect(resolveModifierReturnType('array', 'empty')).toBe('boolean')
 
-      // Platform subtype and collection modifiers
       expect(resolveModifierReturnType('url', 'canonical')).toBe('url')
       expect(resolveModifierReturnType('url', 'https')).toBe('url')
       expect(resolveModifierReturnType('url', 'http')).toBe('url')

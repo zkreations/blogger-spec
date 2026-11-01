@@ -80,13 +80,11 @@ describe('hamlet e2e golden master conformance suite (Phase 5)', () => {
       expect(existsSync(htmlFile), `Capture file ${item.file} must exist`).toBe(true)
       const rawHtml = readFileSync(htmlFile, 'utf8')
 
-      // 1. Extract raw body classes
       const bodyMatch = rawHtml.match(/<body([^>]*)>/i)
       expect(bodyMatch, `body tag in ${item.file} must be found`).toBeDefined()
       const classMatch = bodyMatch![1]?.match(/class=['"]([^'"]*)['"]/i)
       const rawBodyClasses = classMatch ? classMatch[1]!.split(/\s+/).filter(Boolean).sort() : []
 
-      // 2. Evaluate simulated body classes via getMockContext
       const viewId = item.view === 'search_empty' ? 'search_query' : item.view
       const ctx = getMockContext(viewId)
 
@@ -126,7 +124,6 @@ describe('hamlet e2e golden master conformance suite (Phase 5)', () => {
         expect(hasSingleIdClass, `Single-id class must be present on ${item.file}`).toBe(true)
       }
 
-      // 3. Verify canonical synthetic section and widget containers
       expect(rawHtml).toContain('id=\'sidebar\'')
       expect(rawHtml).toContain('id=\'header\'')
       expect(rawHtml).toContain('id=\'content\'')
@@ -141,7 +138,6 @@ describe('hamlet e2e golden master conformance suite (Phase 5)', () => {
     const homepageHtmlPath = join(hamletCapturesDir, 'homepage.html')
     const rawHtml = readFileSync(homepageHtmlPath, 'utf8')
 
-    // Style page-skin wrapper
     expect(rawHtml).toContain('<style id=\'page-skin-1\' type=\'text/css\'><!--')
 
     // Key root variables substituted by Blogger

@@ -32,7 +32,6 @@ describe('bir lowering engine (phase 2)', () => {
       { name: 'alt', value: { kind: 'static', value: 'User avatar' } },
     ])
 
-    // Classes
     expect(img.classes).toHaveLength(2)
     expect(img.classes[0].name).toEqual({ kind: 'static', value: 'avatar' })
     expect(img.classes[0].cond).toBeUndefined()
@@ -107,13 +106,11 @@ describe('bir lowering engine (phase 2)', () => {
     expect(ifNode.kind).toBe('if')
     expect(ifNode.branches).toHaveLength(3)
 
-    // Branch 1: if
     expect(ifNode.branches[0].test.type).toBe('DataPath')
     expect(ifNode.branches[0].test.raw).toBe('data:view.isHomepage')
     expect(ifNode.branches[0].children[0].kind).toBe('element')
     expect(ifNode.branches[0].children[0].tag).toBe('h1')
 
-    // Branch 2: elseif
     expect(ifNode.branches[1].test.type).toBe('DataPath')
     expect(ifNode.branches[1].test.raw).toBe('data:view.isPost')
     expect(ifNode.branches[1].children[0].kind).toBe('element')

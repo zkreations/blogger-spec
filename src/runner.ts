@@ -33,10 +33,8 @@ export function normalizeHtmlString(html?: string): string {
     .replace(/\s+/g, ' ')
     .trim()
 
-  // Void tags self-closing normalization
   result = result.replace(VOID_ELEMENTS_REGEX, (_m, tag, attrs) => `<${tag}${attrs.trimEnd()}>`)
 
-  // Attribute normalization and alphabetical sorting
   result = result.replace(TAG_WITH_ATTRS_REGEX, (_fullMatch, tagName, attrsText) => {
     const isSelfClosing = attrsText.trimEnd().endsWith('/')
     const cleanAttrs = isSelfClosing ? attrsText.slice(0, attrsText.lastIndexOf('/')) : attrsText

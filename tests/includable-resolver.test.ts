@@ -111,7 +111,6 @@ describe('includable resolver & 6-tier ontological dispatch (Phase 1)', () => {
     expect(res.tier).toBe('universal_widget')
     expect(res.sourceContainer).toBe('All')
 
-    // Verify it resolved to v2 block content
     const children = res.includableNode?.children as any[]
     expect(children.some(c => c.type === 'Element' && c.attributes.some((a: any) => a.value === 'universal-main-v2'))).toBe(true)
   })

@@ -83,18 +83,15 @@ describe('canonical mock contexts suite (Plan 05)', () => {
     expect(Array.isArray(byline)).toBe(true)
     expect(byline.length).toBe(7)
 
-    // Iteration works
     const names = byline.map((item: any) => item.name)
     expect(names).toEqual(['share', 'author', 'timestamp', 'comments', 'icons', 'labels', 'location'])
 
-    // Direct keyed property access
     expect(byline.author).toBeDefined()
     expect(byline.author.name).toBe('author')
     expect(byline.author.label).toBe('Por')
     expect(byline.comments).toBeDefined()
     expect(byline.comments.label).toBe('Comentarios')
 
-    // Boolean evaluation of item
     expect(Boolean(byline.author)).toBe(true)
   })
 
@@ -105,20 +102,17 @@ describe('canonical mock contexts suite (Plan 05)', () => {
     expect(Array.isArray(post.comments)).toBe(true)
     expect(post.comments.length).toBeGreaterThanOrEqual(2)
 
-    // Root comments filter: c => !c.inReplyTo
     const rootComments = post.comments.filter((c: any) => !c.inReplyTo)
     expect(rootComments.length).toBe(1)
     expect(rootComments[0].id).toBe('c1001')
     expect(rootComments[0].author).toBe('Carlos')
 
-    // Reply comments filter: c => c.inReplyTo == rootComment.id
     const replies = post.comments.filter((c: any) => c.inReplyTo === rootComments[0].id)
     expect(replies.length).toBe(1)
     expect(replies[0].id).toBe('c1002')
     expect(replies[0].author).toBe('Abel')
     expect(replies[0].adminClass).toBe('is-admin')
 
-    // Comment form iframe
     expect(post.commentFormIframeSrc).toBeDefined()
     expect(post.commentFormIframeSrc).toContain('comment-iframe.g')
   })
@@ -127,13 +121,11 @@ describe('canonical mock contexts suite (Plan 05)', () => {
     const ctx = getMockContext('homepage')
     const data = ctx.widgetData
 
-    // HTML1
     expect(data.HTML1).toBeDefined()
     expect(data.HTML1.title).toBe('HTML Personalizado')
     expect(data.HTML1.content).toContain('Contenido HTML')
     expect(ctx.widgets.HTML[0].id).toBe('HTML1')
 
-    // LinkList1
     expect(data.LinkList1).toBeDefined()
     expect(data.LinkList1.title).toBe('Enlaces Útiles')
     expect(data.LinkList1.shownum).toBe(3)
@@ -143,19 +135,16 @@ describe('canonical mock contexts suite (Plan 05)', () => {
     expect(data.LinkList1.links[0].target).toContain('ejemplo.blogspot.com')
     expect(ctx.widgets.LinkList[0].id).toBe('LinkList1')
 
-    // BlogSearch1
     expect(data.BlogSearch1).toBeDefined()
     expect(data.BlogSearch1.title).toBe('Buscar en el blog')
     expect(ctx.widgets.BlogSearch[0].id).toBe('BlogSearch1')
 
-    // PopularPosts1
     expect(data.PopularPosts1).toBeDefined()
     expect(typeof data.PopularPosts1.postDisplay).toBe('object')
     expect(data.PopularPosts1.postDisplay.showSnippet).toBe(true)
     expect(data.PopularPosts1.postDisplay.showTitle).toBe(true)
     expect(data.PopularPosts1.postDisplay.showAuthor).toBe(true)
 
-    // Global blog canonical search and adsense properties
     expect(ctx.blog.searchUrl).toBe('https://ejemplo.blogspot.com/search')
     expect(ctx.blog.adsenseClientId).toBe('ca-pub-1234567890123456')
     expect(ctx.blog.adsenseHostId).toBe('ca-host-pub-1556223355139109')
@@ -165,20 +154,17 @@ describe('canonical mock contexts suite (Plan 05)', () => {
     const ctx = getMockContext('homepage')
     const data = ctx.widgetData
 
-    // BlogArchive
     expect(data.BlogArchive1).toBeDefined()
     expect(data.BlogArchive1.style).toBe('HIERARCHY')
     expect(data.BlogArchive1.data[0].name).toBe('2026')
     expect(data.BlogArchive1.data[0].data[0].name).toBe('octubre')
     expect(data.BlogArchive1.data[0].data[0].posts.length).toBe(3)
 
-    // PageList
     expect(data.PageList1).toBeDefined()
     expect(data.PageList1.links.length).toBe(3)
     const homeLink = data.PageList1.links.find((l: any) => l.id === 'c0')
     expect(homeLink.isCurrentPage).toBe(true)
 
-    // Label
     expect(data.Label1).toBeDefined()
     expect(data.Label1.labels.length).toBe(3)
     expect(data.Label1.labels[0].name).toBe('blogger')
@@ -237,7 +223,6 @@ describe('canonical mock contexts suite (Plan 05)', () => {
     expect(post.widgetData.Blog1.posts[0].comments.length).toBeGreaterThan(0)
     expect(post.widgetData.Blog1.posts[0].commentFormIframeSrc).toBeDefined()
 
-    // Template includes expected widgets
     expect(xml).toContain('id=\'Blog1\'')
     expect(xml).toContain('id=\'Header1\'')
   })

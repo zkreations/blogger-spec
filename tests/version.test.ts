@@ -22,11 +22,9 @@ describe('template layout versions (v1, v2, v3) suite', () => {
       expect(spec?.versions['2'].name).toContain('Layouts v2')
       expect(spec?.versions['3'].name).toContain('Layouts v3')
 
-      // Cross-check SpecCatalog helper
       const catalogSpec = getSpecCatalog().getLayoutVersions()
       expect(catalogSpec).toEqual(spec)
 
-      // Direct module export
       expect(directGetSpec()).toEqual(spec)
     })
   })

@@ -68,7 +68,6 @@ describe('bir includables symbol table and resolution (phase 3)', () => {
     const h2Tag = (postIncludable.body[0] as any).tag
     expect(h2Tag).toBe('h2')
 
-    // Verify calling widget resolution
     const mainBody = ir.symbolTable['Blog1:main'].body
     const inc = mainBody[0] as any
     expect(inc.target).toBe('post')

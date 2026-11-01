@@ -82,16 +82,13 @@ describe('blogger locales SSOT & runtime resolution suite', () => {
     })
 
     it('resolves canonical translations via getTranslation with domain prefixes', () => {
-      // 1. messages
       expect(getTranslation('messages.archive', 'es')).toBe('Archivo')
       expect(getTranslation('messages.home', 'es')).toBe('Inicio')
 
-      // 2. globals
       expect(getTranslation('globals.blog.jumpLinkMessage', 'en')).toBe('Read more')
       expect(getTranslation('globals.blog.jumpLinkMessage', 'es')).toBe('Leer más')
       expect(getTranslation('globals.blog.jumpLinkMessage', 'fr')).toBe('Lire la suite')
 
-      // 3. widgets
       expect(getTranslation('widgets.ContactForm.contactFormSendMsg', 'en')).toBe('Send')
       expect(getTranslation('widgets.ContactForm.contactFormSendMsg', 'es')).toBe('Enviar')
       expect(getTranslation('widgets.ContactForm.contactFormEmailMsg', 'es')).toBe('Correo electrónico')

@@ -188,18 +188,15 @@ describe('context resolver suite with 3-tier precedence', () => {
 
       // Title on post_listing falls back to blogMeta.title
       expect(ctx.view.title).toBe('Hamlet')
-      // Posts filtered to max-results = 3
       expect(ctx.widgetData.Blog1.posts.length).toBe(3)
       expect(ctx.widgetData.Blog1.numPosts).toBe(3)
 
-      // Newer and older page URLs
       expect(ctx.widgetData.Blog1.newerPageUrl).toBe('https://hamlet.zkreations.com/')
       expect(ctx.widgetData.Blog1.olderPageUrl).toContain('https://hamlet.zkreations.com/search?updated-max=')
       expect(ctx.widgetData.Blog1.olderPageUrl).toContain('max-results=3')
       expect(ctx.widgetData.Blog1.olderPageUrl).toContain('start=3')
       expect(ctx.widgetData.Blog1.olderPageUrl).toContain('by-date=false')
 
-      // Localized pagination messages
       expect(ctx.messages.newerPosts).toBe('Newer Posts')
       expect(ctx.messages.olderPosts).toBe('Older Posts')
     })

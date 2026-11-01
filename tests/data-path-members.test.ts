@@ -38,12 +38,10 @@ describe('dataPath Members & Type Members Navigation', () => {
     const rootMembers = getDataPathMembers('', { scope, widgetType: 'Blog' })
     const names = rootMembers.map(m => m.name)
 
-    // Globals
     expect(names).toContain('blog')
     expect(names).toContain('view')
     expect(names).toContain('messages')
 
-    // Widget Blog properties
     expect(names).toContain('posts')
     expect(names).toContain('title')
   })

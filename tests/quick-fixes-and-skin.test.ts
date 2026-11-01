@@ -15,12 +15,10 @@ describe('semantic QuickFixes and Skin Validation Suite', () => {
     expect(fix.title).toContain('Convert <b:for> to <b:loop>')
     expect(fix.edits.length).toBe(2)
 
-    // Opening tag replacement
     expect(fix.edits[0]!.newText).toContain('<b:loop')
     expect(fix.edits[0]!.newText).toContain('var="p"')
     expect(fix.edits[0]!.newText).toContain('values="data:posts"')
 
-    // Closing tag replacement
     expect(fix.edits[1]!.newText).toBe('</b:loop>')
   })
 

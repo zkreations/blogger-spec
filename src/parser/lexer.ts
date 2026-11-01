@@ -430,13 +430,13 @@ export class Lexer {
 
   private readString(startPos: TokenPosition, quote: string): Token {
     const rawStart = this.pos
-    this.advance(1) // skip opening quote
+    this.advance(1)
     let value = ''
 
     while (this.pos < this.length) {
       const c = this.source[this.pos]!
       if (c === quote) {
-        this.advance(1) // skip closing quote
+        this.advance(1)
         const rawValue = this.source.slice(rawStart, this.pos)
         return this.makeToken('STRING', value, startPos, rawValue)
       }
@@ -490,7 +490,7 @@ export class Lexer {
     }
 
     if (this.pos < this.length && this.source[this.pos] === '.' && this.pos + 1 < this.length && /\d/.test(this.source[this.pos + 1]!)) {
-      this.advance(1) // skip '.'
+      this.advance(1)
       while (this.pos < this.length && /\d/.test(this.source[this.pos]!)) {
         this.advance(1)
       }

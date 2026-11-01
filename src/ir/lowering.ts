@@ -265,7 +265,6 @@ function extractElementMutations(
         continue
       }
       if (child.name === 'b:if') {
-        // Inspect if b:if branch contains only mutations
         const hasOnlyMutations = child.children.every(
           c => (c.type === 'Directive' && (c.name === 'b:class' || c.name === 'b:attr' || c.name === 'b:elseif' || c.name === 'b:else'))
             || (c.type === 'Text' && c.value.trim() === ''),

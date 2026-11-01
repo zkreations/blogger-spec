@@ -275,6 +275,9 @@ export async function resolveBloggerContext(
     const activeUrl = config.overrides?.view?.url || config.targetUrl || context.view?.url || ''
     let searchParams: URLSearchParams | undefined
     let pathLabel: string | undefined
+    let pathYear: number | undefined
+    let pathMonth: number | undefined
+    let pathDay: number | undefined
     if (activeUrl) {
       try {
         const parsed = new URL(activeUrl, 'https://blogger.local')
@@ -282,6 +285,26 @@ export async function resolveBloggerContext(
         const labelMatch = parsed.pathname.match(/\/search\/label\/([^/?#]+)/)
         if (labelMatch) {
           pathLabel = decodeURIComponent(labelMatch[1].replace(/\+/g, ' '))
+        }
+
+        const dailyMatch = parsed.pathname.match(/\/(\d{4})_(\d{2})_(\d{2})_archive\.html/)
+        if (dailyMatch) {
+          pathYear = Number.parseInt(dailyMatch[1], 10)
+          pathMonth = Number.parseInt(dailyMatch[2], 10)
+          pathDay = Number.parseInt(dailyMatch[3], 10)
+        }
+        else {
+          const monthlyMatch = parsed.pathname.match(/\/(\d{4})\/(\d{1,2})\/?$/)
+          if (monthlyMatch) {
+            pathYear = Number.parseInt(monthlyMatch[1], 10)
+            pathMonth = Number.parseInt(monthlyMatch[2], 10)
+          }
+          else {
+            const yearlyMatch = parsed.pathname.match(/\/(\d{4})\/?$/)
+            if (yearlyMatch) {
+              pathYear = Number.parseInt(yearlyMatch[1], 10)
+            }
+          }
         }
       }
       catch {
@@ -383,6 +406,46 @@ export async function resolveBloggerContext(
         )
       }
 
+      const effectiveArchiveYear = pathYear
+        || (config.overrides?.view?.archive as any)?.year
+        || (config.overrides?.view as any)?.year
+      const effectiveArchiveMonth = pathMonth
+        || (config.overrides?.view?.archive as any)?.month
+        || (config.overrides?.view as any)?.month
+      const effectiveArchiveDay = pathDay
+        || (config.overrides?.view?.archive as any)?.day
+        || (config.overrides?.view as any)?.day
+
+      if (effectiveArchiveYear) {
+        context.view = context.view || {}
+        context.view.archive = context.view.archive || {}
+        context.view.archive.year = effectiveArchiveYear
+        if (effectiveArchiveMonth) {
+          context.view.archive.month = effectiveArchiveMonth
+        }
+
+        activePosts = activePosts.filter((p) => {
+          const m = p.publishedIso?.match(/^(\d{4})-(\d{2})-(\d{2})/)
+          if (!m) {
+            return true
+          }
+          const pYear = Number.parseInt(m[1], 10)
+          const pMonth = Number.parseInt(m[2], 10)
+          const pDay = Number.parseInt(m[3], 10)
+
+          if (pYear !== effectiveArchiveYear) {
+            return false
+          }
+          if (effectiveArchiveMonth && pMonth !== effectiveArchiveMonth) {
+            return false
+          }
+          if (effectiveArchiveDay && pDay !== effectiveArchiveDay) {
+            return false
+          }
+          return true
+        })
+      }
+
       if (searchParams) {
         const updatedMax = searchParams.get('updated-max')
         const updatedMin = searchParams.get('updated-min')
@@ -477,6 +540,24 @@ export async function resolveBloggerContext(
             else {
               blog1.olderPageUrl = ''
             }
+          }
+        }
+        else if (viewId.startsWith('archive_') || effectiveArchiveYear) {
+          blog1.newerPageUrl = mapper.mapUrl(blogMeta.homepageUrl || (blogOrigin ? `${blogOrigin}/` : '/'))
+
+          if (activePosts.length > 0) {
+            const lastPost = activePosts[activePosts.length - 1]
+            const hasOlderInBlog = normalizedPosts.some(p => (p.timestamp ?? 0) < (lastPost?.timestamp ?? 0))
+            if (hasOlderInBlog) {
+              const nextDate = lastPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
+              blog1.olderPageUrl = mapper.mapUrl(`${blogOrigin}/search?updated-max=${nextDate}&max-results=${normalizedPosts.length || 9}`)
+            }
+            else {
+              blog1.olderPageUrl = ''
+            }
+          }
+          else {
+            blog1.olderPageUrl = ''
           }
         }
         else if (viewId === 'post_listing' || updatedMax || updatedMin) {

@@ -48,11 +48,9 @@ describe('system inclusions catalog suite', () => {
     expect(isServerInclusion('backArrowIcon')).toBe(true)
     expect(isServerInclusion('postBody')).toBe(true)
 
-    // Delegation to platform super.<id>
     expect(isServerInclusion('super.main')).toBe(true)
     expect(isServerInclusion('super.customSubroutine')).toBe(true)
 
-    // Unknown or invalid
     expect(isServerInclusion('unknownCustomSubroutine')).toBe(false)
     expect(isServerInclusion('')).toBe(false)
   })
@@ -95,14 +93,12 @@ describe('system inclusions catalog suite', () => {
   })
 
   it('correctly classifies portable vs theme_bound inclusions and exposes server markup', () => {
-    // Portable inclusions
     expect(isPortableInclusion('all-head-content')).toBe(true)
     expect(isPortableInclusion('openGraphMetaData')).toBe(true)
     expect(isPortableInclusion('responsiveImageStyle')).toBe(true)
     expect(isPortableInclusion('svgIcon')).toBe(true)
     expect(isThemeBoundInclusion('all-head-content')).toBe(false)
 
-    // Theme-bound inclusions
     expect(isThemeBoundInclusion('heroPost')).toBe(true)
     expect(isThemeBoundInclusion('feedPostImage')).toBe(true)
     expect(isThemeBoundInclusion('standardPostImageStyle')).toBe(true)
@@ -116,7 +112,6 @@ describe('system inclusions catalog suite', () => {
     expect(feedImgDef?.safety).toBe('theme_bound')
     expect(feedImgDef?.theme_dependency?.theme_name).toBe('Emporio')
 
-    // Server markup retrieval
     const headMarkup = getInclusionMarkup('all-head-content')
     expect(headMarkup).toBeDefined()
     expect(headMarkup).toContain('id=\'all-head-content\'')
@@ -126,7 +121,6 @@ describe('system inclusions catalog suite', () => {
     expect(svgIconMarkup).toBeDefined()
     expect(svgIconMarkup).toContain('sprite_v1_6.css.svg')
 
-    // Super delegation rule
     const delegation = getSuperDelegationRule()
     expect(delegation).toBeDefined()
     expect(delegation?.supported_widgets).toContain('Blog')
@@ -136,7 +130,6 @@ describe('system inclusions catalog suite', () => {
   })
 
   it('expands server inclusions and inlines subroutines locally', () => {
-    // 1. Basic unwrapped expansion
     const svgRes = expandServerInclusion('svgIcon')
     expect(svgRes.isServerInclusion).toBe(true)
     expect(svgRes.isPortable).toBe(true)
@@ -144,7 +137,6 @@ describe('system inclusions catalog suite', () => {
     expect(svgRes.markup).not.toContain('<b:includable')
     expect(svgRes.diagnostics).toHaveLength(0)
 
-    // 2. Body extractor
     const rawIncludable = '<b:includable id=\'test\'><div>Inner Content</div></b:includable>'
     expect(extractIncludableBody(rawIncludable)).toBe('<div>Inner Content</div>')
 
@@ -153,21 +145,17 @@ describe('system inclusions catalog suite', () => {
     expect(headRes.markup).toContain('og:url')
     expect(headRes.markup).toContain('resizeImage')
 
-    // 4. Warning diagnostics on super inclusion expansion
     const superRes = expandServerInclusion('super.main')
     expect(superRes.diagnostics.some(d => d.code === 'BX1058')).toBe(true)
 
-    // 5. Warning diagnostics on theme-bound inclusion expansion
     const heroRes = expandServerInclusion('heroPost')
     expect(heroRes.safety).toBe('theme_bound')
     expect(heroRes.diagnostics.some(d => d.code === 'BX1059')).toBe(true)
 
-    // 6. Unresolved inclusion diagnostics
     const nonExistentRes = expandServerInclusion('nonExistentSubroutine')
     expect(nonExistentRes.isServerInclusion).toBe(false)
     expect(nonExistentRes.diagnostics.some(d => d.code === 'BX1037')).toBe(true)
 
-    // 7. Formal parameter contracts
     const params = getInclusionParameterContracts('responsiveImageStyle')
     expect(params).toBeDefined()
     expect(params?.image?.required).toBe(true)
@@ -183,7 +171,6 @@ describe('system inclusions catalog suite', () => {
     expect(Object.keys(allDefaults)).toContain('Profile')
     expect(Object.keys(allDefaults)).toContain('Label')
 
-    // Header default includables
     const headerDefaults = getWidgetDefaultInclusions('Header')
     expect(headerDefaults).toContain('main')
     expect(headerDefaults).toContain('title')
@@ -191,20 +178,17 @@ describe('system inclusions catalog suite', () => {
     expect(headerDefaults).toContain('image')
     expect(headerDefaults).toContain('behindImageStyle')
 
-    // BlogArchive default includables
     const archiveDefaults = getWidgetDefaultInclusions('BlogArchive')
     expect(archiveDefaults).toContain('main')
     expect(archiveDefaults).toContain('flat')
     expect(archiveDefaults).toContain('hierarchy')
 
-    // Blog default includables
     const blogDefaults = getWidgetDefaultInclusions('Blog')
     expect(blogDefaults).toContain('comments')
     expect(blogDefaults).toContain('threadedComments')
     expect(blogDefaults).toContain('postHeader')
     expect(blogDefaults).toContain('postFooter')
 
-    // Validation of super delegators per widget context
     expect(isValidSuperInclusion('Header', 'title')).toBe(true)
     expect(isValidSuperInclusion('Header', 'main')).toBe(true)
     expect(isValidSuperInclusion('Header', 'comments')).toBe(false)
@@ -217,7 +201,6 @@ describe('system inclusions catalog suite', () => {
     expect(isValidSuperInclusion('Blog', 'postShareButtons')).toBe(true)
     expect(isValidSuperInclusion('Blog', 'behindImageStyle')).toBe(false)
 
-    // Inclusions target_widgets metadata
     const titleInc = getServerInclusion('title')
     expect(titleInc).toBeDefined()
     expect(titleInc?.target_widgets).toContain('Header')
