@@ -241,7 +241,7 @@ export async function resolveBloggerContext(
             const firstPost = activePosts[0]
             const prevDate = firstPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
             const byDateSuffix = byDateParam !== null ? `&by-date=${byDateParam}` : ''
-            blog1.newerPageUrl = `${blogOrigin}/search?updated-max=${prevDate}&max-results=${maxResults || 8}&start=${prevStart}${byDateSuffix}`
+            blog1.newerPageUrl = mapper.mapUrl(`${blogOrigin}/search?updated-max=${prevDate}&max-results=${maxResults || 8}&start=${prevStart}${byDateSuffix}`)
           }
 
           // Older Posts link
@@ -250,7 +250,7 @@ export async function resolveBloggerContext(
             const nextDate = lastPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
             const nextStart = startIndex + (maxResults || 8)
             const byDateSuffix = byDateParam !== null ? `&by-date=${byDateParam}` : ''
-            blog1.olderPageUrl = `${blogOrigin}/search?updated-max=${nextDate}&max-results=${maxResults || 8}&start=${nextStart}${byDateSuffix}`
+            blog1.olderPageUrl = mapper.mapUrl(`${blogOrigin}/search?updated-max=${nextDate}&max-results=${maxResults || 8}&start=${nextStart}${byDateSuffix}`)
           }
           else {
             blog1.olderPageUrl = ''

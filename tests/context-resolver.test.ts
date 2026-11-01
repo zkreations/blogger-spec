@@ -171,4 +171,54 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(mockFetch).toHaveBeenCalledTimes(1)
     })
   })
+
+  describe('url parameter filtering and pagination resolution', () => {
+    it('filters active posts and computes canonical pagination URLs in remote mode', async () => {
+      const mockFetch = createMockFetch()
+      const ctx = await resolveBloggerContext({
+        view: 'post_listing',
+        urlMode: 'remote',
+        fetch: mockFetch,
+        overrides: {
+          view: {
+            url: 'https://hamlet.zkreations.com/search?updated-max=2025-04-01T18:11:27.102-07:00&max-results=3&by-date=false',
+          },
+        },
+      })
+
+      // Title on post_listing falls back to blogMeta.title
+      expect(ctx.view.title).toBe('Hamlet')
+      // Posts filtered to max-results = 3
+      expect(ctx.widgetData.Blog1.posts.length).toBe(3)
+      expect(ctx.widgetData.Blog1.numPosts).toBe(3)
+
+      // Newer and older page URLs
+      expect(ctx.widgetData.Blog1.newerPageUrl).toBe('https://hamlet.zkreations.com/')
+      expect(ctx.widgetData.Blog1.olderPageUrl).toContain('https://hamlet.zkreations.com/search?updated-max=')
+      expect(ctx.widgetData.Blog1.olderPageUrl).toContain('max-results=3')
+      expect(ctx.widgetData.Blog1.olderPageUrl).toContain('start=3')
+      expect(ctx.widgetData.Blog1.olderPageUrl).toContain('by-date=false')
+
+      // Localized pagination messages
+      expect(ctx.messages.newerPosts).toBe('Newer Posts')
+      expect(ctx.messages.olderPosts).toBe('Older Posts')
+    })
+
+    it('computes relative pagination URLs when urlMode is relative', async () => {
+      const mockFetch = createMockFetch()
+      const ctx = await resolveBloggerContext({
+        view: 'post_listing',
+        urlMode: 'relative',
+        fetch: mockFetch,
+        overrides: {
+          view: {
+            url: '/search?updated-max=2025-04-01T18:11:27.102-07:00&max-results=3&by-date=false',
+          },
+        },
+      })
+
+      expect(ctx.widgetData.Blog1.newerPageUrl).toBe('/')
+      expect(ctx.widgetData.Blog1.olderPageUrl).toContain('/search?updated-max=')
+    })
+  })
 })
