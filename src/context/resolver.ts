@@ -124,9 +124,9 @@ export async function resolveBloggerContext(
       }
     }
 
-    if (viewId === 'homepage' || viewId === 'post_listing') {
+    if (viewId !== 'post' && viewId !== 'static_page') {
       context.view = context.view || {}
-      if (!config.overrides?.view?.title && !config.overrides?.view?.searchQuery && !config.overrides?.view?.searchLabel) {
+      if (!config.overrides?.view?.title) {
         context.view.title = blogMeta.title
       }
       if (!config.overrides?.view?.description) {
@@ -189,10 +189,26 @@ export async function resolveBloggerContext(
         }
       }
 
+      const effectiveQ = searchParams?.get('q') || (config.overrides?.view?.search as any)?.query || (config.overrides?.view as any)?.searchQuery
+      if (effectiveQ) {
+        context.view = context.view || {}
+        context.view.search = context.view.search || {}
+        context.view.search.query = effectiveQ
+        context.view.searchQuery = effectiveQ
+      }
+
+      const effectiveLabel = searchParams?.get('label') || (config.overrides?.view?.search as any)?.label || (config.overrides?.view as any)?.searchLabel
+      if (effectiveLabel) {
+        context.view = context.view || {}
+        context.view.search = context.view.search || {}
+        context.view.search.label = effectiveLabel
+        context.view.searchLabel = effectiveLabel
+      }
+
       if (searchParams) {
         const updatedMax = searchParams.get('updated-max')
         const updatedMin = searchParams.get('updated-min')
-        const qParam = searchParams.get('q')
+        const byDateParam = searchParams.get('by-date')
 
         if (updatedMax) {
           const maxTime = new Date(updatedMax).getTime()
@@ -208,20 +224,34 @@ export async function resolveBloggerContext(
           }
         }
 
-        if (qParam) {
-          const qLower = qParam.toLowerCase()
+        if (effectiveQ) {
+          const qLower = effectiveQ.toLowerCase()
           activePosts = activePosts.filter(p =>
             p.title.toLowerCase().includes(qLower)
             || p.body.toLowerCase().includes(qLower)
             || p.labels.some(l => l.name.toLowerCase().includes(qLower)),
           )
+
+          if (byDateParam !== 'true') {
+            const escapedQ = qLower.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+            const regex = new RegExp(`\\b${escapedQ}\\b`, 'g')
+            activePosts.sort((a, b) => {
+              const textA = `${a.title} ${a.body}`.toLowerCase()
+              const textB = `${b.title} ${b.body}`.toLowerCase()
+              const countA = (textA.match(regex) || []).length
+              const countB = (textB.match(regex) || []).length
+              if (countB !== countA) {
+                return countB - countA
+              }
+              return (b.timestamp ?? 0) - (a.timestamp ?? 0)
+            })
+          }
         }
 
         const maxResultsParam = searchParams.get('max-results')
         const maxResults = maxResultsParam ? Number.parseInt(maxResultsParam, 10) : undefined
         const startParam = searchParams.get('start')
         const startIndex = startParam ? Number.parseInt(startParam, 10) : 0
-        const byDateParam = searchParams.get('by-date')
 
         const hasMoreOlder = Boolean(maxResults && maxResults > 0 && activePosts.length > maxResults)
 

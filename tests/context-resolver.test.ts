@@ -220,5 +220,25 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(ctx.widgetData.Blog1.newerPageUrl).toBe('/')
       expect(ctx.widgetData.Blog1.olderPageUrl).toContain('/search?updated-max=')
     })
+
+    it('handles search queries by ranking posts by keyword relevance and populating view.search.query', async () => {
+      const mockFetch = createMockFetch()
+      const ctx = await resolveBloggerContext({
+        view: 'search_query',
+        urlMode: 'remote',
+        fetch: mockFetch,
+        overrides: {
+          view: {
+            url: 'https://hamlet.zkreations.com/search?q=The',
+          },
+        },
+      })
+
+      expect(ctx.view.title).toBe('Hamlet')
+      expect(ctx.view.search.query).toBe('The')
+      expect(ctx.widgetData.Blog1.posts.length).toBeGreaterThan(0)
+      // Highest frequency of 'the' among feed posts comes first
+      expect(ctx.widgetData.Blog1.posts[0].title).toBe('A Tale of Tranquility by the Lake')
+    })
   })
 })
