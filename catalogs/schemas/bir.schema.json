@@ -227,7 +227,8 @@
             "required": ["var", "value"],
             "properties": {
               "var": { "type": "string", "minLength": 1 },
-              "value": { "$ref": "#/$defs/expression" }
+              "value": { "$ref": "#/$defs/expression" },
+              "isDynamicDereference": { "type": "boolean" }
             }
           }
         },

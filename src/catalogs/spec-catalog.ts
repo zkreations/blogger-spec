@@ -940,6 +940,11 @@ export class SpecCatalog {
       ?? this.docAliasMap.get(op.toLowerCase())
   }
 
+  isFunctionalOperator(op: string): boolean {
+    const def = this.getOperator(op)
+    return Boolean(def?.syntax?.supports_functional)
+  }
+
   getAllOperators(): Record<string, BloggerOperatorDefinition> {
     const result: Record<string, BloggerOperatorDefinition> = {}
     for (const [k, v] of this.operatorMap.entries()) {
@@ -1694,6 +1699,10 @@ export function isDocAlias(alias: string, catalog: SpecCatalog = getSpecCatalog(
 
 export function getOperator(op: string, catalog: SpecCatalog = getSpecCatalog()): BloggerOperatorDefinition | undefined {
   return catalog.getOperator(op)
+}
+
+export function isFunctionalOperator(op: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
+  return catalog.isFunctionalOperator(op)
 }
 
 export function getAllOperators(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerOperatorDefinition> {

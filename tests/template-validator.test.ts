@@ -696,6 +696,24 @@ describe('helpers & canonical structure validation suite', () => {
       expect(invalidDiags.some(d => d.code === 'BX1039')).toBe(true)
     })
 
+    it('enforces double quotes on Theme Designer tags (<Variable>, <Group>) and emits BX1052 for single quotes', () => {
+      const singleQuoteVar = `
+        <b:skin><![CDATA[
+          <Variable name='theme.color' description='Theme Color' type='color' value='#ffffff' default='#ffffff'/>
+        ]]></b:skin>
+      `
+      const diags = validateTemplateStructure(singleQuoteVar)
+      expect(diags.some(d => d.code === 'BX1052')).toBe(true)
+
+      const doubleQuoteVar = `
+        <b:skin><![CDATA[
+          <Variable name="theme.color" description="Theme Color" type="color" value="#ffffff" default="#ffffff"/>
+        ]]></b:skin>
+      `
+      const validDiags = validateTemplateStructure(doubleQuoteVar)
+      expect(validDiags.some(d => d.code === 'BX1052')).toBe(false)
+    })
+
     it('allows <b:with expr:var="..."> dynamic variable alias declaration', () => {
       const result = validateDirectiveAttributes('b:with', ['expr:var', 'value'])
       expect(result.valid).toBe(true)
@@ -837,6 +855,16 @@ describe('helpers & canonical structure validation suite', () => {
       expect(diags.some(d => d.code === 'BX1017')).toBe(true)
       const diag = diags.find(d => d.code === 'BX1017')
       expect(diag?.message).toContain('.filter()')
+    })
+
+    it('detects prohibited standalone non-operator function calls (BX1017)', () => {
+      const diags = validateExpression('fakeFunc(data:view.title)')
+      expect(diags.some(d => d.code === 'BX1017')).toBe(true)
+      expect(diags.find(d => d.code === 'BX1017')?.code).toBe('BX1017')
+
+      // Valid functional operators should NOT trigger BX1017
+      const validDiags = validateExpression('resizeImage(data:post.featuredImage, 400)')
+      expect(validDiags.some(d => d.code === 'BX1017')).toBe(false)
     })
 
     it('detects prohibited strict equality operators === and !== (BX1018)', () => {

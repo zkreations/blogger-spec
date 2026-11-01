@@ -136,4 +136,26 @@ describe('bloggerReferenceRenderer', () => {
     const htmlDefault = renderer.render(xml, {})
     expect(htmlDefault).not.toContain('cookieChoiceInfo')
   })
+
+  it('resolves level 3 dynamic data dereferencing in b:with expr:value', () => {
+    const xml = `<b:tag name='img'>
+  <b:attr name='src' value='pic.jpg'/>
+  <b:loop values='["id", "alt", "loading"]' var='attr'>
+    <b:with expr:value='+("data:", data:attr)' var='val'>
+      <b:attr expr:name='data:attr' expr:value='data:val'/>
+    </b:with>
+  </b:loop>
+</b:tag>`
+    const ctx = {
+      data: {
+        alt: 'Submerged in Beauty',
+        loading: 'lazy',
+      },
+    }
+    const html = renderer.render(xml, ctx)
+    expect(html).toContain('alt="Submerged in Beauty"')
+    expect(html).toContain('loading="lazy"')
+    expect(html).not.toContain('id="data:id"')
+    expect(html).not.toContain('id=')
+  })
 })

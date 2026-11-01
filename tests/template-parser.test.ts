@@ -149,6 +149,29 @@ describe('parseTemplate AST parser', () => {
     expect(doc.diagnostics!.length).toBeGreaterThan(0)
   })
 
+  it('strictly rejects non-self-closing syntax for strictly self-closing directives', () => {
+    const xml = `<div><b:include name='test'></div>`
+    expect(() => parseTemplate(xml)).toThrowError(
+      'Directive \'<b:include>\' is strictly self-closing and must end with \'/>\'.',
+    )
+  })
+
+  it('strictly rejects closing tags for strictly self-closing directives', () => {
+    const xml = `<div><b:include name='test'/></b:include></div>`
+    expect(() => parseTemplate(xml)).toThrowError(
+      'The directive \'b:include\' is strictly self-closing and cannot have a matching end-tag \'</b:include>\'.',
+    )
+  })
+
+  it('auto-closes strictly self-closing directives in tolerant mode', () => {
+    const xml = `<div><b:include name='test'><p>content</p></div>`
+    const doc = parseTemplate(xml, { tolerant: true })
+    expect(doc.diagnostics).toBeDefined()
+    expect(doc.diagnostics!.some(d => d.message.includes('strictly self-closing'))).toBe(true)
+    const div: any = doc.children[0]
+    expect(div.children.some((c: any) => c.type === 'Directive' && c.name === 'b:include' && c.selfClosing)).toBe(true)
+  })
+
   describe('production templates empirical conformance', () => {
     const canonicalSamplePath = path.join(getWorkspacePaths().fixtures, 'templates/samples/hamlet.xml')
     const workbenchSamplesDir = path.join(getWorkspacePaths().workbench, 'samples')

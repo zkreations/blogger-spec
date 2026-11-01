@@ -12,7 +12,7 @@ import type {
 import type { SpecCatalog } from '../catalogs/index.js'
 import type { BloggerDirectiveName } from '../types.js'
 import { getSpecCatalog } from '../catalogs/index.js'
-import { parseAttributes } from './directive-scanner.js'
+import { isStrictlySelfClosingTag, parseAttributes } from './directive-scanner.js'
 import { parseExpression } from './expr-parser.js'
 
 export class BloggerTemplateSyntaxError extends Error {
@@ -281,6 +281,17 @@ export function parseTemplate(
       const tagEnd = closeGt + 1
       const pos = getPositionAt(cursor, lineOffsets)
 
+      const isCloseDirective = closeTagName.startsWith('b:') || closeTagName.startsWith('data:') || closeTagName === 'Variable'
+      if (isCloseDirective && isStrictlySelfClosingTag(closeTagName, catalog)) {
+        const msg = `The directive '${closeTagName}' is strictly self-closing and cannot have a matching end-tag '</${closeTagName}>'.`
+        if (tolerant) {
+          diagnostics.push({ message: msg, line: pos.line, column: pos.column, offset: pos.offset ?? 0 })
+          cursor = tagEnd
+          continue
+        }
+        throw new BloggerTemplateSyntaxError(msg, pos)
+      }
+
       if (elementStack.length === 0) {
         const msg = `Unexpected closing tag '</${closeTagName}>'.`
         if (tolerant) {
@@ -442,16 +453,40 @@ export function parseTemplate(
     }
 
     if (isDirective) {
+      const isStrictSelfClosing = isStrictlySelfClosingTag(tagName, catalog)
+      if (isStrictSelfClosing && !hasSlash) {
+        const pos = getPositionAt(cursor, lineOffsets)
+        const msg = `Directive '<${tagName}>' is strictly self-closing and must end with '/>'.`
+        if (tolerant) {
+          diagnostics.push({ message: msg, line: pos.line, column: pos.column, offset: pos.offset ?? 0 })
+        }
+        else {
+          throw new BloggerTemplateSyntaxError(msg, pos)
+        }
+      }
+
+      const effectiveSelfClosing = hasSlash || isStrictSelfClosing
       const node: BloggerDirectiveNode = {
         type: 'Directive',
         name: tagName as BloggerDirectiveName,
         attributes,
         children: [],
-        selfClosing: hasSlash,
+        selfClosing: effectiveSelfClosing,
         loc,
       }
       appendChild(node)
-      if (!hasSlash) {
+      if (!effectiveSelfClosing) {
+        const directiveDepth = elementStack.filter(n => n.type === 'Directive').length
+        if (directiveDepth >= 50) {
+          const pos = getPositionAt(cursor, lineOffsets)
+          const msg = 'Maximum directive nesting depth of 50 exceeded.'
+          if (tolerant) {
+            diagnostics.push({ message: msg, line: pos.line, column: pos.column, offset: pos.offset ?? 0 })
+          }
+          else {
+            throw new BloggerTemplateSyntaxError(msg, pos)
+          }
+        }
         elementStack.push(node)
       }
     }

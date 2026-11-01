@@ -1,5 +1,4 @@
-import type { BloggerExpressionNode } from '../../ast.js'
-import type { BirAttrValue, BirIncludable } from '../types.js'
+import type { BirAttrValue, BirIncludable, BirWithBinding } from '../types.js'
 import type { MutationTarget } from './dom-mutation-pipeline.js'
 import { evaluateExpression } from '../../parser/index.js'
 
@@ -29,7 +28,7 @@ export function bindLoopScope(
 }
 
 export function bindWithScope(
-  bindings: readonly { var: string, value: BloggerExpressionNode }[],
+  bindings: readonly BirWithBinding[],
   parentCtx: Record<string, unknown>,
 ): Record<string, unknown> {
   const withCtx: Record<string, unknown> = { ...parentCtx }
@@ -38,7 +37,37 @@ export function bindWithScope(
     : {}
   const withData = { ...parentData }
   for (const b of bindings) {
-    const val = evaluateExpression(b.value, withCtx as Record<string, any>)
+    let val = evaluateExpression(b.value, withCtx as Record<string, any>)
+    if (b.isDynamicDereference && typeof val === 'string' && val.startsWith('data:')) {
+      const cleanPath = val.slice(5)
+      const segments = cleanPath.split('.').map(s => s.trim()).filter(Boolean)
+      let resolved: any
+      if (segments.length > 0) {
+        if (segments[0]! in withData) {
+          let curr: any = withData
+          for (const seg of segments) {
+            if (curr === null || curr === undefined) {
+              curr = undefined
+              break
+            }
+            curr = curr[seg]
+          }
+          resolved = curr
+        }
+        else if (segments[0]! in withCtx) {
+          let curr: any = withCtx
+          for (const seg of segments) {
+            if (curr === null || curr === undefined) {
+              curr = undefined
+              break
+            }
+            curr = curr[seg]
+          }
+          resolved = curr
+        }
+      }
+      val = resolved
+    }
     withCtx[b.var] = val
     withData[b.var] = val
   }

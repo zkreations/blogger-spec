@@ -29,6 +29,7 @@ import type {
   BirSwitch,
   BirTag,
   BirWith,
+  BirWithBinding,
   BloggerIRDocument,
 } from './types.js'
 import { parseExpression } from '../ast.js'
@@ -542,7 +543,7 @@ function lowerLoopDirective(node: BloggerDirectiveNode, context: LoweringContext
 }
 
 function lowerWithDirective(node: BloggerDirectiveNode, context: LoweringContext): BirWith {
-  const bindings: Array<{ var: string, value: BloggerExpressionNode }> = []
+  const bindings: BirWithBinding[] = []
 
   const varAttr = node.attributes.find(a => a.name === 'var')
   const valAttr = node.attributes.find(a => a.name === 'value' || a.name === 'expr:value')
@@ -550,6 +551,7 @@ function lowerWithDirective(node: BloggerDirectiveNode, context: LoweringContext
     bindings.push({
       var: String(varAttr.value),
       value: ensureExpression(valAttr?.value, context.catalog),
+      isDynamicDereference: valAttr?.name === 'expr:value' ? true : undefined,
     })
   }
 
@@ -561,6 +563,7 @@ function lowerWithDirective(node: BloggerDirectiveNode, context: LoweringContext
       bindings.push({
         var: String(vAttr.value),
         value: ensureExpression(valA?.value, context.catalog),
+        isDynamicDereference: valA?.name === `expr:value${i}` ? true : undefined,
       })
     }
   }

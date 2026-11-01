@@ -532,6 +532,19 @@ function validateVariableElement(
   catalog: SpecCatalog,
   diagnostics: BloggerStructureDiagnostic[],
 ): void {
+  if (token.tagName !== 'Variable' && token.tagName !== 'Group') {
+    return
+  }
+
+  for (const attr of Object.values(token.attributes)) {
+    if (attr.quote === '\'') {
+      pushDiagnostic(diagnostics, catalog, 'BX1052', token, {
+        attribute: attr.name,
+        message: `Theme Designer tags (<${token.tagName}>) strictly require double quotes ("...") for attributes. Single quotes are not supported by the Theme Designer parser.`,
+      })
+    }
+  }
+
   if (token.tagName !== 'Variable') {
     return
   }
@@ -1367,6 +1380,21 @@ export function validateExpression(
             start: baseStart + mapOffset(node.loc.start.offset ?? 0),
             end: baseStart + mapOffset(node.loc.end.offset ?? 0),
             message: diagRule?.message ?? 'Using curly braces \'{ ... }\' for array/set collections is non-standard in Blogger. Use bracket notation \'[ ... ]\' instead to ensure future compatibility.',
+          })
+        }
+      }
+
+      if (node.type === 'CallExpression') {
+        const callee = node.callee
+        if (!catalog.isFunctionalOperator(callee)) {
+          const diagRule = catalog.getDiagnostic('BX1017')
+          const startOffset = node.loc?.start.offset ?? 0
+          const endOffset = node.loc?.end.offset ?? startOffset + callee.length
+          pushDiagnostic(diagnostics, catalog, 'BX1017', fakeToken, {
+            attribute: context?.attributeName,
+            start: baseStart + mapOffset(startOffset),
+            end: baseStart + mapOffset(endOffset),
+            message: diagRule?.message ?? `Standalone function call '${callee}()' is invalid in Blogger expressions. Blogger expressions only support canonical operators.`,
           })
         }
       }

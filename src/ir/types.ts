@@ -57,9 +57,15 @@ export interface BirLoop {
   readonly children: readonly BirNode[]
 }
 
+export interface BirWithBinding {
+  readonly var: string
+  readonly value: BloggerExpressionNode
+  readonly isDynamicDereference?: boolean
+}
+
 export interface BirWith {
   readonly kind: 'with'
-  readonly bindings: ReadonlyArray<{ readonly var: string, readonly value: BloggerExpressionNode }>
+  readonly bindings: readonly BirWithBinding[]
   readonly children: readonly BirNode[]
 }
 
