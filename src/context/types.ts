@@ -1,4 +1,5 @@
 import type { BloggerViewId } from '../generated/types.generated.js'
+import type { BloggerBlogConfiguration } from './config-types.js'
 
 export type BloggerUrlMode = 'remote' | 'local' | 'relative'
 
@@ -11,6 +12,8 @@ export interface BloggerContextConfig {
   readonly targetId?: string
   /** URL o path del post o página activo si la vista es 'post' o 'static_page' */
   readonly targetUrl?: string
+  /** Configuración local y de contexto predeterminado de Blogger (blogger.config.json) */
+  readonly config?: BloggerBlogConfiguration
   /** Modo de re-mapeo de URLs internas (Default: 'relative') */
   readonly urlMode?: BloggerUrlMode
   /** URL base para re-mapeo en modo 'local' (ej. 'http://localhost:3000') */
@@ -128,11 +131,20 @@ export interface BloggerCommentData {
   readonly anchorName: string
 }
 
+export interface BloggerFeedLink {
+  readonly url: string
+  readonly name: string
+  readonly feedType: string
+  readonly mimeType: string
+}
+
 export interface BloggerPostData {
   readonly id: string
   readonly title: string
   readonly url: string
   readonly absoluteUrl: string
+  readonly link?: string
+  readonly feedLinks?: readonly BloggerFeedLink[]
   readonly body: string
   readonly date: string
   readonly timestamp?: number

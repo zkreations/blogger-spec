@@ -1,5 +1,6 @@
 import type {
   BloggerCommentData,
+  BloggerFeedLink,
   BloggerHeaderData,
   BloggerLabelData,
   BloggerPageLink,
@@ -9,6 +10,71 @@ import type {
   BloggerRawFeed,
 } from './types.js'
 import type { UrlMapper } from './url-mapper.js'
+
+export interface NormalizePostOptions {
+  readonly saa?: string
+  readonly titleAndEnclosureLinks?: boolean
+  readonly dateFormat?: string
+}
+
+export function formatIcuDate(
+  date: Date,
+  pattern: string,
+  locale = 'en',
+): string {
+  const intlLocale = locale === 'en' ? 'en-US' : (locale === 'es' ? 'es-ES' : locale)
+  const fullWeekday = date.toLocaleString(intlLocale, { weekday: 'long' })
+  const shortWeekday = date.toLocaleString(intlLocale, { weekday: 'short' })
+  const fullMonth = date.toLocaleString(intlLocale, { month: 'long' })
+  const shortMonth = date.toLocaleString(intlLocale, { month: 'short' })
+  const yearFull = String(date.getFullYear())
+  const yearShort = yearFull.slice(-2)
+  const monthNum = String(date.getMonth() + 1)
+  const month2 = monthNum.padStart(2, '0')
+  const dayNum = String(date.getDate())
+  const day2 = dayNum.padStart(2, '0')
+  const h24Num = String(date.getHours())
+  const h24_2 = h24Num.padStart(2, '0')
+  const h12 = date.getHours() % 12 || 12
+  const h12Num = String(h12)
+  const h12_2 = h12Num.padStart(2, '0')
+  const minNum = String(date.getMinutes())
+  const min2 = minNum.padStart(2, '0')
+  const secNum = String(date.getSeconds())
+  const sec2 = secNum.padStart(2, '0')
+  const isSpanish = intlLocale.startsWith('es')
+  const dayPeriod = date.getHours() >= 12 ? (isSpanish ? 'p. m.' : 'PM') : (isSpanish ? 'a. m.' : 'AM')
+
+  const tokenRegex = /'([^']+)'|EEEE|EEE|MMMM|MMM|MM|M|dd|d|yyyy|yy|HH|H|hh|h|mm|m|ss|[saz]/g
+
+  return pattern.replace(tokenRegex, (match, quoted) => {
+    if (quoted !== undefined)
+      return quoted
+    switch (match) {
+      case 'EEEE': return fullWeekday
+      case 'EEE': return shortWeekday
+      case 'MMMM': return fullMonth
+      case 'MMM': return shortMonth
+      case 'MM': return month2
+      case 'M': return monthNum
+      case 'dd': return day2
+      case 'd': return dayNum
+      case 'yyyy': return yearFull
+      case 'yy': return yearShort
+      case 'HH': return h24_2
+      case 'H': return h24Num
+      case 'hh': return h12_2
+      case 'h': return h12Num
+      case 'mm': return min2
+      case 'm': return minNum
+      case 'ss': return sec2
+      case 's': return secNum
+      case 'a': return dayPeriod
+      case 'z': return 'UTC'
+      default: return match
+    }
+  })
+}
 
 export function stripHtml(html: string): string {
   if (!html)
@@ -53,6 +119,7 @@ export function extractFirstImage(html: string): string {
 export function formatBloggerDate(
   isoString: string | undefined,
   locale = 'en',
+  pattern?: string,
 ): { date: string, timestamp: number } {
   if (!isoString) {
     return { date: '', timestamp: 0 }
@@ -66,12 +133,15 @@ export function formatBloggerDate(
   const timestamp = parsed.getTime()
   try {
     const intlLocale = locale === 'en' ? 'en-US' : (locale === 'es' ? 'es-ES' : locale)
-    const formatter = new Intl.DateTimeFormat(intlLocale, {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    })
-    return { date: formatter.format(parsed), timestamp }
+    if (!pattern) {
+      const formatter = new Intl.DateTimeFormat(intlLocale, {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+      return { date: formatter.format(parsed), timestamp }
+    }
+    return { date: formatIcuDate(parsed, pattern, locale), timestamp }
   }
   catch {
     return { date: isoString, timestamp }
@@ -83,8 +153,13 @@ export function normalizePostEntry(
   mapper: UrlMapper,
   blogId: string,
   locale = 'en',
-  saa?: string,
+  saaOrOptions?: string | NormalizePostOptions,
 ): BloggerPostData {
+  const options = typeof saaOrOptions === 'object' ? saaOrOptions : { saa: saaOrOptions }
+  const saa = options.saa
+  const dateFormat = options.dateFormat
+  const titleAndEnclosureLinks = options.titleAndEnclosureLinks !== false
+
   const id = extractId(entry.id?.$t)
   const title = entry.title?.$t || ''
   const alternateLink = entry.link?.find(l => l.rel === 'alternate')?.href || ''
@@ -92,8 +167,8 @@ export function normalizePostEntry(
   const body = entry.content?.$t || entry.summary?.$t || ''
   const snippets = createSnippets(entry.summary?.$t || entry.content?.$t || '')
 
-  const published = formatBloggerDate(entry.published?.$t, locale)
-  const updated = formatBloggerDate(entry.updated?.$t, locale)
+  const published = formatBloggerDate(entry.published?.$t, locale, dateFormat)
+  const updated = formatBloggerDate(entry.updated?.$t, locale, dateFormat)
 
   let thumbnail = entry.media$thumbnail?.url || ''
   if (thumbnail.startsWith('//')) {
@@ -129,11 +204,26 @@ export function normalizePostEntry(
   const numberOfComments = Number.parseInt(entry.thr$total?.$t || '0', 10) || 0
   const allowComments = entry.link ? entry.link.some(l => l.rel === 'replies') : true
 
+  const titleLink = titleAndEnclosureLinks
+    ? (entry.link?.find(l => l.rel === 'enclosure')?.href || alternateLink)
+    : undefined
+
+  const feedLinks: BloggerFeedLink[] | undefined = titleAndEnclosureLinks
+    ? (entry.link?.filter(l => l.rel === 'replies' || l.type?.includes('atom') || l.type?.includes('rss')) || []).map(l => ({
+        url: mapper.mapUrl(l.href),
+        name: l.title || 'Comments',
+        feedType: l.type?.includes('atom') ? 'atom' : 'rss',
+        mimeType: l.type || 'application/atom+xml',
+      }))
+    : undefined
+
   return {
     id,
     title,
     url,
     absoluteUrl: alternateLink,
+    ...(titleLink !== undefined ? { link: titleLink } : {}),
+    ...(feedLinks !== undefined ? { feedLinks } : {}),
     body,
     date: published.date,
     timestamp: published.timestamp,
@@ -208,8 +298,13 @@ export function normalizePageAsPostEntry(
   mapper: UrlMapper,
   blogId: string,
   locale = 'en',
-  saa?: string,
+  saaOrOptions?: string | NormalizePostOptions,
 ): BloggerPostData {
+  const options = typeof saaOrOptions === 'object' ? saaOrOptions : { saa: saaOrOptions }
+  const saa = options.saa
+  const dateFormat = options.dateFormat
+  const titleAndEnclosureLinks = options.titleAndEnclosureLinks !== false
+
   const id = extractId(entry.id?.$t)
   const title = entry.title?.$t || ''
   const alternateLink = entry.link?.find(l => l.rel === 'alternate')?.href || ''
@@ -217,8 +312,8 @@ export function normalizePageAsPostEntry(
   const body = entry.content?.$t || entry.summary?.$t || ''
   const snippets = createSnippets(entry.summary?.$t || entry.content?.$t || '')
 
-  const published = formatBloggerDate(entry.published?.$t, locale)
-  const updated = formatBloggerDate(entry.updated?.$t, locale)
+  const published = formatBloggerDate(entry.published?.$t, locale, dateFormat)
+  const updated = formatBloggerDate(entry.updated?.$t, locale, dateFormat)
 
   let thumbnail = entry.media$thumbnail?.url || ''
   if (thumbnail.startsWith('//')) {
@@ -239,11 +334,16 @@ export function normalizePageAsPostEntry(
     authorAvatar = `https:${authorAvatar}`
   }
 
+  const titleLink = titleAndEnclosureLinks
+    ? (entry.link?.find(l => l.rel === 'enclosure')?.href || alternateLink)
+    : undefined
+
   return {
     id,
     title,
     url,
     absoluteUrl: alternateLink,
+    ...(titleLink !== undefined ? { link: titleLink } : {}),
     body,
     date: published.date,
     timestamp: published.timestamp,
@@ -286,6 +386,7 @@ export function normalizeCommentEntry(
   mapper: UrlMapper,
   blogId: string,
   locale = 'en',
+  dateFormat?: string,
 ): BloggerCommentData {
   const id = extractId(entry.id?.$t)
   const rawAuthor = entry.author?.[0]
@@ -309,7 +410,8 @@ export function normalizeCommentEntry(
 
   const extProps = entry.gd$extendedProperty || []
   const displayTimeProp = extProps.find(p => p.name === 'blogger.displayTime')
-  const timestamp = displayTimeProp?.value || formatBloggerDate(entry.published?.$t, locale).date
+  const timestamp = (dateFormat ? formatBloggerDate(entry.published?.$t, locale, dateFormat).date : displayTimeProp?.value)
+    || formatBloggerDate(entry.published?.$t, locale, dateFormat).date
 
   const pubDate = new Date(entry.published?.$t || Date.now())
   const timestampValue = Number.isNaN(pubDate.getTime()) ? 0 : pubDate.getTime()

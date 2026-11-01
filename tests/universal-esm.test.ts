@@ -62,10 +62,11 @@ describe('universal ESM & in-memory store suite', () => {
     expect(operators.operators['+']).toBeDefined()
 
     const schemas = getAllSchemas()
-    expect(schemas.length).toBe(15)
+    expect(schemas.length).toBe(16)
     expect(schemas.some(s => s.name === 'directives')).toBe(true)
     expect(schemas.some(s => s.name === 'locales')).toBe(true)
     expect(schemas.some(s => s.name === 'mock-context')).toBe(true)
+    expect(schemas.some(s => s.name === 'blog-configuration')).toBe(true)
   })
 
   it('allows switching to FsCatalogStore in Node environments when needed', () => {

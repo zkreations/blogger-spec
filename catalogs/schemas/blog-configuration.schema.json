@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "blog-configuration.schema.json",
+  "title": "Blogger Blog Configuration Schema",
+  "description": "Canonical JSON Schema for local Blogger blog configuration and unexposed admin settings (blogger.config.json).",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "blog": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "locale": {
+          "type": "string",
+          "description": "Blogger blog locale code (e.g. 'en', 'es', 'es_419', 'fr')."
+        },
+        "adultContent": {
+          "type": "boolean",
+          "description": "Indicates whether the blog contains adult or sensitive content (data:blog.adultContent)."
+        },
+        "analyticsMeasurementId": {
+          "type": "string",
+          "description": "Google Analytics 4 or Universal Analytics measurement ID (e.g. 'G-XXXXXXXXXX' or 'UA-XXXXX-X')."
+        },
+        "isPrivate": {
+          "type": "boolean",
+          "description": "Specifies if the blog has restricted reader access (data:blog.isPrivate and data:blog.isPrivateBlog)."
+        },
+        "postsPerPage": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of posts displayed per page on index/homepage views (data:widgets.Blog1.numPosts)."
+        },
+        "commentLocation": {
+          "type": "string",
+          "enum": ["EMBEDDED", "FULL_PAGE", "POPUP", "HIDDEN"],
+          "description": "Comment placement mode in the blog layout."
+        },
+        "commentFormMessage": {
+          "type": "string",
+          "maxLength": 4096,
+          "description": "Custom prompt or message displayed above the comment form (data:widgets.Blog1.messages.blogComment)."
+        },
+        "postDateFormat": {
+          "type": "string",
+          "description": "Date format for post and page headers/timestamps (Unicode ICU TR35 pattern or Blogger format preset)."
+        },
+        "commentDateFormat": {
+          "type": "string",
+          "description": "Timestamp format for published comments (Unicode ICU TR35 pattern or Blogger format preset)."
+        },
+        "titleAndEnclosureLinks": {
+          "type": "boolean",
+          "description": "Enables post title links (data:posts[].link) and syndication enclosure MIME links (data:feedLinks[])."
+        }
+      }
+    },
+    "entries": {
+      "type": "object",
+      "description": "Per-entry (post or static page) configuration indexed by entry ID.",
+      "additionalProperties": {
+        "$ref": "#/$defs/entryConfiguration"
+      }
+    },
+    "widgets": {
+      "type": "object",
+      "description": "Widget-specific settings indexed by widget instance ID (e.g. 'Blog1', 'Header1') or widget type.",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    }
+  },
+  "$defs": {
+    "entryConfiguration": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "searchDescription": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Post or static page search description meta tag content (max 150 characters)."
+        },
+        "commentMode": {
+          "type": "string",
+          "enum": ["ALLOWED", "RESTRICTED", "DISABLED"],
+          "description": "Comment permission setting: 'ALLOWED' (allow all), 'RESTRICTED' (show existing, disable new), 'DISABLED' (hide all)."
+        }
+      }
+    }
+  }
+}

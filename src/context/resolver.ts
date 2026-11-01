@@ -1,4 +1,5 @@
 import type { BloggerViewId } from '../generated/types.generated.js'
+import type { BloggerBlogConfiguration } from './config-types.js'
 import type { BloggerContextConfig, BloggerRawEntry } from './types.js'
 import { getMockContext, getSpecCatalog } from '../catalogs/index.js'
 import { BloggerFeedClient } from './client.js'
@@ -44,6 +45,113 @@ function deepMerge(target: any, source: any): any {
   return result
 }
 
+function applyBlogConfiguration(
+  context: Record<string, any>,
+  blogConfig: BloggerBlogConfiguration,
+  viewId: BloggerViewId,
+  activePosts?: any[],
+): void {
+  const spec = getSpecCatalog()
+  context.blog = context.blog || {}
+  context.widgetData = context.widgetData || {}
+  context.widgetData.Blog1 = context.widgetData.Blog1 || {}
+  const blog1 = context.widgetData.Blog1
+
+  if (blogConfig.blog) {
+    const blog = blogConfig.blog
+    if (blog.locale) {
+      context.blog.locale = blog.locale
+      context.blog.localeUnderscoreDelimited = blog.locale.replace('-', '_')
+      context.blog.languageDirection = spec.isRTL(blog.locale) ? 'rtl' : 'ltr'
+    }
+    if (blog.adultContent !== undefined) {
+      context.blog.adultContent = blog.adultContent
+    }
+    if (blog.analyticsMeasurementId !== undefined) {
+      context.blog.analyticsAccountNumber = blog.analyticsMeasurementId
+      context.blog.analytics4 = blog.analyticsMeasurementId.startsWith('G-')
+    }
+    if (blog.isPrivate !== undefined) {
+      context.blog.isPrivate = blog.isPrivate
+      context.blog.isPrivateBlog = blog.isPrivate
+    }
+    if (blog.postsPerPage !== undefined) {
+      blog1.numPosts = blog.postsPerPage
+    }
+    if (blog.commentLocation) {
+      switch (blog.commentLocation) {
+        case 'EMBEDDED':
+          blog1.embedCommentForm = true
+          blog1.showCmtPopup = false
+          break
+        case 'POPUP':
+          blog1.embedCommentForm = false
+          blog1.showCmtPopup = true
+          break
+        case 'FULL_PAGE':
+          blog1.embedCommentForm = false
+          blog1.showCmtPopup = false
+          break
+        case 'HIDDEN':
+          blog1.embedCommentForm = false
+          blog1.showCmtPopup = false
+          break
+      }
+    }
+    if (blog.commentFormMessage !== undefined) {
+      blog1.messages = blog1.messages || {}
+      blog1.messages.blogComment = blog.commentFormMessage
+      context.messages = context.messages || {}
+      context.messages.blogComment = blog.commentFormMessage
+    }
+  }
+
+  const postsToApply = activePosts || (Array.isArray(blog1.posts) ? blog1.posts : [])
+  for (const post of postsToApply) {
+    if (!post || typeof post !== 'object')
+      continue
+    const entryCfg = blogConfig.entries?.[String(post.id)] || blogConfig.entries?.[post.id]
+    if (entryCfg) {
+      if (entryCfg.searchDescription !== undefined) {
+        post.snippets = { ...(post.snippets || {}), short: entryCfg.searchDescription }
+        if ((viewId === 'post' || viewId === 'static_page') && String(post.id) === String(context.view?.postId || context.view?.pageId)) {
+          context.view.description = entryCfg.searchDescription
+          context.blog.metaDescription = entryCfg.searchDescription
+        }
+      }
+      if (entryCfg.commentMode !== undefined) {
+        switch (entryCfg.commentMode) {
+          case 'ALLOWED':
+            post.allowComments = true
+            post.allowNewComments = true
+            break
+          case 'RESTRICTED':
+            post.allowComments = true
+            post.allowNewComments = false
+            break
+          case 'DISABLED':
+            post.allowComments = false
+            post.allowNewComments = false
+            break
+        }
+      }
+    }
+    if (blogConfig.blog?.commentLocation === 'HIDDEN') {
+      post.allowComments = false
+      post.allowNewComments = false
+    }
+  }
+
+  if (blogConfig.widgets) {
+    for (const [widgetKey, widgetValues] of Object.entries(blogConfig.widgets)) {
+      context.widgetData[widgetKey] = deepMerge(context.widgetData[widgetKey] || {}, widgetValues)
+      if (context.widgets && context.widgets[widgetKey]) {
+        context.widgets[widgetKey] = deepMerge(context.widgets[widgetKey], widgetValues)
+      }
+    }
+  }
+}
+
 export async function resolveBloggerContext(
   config: BloggerContextConfig = {},
 ): Promise<Record<string, any>> {
@@ -55,8 +163,11 @@ export async function resolveBloggerContext(
   // 1. Mock context canónico como base
   const context = getMockContext(viewId)
 
-  // 2. Si se fuerza offline, solo aplicar overrides sobre el mock
+  // 2. Si se fuerza offline, aplicar configuración local y overrides
   if (config.offline) {
+    if (config.config) {
+      applyBlogConfiguration(context, config.config, viewId)
+    }
     if (config.overrides) {
       return deepMerge(context, config.overrides)
     }
@@ -96,13 +207,18 @@ export async function resolveBloggerContext(
       baseUrl,
     })
 
-    const blogLocale = config.overrides?.blog?.locale || 'en'
+    const blogLocale = config.overrides?.blog?.locale || config.config?.blog?.locale || 'en'
     const postSaa = config.overrides?.view?.saa || config.overrides?.saa || (config.overrides?.blog as any)?.saa
     const rawPosts: readonly BloggerRawEntry[] = feed.entry || []
-    const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, blogId, blogLocale, postSaa))
+    const postOptions = {
+      saa: postSaa,
+      dateFormat: config.config?.blog?.postDateFormat,
+      titleAndEnclosureLinks: config.config?.blog?.titleAndEnclosureLinks,
+    }
+    const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, blogId, blogLocale, postOptions))
 
     const rawPages: readonly BloggerRawEntry[] = pagesResponse?.feed?.entry || []
-    const normalizedPagePosts = rawPages.map(e => normalizePageAsPostEntry(e, mapper, blogId, blogLocale, postSaa))
+    const normalizedPagePosts = rawPages.map(e => normalizePageAsPostEntry(e, mapper, blogId, blogLocale, postOptions))
 
     const labelSorting = (config.overrides?.widgetData?.Label1?.sorting || 'ALPHA') as 'ALPHA' | 'FREQUENCY'
     const normalizedLabels = normalizeLabels(rawPosts, mapper, labelSorting)
@@ -145,6 +261,18 @@ export async function resolveBloggerContext(
     const blog1 = context.widgetData.Blog1 || {}
     let activePosts = normalizedPosts.slice()
 
+    const activeUrl = config.overrides?.view?.url || config.targetUrl || context.view?.url || ''
+    let searchParams: URLSearchParams | undefined
+    if (activeUrl) {
+      try {
+        const parsed = new URL(activeUrl, 'https://blogger.local')
+        searchParams = parsed.searchParams
+      }
+      catch {
+        // ignore
+      }
+    }
+
     if (viewId === 'post' || viewId === 'static_page') {
       if (viewId === 'post') {
         const targetPost = (config.targetId
@@ -168,7 +296,7 @@ export async function resolveBloggerContext(
           const rawComments: readonly BloggerRawEntry[] = commentsResponse?.feed?.entry || []
           if (rawComments.length > 0) {
             const normalizedComments = rawComments
-              .map(c => normalizeCommentEntry(c, mapper, blogId, blogLocale))
+              .map(c => normalizeCommentEntry(c, mapper, blogId, blogLocale, config.config?.blog?.commentDateFormat))
               .sort((a, b) => a.timestampValue - b.timestampValue)
             ;(targetPost as any).comments = normalizedComments
             ;(targetPost as any).numberOfComments = normalizedComments.length
@@ -196,18 +324,6 @@ export async function resolveBloggerContext(
     }
     else {
       // Multi-item views: obey active URL query parameters canonically
-      const activeUrl = config.overrides?.view?.url || config.targetUrl || context.view?.url || ''
-      let searchParams: URLSearchParams | undefined
-      if (activeUrl) {
-        try {
-          const parsed = new URL(activeUrl, 'https://blogger.local')
-          searchParams = parsed.searchParams
-        }
-        catch {
-          // ignore
-        }
-      }
-
       const effectiveQ = searchParams?.get('q') || (config.overrides?.view?.search as any)?.query || (config.overrides?.view as any)?.searchQuery
       if (effectiveQ) {
         context.view = context.view || {}
@@ -320,9 +436,17 @@ export async function resolveBloggerContext(
       }
     }
 
+    if (viewId === 'homepage' && config.config?.blog?.postsPerPage && !searchParams) {
+      activePosts = activePosts.slice(0, config.config.blog.postsPerPage)
+    }
+
     blog1.posts = activePosts
     blog1.numPosts = activePosts.length
     context.widgetData.Blog1 = blog1
+
+    if (config.config) {
+      applyBlogConfiguration(context, config.config, viewId, activePosts)
+    }
 
     // Inyectar datos en PageList1
     const currentPath = (viewId === 'static_page' ? context.view?.url || config.overrides?.view?.url : undefined)

@@ -1,4 +1,6 @@
 export * from './client.js'
+export * from './config-types.js'
+export * from './config-validator.js'
 export * from './normalizer.js'
 export * from './resolver.js'
 export * from './types.js'
