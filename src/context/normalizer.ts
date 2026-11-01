@@ -135,6 +135,8 @@ export function normalizePostEntry(
     absoluteUrl: alternateLink,
     body,
     date: published.date,
+    timestamp: published.timestamp,
+    publishedIso: entry.published?.$t || '',
     lastUpdated: updated.date,
     featuredImage,
     thumbnailUrl: thumbnail,

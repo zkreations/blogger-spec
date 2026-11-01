@@ -1,6 +1,6 @@
 import type { BloggerViewId } from '../generated/types.generated.js'
 import type { BloggerContextConfig, BloggerRawEntry } from './types.js'
-import { getMockContext } from '../catalogs/index.js'
+import { getMockContext, getSpecCatalog } from '../catalogs/index.js'
 import { BloggerFeedClient } from './client.js'
 import {
   normalizeBlogMetadata,
@@ -111,11 +111,30 @@ export async function resolveBloggerContext(
     // Fusionar metadatos del blog
     context.blog = deepMerge(context.blog, blogMeta)
 
-    if (viewId === 'homepage') {
+    // Localizar mensajes conforme al idioma del blog
+    if (blogLocale) {
+      const spec = getSpecCatalog()
+      const messagesMap = (spec as any).localesCatalog?.translations?.messages || {}
+      context.messages = context.messages || {}
+      for (const msgKey of Object.keys(messagesMap)) {
+        const localized = spec.getLocalizedMessage(msgKey, blogLocale)
+        if (localized) {
+          context.messages[msgKey] = localized
+        }
+      }
+    }
+
+    if (viewId === 'homepage' || viewId === 'post_listing') {
       context.view = context.view || {}
-      context.view.title = blogMeta.title
-      context.view.description = blogMeta.description
-      context.view.url = blogMeta.homepageUrl
+      if (!config.overrides?.view?.title && !config.overrides?.view?.searchQuery && !config.overrides?.view?.searchLabel) {
+        context.view.title = blogMeta.title
+      }
+      if (!config.overrides?.view?.description) {
+        context.view.description = blogMeta.description
+      }
+      if (viewId === 'homepage') {
+        context.view.url = blogMeta.homepageUrl
+      }
     }
 
     // Inicializar contenedores de widgets si no existen
@@ -123,7 +142,7 @@ export async function resolveBloggerContext(
 
     // Inyectar datos en Blog1
     const blog1 = context.widgetData.Blog1 || {}
-    let activePosts = normalizedPosts
+    let activePosts = normalizedPosts.slice()
 
     if (viewId === 'post' || viewId === 'static_page') {
       if (viewId === 'post') {
@@ -156,11 +175,101 @@ export async function resolveBloggerContext(
         }
       }
     }
+    else {
+      // Multi-item views: obey active URL query parameters canonically
+      const activeUrl = config.overrides?.view?.url || config.targetUrl || context.view?.url || ''
+      let searchParams: URLSearchParams | undefined
+      if (activeUrl) {
+        try {
+          const parsed = new URL(activeUrl, 'https://blogger.local')
+          searchParams = parsed.searchParams
+        }
+        catch {
+          // ignore
+        }
+      }
 
-    const nextLink = feed.link?.find(l => l.rel === 'next')?.href
-    const prevLink = feed.link?.find(l => l.rel === 'previous')?.href
-    blog1.olderPageUrl = nextLink ? mapper.mapUrl(nextLink) : ''
-    blog1.newerPageUrl = prevLink ? mapper.mapUrl(prevLink) : ''
+      if (searchParams) {
+        const updatedMax = searchParams.get('updated-max')
+        const updatedMin = searchParams.get('updated-min')
+        const qParam = searchParams.get('q')
+
+        if (updatedMax) {
+          const maxTime = new Date(updatedMax).getTime()
+          if (!Number.isNaN(maxTime)) {
+            activePosts = activePosts.filter(p => (p.timestamp ?? 0) <= maxTime)
+          }
+        }
+
+        if (updatedMin) {
+          const minTime = new Date(updatedMin).getTime()
+          if (!Number.isNaN(minTime)) {
+            activePosts = activePosts.filter(p => (p.timestamp ?? 0) >= minTime)
+          }
+        }
+
+        if (qParam) {
+          const qLower = qParam.toLowerCase()
+          activePosts = activePosts.filter(p =>
+            p.title.toLowerCase().includes(qLower)
+            || p.body.toLowerCase().includes(qLower)
+            || p.labels.some(l => l.name.toLowerCase().includes(qLower)),
+          )
+        }
+
+        const maxResultsParam = searchParams.get('max-results')
+        const maxResults = maxResultsParam ? Number.parseInt(maxResultsParam, 10) : undefined
+        const startParam = searchParams.get('start')
+        const startIndex = startParam ? Number.parseInt(startParam, 10) : 0
+        const byDateParam = searchParams.get('by-date')
+
+        const hasMoreOlder = Boolean(maxResults && maxResults > 0 && activePosts.length > maxResults)
+
+        if (maxResults && maxResults > 0) {
+          activePosts = activePosts.slice(0, maxResults)
+        }
+
+        // Canonical pagination URLs
+        if (viewId === 'post_listing' || updatedMax || updatedMin) {
+          const blogOrigin = mapper.blogHost ? `https://${mapper.blogHost}` : ''
+          // Newer Posts link
+          if (startIndex <= (maxResults || 8)) {
+            blog1.newerPageUrl = mapper.mapUrl(blogMeta.homepageUrl || (blogOrigin ? `${blogOrigin}/` : '/'))
+          }
+          else {
+            const prevStart = Math.max(0, startIndex - (maxResults || 8))
+            const firstPost = activePosts[0]
+            const prevDate = firstPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
+            const byDateSuffix = byDateParam !== null ? `&by-date=${byDateParam}` : ''
+            blog1.newerPageUrl = `${blogOrigin}/search?updated-max=${prevDate}&max-results=${maxResults || 8}&start=${prevStart}${byDateSuffix}`
+          }
+
+          // Older Posts link
+          if (hasMoreOlder) {
+            const lastPost = activePosts[activePosts.length - 1]
+            const nextDate = lastPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
+            const nextStart = startIndex + (maxResults || 8)
+            const byDateSuffix = byDateParam !== null ? `&by-date=${byDateParam}` : ''
+            blog1.olderPageUrl = `${blogOrigin}/search?updated-max=${nextDate}&max-results=${maxResults || 8}&start=${nextStart}${byDateSuffix}`
+          }
+          else {
+            blog1.olderPageUrl = ''
+          }
+        }
+        else {
+          const nextLink = feed.link?.find(l => l.rel === 'next')?.href
+          const prevLink = feed.link?.find(l => l.rel === 'previous')?.href
+          blog1.olderPageUrl = nextLink ? mapper.mapUrl(nextLink) : ''
+          blog1.newerPageUrl = prevLink ? mapper.mapUrl(prevLink) : ''
+        }
+      }
+      else {
+        const nextLink = feed.link?.find(l => l.rel === 'next')?.href
+        const prevLink = feed.link?.find(l => l.rel === 'previous')?.href
+        blog1.olderPageUrl = nextLink ? mapper.mapUrl(nextLink) : ''
+        blog1.newerPageUrl = prevLink ? mapper.mapUrl(prevLink) : ''
+      }
+    }
 
     blog1.posts = activePosts
     blog1.numPosts = activePosts.length

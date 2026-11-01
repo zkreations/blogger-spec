@@ -135,6 +135,8 @@ export interface BloggerPostData {
   readonly absoluteUrl: string
   readonly body: string
   readonly date: string
+  readonly timestamp?: number
+  readonly publishedIso?: string
   readonly lastUpdated: string
   readonly featuredImage: string
   readonly thumbnailUrl: string

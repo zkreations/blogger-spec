@@ -143,8 +143,19 @@ export function applyModifier(target: any, modifier: string): any {
       case 'cssEscaped':
         return escapeCss(target)
       case 'canonical': {
-        const withoutQuery = target.split('?')[0]
-        return withoutQuery.split('#')[0]
+        const str = String(target ?? '').split('#')[0]
+        try {
+          const parsed = new URL(str)
+          // Blogger strips temporal pagination (updated-max/min) and mobile parameters (m) from canonical URLs
+          parsed.searchParams.delete('updated-max')
+          parsed.searchParams.delete('updated-min')
+          parsed.searchParams.delete('m')
+          const query = parsed.searchParams.toString()
+          return query ? `${parsed.origin}${parsed.pathname}?${query}` : `${parsed.origin}${parsed.pathname}`
+        }
+        catch {
+          return str.split('?')[0]
+        }
       }
       case 'http':
         return target.replace(/^https:/i, 'http:')
