@@ -165,6 +165,17 @@ export async function resolveBloggerContext(
 
   // 2. Si se fuerza offline, aplicar configuración local y overrides
   if (config.offline) {
+    if (viewId === 'error_404') {
+      const blogLocale = config.overrides?.blog?.locale || config.config?.blog?.locale || context.blog?.locale || 'en'
+      const spec = getSpecCatalog()
+      const navMsg = (spec as any).localesCatalog?.translations?.widgets?.Blog?.navMessage?.values?.[blogLocale]
+        || (spec as any).localesCatalog?.translations?.widgets?.Blog?.navMessage?.default
+        || 'Sorry, the page you were looking for in this blog does not exist.'
+      context.widgetData.Blog1 = context.widgetData.Blog1 || {}
+      context.widgetData.Blog1.navMessage = navMsg
+      context.widgetData.Blog1.posts = []
+      context.widgetData.Blog1.numPosts = 0
+    }
     if (config.config) {
       applyBlogConfiguration(context, config.config, viewId)
     }
@@ -263,10 +274,15 @@ export async function resolveBloggerContext(
 
     const activeUrl = config.overrides?.view?.url || config.targetUrl || context.view?.url || ''
     let searchParams: URLSearchParams | undefined
+    let pathLabel: string | undefined
     if (activeUrl) {
       try {
         const parsed = new URL(activeUrl, 'https://blogger.local')
         searchParams = parsed.searchParams
+        const labelMatch = parsed.pathname.match(/\/search\/label\/([^/?#]+)/)
+        if (labelMatch) {
+          pathLabel = decodeURIComponent(labelMatch[1].replace(/\+/g, ' '))
+        }
       }
       catch {
         // ignore
@@ -322,6 +338,14 @@ export async function resolveBloggerContext(
         }
       }
     }
+    else if (viewId === 'error_404') {
+      activePosts = []
+      const spec = getSpecCatalog()
+      const navMsg = (spec as any).localesCatalog?.translations?.widgets?.Blog?.navMessage?.values?.[blogLocale]
+        || (spec as any).localesCatalog?.translations?.widgets?.Blog?.navMessage?.default
+        || 'Sorry, the page you were looking for in this blog does not exist.'
+      blog1.navMessage = navMsg
+    }
     else {
       // Multi-item views: obey active URL query parameters canonically
       const effectiveQ = searchParams?.get('q') || (config.overrides?.view?.search as any)?.query || (config.overrides?.view as any)?.searchQuery
@@ -332,12 +356,31 @@ export async function resolveBloggerContext(
         context.view.searchQuery = effectiveQ
       }
 
-      const effectiveLabel = searchParams?.get('label') || (config.overrides?.view?.search as any)?.label || (config.overrides?.view as any)?.searchLabel
+      const effectiveLabel = pathLabel
+        || searchParams?.get('label')
+        || (config.overrides?.view?.search as any)?.label
+        || (config.overrides?.view as any)?.searchLabel
       if (effectiveLabel) {
         context.view = context.view || {}
         context.view.search = context.view.search || {}
         context.view.search.label = effectiveLabel
         context.view.searchLabel = effectiveLabel
+
+        const spec = getSpecCatalog()
+        const rawMsg = (spec as any).localesCatalog?.translations?.globals?.['view.search.resultsMessage']?.values?.[blogLocale]
+          || (spec as any).localesCatalog?.translations?.globals?.['view.search.resultsMessage']?.default
+          || 'Showing posts with the label LABEL'
+        const rawMsgHtml = (spec as any).localesCatalog?.translations?.globals?.['view.search.resultsMessageHtml']?.values?.[blogLocale]
+          || (spec as any).localesCatalog?.translations?.globals?.['view.search.resultsMessageHtml']?.default
+          || 'Showing posts with the label <span class=\'search-label\'>LABEL</span>'
+
+        context.view.search.resultsMessage = rawMsg.replace(/LABEL/g, effectiveLabel)
+        context.view.search.resultsMessageHtml = rawMsgHtml.replace(/LABEL/g, effectiveLabel)
+
+        const normLabel = effectiveLabel.trim().toLowerCase()
+        activePosts = activePosts.filter(p =>
+          p.labels?.some(l => l.name?.trim().toLowerCase() === normLabel),
+        )
       }
 
       if (searchParams) {
@@ -395,8 +438,48 @@ export async function resolveBloggerContext(
         }
 
         // Canonical pagination URLs
-        if (viewId === 'post_listing' || updatedMax || updatedMin) {
-          const blogOrigin = mapper.blogHost ? `https://${mapper.blogHost}` : ''
+        const blogOrigin = mapper.blogHost ? `https://${mapper.blogHost}` : ''
+
+        if (effectiveLabel || viewId === 'label_search') {
+          const encodedLabel = encodeURIComponent(effectiveLabel || '')
+          const pageSize = maxResults || 20
+
+          if (startIndex > 0 || updatedMax || updatedMin) {
+            if (startIndex <= pageSize) {
+              blog1.newerPageUrl = mapper.mapUrl(`${blogOrigin}/search/label/${encodedLabel}`)
+            }
+            else {
+              const prevStart = Math.max(0, startIndex - pageSize)
+              const firstPost = activePosts[0]
+              const prevDate = firstPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
+              const byDateSuffix = byDateParam !== null ? `&by-date=${byDateParam}` : ''
+              blog1.newerPageUrl = mapper.mapUrl(`${blogOrigin}/search/label/${encodedLabel}?updated-max=${prevDate}&max-results=${pageSize}&start=${prevStart}${byDateSuffix}`)
+            }
+
+            if (activePosts.length > 0) {
+              const lastPost = activePosts[activePosts.length - 1]
+              const nextDate = lastPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
+              const nextStart = startIndex + pageSize
+              const byDateSuffix = byDateParam !== null ? `&by-date=${byDateParam}` : ''
+              blog1.olderPageUrl = mapper.mapUrl(`${blogOrigin}/search/label/${encodedLabel}?updated-max=${nextDate}&max-results=${pageSize}&start=${nextStart}${byDateSuffix}`)
+            }
+            else {
+              blog1.olderPageUrl = ''
+            }
+          }
+          else {
+            blog1.newerPageUrl = ''
+            if (activePosts.length > 0) {
+              const lastPost = activePosts[activePosts.length - 1]
+              const nextDate = lastPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
+              blog1.olderPageUrl = mapper.mapUrl(`${blogOrigin}/search/label/${encodedLabel}?updated-max=${nextDate}&max-results=20&start=20&by-date=false`)
+            }
+            else {
+              blog1.olderPageUrl = ''
+            }
+          }
+        }
+        else if (viewId === 'post_listing' || updatedMax || updatedMin) {
           // Newer Posts link
           if (startIndex <= (maxResults || 8)) {
             blog1.newerPageUrl = mapper.mapUrl(blogMeta.homepageUrl || (blogOrigin ? `${blogOrigin}/` : '/'))
