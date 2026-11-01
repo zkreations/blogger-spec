@@ -77,8 +77,10 @@ describe('context normalizer suite with real Hamlet fixtures', () => {
       expect(post.labels.length).toBe(3)
       expect(post.labels.map(l => l.name)).toEqual(['biodiversity', 'essay', 'nature'])
       expect(post.labels[0].url).toBe('/search/label/biodiversity')
-      expect(post.commentFormIframeSrc).toContain(blogId)
+      expect(post.commentFormIframeSrc).toContain(`/comment/frame/${blogId}`)
       expect(post.commentFormIframeSrc).toContain('8389032230243957219')
+      expect(post.commentFormIframeSrc).toContain('po=8389032230243957219')
+      expect(post.commentFormIframeSrc).toContain('origin=https%3A%2F%2Fhamlet.zkreations.com')
     })
   })
 
