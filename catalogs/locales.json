@@ -9211,6 +9211,13 @@
             "zh_TW": "於",
             "zu": "ngo-"
           }
+        },
+        "defaultTitle": {
+          "default": "Blog Posts",
+          "values": {
+            "en": "Blog Posts",
+            "es": "Entradas del blog"
+          }
         }
       },
       "BlogArchive": {
@@ -10614,6 +10621,42 @@
             "zh_HK": "搜尋結果",
             "zh_TW": "搜尋結果",
             "zu": "Imiphumela yosesho"
+          }
+        }
+      },
+      "Header": {
+        "defaultTitle": {
+          "default": "Header",
+          "values": {
+            "en": "Header",
+            "es": "Cabecera"
+          }
+        }
+      },
+      "PageList": {
+        "defaultTitle": {
+          "default": "Pages",
+          "values": {
+            "en": "Pages",
+            "es": "Páginas"
+          }
+        }
+      },
+      "Label": {
+        "defaultTitle": {
+          "default": "Labels",
+          "values": {
+            "en": "Labels",
+            "es": "Etiquetas"
+          }
+        }
+      },
+      "FeaturedPost": {
+        "defaultTitle": {
+          "default": "Featured Post",
+          "values": {
+            "en": "Featured Post",
+            "es": "Entrada destacada"
           }
         }
       }
