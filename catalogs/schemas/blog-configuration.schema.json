@@ -55,6 +55,11 @@
         "titleAndEnclosureLinks": {
           "type": "boolean",
           "description": "Enables post title links (data:posts[].link) and syndication enclosure MIME links (data:feedLinks[])."
+        },
+        "cookieChoices": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enables injection of the official Blogger cookie consent notice (cookieChoiceInfo) before </body>."
         }
       }
     },
