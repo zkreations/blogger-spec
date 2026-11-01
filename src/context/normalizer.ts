@@ -127,6 +127,7 @@ export function normalizePostEntry(
   })
 
   const numberOfComments = Number.parseInt(entry.thr$total?.$t || '0', 10) || 0
+  const allowComments = entry.link ? entry.link.some(l => l.rel === 'replies') : true
 
   return {
     id,
@@ -154,8 +155,8 @@ export function normalizePostEntry(
     labels,
     snippets,
     numberOfComments,
-    allowComments: true,
-    allowNewComments: true,
+    allowComments,
+    allowNewComments: allowComments,
     showThreadedComments: true,
     hasJumpLink: body.includes('<!--more-->'),
     comments: [],
@@ -199,6 +200,76 @@ export function normalizePageEntry(
     title,
     href,
     isCurrentPage,
+  }
+}
+
+export function normalizePageAsPostEntry(
+  entry: BloggerRawEntry,
+  mapper: UrlMapper,
+  blogId: string,
+  locale = 'en',
+): BloggerPostData {
+  const id = extractId(entry.id?.$t)
+  const title = entry.title?.$t || ''
+  const alternateLink = entry.link?.find(l => l.rel === 'alternate')?.href || ''
+  const url = mapper.mapUrl(alternateLink)
+  const body = entry.content?.$t || entry.summary?.$t || ''
+  const snippets = createSnippets(entry.summary?.$t || entry.content?.$t || '')
+
+  const published = formatBloggerDate(entry.published?.$t, locale)
+  const updated = formatBloggerDate(entry.updated?.$t, locale)
+
+  let thumbnail = entry.media$thumbnail?.url || ''
+  if (thumbnail.startsWith('//')) {
+    thumbnail = `https:${thumbnail}`
+  }
+  let featuredImage = thumbnail
+    ? thumbnail.replace(/\/s\d+(-c)?\//, '/s1600/')
+    : extractFirstImage(body)
+  if (featuredImage.startsWith('//')) {
+    featuredImage = `https:${featuredImage}`
+  }
+
+  const rawAuthor = entry.author?.[0]
+  const authorName = rawAuthor?.name?.$t || 'Blogger'
+  const authorProfile = rawAuthor?.uri?.$t || ''
+  let authorAvatar = rawAuthor?.gd$image?.src || 'https://lh3.googleusercontent.com/a/default-user=s80-c'
+  if (authorAvatar.startsWith('//')) {
+    authorAvatar = `https:${authorAvatar}`
+  }
+
+  return {
+    id,
+    title,
+    url,
+    absoluteUrl: alternateLink,
+    body,
+    date: published.date,
+    timestamp: published.timestamp,
+    publishedIso: entry.published?.$t || '',
+    lastUpdated: updated.date,
+    featuredImage,
+    thumbnailUrl: thumbnail,
+    author: {
+      name: authorName,
+      profileUrl: authorProfile,
+      aboutMe: '',
+      authorPhoto: {
+        url: authorAvatar,
+        width: 80,
+        height: 80,
+        alt: authorName,
+      },
+    },
+    labels: [],
+    snippets,
+    numberOfComments: 0,
+    allowComments: Boolean(entry.link?.some(l => l.rel === 'replies')),
+    allowNewComments: Boolean(entry.link?.some(l => l.rel === 'replies')),
+    showThreadedComments: false,
+    hasJumpLink: false,
+    comments: [],
+    commentFormIframeSrc: '',
   }
 }
 

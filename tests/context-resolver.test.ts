@@ -240,5 +240,36 @@ describe('context resolver suite with 3-tier precedence', () => {
       // Highest frequency of 'the' among feed posts comes first
       expect(ctx.widgetData.Blog1.posts[0].title).toBe('A Tale of Tranquility by the Lake')
     })
+
+    it('resolves static page view into Blog1.posts with allowComments false and marks active PageList link', async () => {
+      const mockFetch = createMockFetch()
+      const ctx = await resolveBloggerContext({
+        view: 'static_page',
+        urlMode: 'remote',
+        fetch: mockFetch,
+        overrides: {
+          view: {
+            url: 'https://hamlet.zkreations.com/p/typography.html',
+          },
+        },
+      })
+
+      expect(ctx.view.isPage).toBe(true)
+      expect(ctx.view.isSingleItem).toBe(true)
+      expect(ctx.view.title).toBe('Typography')
+      expect(ctx.view.url).toBe('https://hamlet.zkreations.com/p/typography.html')
+      expect(ctx.view.pageId).toBe('2772603359269059586')
+
+      const blogPosts = ctx.widgetData.Blog1.posts
+      expect(blogPosts.length).toBe(1)
+      expect(blogPosts[0].title).toBe('Typography')
+      expect(blogPosts[0].allowComments).toBe(false)
+      expect(blogPosts[0].labels).toEqual([])
+
+      const pageLinks = ctx.widgetData.PageList1.links
+      const typographyLink = pageLinks.find((l: any) => l.title === 'Typography')
+      expect(typographyLink).toBeDefined()
+      expect(typographyLink.isCurrentPage).toBe(true)
+    })
   })
 })

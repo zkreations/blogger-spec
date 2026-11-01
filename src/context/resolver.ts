@@ -7,6 +7,7 @@ import {
   normalizeCommentEntry,
   normalizeHeader,
   normalizeLabels,
+  normalizePageAsPostEntry,
   normalizePageEntry,
   normalizePostEntry,
 } from './normalizer.js'
@@ -101,7 +102,7 @@ export async function resolveBloggerContext(
     const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, blogId, blogLocale, postSaa))
 
     const rawPages: readonly BloggerRawEntry[] = pagesResponse?.feed?.entry || []
-    const normalizedPages = rawPages.map(e => normalizePageEntry(e, mapper))
+    const normalizedPagePosts = rawPages.map(e => normalizePageAsPostEntry(e, mapper, blogId, blogLocale))
 
     const labelSorting = (config.overrides?.widgetData?.Label1?.sorting || 'ALPHA') as 'ALPHA' | 'FREQUENCY'
     const normalizedLabels = normalizeLabels(rawPosts, mapper, labelSorting)
@@ -172,6 +173,24 @@ export async function resolveBloggerContext(
             ;(targetPost as any).comments = normalizedComments
             ;(targetPost as any).numberOfComments = normalizedComments.length
           }
+        }
+      }
+      else if (viewId === 'static_page') {
+        const targetPage = (config.targetId
+          ? normalizedPagePosts.find(p => p.id === config.targetId)
+          : (config.targetUrl
+              ? normalizedPagePosts.find(p => p.url === config.targetUrl || p.absoluteUrl === config.targetUrl)
+              : (config.overrides?.view?.url
+                  ? normalizedPagePosts.find(p => p.url === config.overrides?.view?.url || p.absoluteUrl === config.overrides?.view?.url)
+                  : normalizedPagePosts[0]))) || normalizedPagePosts[0]
+
+        if (targetPage) {
+          activePosts = [targetPage]
+          context.view = context.view || {}
+          context.view.pageId = targetPage.id
+          context.view.title = targetPage.title
+          context.view.url = targetPage.url
+          context.view.description = targetPage.snippets.short
         }
       }
     }
@@ -306,6 +325,9 @@ export async function resolveBloggerContext(
     context.widgetData.Blog1 = blog1
 
     // Inyectar datos en PageList1
+    const currentPath = (viewId === 'static_page' ? context.view?.url || config.overrides?.view?.url : undefined)
+    const normalizedPages = rawPages.map(e => normalizePageEntry(e, mapper, currentPath))
+
     if (context.widgetData.PageList1) {
       context.widgetData.PageList1.links = normalizedPages
     }
