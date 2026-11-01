@@ -208,6 +208,7 @@ export function normalizePageAsPostEntry(
   mapper: UrlMapper,
   blogId: string,
   locale = 'en',
+  saa?: string,
 ): BloggerPostData {
   const id = extractId(entry.id?.$t)
   const title = entry.title?.$t || ''
@@ -269,7 +270,14 @@ export function normalizePageAsPostEntry(
     showThreadedComments: false,
     hasJumpLink: false,
     comments: [],
-    commentFormIframeSrc: '',
+    commentFormIframeSrc: (() => {
+      const origin = mapper.blogHost
+        ? `https://${mapper.blogHost}`
+        : (alternateLink.startsWith('http') ? new URL(alternateLink).origin : '')
+      const originParam = origin ? `&origin=${origin}` : ''
+      const saaParam = saa ? `&saa=${saa}` : ''
+      return `https://www.blogger.com/comment/frame/${blogId}?pa=${id}&hl=${locale}${saaParam}${originParam}`
+    })(),
   }
 }
 

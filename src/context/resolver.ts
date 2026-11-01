@@ -102,7 +102,7 @@ export async function resolveBloggerContext(
     const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, blogId, blogLocale, postSaa))
 
     const rawPages: readonly BloggerRawEntry[] = pagesResponse?.feed?.entry || []
-    const normalizedPagePosts = rawPages.map(e => normalizePageAsPostEntry(e, mapper, blogId, blogLocale))
+    const normalizedPagePosts = rawPages.map(e => normalizePageAsPostEntry(e, mapper, blogId, blogLocale, postSaa))
 
     const labelSorting = (config.overrides?.widgetData?.Label1?.sorting || 'ALPHA') as 'ALPHA' | 'FREQUENCY'
     const normalizedLabels = normalizeLabels(rawPosts, mapper, labelSorting)
