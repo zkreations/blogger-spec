@@ -31,7 +31,26 @@ export class DomMutationPipeline {
     if (val.kind === 'static') {
       return val.value
     }
-    const evalResult = evaluateExpression(val.expr, ctx as Record<string, any>)
+    let evalResult = evaluateExpression(val.expr, ctx as Record<string, any>)
+
+    if (typeof evalResult === 'string' && evalResult.startsWith('data:') && !evalResult.includes(' ')) {
+      const propPath = evalResult.slice(5)
+      const dataObj = (ctx.data && typeof ctx.data === 'object') ? (ctx.data as Record<string, any>) : {}
+      if (propPath in dataObj) {
+        evalResult = dataObj[propPath]
+      }
+      else if (propPath in ctx) {
+        evalResult = (ctx as any)[propPath]
+      }
+      else {
+        evalResult = evaluateExpression({
+          type: 'DataPath',
+          raw: evalResult,
+          members: propPath.split('.').map(p => ({ property: p, safeAccess: false })),
+        } as any, ctx as Record<string, any>)
+      }
+    }
+
     if (evalResult === null || evalResult === undefined || evalResult === false || evalResult === '') {
       return undefined
     }
