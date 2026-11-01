@@ -85,6 +85,30 @@
           "additionalProperties": {
             "$ref": "common.schema.json#/$defs/deprecatedEntry"
           }
+        },
+        "pagination": {
+          "type": "object",
+          "description": "Pagination limits and operational thresholds for this widget.",
+          "properties": {
+            "defaultPostsPerPage": { "type": "integer" },
+            "searchPageSize": { "type": "integer" },
+            "labelSearchPageSize": { "type": "integer" },
+            "archivePageSize": { "type": "integer" },
+            "archiveAcceptsMaxResults": { "type": "boolean" },
+            "maxResultsCeiling": { "type": "integer" },
+            "maxPayloadBytes": { "type": "integer" }
+          },
+          "additionalProperties": false
+        },
+        "snippets": {
+          "type": "object",
+          "description": "Snippet length boundaries and default truncation ellipsis.",
+          "properties": {
+            "shortLengthMin": { "type": "integer" },
+            "shortLengthMax": { "type": "integer" },
+            "defaultEllipsis": { "type": "string" }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false

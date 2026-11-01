@@ -279,6 +279,20 @@
           "reason": "Prohibited legacy ad styling setting. Declaring this setting causes Blogger compiler rejection: 'Unknown ad unit type'."
         }
       },
+      "pagination": {
+        "defaultPostsPerPage": 7,
+        "searchPageSize": 20,
+        "labelSearchPageSize": 20,
+        "archivePageSize": 128,
+        "archiveAcceptsMaxResults": false,
+        "maxResultsCeiling": 500,
+        "maxPayloadBytes": 1048576
+      },
+      "snippets": {
+        "shortLengthMin": 100,
+        "shortLengthMax": 140,
+        "defaultEllipsis": "…"
+      },
       "evidence": "official",
       "verified_at": "2026-10-10"
     },
