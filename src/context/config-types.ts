@@ -68,6 +68,7 @@ export interface BloggerBlogConfiguration {
     readonly postDateFormat?: BloggerDateFormat | string
     readonly commentDateFormat?: BloggerCommentDateFormat | string
     readonly titleAndEnclosureLinks?: boolean
+    readonly cookieChoices?: boolean
   }
   readonly entries?: Record<string, BloggerEntryConfiguration>
   readonly widgets?: Record<string, Record<string, any>>

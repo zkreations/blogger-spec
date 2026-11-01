@@ -394,8 +394,8 @@ export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): Blog
     items.push({ name: 'src/generated/embedded.generated.ts', valid: false, error: 'File does not exist.' })
   }
   else {
-    const currentEmbedded = readFileSync(embeddedPath, 'utf-8')
-    const freshEmbedded = generateEmbeddedCatalogs()
+    const currentEmbedded = readFileSync(embeddedPath, 'utf-8').replace(/\r\n/g, '\n')
+    const freshEmbedded = generateEmbeddedCatalogs().replace(/\r\n/g, '\n')
     const valid = currentEmbedded === freshEmbedded
     items.push({
       name: 'src/generated/embedded.generated.ts',
@@ -409,8 +409,8 @@ export function verifyArtifactsFreshness(options?: { checkDts?: boolean }): Blog
     items.push({ name: 'src/generated/types.generated.ts', valid: false, error: 'File does not exist.' })
   }
   else {
-    const currentTypes = readFileSync(typesGeneratedPath, 'utf-8')
-    const freshTypes = generateDomainTypes()
+    const currentTypes = readFileSync(typesGeneratedPath, 'utf-8').replace(/\r\n/g, '\n')
+    const freshTypes = generateDomainTypes().replace(/\r\n/g, '\n')
     const valid = currentTypes === freshTypes
     items.push({
       name: 'src/generated/types.generated.ts',

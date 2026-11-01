@@ -104,6 +104,9 @@ export function toBirAttrValue(
   if (typeof attr.value === 'object' && attr.value !== null && 'type' in attr.value) {
     return { kind: 'expr', expr: attr.value as BloggerExpressionNode }
   }
+  if (typeof attr.value === 'string' && attr.value.startsWith('data:') && !attr.value.includes(' ')) {
+    return { kind: 'expr', expr: parseExpression(attr.value, { catalog }) }
+  }
   return { kind: 'static', value: String(attr.value) }
 }
 

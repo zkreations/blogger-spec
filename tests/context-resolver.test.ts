@@ -13,6 +13,8 @@ describe('context resolver suite with 3-tier precedence', () => {
     readFileSync(join(getWorkspacePaths().fixtures, 'feeds/hamlet-pages-sample.json'), 'utf8'),
   )
 
+  const blogId = '5408826600056783247'
+
   function createMockFetch(postsData: any = postsFeedJson, pagesData: any = pagesFeedJson) {
     return vi.fn().mockImplementation(async (url: string) => {
       if (url.includes('/posts/default')) {
@@ -34,6 +36,21 @@ describe('context resolver suite with 3-tier precedence', () => {
       }
     })
   }
+
+  describe('blogId requirement in live/online mode', () => {
+    it('throws when blogId is missing and not offline', async () => {
+      const mockFetch = vi.fn()
+      await expect(resolveBloggerContext({ fetch: mockFetch })).rejects.toThrow('blogId is required to resolve Blogger context')
+    })
+
+    it('sets cookieChoices when configured', async () => {
+      const ctx = await resolveBloggerContext({
+        offline: true,
+        cookieChoices: true,
+      })
+      expect(ctx.blog.cookieChoices).toBe(true)
+    })
+  })
 
   describe('offline mode', () => {
     it('returns canonical mock context without network calls', async () => {
@@ -64,6 +81,7 @@ describe('context resolver suite with 3-tier precedence', () => {
     it('populates blog metadata, posts, pages, and labels from feed', async () => {
       const mockFetch = createMockFetch()
       const ctx = await resolveBloggerContext({
+        blogId,
         fetch: mockFetch,
         urlMode: 'relative',
       })
@@ -94,12 +112,13 @@ describe('context resolver suite with 3-tier precedence', () => {
       const mockFetch = createMockFetch()
       const ctx = await resolveBloggerContext({
         view: 'post',
+        blogId,
         fetch: mockFetch,
       })
 
       expect(ctx.view.isPost).toBe(true)
       expect(ctx.widgetData.Blog1.posts.length).toBe(1)
-      expect(ctx.view.postId).toBe('8389032230243957219')
+      expect(ctx.view.postId).toBe(Number.parseInt('8389032230243957219', 10))
       expect(ctx.view.title).toBe('The Importance of Environmental Care')
     })
   })
@@ -108,6 +127,7 @@ describe('context resolver suite with 3-tier precedence', () => {
     it('lets overrides take precedence over feed and mock data', async () => {
       const mockFetch = createMockFetch()
       const ctx = await resolveBloggerContext({
+        blogId,
         fetch: mockFetch,
         overrides: {
           blog: { title: 'Overridden Blog Title' },
@@ -136,6 +156,7 @@ describe('context resolver suite with 3-tier precedence', () => {
       })
 
       const ctx = await resolveBloggerContext({
+        blogId,
         fetch: failingFetch,
       })
 
@@ -150,6 +171,7 @@ describe('context resolver suite with 3-tier precedence', () => {
       })
 
       const ctx = await resolveBloggerContext({
+        blogId,
         fetch: throwingFetch,
       })
 
@@ -178,6 +200,7 @@ describe('context resolver suite with 3-tier precedence', () => {
       const ctx = await resolveBloggerContext({
         view: 'post_listing',
         urlMode: 'remote',
+        blogId,
         fetch: mockFetch,
         overrides: {
           view: {
@@ -206,6 +229,7 @@ describe('context resolver suite with 3-tier precedence', () => {
       const ctx = await resolveBloggerContext({
         view: 'post_listing',
         urlMode: 'relative',
+        blogId,
         fetch: mockFetch,
         overrides: {
           view: {
@@ -223,6 +247,7 @@ describe('context resolver suite with 3-tier precedence', () => {
       const ctx = await resolveBloggerContext({
         view: 'search_query',
         urlMode: 'remote',
+        blogId,
         fetch: mockFetch,
         overrides: {
           view: {
@@ -243,6 +268,7 @@ describe('context resolver suite with 3-tier precedence', () => {
       const ctx = await resolveBloggerContext({
         view: 'static_page',
         urlMode: 'remote',
+        blogId,
         fetch: mockFetch,
         overrides: {
           view: {
@@ -255,7 +281,7 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(ctx.view.isSingleItem).toBe(true)
       expect(ctx.view.title).toBe('Typography')
       expect(ctx.view.url).toBe('https://hamlet.zkreations.com/p/typography.html')
-      expect(ctx.view.pageId).toBe('2772603359269059586')
+      expect(ctx.view.pageId).toBe(Number.parseInt('2772603359269059586', 10))
 
       const blogPosts = ctx.widgetData.Blog1.posts
       expect(blogPosts.length).toBe(1)

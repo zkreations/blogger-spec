@@ -41,13 +41,16 @@ describe('context normalizer suite with real Hamlet fixtures', () => {
       expect(stripped).not.toContain('<p>')
     })
 
-    it('enforces 100 character short and 250 character long snippets', () => {
+    it('enforces 100 character short and 250 character long snippets with Unicode ellipsis', () => {
       const longText = 'A'.repeat(500)
       const { short, long } = createSnippets(longText)
-      expect(short.length).toBeLessThanOrEqual(103) // 100 + '...'
-      expect(short.endsWith('...')).toBe(true)
-      expect(long.length).toBeLessThanOrEqual(253) // 250 + '...'
-      expect(long.endsWith('...')).toBe(true)
+      expect(short.length).toBeLessThanOrEqual(101) // 100 + '…'
+      expect(short.endsWith('…')).toBe(true)
+      expect(long.length).toBeLessThanOrEqual(251) // 250 + '…'
+      expect(long.endsWith('…')).toBe(true)
+
+      const withAscii = createSnippets(longText, { ellipsis: '...' })
+      expect(withAscii.short.endsWith('...')).toBe(true)
     })
   })
 

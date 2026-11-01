@@ -1159,6 +1159,49 @@ export class SpecCatalog {
     return entry.values?.[locale] ?? entry.values?.[clean] ?? entry.default
   }
 
+  getWidgetNavMessage(widgetType = 'Blog', locale = 'en'): string {
+    const entry = (this.localesCatalog?.translations?.widgets as any)?.[widgetType]?.navMessage
+    const clean = locale.toLowerCase()
+    return entry?.values?.[locale] ?? entry?.values?.[clean] ?? entry?.default ?? 'Sorry, the page you were looking for in this blog does not exist.'
+  }
+
+  getWidgetDefaultTitle(widgetType: string, locale = 'en'): string {
+    const entry = (this.localesCatalog?.translations?.widgets as any)?.[widgetType]?.defaultTitle
+      ?? (this.localesCatalog?.translations?.widgets as any)?.[widgetType]?.name
+    const clean = locale.toLowerCase()
+    return entry?.values?.[locale] ?? entry?.values?.[clean] ?? entry?.default ?? widgetType
+  }
+
+  getFormattedGlobalMessage(key: string, locale = 'en', params: Record<string, string> = {}): string {
+    const entry = (this.localesCatalog?.translations?.globals as any)?.[key]
+    const clean = locale.toLowerCase()
+    let msg: string = entry?.values?.[locale] ?? entry?.values?.[clean] ?? entry?.default ?? ''
+    for (const [k, v] of Object.entries(params)) {
+      msg = msg.split(k).join(v)
+    }
+    return msg
+  }
+
+  getArchiveRangeMessage(year: number, month?: number, locale = 'en'): string {
+    const entry = (this.localesCatalog?.translations?.globals as any)?.['view.archive.rangeMessage']
+    const clean = locale.toLowerCase()
+    const template: string = entry?.values?.[locale] ?? entry?.values?.[clean] ?? entry?.default ?? 'Showing posts from August, 2026'
+
+    let periodText = String(year)
+    if (month && month >= 1 && month <= 12) {
+      try {
+        const intlLocale = clean.startsWith('es') ? 'es-ES' : (clean.startsWith('en') ? 'en-US' : locale)
+        const date = new Date(year, month - 1, 1)
+        const monthName = date.toLocaleString(intlLocale, { month: 'long' })
+        periodText = `${monthName}, ${year}`
+      }
+      catch {
+        periodText = `${month}/${year}`
+      }
+    }
+    return template.replace(/[A-Za-z\u00C0-\u024F]+,\s*\d{4}/, periodText)
+  }
+
   resolvePlural(messageKey: string, count: number, locale = 'en'): string | undefined {
     const entry = this.localesCatalog?.translations?.messages?.[messageKey]
     if (!entry?.plural_forms) {
@@ -1775,6 +1818,22 @@ export function getLocalizedMessage(messageKey: string, locale = 'en', catalog: 
 
 export function resolvePlural(messageKey: string, count: number, locale = 'en', catalog: SpecCatalog = getSpecCatalog()): string | undefined {
   return catalog.resolvePlural(messageKey, count, locale)
+}
+
+export function getWidgetNavMessage(widgetType = 'Blog', locale = 'en', catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.getWidgetNavMessage(widgetType, locale)
+}
+
+export function getWidgetDefaultTitle(widgetType: string, locale = 'en', catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.getWidgetDefaultTitle(widgetType, locale)
+}
+
+export function getFormattedGlobalMessage(key: string, locale = 'en', params: Record<string, string> = {}, catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.getFormattedGlobalMessage(key, locale, params)
+}
+
+export function getArchiveRangeMessage(year: number, month?: number, locale = 'en', catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.getArchiveRangeMessage(year, month, locale)
 }
 
 export function isScope(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {

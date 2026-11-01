@@ -155,7 +155,11 @@ function applyBlogConfiguration(
 export async function resolveBloggerContext(
   config: BloggerContextConfig = {},
 ): Promise<Record<string, any>> {
-  const blogId = config.blogId || DEFAULT_BLOG_ID
+  const blogId = config.blogId || (config.config?.blog as any)?.id
+  if (!blogId && !config.offline) {
+    throw new Error('blogId is required to resolve Blogger context')
+  }
+  const effectiveBlogId = blogId || DEFAULT_BLOG_ID
   const viewId: BloggerViewId = config.view || 'homepage'
   const urlMode = config.urlMode || 'relative'
   const baseUrl = config.baseUrl
@@ -168,13 +172,16 @@ export async function resolveBloggerContext(
     if (viewId === 'error_404') {
       const blogLocale = config.overrides?.blog?.locale || config.config?.blog?.locale || context.blog?.locale || 'en'
       const spec = getSpecCatalog()
-      const navMsg = (spec as any).localesCatalog?.translations?.widgets?.Blog?.navMessage?.values?.[blogLocale]
-        || (spec as any).localesCatalog?.translations?.widgets?.Blog?.navMessage?.default
-        || 'Sorry, the page you were looking for in this blog does not exist.'
+      const navMsg = spec.getWidgetNavMessage('Blog', blogLocale)
       context.widgetData.Blog1 = context.widgetData.Blog1 || {}
       context.widgetData.Blog1.navMessage = navMsg
       context.widgetData.Blog1.posts = []
       context.widgetData.Blog1.numPosts = 0
+    }
+    const cookieChoices = config.cookieChoices ?? config.config?.blog?.cookieChoices ?? false
+    if (cookieChoices) {
+      context.blog = context.blog || {}
+      context.blog.cookieChoices = true
     }
     if (config.config) {
       applyBlogConfiguration(context, config.config, viewId)
@@ -193,8 +200,8 @@ export async function resolveBloggerContext(
 
   // Consulta paralela de posts y páginas
   const [postsResponse, pagesResponse] = await Promise.all([
-    client.fetchPosts(blogId, { maxResults: 25 }),
-    client.fetchPages(blogId),
+    client.fetchPosts(effectiveBlogId, { maxResults: 25 }),
+    client.fetchPages(effectiveBlogId),
   ])
 
   const feed = postsResponse?.feed
@@ -226,14 +233,14 @@ export async function resolveBloggerContext(
       dateFormat: config.config?.blog?.postDateFormat,
       titleAndEnclosureLinks: config.config?.blog?.titleAndEnclosureLinks,
     }
-    const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, blogId, blogLocale, postOptions))
+    const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, effectiveBlogId, blogLocale, postOptions))
 
     const rawPages: readonly BloggerRawEntry[] = pagesResponse?.feed?.entry || []
-    const normalizedPagePosts = rawPages.map(e => normalizePageAsPostEntry(e, mapper, blogId, blogLocale, postOptions))
+    const normalizedPagePosts = rawPages.map(e => normalizePageAsPostEntry(e, mapper, effectiveBlogId, blogLocale, postOptions))
 
     const labelSorting = (config.overrides?.widgetData?.Label1?.sorting || 'ALPHA') as 'ALPHA' | 'FREQUENCY'
     const normalizedLabels = normalizeLabels(rawPosts, mapper, labelSorting)
-    const blogMeta = normalizeBlogMetadata(feed, mapper, blogId)
+    const blogMeta = normalizeBlogMetadata(feed, mapper, effectiveBlogId)
     const headerData = normalizeHeader(feed, mapper)
 
     // Fusionar metadatos del blog
@@ -325,17 +332,17 @@ export async function resolveBloggerContext(
         if (targetPost) {
           activePosts = [targetPost]
           context.view = context.view || {}
-          context.view.postId = targetPost.id
+          context.view.postId = Number.parseInt(targetPost.id, 10) || targetPost.id
           context.view.title = targetPost.title
           context.view.url = targetPost.url
           context.view.description = targetPost.snippets.short
 
           // Fetch and attach comments for post
-          const commentsResponse = await client.fetchComments(blogId, targetPost.id)
+          const commentsResponse = await client.fetchComments(effectiveBlogId, targetPost.id)
           const rawComments: readonly BloggerRawEntry[] = commentsResponse?.feed?.entry || []
           if (rawComments.length > 0) {
             const normalizedComments = rawComments
-              .map(c => normalizeCommentEntry(c, mapper, blogId, blogLocale, config.config?.blog?.commentDateFormat))
+              .map(c => normalizeCommentEntry(c, mapper, effectiveBlogId, blogLocale, config.config?.blog?.commentDateFormat))
               .sort((a, b) => a.timestampValue - b.timestampValue)
             ;(targetPost as any).comments = normalizedComments
             ;(targetPost as any).numberOfComments = normalizedComments.length
@@ -354,7 +361,7 @@ export async function resolveBloggerContext(
         if (targetPage) {
           activePosts = [targetPage]
           context.view = context.view || {}
-          context.view.pageId = targetPage.id
+          context.view.pageId = Number.parseInt(targetPage.id, 10) || targetPage.id
           context.view.title = targetPage.title
           context.view.url = targetPage.url
           context.view.description = targetPage.snippets.short
@@ -364,9 +371,7 @@ export async function resolveBloggerContext(
     else if (viewId === 'error_404') {
       activePosts = []
       const spec = getSpecCatalog()
-      const navMsg = (spec as any).localesCatalog?.translations?.widgets?.Blog?.navMessage?.values?.[blogLocale]
-        || (spec as any).localesCatalog?.translations?.widgets?.Blog?.navMessage?.default
-        || 'Sorry, the page you were looking for in this blog does not exist.'
+      const navMsg = spec.getWidgetNavMessage('Blog', blogLocale)
       blog1.navMessage = navMsg
     }
     else {
@@ -390,15 +395,16 @@ export async function resolveBloggerContext(
         context.view.searchLabel = effectiveLabel
 
         const spec = getSpecCatalog()
-        const rawMsg = (spec as any).localesCatalog?.translations?.globals?.['view.search.resultsMessage']?.values?.[blogLocale]
-          || (spec as any).localesCatalog?.translations?.globals?.['view.search.resultsMessage']?.default
-          || 'Showing posts with the label LABEL'
-        const rawMsgHtml = (spec as any).localesCatalog?.translations?.globals?.['view.search.resultsMessageHtml']?.values?.[blogLocale]
-          || (spec as any).localesCatalog?.translations?.globals?.['view.search.resultsMessageHtml']?.default
-          || 'Showing posts with the label <span class=\'search-label\'>LABEL</span>'
-
-        context.view.search.resultsMessage = rawMsg.replace(/LABEL/g, effectiveLabel)
-        context.view.search.resultsMessageHtml = rawMsgHtml.replace(/LABEL/g, effectiveLabel)
+        context.view.search.resultsMessage = spec.getFormattedGlobalMessage(
+          'view.search.resultsMessage',
+          blogLocale,
+          { LABEL: effectiveLabel },
+        )
+        context.view.search.resultsMessageHtml = spec.getFormattedGlobalMessage(
+          'view.search.resultsMessageHtml',
+          blogLocale,
+          { LABEL: effectiveLabel },
+        )
 
         const normLabel = effectiveLabel.trim().toLowerCase()
         activePosts = activePosts.filter(p =>
@@ -423,6 +429,11 @@ export async function resolveBloggerContext(
         if (effectiveArchiveMonth) {
           context.view.archive.month = effectiveArchiveMonth
         }
+        if (effectiveArchiveDay) {
+          context.view.archive.day = effectiveArchiveDay
+        }
+        const spec = getSpecCatalog()
+        context.view.archive.rangeMessage = spec.getArchiveRangeMessage(effectiveArchiveYear, effectiveArchiveMonth, blogLocale)
 
         activePosts = activePosts.filter((p) => {
           const m = p.publishedIso?.match(/^(\d{4})-(\d{2})-(\d{2})/)
@@ -550,7 +561,7 @@ export async function resolveBloggerContext(
             const hasOlderInBlog = normalizedPosts.some(p => (p.timestamp ?? 0) < (lastPost?.timestamp ?? 0))
             if (hasOlderInBlog) {
               const nextDate = lastPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
-              blog1.olderPageUrl = mapper.mapUrl(`${blogOrigin}/search?updated-max=${nextDate}&max-results=${normalizedPosts.length || 9}`)
+              blog1.olderPageUrl = mapper.mapUrl(`${blogOrigin}/search?updated-max=${nextDate}`)
             }
             else {
               blog1.olderPageUrl = ''
@@ -615,51 +626,83 @@ export async function resolveBloggerContext(
     // Inyectar datos en PageList1
     const currentPath = (viewId === 'static_page' ? context.view?.url || config.overrides?.view?.url : undefined)
     const normalizedPages = rawPages.map(e => normalizePageEntry(e, mapper, currentPath))
+    const spec = getSpecCatalog()
+    const pageListTitle = spec.getWidgetDefaultTitle('PageList', blogLocale)
 
     if (context.widgetData.PageList1) {
       context.widgetData.PageList1.links = normalizedPages
+      if (!context.widgetData.PageList1.title) {
+        context.widgetData.PageList1.title = pageListTitle
+      }
     }
     else {
       context.widgetData.PageList1 = {
-        title: 'Páginas',
+        title: pageListTitle,
         links: normalizedPages,
       }
     }
 
     // Inyectar datos en Label1
+    const labelTitle = spec.getWidgetDefaultTitle('Label', blogLocale)
     if (context.widgetData.Label1) {
       context.widgetData.Label1.labels = normalizedLabels
+      if (!context.widgetData.Label1.title) {
+        context.widgetData.Label1.title = labelTitle
+      }
       if (config.overrides?.widgetData?.Label1?.showFreqNumbers === undefined) {
         context.widgetData.Label1.showFreqNumbers = false
       }
     }
     else {
       context.widgetData.Label1 = {
-        title: 'Etiquetas',
+        title: labelTitle,
         labels: normalizedLabels,
         showFreqNumbers: false,
       }
     }
 
     // Inyectar datos en Header1
+    const headerTitle = headerData.title || spec.getWidgetDefaultTitle('Header', blogLocale)
     if (context.widgetData.Header1) {
-      context.widgetData.Header1.title = headerData.title
+      context.widgetData.Header1.title = headerTitle
       context.widgetData.Header1.description = headerData.description
       context.widgetData.Header1.url = headerData.url
     }
     else {
-      context.widgetData.Header1 = headerData
+      context.widgetData.Header1 = {
+        ...headerData,
+        title: headerTitle,
+      }
     }
 
     // Inyectar FeaturedPost1 con el primer post si está disponible
     if (normalizedPosts.length > 0) {
       const featured = normalizedPosts[0]
       context.widgetData.FeaturedPost1 = {
-        title: 'Entrada destacada',
+        title: spec.getWidgetDefaultTitle('FeaturedPost', blogLocale),
         postId: featured.id,
         postTitle: featured.title,
         snippet: featured.snippets.long,
         postUrl: featured.url,
+      }
+    }
+
+    const cookieChoices = config.cookieChoices ?? config.config?.blog?.cookieChoices ?? false
+    if (cookieChoices) {
+      context.blog = context.blog || {}
+      context.blog.cookieChoices = true
+    }
+
+    // Canonically ensure data:view.type contract
+    if (context.view) {
+      if (viewId === 'post' || viewId === 'static_page') {
+        context.view.type = 'item'
+      }
+      else if (viewId === 'error_404') {
+        context.view.type = 'error_page'
+      }
+      else {
+        context.view.type = 'feed'
       }
     }
   }

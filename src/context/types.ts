@@ -28,6 +28,8 @@ export interface BloggerContextConfig {
   }
   /** Inyección opcional de fetch (útil para tests y entornos herméticos) */
   readonly fetch?: typeof fetch
+  /** Si es true, inyecta el aviso oficial de cookies (cookieChoiceInfo) antes de </body> */
+  readonly cookieChoices?: boolean
 }
 
 export interface BloggerRawText {

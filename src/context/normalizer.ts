@@ -22,7 +22,11 @@ export function formatIcuDate(
   pattern: string,
   locale = 'en',
 ): string {
-  const intlLocale = locale === 'en' ? 'en-US' : (locale === 'es' ? 'es-ES' : locale)
+  const cleanLocale = locale.replace(/_/g, '-')
+  const intlLocale = cleanLocale.startsWith('es')
+    ? 'es-ES'
+    : (cleanLocale.startsWith('en') && !cleanLocale.includes('-') ? 'en-US' : cleanLocale)
+
   const fullWeekday = date.toLocaleString(intlLocale, { weekday: 'long' })
   const shortWeekday = date.toLocaleString(intlLocale, { weekday: 'short' })
   const fullMonth = date.toLocaleString(intlLocale, { month: 'long' })
@@ -42,8 +46,16 @@ export function formatIcuDate(
   const min2 = minNum.padStart(2, '0')
   const secNum = String(date.getSeconds())
   const sec2 = secNum.padStart(2, '0')
-  const isSpanish = intlLocale.startsWith('es')
-  const dayPeriod = date.getHours() >= 12 ? (isSpanish ? 'p. m.' : 'PM') : (isSpanish ? 'a. m.' : 'AM')
+
+  let dayPeriod = ''
+  try {
+    const parts = new Intl.DateTimeFormat(intlLocale, { hour: 'numeric', hour12: true }).formatToParts(date)
+    dayPeriod = parts.find(p => p.type === 'dayPeriod')?.value
+      || (date.getHours() >= 12 ? (cleanLocale.startsWith('es') ? 'p. m.' : 'PM') : (cleanLocale.startsWith('es') ? 'a. m.' : 'AM'))
+  }
+  catch {
+    dayPeriod = date.getHours() >= 12 ? (cleanLocale.startsWith('es') ? 'p. m.' : 'PM') : (cleanLocale.startsWith('es') ? 'a. m.' : 'AM')
+  }
 
   const tokenRegex = /'([^']+)'|EEEE|EEE|MMMM|MMM|MM|M|dd|d|yyyy|yy|HH|H|hh|h|mm|m|ss|[saz]/g
 
@@ -92,10 +104,23 @@ export function stripHtml(html: string): string {
     .trim()
 }
 
-export function createSnippets(contentOrSummary: string): { short: string, long: string } {
+export interface CreateSnippetsOptions {
+  readonly shortLength?: number
+  readonly longLength?: number
+  readonly ellipsis?: string
+}
+
+export function createSnippets(
+  contentOrSummary: string,
+  options?: CreateSnippetsOptions,
+): { short: string, long: string } {
   const clean = stripHtml(contentOrSummary)
-  const short = clean.length > 100 ? `${clean.slice(0, 100).trim()}...` : clean
-  const long = clean.length > 250 ? `${clean.slice(0, 250).trim()}...` : clean
+  const ellipsis = options?.ellipsis ?? '…'
+  const shortLen = options?.shortLength ?? 100
+  const longLen = options?.longLength ?? 250
+
+  const short = clean.length > shortLen ? `${clean.slice(0, shortLen).trim()}${ellipsis}` : clean
+  const long = clean.length > longLen ? `${clean.slice(0, longLen).trim()}${ellipsis}` : clean
   return { short, long }
 }
 
