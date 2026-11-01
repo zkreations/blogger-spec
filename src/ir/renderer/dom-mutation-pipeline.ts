@@ -125,4 +125,3 @@ export class DomMutationPipeline {
     return parts.length > 0 ? ` ${parts.join(' ')}` : ''
   }
 }
-

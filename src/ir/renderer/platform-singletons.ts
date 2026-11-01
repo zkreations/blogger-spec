@@ -80,4 +80,3 @@ export function injectCookieNotice(
   }
   return html + cookieHtml
 }
-
