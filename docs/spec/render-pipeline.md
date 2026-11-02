@@ -25,6 +25,10 @@ flowchart TD
 2. **Evaluation:** Dynamic attributes (`expr:*`, `cond`, `values`, `value`) go through `evaluateExpression`, using Blogger's relaxed equality (`isEqual`), collection lambdas and null-safety.
 3. **Hoisting:** `b:attr` and `b:class` mutations cross control boundaries (`b:if`, `b:loop`, `b:with`, `b:tag[cond=false]`) and subroutine boundaries (`b:include`) until they reach the nearest HTML element or widget wrapper.
 
+### 1.1. Versioning Boundaries (Layouts v3 vs v1/v2)
+- **Runtime Execution & BIR Compilation Target:** `blogger-spec`'s reference execution pipeline (`BloggerReferenceRenderer`, BIR lowering, and view conformance) strictly targets modern **Layouts v3** (`b:layoutsVersion='3'`, Gadgets v2, `<b:defaultmarkups>`).
+- **Static Analysis & Parser Scope:** Layouts v1 and v2 templates remain fully supported in static analysis, directive scanning, tokenization, and version detection (`detectTemplateVersion`), but legacy table layouts and deprecated v1 server tags are deliberately outside the runtime execution scope.
+
 ---
 
 ## 2. Phase 1: Subroutine & Template Registry
