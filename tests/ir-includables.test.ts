@@ -22,12 +22,13 @@ describe('bir includables symbol table and resolution', () => {
     const ir = lowerTemplate(xml)
     expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
 
-    expect(ir.symbolTable['Header1:main']).toBeDefined()
-    expect(ir.symbolTable['Header1:title']).toBeDefined()
-    expect(ir.symbolTable.title.tier).toBe('local_widget')
-    expect(ir.symbolTable.title.ownerWidgetId).toBe('Header1')
+    expect(ir.symbolTable['widget:Header1:main']).toBeDefined()
+    expect(ir.symbolTable['widget:Header1:title']).toBeDefined()
+    expect(ir.symbolTable['widget:Header1:title'].tier).toBe('local_widget')
+    expect(ir.symbolTable['widget:Header1:title'].ownerWidgetId).toBe('Header1')
+    expect(ir.symbolTable.title).toBeUndefined()
 
-    const mainIncludable = ir.symbolTable['Header1:main']
+    const mainIncludable = ir.symbolTable['widget:Header1:main']
     const includeNode = mainIncludable.body[0] as any
     expect(includeNode.kind).toBe('include')
     expect(includeNode.target).toBe('title')
@@ -61,14 +62,14 @@ describe('bir includables symbol table and resolution', () => {
     expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
 
     // Verify last_block_wins in symbol table
-    const postIncludable = ir.symbolTable['default:Blog:post']
+    const postIncludable = ir.symbolTable['gadget:Blog:post']
     expect(postIncludable).toBeDefined()
     expect(postIncludable.tier).toBe('gadget_specific')
     expect(postIncludable.ownerWidgetId).toBe('Blog')
     const h2Tag = (postIncludable.body[0] as any).tag
     expect(h2Tag).toBe('h2')
 
-    const mainBody = ir.symbolTable['Blog1:main'].body
+    const mainBody = ir.symbolTable['widget:Blog1:main'].body
     const inc = mainBody[0] as any
     expect(inc.target).toBe('post')
     expect(inc.resolution.tier).toBe('gadget_specific')
@@ -97,7 +98,7 @@ describe('bir includables symbol table and resolution', () => {
     expect(ir.symbolTable['all:universalAlert']).toBeDefined()
     expect(ir.symbolTable['all:universalAlert'].tier).toBe('universal_widget')
 
-    const inc = ir.symbolTable['ContactForm1:main'].body[0] as any
+    const inc = ir.symbolTable['widget:ContactForm1:main'].body[0] as any
     expect(inc.target).toBe('universalAlert')
     expect(inc.resolution).toEqual({
       tier: 'universal_widget',
@@ -126,7 +127,7 @@ describe('bir includables symbol table and resolution', () => {
     expect(ir.symbolTable['common:sharedButton']).toBeDefined()
     expect(ir.symbolTable['common:sharedButton'].tier).toBe('shared_common')
 
-    const inc = ir.symbolTable['Text1:main'].body[0] as any
+    const inc = ir.symbolTable['widget:Text1:main'].body[0] as any
     expect(inc.target).toBe('sharedButton')
     expect(inc.resolution).toEqual({
       tier: 'shared_common',
@@ -145,15 +146,15 @@ describe('bir includables symbol table and resolution', () => {
     const ir = lowerTemplate(xml)
     expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
 
-    const inc = ir.symbolTable['Blog1:main'].body[0] as any
+    const inc = ir.symbolTable['widget:Blog1:main'].body[0] as any
     expect(inc.target).toBe('commentForm')
     expect(inc.resolution.tier).toBe('platform_server')
     expect(inc.resolution.resolved).toBe(true)
 
     // Platform server stub synthesized in symbolTable
-    expect(ir.symbolTable.commentForm).toBeDefined()
-    expect(ir.symbolTable.commentForm.tier).toBe('platform_server')
-    expect(ir.symbolTable.commentForm.body.length).toBeGreaterThan(0)
+    expect(ir.symbolTable['server:commentForm']).toBeDefined()
+    expect(ir.symbolTable['server:commentForm'].tier).toBe('platform_server')
+    expect(ir.symbolTable['server:commentForm'].body.length).toBeGreaterThan(0)
   })
 
   it('resolves Tier 6: unresolved includable with canonical failure comment', () => {
@@ -167,7 +168,7 @@ describe('bir includables symbol table and resolution', () => {
     const ir = lowerTemplate(xml)
     expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
 
-    const inc = ir.symbolTable['Sidebar1:main'].body[0] as any
+    const inc = ir.symbolTable['widget:Sidebar1:main'].body[0] as any
     expect(inc.target).toBe('nonExistentSubroutine')
     expect(inc.resolution.tier).toBe('unresolved')
     expect(inc.resolution.resolved).toBe(false)
@@ -185,7 +186,7 @@ describe('bir includables symbol table and resolution', () => {
     const ir = lowerTemplate(xml)
     expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
 
-    const inc = ir.symbolTable['Blog1:main'].body[0] as any
+    const inc = ir.symbolTable['widget:Blog1:main'].body[0] as any
     expect(inc.target).toBeUndefined()
     expect(inc.dynamicTarget).toBeDefined()
     expect(inc.dynamicTarget.type).toBe('DataPath')
@@ -208,7 +209,7 @@ describe('bir includables symbol table and resolution', () => {
     const ir = lowerTemplate(xml)
     expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
 
-    const inc = ir.symbolTable['Blog1:main'].body[0] as any
+    const inc = ir.symbolTable['widget:Blog1:main'].body[0] as any
     expect(inc.args.var.kind).toBe('expr')
     expect(inc.args.var.expr.type).toBe('Identifier')
     expect(inc.args.var.expr.name).toBe('post')

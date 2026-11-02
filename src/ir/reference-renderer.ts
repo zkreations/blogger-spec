@@ -7,15 +7,17 @@ import type { BirIncludable, BirNode, BloggerIRDocument } from './types.js'
 import { getSpecCatalog } from '../catalogs/index.js'
 import { expandServerInclusion } from '../inclusion-expander.js'
 import { evaluateExpression, isEqual } from '../parser/index.js'
+import { isSkinValue } from '../skin-compiler.js'
 import { isTruthy } from '../type-system.js'
+import { formatGadgetAbortComment } from '../types.js'
 import { compileToIR } from './compiler.js'
 import { lowerTemplate } from './lowering.js'
 import { DomMutationPipeline } from './renderer/dom-mutation-pipeline.js'
-import { HTML_VOID_ELEMENTS } from './renderer/html-serializer.js'
+import { escapeAttr, HTML_VOID_ELEMENTS } from './renderer/html-serializer.js'
 import {
   injectCookieNotice,
   injectSkinVariables,
-  renderSkinStyles,
+  renderSkinNode,
 } from './renderer/platform-singletons.js'
 import {
   bindIncludeScope,
@@ -58,6 +60,7 @@ export class BloggerReferenceRenderer {
   private currentIr?: BloggerIRDocument
   private currentOptions?: BloggerReferenceRendererOptions
   private readonly pipeline = new DomMutationPipeline()
+  private readonly serverSubroutineCache = new Map<string, BirIncludable>()
   private includeDepth = 0
 
   constructor(private readonly defaultOptions: BloggerReferenceRendererOptions = {}) {}
@@ -71,16 +74,18 @@ export class BloggerReferenceRenderer {
     options?: BloggerReferenceRendererOptions,
   ): string {
     const mergedOptions = { ...this.defaultOptions, ...options }
+    const catalog = mergedOptions.catalog ?? getSpecCatalog()
     const ir = typeof input === 'string' ? compileToIR(input, mergedOptions) : input
     this.currentIr = ir
     this.currentOptions = mergedOptions
     this.includeDepth = 0
     this.pipeline.clear()
+    this.serverSubroutineCache.clear()
 
     const effectiveContext = injectSkinVariables(ir.skin, context)
     const rawHtml = this.renderNodes(ir.root, effectiveContext)
 
-    return injectCookieNotice(rawHtml, effectiveContext)
+    return injectCookieNotice(rawHtml, effectiveContext, catalog)
   }
 
   /**
@@ -124,9 +129,22 @@ export class BloggerReferenceRenderer {
       case 'comment':
         return `<!--${node.value}-->`
 
+      case 'skin':
+        return renderSkinNode(node.role, this.currentIr?.skin, ctx)
+
       case 'output': {
         const val = evaluateExpression(node.expr, ctx as Record<string, any>)
-        return (val === null || val === undefined) ? '' : String(val)
+        const cleanTag = (node.tagName ?? 'b:eval').replace(/^data:/, '')
+        if (val === undefined) {
+          return node.source === 'data' ? `<!--Can't find substitution for tag [${cleanTag}]-->` : ''
+        }
+        if (val === null) {
+          return ''
+        }
+        if (typeof val === 'object' && Object.prototype.toString.call(val) !== '[object String]' && !isSkinValue(val)) {
+          return `<!--Substitution is not a singleton for tag [${cleanTag}]-->`
+        }
+        return String(val)
       }
 
       case 'element': {
@@ -138,14 +156,7 @@ export class BloggerReferenceRenderer {
         const target = this.pipeline.createTarget(filteredAttrs, node.classes, ctx, normalizeUrls)
         this.pipeline.pushTarget(target)
 
-        let childrenHtml = ''
-        if (!node.isVoid || (!node.selfClosing && !node.whitespaceRemove)) {
-          childrenHtml = this.renderNodes(node.children, ctx)
-
-          if (node.tag.toLowerCase() === 'head' && this.currentIr?.skin) {
-            childrenHtml += renderSkinStyles(this.currentIr.skin, ctx)
-          }
-        }
+        const childrenHtml = this.renderNodes(node.children, ctx)
 
         this.pipeline.popTarget()
         const attrStr = this.pipeline.serializeAttributes(target, normalizeUrls)
@@ -231,14 +242,20 @@ export class BloggerReferenceRenderer {
       }
 
       case 'include': {
+        if (node.args.cond) {
+          const condVal = node.args.cond.kind === 'static'
+            ? (node.args.cond.value === 'true' || node.args.cond.value === 'yes')
+            : evaluateExpression(node.args.cond.expr, ctx as Record<string, any>)
+          if (!isTruthy(condVal)) {
+            return ''
+          }
+        }
         const target = node.target ?? (node.dynamicTarget ? String(evaluateExpression(node.dynamicTarget, ctx as Record<string, any>) ?? '') : undefined)
         if (!target) {
           return ''
         }
-        if (!node.dynamicTarget && node.resolution?.tier === 'unresolved') {
-          return node.resolution.failureComment ?? '<!-- unresolved -->'
-        }
-        const maxDepth = this.currentOptions?.maxIncludeDepth ?? 43
+        const catalog = this.currentOptions?.catalog ?? getSpecCatalog()
+        const maxDepth = this.currentOptions?.maxIncludeDepth ?? catalog.getIncludeRecursionLimit()
         if (this.includeDepth >= maxDepth) {
           return `<!-- recursion depth limit exceeded (${target}) -->`
         }
@@ -246,7 +263,7 @@ export class BloggerReferenceRenderer {
         const widgetType = (ctx.widget as any)?.type
         const subroutine = this.findIncludable(target, widgetId, widgetType)
         if (!subroutine) {
-          return node.resolution?.failureComment ?? '<!-- unresolved -->'
+          return node.resolution?.failureComment ?? formatGadgetAbortComment(widgetId || 'Widget')
         }
         this.includeDepth++
         try {
@@ -261,26 +278,49 @@ export class BloggerReferenceRenderer {
       case 'container': {
         const emitWrappers = this.currentOptions?.emitWrappers !== false
         if (node.role === 'section') {
+          if (node.cond !== undefined && !isTruthy(evaluateExpression(node.cond, ctx as Record<string, any>))) {
+            return ''
+          }
           const sectionId = node.id ?? 'section'
-          const tag = node.tag ?? 'div'
+          const tag = (node.tag ? this.pipeline.resolveAttrValue(node.tag, ctx, normalizeUrls) : undefined) || 'div'
+          const nameVal = node.name ? this.pipeline.resolveAttrValue(node.name, ctx, normalizeUrls) : undefined
+          const nameAttr = nameVal ? ` name="${escapeAttr(nameVal)}"` : ''
+          const innerHtml = node.suppressedInV3 ? '' : this.renderNodes(node.children, ctx)
           const baseClass = node.className ? `${node.className} section` : 'section'
-          const innerHtml = this.renderNodes(node.children, ctx)
-          const finalClass = innerHtml.trim() ? baseClass : `${baseClass} no-items`
-          return emitWrappers ? `<${tag} class="${finalClass}" id="${sectionId}">${innerHtml}</${tag}>` : innerHtml
+          const emptyClass = node.className ? `${node.className} no-items section` : 'no-items section'
+          const finalClass = innerHtml.trim() ? baseClass : emptyClass
+          return emitWrappers ? `<${tag} class="${finalClass}" id="${sectionId}"${nameAttr}>${innerHtml}</${tag}>` : innerHtml
         }
         if (node.role === 'widget') {
+          if (node.visible === false) {
+            return ''
+          }
+          if (node.cond !== undefined && !isTruthy(evaluateExpression(node.cond, ctx as Record<string, any>))) {
+            return ''
+          }
           const widgetId = node.id ?? ''
           const widgetType = node.widgetType ?? ''
           const sectionId = node.sectionId ?? 'content'
 
-          const { widgetCtx, wrapperTarget } = bindWidgetScope(widgetId, widgetType, sectionId, node.title, ctx)
+          const { widgetCtx, wrapperTarget } = bindWidgetScope(
+            widgetId,
+            widgetType,
+            sectionId,
+            node.title,
+            ctx,
+            node.version ?? 2,
+            node.settings,
+          )
           this.pipeline.pushTarget(wrapperTarget)
 
           const mainSub = this.findIncludable('main', widgetId, widgetType)
 
           let bodyHtml = ''
           if (mainSub) {
-            bodyHtml += this.renderNodes(mainSub.body, widgetCtx)
+            const mainCtx = mainSub.params.length > 0
+              ? bindIncludeScope(mainSub, {}, widgetCtx, true)
+              : widgetCtx
+            bodyHtml += this.renderNodes(mainSub.body, mainCtx)
           }
           if (node.children.length > 0) {
             bodyHtml += this.renderNodes(node.children, widgetCtx)
@@ -328,45 +368,51 @@ export class BloggerReferenceRenderer {
       return undefined
     }
 
-    // 0. Prefijo explícito o inclusión de servidor (super.* o all-head-content)
-    if (targetId in this.currentIr.symbolTable) {
-      if (targetId.includes(':') || targetId.startsWith('super.') || this.currentIr.symbolTable[targetId]?.tier === 'platform_server') {
-        return this.currentIr.symbolTable[targetId]
+    const sym = this.currentIr.symbolTable
+    const isSuper = targetId.startsWith('super.')
+
+    if (!isSuper) {
+      const inWidgetScope = Boolean(widgetId || widgetType)
+
+      if (widgetId && `widget:${widgetId}:${targetId}` in sym) {
+        return sym[`widget:${widgetId}:${targetId}`]
+      }
+
+      if (widgetType && `gadget:${widgetType}:${targetId}` in sym) {
+        return sym[`gadget:${widgetType}:${targetId}`]
+      }
+
+      if (inWidgetScope && `all:${targetId}` in sym) {
+        return sym[`all:${targetId}`]
+      }
+
+      if (`common:${targetId}` in sym) {
+        return sym[`common:${targetId}`]
       }
     }
 
-    // 1. Tier 1: local_widget (privado al widget contenedor)
-    if (widgetId && `${widgetId}:${targetId}` in this.currentIr.symbolTable) {
-      return this.currentIr.symbolTable[`${widgetId}:${targetId}`]
+    if (`server:${targetId}` in sym) {
+      return sym[`server:${targetId}`]
     }
 
-    // 2. Tier 2: gadget_specific (<b:defaultmarkup type='WidgetType'>)
-    if (widgetType && `default:${widgetType}:${targetId}` in this.currentIr.symbolTable) {
-      return this.currentIr.symbolTable[`default:${widgetType}:${targetId}`]
+    const cached = this.serverSubroutineCache.get(targetId)
+    if (cached) {
+      return cached
     }
 
-    // 3. Tier 3: universal_widget (<b:defaultmarkup type='All'>)
-    if (`all:${targetId}` in this.currentIr.symbolTable) {
-      return this.currentIr.symbolTable[`all:${targetId}`]
-    }
-
-    // 4. Tier 4: shared_common (<b:defaultmarkup type='Common'>)
-    if (`common:${targetId}` in this.currentIr.symbolTable) {
-      return this.currentIr.symbolTable[`common:${targetId}`]
-    }
-
-    // 5. Tier 5: platform_server fallback (e.g. all-head-content or super.*)
-    const spec = getSpecCatalog()
-    const isSuper = targetId.startsWith('super.')
+    const catalog = this.currentOptions?.catalog ?? getSpecCatalog()
     const baseName = isSuper ? targetId.slice('super.'.length) : targetId
-    if (spec.isServerInclusion(baseName) || isSuper) {
-      const serverResult = expandServerInclusion(targetId, { catalog: spec, useLocalStub: true })
+    if (catalog.isServerInclusion(baseName) || isSuper) {
+      const serverResult = expandServerInclusion(targetId, { catalog, useLocalStub: true })
       const markup = serverResult?.markup || ''
+      const incDef = catalog.getInclusion(baseName)
+      const varMatch = incDef?.server_markup ? /^<b:includable\b[^>]+\bvar=['"]([^'"]+)['"]/i.exec(incDef.server_markup.trim()) : null
+      const params = varMatch?.[1] ? [varMatch[1]] : []
       let body: readonly BirNode[] = []
       if (markup) {
         try {
-          const subIr = lowerTemplate(`<b:includable id='_stub'>${markup}</b:includable>`, { catalog: spec })
-          body = subIr.symbolTable._stub?.body ?? subIr.root
+          const subIr = lowerTemplate(`<b:includable id='_stub'>${markup}</b:includable>`, { catalog })
+          body = subIr.symbolTable['common:_stub']?.body ?? subIr.root
         }
         catch {
           body = [{ kind: 'text', value: markup }]
@@ -375,14 +421,13 @@ export class BloggerReferenceRenderer {
       const includable: BirIncludable = {
         id: targetId,
         tier: 'platform_server',
-        params: [],
+        params,
         body,
       }
-      ;(this.currentIr.symbolTable as Record<string, BirIncludable>)[targetId] = includable
+      this.serverSubroutineCache.set(targetId, includable)
       return includable
     }
 
-    // 6. Fallback a clave directa
-    return this.currentIr.symbolTable[targetId]
+    return undefined
   }
 }

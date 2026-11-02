@@ -2,6 +2,7 @@ import type { BloggerViewId } from '../../src/types.js'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { resolveBloggerContext } from '../../src/context/resolver.js'
+import { createStaticFeedFetch } from '../../src/context/static-feed-fetch.js'
 import { getWorkspacePaths } from '../../src/paths.js'
 
 export const HAMLET_BLOG_ID = '5408826600056783247'
@@ -83,20 +84,11 @@ function getHamletFeeds() {
 
 export function createLocalHamletFeedFetch(): typeof fetch {
   const { postsFeed, pagesFeed, commentsFeed } = getHamletFeeds()
-
-  return ((url: string | URL | Request) => {
-    const urlStr = typeof url === 'string' ? url : url.toString()
-    if (urlStr.includes('/posts/default')) {
-      return Promise.resolve(new Response(JSON.stringify(postsFeed), { status: 200, headers: { 'Content-Type': 'application/json' } }))
-    }
-    if (urlStr.includes('/pages/default')) {
-      return Promise.resolve(new Response(JSON.stringify(pagesFeed), { status: 200, headers: { 'Content-Type': 'application/json' } }))
-    }
-    if (urlStr.includes('/comments/default')) {
-      return Promise.resolve(new Response(JSON.stringify(commentsFeed), { status: 200, headers: { 'Content-Type': 'application/json' } }))
-    }
-    return Promise.resolve(new Response('{}', { status: 404 }))
-  }) as typeof fetch
+  return createStaticFeedFetch({
+    posts: postsFeed,
+    pages: pagesFeed,
+    comments: commentsFeed,
+  })
 }
 
 export async function resolveHamletContext(

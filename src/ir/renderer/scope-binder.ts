@@ -81,6 +81,8 @@ export function bindWidgetScope(
   sectionId: string,
   title: string | undefined,
   parentCtx: Record<string, unknown>,
+  version = 2,
+  settings?: Record<string, unknown>,
 ): { widgetCtx: Record<string, unknown>, wrapperTarget: MutationTarget } {
   const rawWidgetData = (parentCtx.widgets as any)?.[widgetId]
     ?? (parentCtx.widgetData as any)?.[widgetId]
@@ -88,7 +90,10 @@ export function bindWidgetScope(
     ?? (parentCtx.widgetData as any)?.[widgetType]
     ?? {}
 
-  const widgetData = { ...rawWidgetData }
+  const widgetData: Record<string, any> = {
+    ...(settings ?? {}),
+    ...rawWidgetData,
+  }
   if (title !== undefined) {
     widgetData.title = title
   }
@@ -101,7 +106,7 @@ export function bindWidgetScope(
       instanceId: widgetId,
       type: widgetType,
       sectionId,
-      version: 2,
+      version,
     },
     this: widgetData,
     data: widgetData,
@@ -114,7 +119,7 @@ export function bindWidgetScope(
   if (widgetId) {
     wrapperTarget.attributes.set('id', widgetId)
   }
-  wrapperTarget.attributes.set('data-version', '2')
+  wrapperTarget.attributes.set('data-version', String(version))
 
   return { widgetCtx, wrapperTarget }
 }
@@ -123,30 +128,59 @@ export function bindIncludeScope(
   subroutine: BirIncludable,
   args: Record<string, BirAttrValue>,
   parentCtx: Record<string, unknown>,
+  forceDefaultParamsToThis = false,
 ): Record<string, unknown> {
   const subCtx: Record<string, unknown> = { ...parentCtx }
   const widgetBaseData = (parentCtx.this && typeof parentCtx.this === 'object')
     ? (parentCtx.this as Record<string, any>)
     : {}
+  let hasExplicitPayload = false
 
   for (const [argName, argVal] of Object.entries(args)) {
+    if (argName === 'cond') {
+      continue
+    }
     const val = argVal.kind === 'static'
       ? argVal.value
       : evaluateExpression(argVal.expr, parentCtx as Record<string, any>)
 
+    if (argName === 'data' || argName === 'var') {
+      hasExplicitPayload = true
+    }
+
     if (subroutine.params && subroutine.params.length > 0 && (argName === 'data' || argName === 'var')) {
       for (const p of subroutine.params) {
-        subCtx[p] = val
-        const parentData = (parentCtx.data && typeof parentCtx.data === 'object')
-          ? (parentCtx.data as Record<string, any>)
-          : {}
-        subCtx.data = { ...parentData, [p]: val }
+        if (p === 'data') {
+          if (val && typeof val === 'object' && !Array.isArray(val)) {
+            Object.assign(subCtx, val)
+            const parentData = (parentCtx.data && typeof parentCtx.data === 'object' && !Array.isArray(parentCtx.data))
+              ? (parentCtx.data as Record<string, any>)
+              : {}
+            subCtx.data = { ...parentData, ...widgetBaseData, ...(val as Record<string, any>) }
+          }
+          else if (Array.isArray(val)) {
+            subCtx.data = val
+            subCtx['data:'] = val
+          }
+          else {
+            subCtx.data = val
+          }
+        }
+        else {
+          subCtx[p] = val
+          const parentData = (subCtx.data && typeof subCtx.data === 'object' && !Array.isArray(subCtx.data))
+            ? (subCtx.data as Record<string, any>)
+            : ((parentCtx.data && typeof parentCtx.data === 'object' && !Array.isArray(parentCtx.data))
+                ? (parentCtx.data as Record<string, any>)
+                : {})
+          subCtx.data = { ...parentData, [p]: val }
+        }
       }
     }
     else if (argName === 'data' && (!subroutine.params || subroutine.params.length === 0)) {
       if (val && typeof val === 'object' && !Array.isArray(val)) {
         Object.assign(subCtx, val)
-        const parentData = (parentCtx.data && typeof parentCtx.data === 'object')
+        const parentData = (parentCtx.data && typeof parentCtx.data === 'object' && !Array.isArray(parentCtx.data))
           ? (parentCtx.data as Record<string, any>)
           : {}
         subCtx.data = { ...parentData, ...widgetBaseData, ...(val as Record<string, any>) }
@@ -161,6 +195,26 @@ export function bindIncludeScope(
     }
     else {
       subCtx[argName] = val
+    }
+  }
+
+  if (!hasExplicitPayload && subroutine.params && subroutine.params.length > 0) {
+    const defaultTarget = parentCtx.this
+      ?? ((parentCtx.data && typeof parentCtx.data === 'object' && !Array.isArray(parentCtx.data))
+        ? parentCtx.data
+        : parentCtx)
+
+    for (const p of subroutine.params) {
+      if (p === 'data') {
+        continue
+      }
+      if (forceDefaultParamsToThis || !(p in subCtx) || subCtx[p] === undefined) {
+        subCtx[p] = defaultTarget
+        const baseData = (subCtx.data && typeof subCtx.data === 'object' && !Array.isArray(subCtx.data))
+          ? (subCtx.data as Record<string, any>)
+          : {}
+        subCtx.data = { ...baseData, [p]: defaultTarget }
+      }
     }
   }
 

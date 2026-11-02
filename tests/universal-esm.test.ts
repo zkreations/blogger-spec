@@ -1,5 +1,6 @@
+import { existsSync, readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { FsCatalogStore } from '../src/catalogs/fs-store.js'
 import {
   clearCatalogCache,
   getAllCatalogs,
@@ -11,7 +12,10 @@ import {
   MemoryCatalogStore,
   setDefaultCatalogStore,
 } from '../src/catalogs/index.js'
+import * as ContextExports from '../src/context/index.js'
 import * as RootExports from '../src/index.js'
+import * as IrExports from '../src/ir/index.js'
+import { FsCatalogStore, getWorkspacePaths, loadFixturesManifest } from '../src/node.js'
 
 describe('universal ESM & in-memory store suite', () => {
   it('instantiates MemoryCatalogStore with embedded catalogs by default', () => {
@@ -109,5 +113,67 @@ describe('universal ESM & in-memory store suite', () => {
     expect(RootExports.embeddedDiagnosticsCatalog).toBe(RootExports.embeddedCatalogs.diagnostics)
     expect(RootExports.embeddedWidgetsCatalog).toBe(RootExports.embeddedCatalogs.widgets)
     expect(RootExports.embeddedSettingsCatalog).toBe(RootExports.embeddedCatalogs.settings)
+  })
+
+  it('guarantees zero node:* imports across universal ESM entrypoints (., ./ir, ./context, ./runner)', () => {
+    const srcRoot = getWorkspacePaths().src
+    const universalEntries = [
+      resolve(srcRoot, 'index.ts'),
+      resolve(srcRoot, 'ir/index.ts'),
+      resolve(srcRoot, 'context/index.ts'),
+      resolve(srcRoot, 'runner.ts'),
+    ]
+
+    const visited = new Set<string>()
+    const nodeImports: Array<{ file: string, specifier: string }> = []
+    const importRegex = /\bfrom\s+['"]([^'"]+)['"]|\bimport\s+['"]([^'"]+)['"]/g
+
+    function walk(filePath: string) {
+      if (visited.has(filePath) || !existsSync(filePath)) {
+        return
+      }
+      visited.add(filePath)
+      const source = readFileSync(filePath, 'utf-8')
+      for (const match of source.matchAll(importRegex)) {
+        const spec = (match[1] ?? match[2])!
+        if (spec.startsWith('node:')) {
+          nodeImports.push({ file: filePath, specifier: spec })
+          continue
+        }
+        if (spec.startsWith('.')) {
+          const tsTarget = resolve(dirname(filePath), spec.replace(/\.js$/, '.ts'))
+          walk(tsTarget)
+        }
+      }
+    }
+
+    for (const entry of universalEntries) {
+      walk(entry)
+    }
+
+    expect(visited.size).toBeGreaterThan(20)
+    expect(nodeImports).toEqual([])
+  })
+
+  it('exposes createStaticFeedFetch on context entrypoint and loadFixturesManifest on node entrypoint', async () => {
+    expect(IrExports.compileToIR).toBeDefined()
+    expect(ContextExports.createStaticFeedFetch).toBeDefined()
+
+    const fetchFn = ContextExports.createStaticFeedFetch({
+      posts: { feed: { entry: [{ id: { $t: 'p1' } }] } },
+      pages: { feed: { entry: [] } },
+      comments: { feed: { entry: [] } },
+    })
+
+    const postsRes = await fetchFn('https://example.blogspot.com/feeds/posts/default?alt=json')
+    expect(postsRes.status).toBe(200)
+    const postsJson = await postsRes.json() as any
+    expect(postsJson.feed.entry).toHaveLength(1)
+
+    const notFoundRes = await fetchFn('https://example.blogspot.com/unknown')
+    expect(notFoundRes.status).toBe(404)
+
+    const manifest = loadFixturesManifest()
+    expect(manifest.fixtures.length).toBeGreaterThanOrEqual(250)
   })
 })

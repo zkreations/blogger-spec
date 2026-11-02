@@ -172,4 +172,149 @@ describe('bloggerReferenceRenderer', () => {
     const output = limitedRenderer.compileFragment(xml)
     expect(output).toContain('<!-- recursion depth limit exceeded (loop')
   })
+
+  it('hydrates <b:widget-settings> with settings.json transforms without leaking raw CDATA', () => {
+    const xml = `<b:section id='sidebar'>
+      <b:widget id='LinkList1' type='LinkList' title='Resources' version='2'>
+        <b:widget-settings>
+          <b:widget-setting name='sorting'>ALPHABETICAL</b:widget-setting>
+          <b:widget-setting name='link-0'>https://example.com/docs</b:widget-setting>
+          <b:widget-setting name='text-0'><![CDATA[Documentation]]></b:widget-setting>
+        </b:widget-settings>
+        <b:includable id='main' var='top'>
+          <h3 expr:data-sort='data:sorting'><data:top.title/></h3>
+          <ul><b:loop values='data:links' var='l'><li><a expr:href='data:l.target'><data:l.name/></a></li></b:loop></ul>
+        </b:includable>
+      </b:widget>
+    </b:section>`
+
+    const html = renderer.render(xml, {})
+    expect(html).toContain('<h3 data-sort="alphabetical">Resources</h3>')
+    expect(html).toContain('<a href="https://example.com/docs">Documentation</a>')
+    expect(html).not.toContain('ALPHABETICAL')
+    expect(html).not.toContain('<b:widget-setting')
+  })
+
+  it('preserves b:if / b:elseif / b:else mutual exclusion for class and attr mutations on void and non-void elements', () => {
+    const xml = `
+      <div class='box'>
+        <b:if cond='data:state == "a"'>
+          <b:class name='state-a'/>
+        <b:elseif cond='data:state == "b"'/>
+          <b:class name='state-b'/>
+        <b:else/>
+          <b:class name='state-default'/>
+        </b:if>
+      </div>
+      <input type='text'>
+        <b:attr name='b:whitespace' value='remove'/>
+        <b:if cond='data:readonly'>
+          <b:attr name='readonly' value='readonly'/>
+        <b:else/>
+          <b:attr name='placeholder' value='Editable'/>
+        </b:if>
+      </input>
+    `.trim()
+
+    const htmlA = renderer.compileFragment(xml, { state: 'a', readonly: true })
+    expect(htmlA).toContain('<div class="box state-a"></div>')
+    expect(htmlA).toContain('readonly="readonly"')
+    expect(htmlA).not.toContain('placeholder="Editable"')
+
+    const htmlFallback = renderer.compileFragment(xml, { state: 'other', readonly: false })
+    expect(htmlFallback).toContain('<div class="box state-default"></div>')
+    expect(htmlFallback).toContain('placeholder="Editable"')
+    expect(htmlFallback).not.toContain('readonly=')
+  })
+
+  it('discards inline attributes of <b:tag cond="false"> while hoisting child mutations to parent element', () => {
+    const xml = `<div class='outer'>
+      <b:tag name='a' cond='false' class='wrapper-only' href='https://ignored.example'>
+        <b:class name='hoisted-child'/>
+        <span>Inner</span>
+      </b:tag>
+    </div>`
+
+    const html = renderer.compileFragment(xml, {})
+    expect(html).toContain('class="outer hoisted-child"')
+    expect(html).not.toContain('wrapper-only')
+    expect(html).not.toContain('ignored.example')
+    expect(html).toContain('<span>Inner</span>')
+  })
+
+  it('enforces section/widget cond, visible="false", and Layouts v3 maxwidgets/showaddelement suppression', () => {
+    const xml = `<!DOCTYPE html><html b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'><body>
+      <b:section id='hidden-sec' cond='false'>
+        <b:widget id='HTML1' type='HTML'><b:includable id='main'>Hidden Section</b:includable></b:widget>
+      </b:section>
+      <b:section id='suppressed-sec' showaddelement='false'>
+        <b:widget id='HTML2' type='HTML'><b:includable id='main'>Suppressed Widget</b:includable></b:widget>
+      </b:section>
+      <b:section id='active-sec' name='Main Area' tag='aside'>
+        <b:widget id='HTML3' type='HTML' visible='false'><b:includable id='main'>Invisible</b:includable></b:widget>
+        <b:widget id='HTML4' type='HTML' cond='data:allowWidget' version='1'><b:includable id='main'>Visible V1</b:includable></b:widget>
+      </b:section>
+    </body></html>`
+
+    const html = renderer.render(xml, { allowWidget: true })
+    expect(html).not.toContain('hidden-sec')
+    expect(html).toContain('<div class="no-items section" id="suppressed-sec"></div>')
+    expect(html).not.toContain('Suppressed Widget')
+    expect(html).not.toContain('Invisible')
+    expect(html).toContain('<aside class="section" id="active-sec" name="Main Area">')
+    expect(html).toContain('data-version="1"')
+    expect(html).toContain('Visible V1')
+  })
+
+  it('isolates type="All" defaultmarkups from global scope and routes super.* strictly to platform_server', () => {
+    const globalAllXml = `<b:defaultmarkups>
+      <b:defaultmarkup type='All'>
+        <b:includable id='onlyForWidgets'>WidgetOnly</b:includable>
+      </b:defaultmarkup>
+    </b:defaultmarkups>
+    <b:include name='onlyForWidgets'/>`
+
+    const globalHtml = renderer.compileFragment(globalAllXml, {})
+    expect(globalHtml).toContain('Failed to render gadget')
+    expect(globalHtml).not.toContain('WidgetOnly')
+
+    const superXml = `<b:defaultmarkups>
+      <b:defaultmarkup type='Common'>
+        <b:includable id='super.all-head-content'>SpoofedSuper</b:includable>
+      </b:defaultmarkup>
+    </b:defaultmarkups>
+    <b:include name='super.all-head-content'/>`
+
+    const superHtml = renderer.compileFragment(superXml, { blog: { encoding: 'UTF-8' } })
+    expect(superHtml).not.toContain('SpoofedSuper')
+    expect(superHtml).toContain('<meta')
+  })
+
+  it('renders <b:skin> runtime overrides, conditional <b:template-skin>, and canonical <data:*/> comments', () => {
+    const skinXml = `<b:skin><![CDATA[
+      /*<Variable name="accent" type="color" default="#ff0000" value="#00ff00"/>*/
+      .btn { color: $(accent); }
+    ]]></b:skin>
+    <b:if cond='data:view.isLayoutMode'>
+      <b:template-skin><![CDATA[#layout { padding: 8px; }]]></b:template-skin>
+    </b:if>
+    <data:missingProp/>|<b:eval expr='data:missingProp'/>|<data:compositeObj/>`
+
+    const publicHtml = renderer.compileFragment(skinXml, {
+      skin: { vars: { accent: '#0000ff' } },
+      view: { isLayoutMode: false },
+      compositeObj: { nested: 1 },
+    })
+    expect(publicHtml).toContain('.btn { color: #0000ff; }')
+    expect(publicHtml).not.toContain('template-skin-1')
+    expect(publicHtml).toContain('<!--Can\'t find substitution for tag [missingProp]-->||<!--Substitution is not a singleton for tag [compositeObj]-->')
+
+    const layoutHtml = renderer.compileFragment(skinXml, {
+      view: { isLayoutMode: true },
+      missingProp: 'OK',
+      compositeObj: 'Scalar',
+    })
+    expect(layoutHtml).toContain('id=\'template-skin-1\'')
+    expect(layoutHtml).toContain('#layout { padding: 8px; }')
+  })
 })

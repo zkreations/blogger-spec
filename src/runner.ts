@@ -4,9 +4,7 @@ import type {
   BloggerConformanceReport,
   BloggerEngineAdapter,
   BloggerFixture,
-  BloggerFixturesManifest,
 } from './types.js'
-import { existsSync, readFileSync } from 'node:fs'
 import { getSpecCatalog } from './catalogs/index.js'
 import { BloggerReferenceRenderer } from './ir/reference-renderer.js'
 import { evaluateExpression } from './parser/expr-evaluator.js'
@@ -15,15 +13,6 @@ import {
   validateTemplateExpressions,
   validateTemplateStructure,
 } from './parser/template-validator.js'
-import { getWorkspacePaths } from './paths.js'
-
-function resolveDefaultManifest(): BloggerFixturesManifest {
-  const paths = getWorkspacePaths()
-  if (existsSync(paths.fixturesManifest)) {
-    return JSON.parse(readFileSync(paths.fixturesManifest, 'utf-8'))
-  }
-  throw new Error(`Fixtures manifest not found: ${paths.fixturesManifest}`)
-}
 
 const VOID_ELEMENTS_REGEX = /<(area|base|br|col|embed|hr|img|input|link|meta|param|source|track|wbr)([^>]*?)\/>/gi
 const ATTR_PARSER_REGEX = /([a-z_:][\w.:-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/gi
@@ -85,7 +74,7 @@ export function runConformance(
     }
   }
   else {
-    fixtures = resolveDefaultManifest().fixtures
+    throw new Error('Fixtures must be provided via options.fixtures (use loadFixturesManifest() from "blogger-spec/node" in Node.js environments).')
   }
 
   if (options?.filter) {

@@ -5,7 +5,8 @@
   "version": "1.0.0",
   "domain_metadata": {
     "compiler_limits": {
-      "max_directive_nesting_depth": 50
+      "max_directive_nesting_depth": 50,
+      "max_include_recursion_depth": 43
     },
     "hallucinated_directives": {
       "b:for": "BX1001",

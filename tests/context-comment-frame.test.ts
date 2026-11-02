@@ -69,7 +69,7 @@ describe('commentFormIframeSrc and Local DX Emulation', () => {
 
     expect(html).toContain('<!DOCTYPE html>')
     expect(html).toContain('lang="es"')
-    expect(html).toContain('Introduce tu comentario...')
+    expect(html).toContain('Publicar un comentario')
     expect(html).toContain('id="comment-text"')
     expect(html).toContain('window.parent.postMessage')
     expect(html).toContain('setHeight')

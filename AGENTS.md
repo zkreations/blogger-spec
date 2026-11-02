@@ -51,6 +51,6 @@ pnpm.cmd run sync:samples    # Synchronize canonical external template samples (
 - **Empirical authority**: Catalogs and schemas must never include external documentation links (`documentation_urls`, `references`). Canonical truth is proven exclusively via empirical fixtures (`fixtures/`) and self-contained syntax examples.
 - **Context resolution & normalization**: `resolveBloggerContext` provides unified online/offline context mapping across the 12 canonical views. In online mode `blogId` is mandatory; in offline mode it is cleanly derived from configuration without hardcoded fallback IDs.
 - **Dynamic secondary widgets**: `buildArchiveHierarchy` and `buildPopularPostsData` synthesize standard `BlogArchive` and `PopularPosts` structures deterministically from post dates and metadata without static mock data.
-- **Reference renderer & recursion limit**: `BloggerReferenceRenderer` serves as the zero-dependency canonical reference implementation and testing oracle, enforcing `maxIncludeDepth: 30` to guard against circular subroutine invocations.
+- **Reference renderer & recursion limit**: `BloggerReferenceRenderer` serves as the zero-dependency canonical reference implementation and testing oracle, enforcing `maxIncludeDepth: 43` to guard against circular subroutine invocations.
 - **Sample isolation**: Sample-specific providers (e.g. Hamlet) reside strictly under `tests/helpers/` or `fixtures/`, never exported in the production `src/` runtime.
 

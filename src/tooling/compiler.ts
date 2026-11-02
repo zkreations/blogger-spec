@@ -228,6 +228,9 @@ export function compileTypescript(): void {
     join(paths.root, 'src/version.ts'),
     join(paths.root, 'src/parser/index.ts'),
     join(paths.root, 'src/catalogs/fs-store.ts'),
+    join(paths.root, 'src/ir/index.ts'),
+    join(paths.root, 'src/context/index.ts'),
+    join(paths.root, 'src/node.ts'),
   ]
 
   const program = ts.createProgram(entryFiles, {
@@ -296,6 +299,12 @@ export function buildAll(): void {
     join(paths.dist, 'type-system.d.ts'),
     join(paths.dist, 'inclusion-expander.js'),
     join(paths.dist, 'inclusion-expander.d.ts'),
+    join(paths.dist, 'ir/index.js'),
+    join(paths.dist, 'ir/index.d.ts'),
+    join(paths.dist, 'context/index.js'),
+    join(paths.dist, 'context/index.d.ts'),
+    join(paths.dist, 'node.js'),
+    join(paths.dist, 'node.d.ts'),
     paths.fixturesManifest,
   ]
 

@@ -169,6 +169,9 @@ export interface BloggerPostData {
   readonly hasJumpLink: boolean
   readonly comments: readonly BloggerCommentData[]
   readonly commentFormIframeSrc: string
+  readonly cmtfpIframe?: string
+  readonly noNewCommentsText?: string
+  readonly commentRangeText?: string
 }
 
 export interface BloggerPageLink {

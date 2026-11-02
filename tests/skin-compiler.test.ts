@@ -1,11 +1,21 @@
 import { describe, expect, it } from 'vitest'
 import {
+  BloggerReferenceRenderer,
+  evaluateExpression,
   getSkinCompilation,
   getSpecCatalog,
   resolveDataPath,
   toSkinVarIdentifier,
 } from '../src/index.js'
-import { compileSkinCss, parseThemeDesignerFont } from '../src/skin-compiler.js'
+import {
+  compileSkinCss,
+  createSkinBackgroundValue,
+  createSkinColorValue,
+  createSkinFontValue,
+  extractGoogleFontsCssUrl,
+  parseSkinSource,
+  parseThemeDesignerFont,
+} from '../src/skin-compiler.js'
 
 describe('skin compiler & variable substitution engine', () => {
   it('parses theme designer font strings into composite attributes', () => {
@@ -207,6 +217,64 @@ describe('skin compiler & variable substitution engine', () => {
 
       const templateSkinDef = catalog.getDirective('b:template-skin')
       expect(templateSkinDef?.constraints?.serialization).toBeDefined()
+    })
+
+    it('constructs hybrid skin:* runtime values isolating root values from string modifiers', () => {
+      const color = createSkinColorValue('#14b8a6')
+      expect(String(color)).toBe('#14b8a6')
+      expect(color.red).toBe(20)
+      expect(color.green).toBe(184)
+      expect(color.blue).toBe(166)
+      expect(color.alpha).toBe(1)
+      expect(color.transparent).toBe('rgba(20, 184, 166, 0)')
+      expect(color.inverse).toBe('rgba(235, 71, 89, 1)')
+
+      const bgXml = createSkinBackgroundValue('#ff0000 url(https://example.com/bg.png) no-repeat scroll top center', { includeImage: true })
+      expect(bgXml.color.red).toBe(255)
+      expect(bgXml.color.transparent).toBe('rgba(255, 0, 0, 0)')
+      expect(bgXml.image).toBe('https://example.com/bg.png')
+      expect((bgXml as any).repeat).toBeUndefined()
+
+      const font = createSkinFontValue('italic 700 14px/1.5 "Open Sans", sans-serif')
+      expect(font.size).toBe('14px')
+      expect(font.family).toBe('"Open Sans", sans-serif')
+      expect((font as any).weight).toBeUndefined()
+      expect((font as any).style).toBeUndefined()
+
+      // Root skin:* ontology isolation: parent_type is null, so .escaped and .length are undefined,
+      // while string sub-properties (.family, .transparent) inherit string modifiers!
+      const ctx = { skin: { vars: { accent: color, title_font: font } } }
+      expect(evaluateExpression('data:skin.vars.accent == "#14b8a6"', ctx)).toBe(true)
+      expect(evaluateExpression('data:skin.vars.accent.escaped', ctx)).toBeUndefined()
+      expect(evaluateExpression('data:skin.vars.accent.length', ctx)).toBeUndefined()
+      expect(evaluateExpression('data:skin.vars.title_font.family.escaped', ctx)).toBe('&quot;Open Sans&quot;, sans-serif')
+    })
+
+    it('resolves modular <Variable> attribute self-interpolation and extracts Google Fonts URLs', () => {
+      const skinXml = `<b:skin><![CDATA[
+        /*
+        <Variable name="brand.base" type="color" default="#222222" value="#112233"/>
+        <Variable name="body.bg" type="background" color="$(brand.base)" default="$(color) none repeat scroll top left" value="$(color) none repeat scroll top left"/>
+        <Variable name="heading.font" type="font" size="24px" family="'Playfair Display', serif" default="normal 700 $(size) $(family)" value="italic 700 $(size) $(family)"/>
+        <Variable name="sys.font" type="font" default="400 16px Arial, sans-serif" value="400 16px var(--sys-font)"/>
+        */
+        body { background: $(body.bg); font: $(heading.font); }
+      ]]></b:skin>`
+
+      const parsed = parseSkinSource(skinXml)
+      const bgVar = parsed.variables.find(v => v.name === 'body.bg')
+      expect(bgVar?.value).toBe('#112233 none repeat scroll top left')
+
+      const fontVar = parsed.variables.find(v => v.name === 'heading.font')
+      expect(fontVar?.value).toBe('italic 700 24px \'Playfair Display\', serif')
+
+      const gfontsUrl = extractGoogleFontsCssUrl(parsed.variables)
+      expect(gfontsUrl).toBe('https://fonts.googleapis.com/css?family=Playfair+Display:700i&display=swap')
+
+      const renderer = new BloggerReferenceRenderer()
+      const html = renderer.compileFragment(skinXml, {})
+      expect(html).toContain('background: #112233 none repeat scroll top left;')
+      expect(html).toContain('font: italic 700 24px \'Playfair Display\', serif;')
     })
   })
 })

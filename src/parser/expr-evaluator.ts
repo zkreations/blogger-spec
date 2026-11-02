@@ -7,6 +7,7 @@ import type {
   BloggerLiteralNode,
 } from '../ast.js'
 import { formatIcuDate } from '../context/date-formatter.js'
+import { isSkinValue } from '../skin-compiler.js'
 import { isTruthy } from '../type-system.js'
 import { parseExpression } from './expr-parser.js'
 
@@ -17,56 +18,69 @@ export class BloggerDivisionByZeroError extends Error {
   }
 }
 
+function unboxScalar(val: any): any {
+  if (Object.prototype.toString.call(val) === '[object String]' || isSkinValue(val)) {
+    return String(val)
+  }
+  return val
+}
+
 export function isEqual(left: any, right: any): boolean {
   if (left === right)
     return true
 
+  const l = unboxScalar(left)
+  const r = unboxScalar(right)
+
+  if (l === r)
+    return true
+
   // Missing / nullish equality with empty string
-  if ((left === null || left === undefined) && right === '')
+  if ((l === null || l === undefined) && r === '')
     return true
-  if ((right === null || right === undefined) && left === '')
+  if ((r === null || r === undefined) && l === '')
     return true
-  if ((left === null || left === undefined) && (right === null || right === undefined))
+  if ((l === null || l === undefined) && (r === null || r === undefined))
     return true
 
   // Strict type rejection for array vs boolean
-  if (Array.isArray(left) && typeof right === 'boolean')
+  if (Array.isArray(l) && typeof r === 'boolean')
     return false
-  if (Array.isArray(right) && typeof left === 'boolean')
+  if (Array.isArray(r) && typeof l === 'boolean')
     return false
 
   // Strict type rejection for boolean vs number
-  if (typeof left === 'boolean' && typeof right === 'number')
+  if (typeof l === 'boolean' && typeof r === 'number')
     return false
-  if (typeof right === 'boolean' && typeof left === 'number')
+  if (typeof r === 'boolean' && typeof l === 'number')
     return false
 
   // Canonical boolean string equality
-  if (typeof left === 'boolean' && typeof right === 'string') {
-    if (left === true && (right === 'true' || right === 'yes'))
+  if (typeof l === 'boolean' && typeof r === 'string') {
+    if (l === true && (r === 'true' || r === 'yes'))
       return true
-    if (left === false && (right === 'false' || right === 'no'))
+    if (l === false && (r === 'false' || r === 'no'))
       return true
     return false
   }
-  if (typeof right === 'boolean' && typeof left === 'string') {
-    if (right === true && (left === 'true' || left === 'yes'))
+  if (typeof r === 'boolean' && typeof l === 'string') {
+    if (r === true && (l === 'true' || l === 'yes'))
       return true
-    if (right === false && (left === 'false' || left === 'no'))
+    if (r === false && (l === 'false' || l === 'no'))
       return true
     return false
   }
 
   // Canonical numeric string equality
-  if (typeof left === 'number' && typeof right === 'string') {
-    const num = Number(right)
-    if (!Number.isNaN(num) && String(num) === right && left === num)
+  if (typeof l === 'number' && typeof r === 'string') {
+    const num = Number(r)
+    if (!Number.isNaN(num) && String(num) === r && l === num)
       return true
     return false
   }
-  if (typeof right === 'number' && typeof left === 'string') {
-    const num = Number(left)
-    if (!Number.isNaN(num) && String(num) === left && right === num)
+  if (typeof r === 'number' && typeof l === 'string') {
+    const num = Number(l)
+    if (!Number.isNaN(num) && String(num) === l && r === num)
       return true
     return false
   }
@@ -82,7 +96,7 @@ export function isMemberOf(item: any, collection: any): boolean {
   if (collection === null || collection === undefined)
     return false
 
-  if (isStringLike(collection)) {
+  if (isStringLike(collection) || isSkinValue(collection)) {
     const target = item === null || item === undefined ? '' : String(item)
     return String(collection).includes(target)
   }
@@ -92,6 +106,24 @@ export function isMemberOf(item: any, collection: any): boolean {
   }
 
   return false
+}
+
+function extractYouTubeVideoId(url: string): string | null {
+  const ytImg = /ytimg\.com\/vi(?:_webp)?\/([\w-]{6,})/i.exec(url)
+  if (ytImg)
+    return ytImg[1]!
+  const ytEmbed = /youtube\.com\/(?:embed|v|shorts)\/([\w-]{6,})/i.exec(url)
+  if (ytEmbed)
+    return ytEmbed[1]!
+  if (/youtube\.com/i.test(url)) {
+    const watchParam = /[?&]v=([\w-]{6,})/.exec(url)
+    if (watchParam)
+      return watchParam[1]!
+  }
+  const ytShort = /youtu\.be\/([\w-]{6,})/i.exec(url)
+  if (ytShort)
+    return ytShort[1]!
+  return null
 }
 
 function escapeHtml(str: string): string {
@@ -121,32 +153,45 @@ function escapeCss(str: string): string {
   return str.replace(/([!"#$%&'()*+,./:;<=>?@[\\\]^`{|}~])/g, '\\$1')
 }
 
+function hasDataProperty(target: object, key: PropertyKey): boolean {
+  if (Object.prototype.propertyIsEnumerable.call(target, key)) {
+    return true
+  }
+  return key in target && !(key in Object.prototype) && key !== 'toString' && key !== 'valueOf'
+}
+
 export function applyModifier(target: any, modifier: string): any {
   if (target === null || target === undefined)
     return undefined
 
-  // Pre-configured custom property on object/array (e.g. mock objects in fixtures)
-  if (typeof target === 'object' && modifier in target) {
+  // Pre-configured custom property on object/array (e.g. mock objects in fixtures, resizeImage .width/.height, BloggerSkinValue fields)
+  if (typeof target === 'object' && hasDataProperty(target, modifier)) {
     return target[modifier]
   }
 
-  if (typeof target === 'string') {
+  // Theme Designer skin:* root values have parent_type: null and never inherit string modifiers
+  if (isSkinValue(target)) {
+    return undefined
+  }
+
+  if (isStringLike(target)) {
+    const str = String(target)
     switch (modifier) {
       case 'length':
       case 'size':
-        return target.length
+        return str.length
       case 'escaped':
-        return escapeHtml(target)
+        return escapeHtml(str)
       case 'jsEscaped':
-        return escapeJs(target)
+        return escapeJs(str)
       case 'jsonEscaped':
-        return escapeJson(target)
+        return escapeJson(str)
       case 'cssEscaped':
-        return escapeCss(target)
+        return escapeCss(str)
       case 'canonical': {
-        const str = String(target ?? '').split('#')[0]
+        const base = str.split('#')[0]!
         try {
-          const parsed = new URL(str)
+          const parsed = new URL(base)
           // Blogger strips temporal pagination (updated-max/min) and mobile parameters (m) from canonical URLs
           parsed.searchParams.delete('updated-max')
           parsed.searchParams.delete('updated-min')
@@ -155,19 +200,53 @@ export function applyModifier(target: any, modifier: string): any {
           return query ? `${parsed.origin}${parsed.pathname}?${query}` : `${parsed.origin}${parsed.pathname}`
         }
         catch {
-          return str.split('?')[0]
+          return base.split('?')[0]
         }
       }
       case 'http':
-        return target.replace(/^https:/i, 'http:')
+        return str.replace(/^https:/i, 'http:')
       case 'https':
-        return target.replace(/^http:/i, 'https:')
+        return str.replace(/^http:/i, 'https:')
       case 'isResizable':
-        return /googleusercontent\.com|blogspot\.com|ggpht\.com/i.test(target)
+        return /googleusercontent\.com|blogspot\.com|ggpht\.com/i.test(str)
       case 'isYouTube':
-        return /youtube\.com|ytimg\.com/i.test(target)
-      case 'youtubeMaxResDefaultUrl':
-        return false
+      case 'isYoutube':
+        return /youtube\.com|youtu\.be|ytimg\.com/i.test(str)
+      case 'youtubeMaxResDefaultUrl': {
+        const videoId = extractYouTubeVideoId(str)
+        return videoId ? `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg` : false
+      }
+      case 'iso8601':
+      case 'year':
+      case 'month':
+      case 'day': {
+        const trimmed = str.trim()
+        if (!trimmed) {
+          return modifier === 'iso8601' ? '' : undefined
+        }
+        const hasTz = /(?:Z|[+-]\d{2}:?\d{2})$/i.test(trimmed)
+        const rawDate = hasTz
+          ? new Date(trimmed)
+          : (/^\d{4}-\d{2}-\d{2}$/.test(trimmed) ? new Date(`${trimmed}T00:00:00Z`) : new Date(`${trimmed} UTC`))
+        if (Number.isNaN(rawDate.getTime())) {
+          return undefined
+        }
+        if (modifier === 'iso8601') {
+          return rawDate.toISOString()
+        }
+        let calDate = rawDate
+        const offsetMatch = /([+-])(\d{2}):?(\d{2})$/.exec(trimmed)
+        if (offsetMatch) {
+          const sign = offsetMatch[1] === '-' ? -1 : 1
+          const offsetMs = sign * (Number.parseInt(offsetMatch[2]!, 10) * 60 + Number.parseInt(offsetMatch[3]!, 10)) * 60000
+          calDate = new Date(rawDate.getTime() + offsetMs)
+        }
+        if (modifier === 'year')
+          return calDate.getUTCFullYear()
+        if (modifier === 'month')
+          return calDate.getUTCMonth() + 1
+        return calDate.getUTCDate()
+      }
     }
   }
 
@@ -350,27 +429,97 @@ export function path(url: any, newPath: any): string {
   }
 }
 
-export function snippet(text: any, options?: any): string {
-  const clean = String(text ?? '')
-    .replace(/<[^>]+>/g, '')
-    .trim()
-  const len = options?.length ?? 100
-  const ellipsis = options?.ellipsis ?? true
-
-  if (clean.length > len) {
-    if (ellipsis) {
-      const cut = clean.slice(0, Math.max(0, len - 1))
-      return `${cut}\u2026`
-    }
-    return clean.slice(0, len)
+function normalizeSnippetWhitespace(str: string, linebreaks: boolean): string {
+  const normalizedBreaks = str.replace(/\r\n?/g, '\n')
+  if (!linebreaks) {
+    return normalizedBreaks.replace(/[ \t]*\n+[ \t]*/g, ' ')
   }
-  return clean
+  return normalizedBreaks
 }
 
-export function format(dateVal: any, pattern: string, locale = 'en'): string {
+export function snippet(text: any, options?: any): string {
+  const rawLen = options?.length !== undefined ? Number(options.length) : 1000
+  const len = Number.isFinite(rawLen) ? Math.min(1000, Math.max(50, Math.floor(rawLen))) : 1000
+  const links = options?.links !== undefined ? Boolean(options.links) : true
+  const linebreaks = options?.linebreaks !== undefined ? Boolean(options.linebreaks) : true
+  const ellipsis = options?.ellipsis !== undefined ? Boolean(options.ellipsis) : true
+
+  const source = String(text ?? '').replace(/<br\s*\/?>/gi, '\n')
+
+  if (!links || !/<a\b/i.test(source)) {
+    const clean = normalizeSnippetWhitespace(source.replace(/<[^>]+>/g, ''), linebreaks).trim()
+    if (clean.length > len) {
+      if (ellipsis) {
+        const cut = clean.slice(0, Math.max(0, len - 1))
+        return `${cut}\u2026`
+      }
+      return clean.slice(0, len)
+    }
+    return clean
+  }
+
+  // Preserve <a ...>...</a> markup while counting and truncating strictly by visible characters
+  const strippedOtherTags = source.replace(/<(?!\/?a\b)[^>]+>/gi, '')
+  const trimmed = normalizeSnippetWhitespace(strippedOtherTags, linebreaks).trim()
+  const tokenRegex = /(<\/?a\b[^>]*>)/gi
+  const segments: Array<{ isTag: boolean, value: string }> = []
+  let lastIndex = 0
+  let totalVisible = 0
+  let match: RegExpExecArray | null = tokenRegex.exec(trimmed)
+  while (match !== null) {
+    if (match.index > lastIndex) {
+      const chunk = trimmed.slice(lastIndex, match.index)
+      segments.push({ isTag: false, value: chunk })
+      totalVisible += chunk.length
+    }
+    segments.push({ isTag: true, value: match[1]! })
+    lastIndex = match.index + match[0].length
+    match = tokenRegex.exec(trimmed)
+  }
+  if (lastIndex < trimmed.length) {
+    const tail = trimmed.slice(lastIndex)
+    segments.push({ isTag: false, value: tail })
+    totalVisible += tail.length
+  }
+
+  if (totalVisible <= len) {
+    return segments.map(s => s.value).join('')
+  }
+
+  let remaining = ellipsis ? Math.max(0, len - 1) : len
+  let openAnchors = 0
+  let out = ''
+  for (const seg of segments) {
+    if (seg.isTag) {
+      const isClosing = /^<\/a\b/i.test(seg.value)
+      if (isClosing) {
+        if (openAnchors > 0) {
+          out += seg.value
+          openAnchors--
+        }
+      }
+      else if (remaining > 0) {
+        out += seg.value
+        openAnchors++
+      }
+    }
+    else if (remaining > 0) {
+      const slice = seg.value.slice(0, remaining)
+      out += slice
+      remaining -= slice.length
+    }
+  }
+  while (openAnchors > 0) {
+    out += '</a>'
+    openAnchors--
+  }
+  return ellipsis ? `${out}\u2026` : out
+}
+
+export function format(dateVal: any, pattern: string, locale = 'en', timeZone?: string): string {
   if (dateVal === null || dateVal === undefined)
     return ''
-  return formatIcuDate(dateVal, String(pattern), locale)
+  return formatIcuDate(dateVal, String(pattern), locale, timeZone)
 }
 
 export class ExpressionEvaluator {
@@ -415,7 +564,7 @@ export class ExpressionEvaluator {
           propName = (node.property as BloggerIdentifierNode).name
         }
 
-        if (typeof obj === 'object' && propName in obj) {
+        if (typeof obj === 'object' && hasDataProperty(obj, propName)) {
           return obj[propName]
         }
         return applyModifier(obj, String(propName))
@@ -475,6 +624,7 @@ export class ExpressionEvaluator {
             return items.filter(item => isTruthy(this.evaluate(node.body, context, { ...locals, [param]: item })))
 
           case 'map':
+          case 'select':
             return items.map(item => this.evaluate(node.body, context, { ...locals, [param]: item }))
 
           case 'count':
@@ -589,7 +739,7 @@ export class ExpressionEvaluator {
         ? this.evaluate(m.expression as BloggerExpressionNode, context, locals)
         : m.property
 
-      if (typeof current === 'object' && propKey in current) {
+      if (typeof current === 'object' && hasDataProperty(current, propKey)) {
         current = current[propKey]
       }
       else {
@@ -652,7 +802,7 @@ export class ExpressionEvaluator {
       }
     }
 
-    if (op === '==' || op === '!=' || op === 'eq' || op === 'ne') {
+    if (op === '==' || op === '!=' || op === 'eq' || op === 'neq') {
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
       const eq = isEqual(leftVal, rightVal)
@@ -665,16 +815,16 @@ export class ExpressionEvaluator {
       return op === '===' ? leftVal === rightVal : leftVal !== rightVal
     }
 
-    if (op === '<' || op === 'lt' || op === '>' || op === 'gt' || op === '<=' || op === 'le' || op === 'lte' || op === '>=' || op === 'ge' || op === 'gte') {
+    if (op === '<' || op === 'lt' || op === '>' || op === 'gt' || op === '<=' || op === 'lte' || op === '>=' || op === 'gte') {
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
       if (op === '<' || op === 'lt')
         return leftVal < rightVal
       if (op === '>' || op === 'gt')
         return leftVal > rightVal
-      if (op === '<=' || op === 'le' || op === 'lte')
+      if (op === '<=' || op === 'lte')
         return leftVal <= rightVal
-      if (op === '>=' || op === 'ge' || op === 'gte')
+      if (op === '>=' || op === 'gte')
         return leftVal >= rightVal
     }
 
@@ -742,12 +892,24 @@ export class ExpressionEvaluator {
     }
 
     if (op === 'resizeImage') {
+      if (node.left.type === 'BinaryExpression' && node.left.operator === 'resizeImage') {
+        const imgVal = this.evaluate(node.left.left, context, locals)
+        const sizeVal = this.evaluate(node.left.right, context, locals)
+        const ratioVal = this.evaluate(node.right, context, locals)
+        return resizeImage(imgVal, sizeVal, ratioVal != null ? String(ratioVal) : undefined)
+      }
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
       return resizeImage(leftVal, rightVal)
     }
 
     if (op === 'sourceSet') {
+      if (node.left.type === 'BinaryExpression' && node.left.operator === 'sourceSet') {
+        const imgVal = this.evaluate(node.left.left, context, locals)
+        const sizesVal = this.evaluate(node.left.right, context, locals)
+        const ratioVal = this.evaluate(node.right, context, locals)
+        return sourceSet(imgVal, sizesVal, ratioVal != null ? String(ratioVal) : undefined)
+      }
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
       return sourceSet(leftVal, rightVal)
@@ -757,7 +919,8 @@ export class ExpressionEvaluator {
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
       const locale = context.blog?.locale || (context as any)?.locale || 'en'
-      return format(leftVal, String(rightVal), locale)
+      const timeZone = context.blog?.timeZone || (context as any)?.timeZone
+      return format(leftVal, String(rightVal), locale, timeZone)
     }
 
     if (op === 'snippet') {
@@ -810,11 +973,11 @@ export class ExpressionEvaluator {
       return args[0] > args[1]
     }
 
-    if (fn === 'le' || fn === 'lte') {
+    if (fn === 'lte') {
       return args[0] <= args[1]
     }
 
-    if (fn === 'ge' || fn === 'gte') {
+    if (fn === 'gte') {
       return args[0] >= args[1]
     }
 
@@ -904,7 +1067,8 @@ export class ExpressionEvaluator {
 
     if (fn === 'format') {
       const locale = context.blog?.locale || (context as any)?.locale || 'en'
-      return format(args[0], args[1], locale)
+      const timeZone = context.blog?.timeZone || (context as any)?.timeZone
+      return format(args[0], args[1], locale, timeZone)
     }
 
     if (fn === 'snippet') {

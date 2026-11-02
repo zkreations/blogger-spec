@@ -5,9 +5,13 @@ import {
   BloggerDivisionByZeroError,
   createDefaultEngineAdapter,
   evaluateExpression,
+  inferExpressionType,
+  parseExpression,
   runConformance,
+  snippet,
+  validateExpression,
 } from '../src/index.js'
-import { getWorkspacePaths } from '../src/paths.js'
+import { getWorkspacePaths, loadFixturesManifest } from '../src/node.js'
 
 describe('runtime expression evaluator', () => {
   it('conforms 100% to all official and observed expression fixtures', () => {
@@ -81,6 +85,7 @@ describe('runtime expression evaluator', () => {
     expect(adapter.evaluateExpression).toBeDefined()
 
     const report = runConformance(adapter, {
+      fixtures: loadFixturesManifest(),
       filter: {
         kind: 'expression',
       },
@@ -101,5 +106,92 @@ describe('runtime expression evaluator', () => {
     expect(evaluateExpression('or(false, false, false)', {})).toBe(false)
     expect(evaluateExpression('?:(data:missing1, data:missing2, "fallback")', {})).toBe('fallback')
     expect(evaluateExpression('?:(data:missing1, "first-fallback", "second-fallback")', {})).toBe('first-fallback')
+  })
+
+  it('enforces canonical neq operator and rejects non-existent ne, le, and ge aliases', () => {
+    expect(evaluateExpression('10 neq 20', {})).toBe(true)
+    expect(evaluateExpression('10 neq 10', {})).toBe(false)
+    expect(evaluateExpression('neq("a", "b")', {})).toBe(true)
+
+    expect(() => parseExpression('10 ne 20')).toThrow()
+    expect(() => parseExpression('10 le 20')).toThrow()
+    expect(() => parseExpression('10 ge 20')).toThrow()
+    expect(validateExpression('ne(10, 20)').map(d => d.code)).toContain('BX1017')
+    expect(validateExpression('le(10, 20)').map(d => d.code)).toContain('BX1017')
+    expect(validateExpression('ge(10, 20)').map(d => d.code)).toContain('BX1017')
+  })
+
+  it('evaluates select lambda alias identically to map and where identically to filter', () => {
+    const ctx = {
+      items: [
+        { title: 'A', active: true },
+        { title: 'B', active: false },
+        { title: 'C', active: true },
+      ],
+    }
+    expect(evaluateExpression('data:items select (i => i.title)', ctx)).toEqual(['A', 'B', 'C'])
+    expect(evaluateExpression('data:items where (i => i.active)', ctx)).toEqual([
+      { title: 'A', active: true },
+      { title: 'C', active: true },
+    ])
+
+    const selectAst = parseExpression('data:posts select (p => p.title)')
+    expect(inferExpressionType(selectAst)).toBe('array[string]')
+    const whereAst = parseExpression('data:posts where (p => p.allowComments)')
+    expect(inferExpressionType(whereAst)).toBe('array[object]')
+  })
+
+  it('supports 3-operand infix chaining and string modifiers on resizeImage and sourceSet', () => {
+    const ctx = {
+      img: 'https://blogger.googleusercontent.com/img/a/sample.png',
+    }
+    expect(evaluateExpression('data:img resizeImage 300 resizeImage "1:1"', ctx)).toEqual(
+      evaluateExpression('resizeImage(data:img, 300, "1:1")', ctx),
+    )
+    expect(String(evaluateExpression('data:img resizeImage 300 resizeImage "1:1"', ctx))).toBe(
+      'https://blogger.googleusercontent.com/img/a/sample.png=w300-h300-p-k-no-nu',
+    )
+    expect(evaluateExpression('resizeImage(data:img, 300, "1:1").jsonEscaped', ctx)).toBe(
+      'https://blogger.googleusercontent.com/img/a/sample.png=w300-h300-p-k-no-nu',
+    )
+    expect(evaluateExpression('resizeImage(data:img, 300, "1:1") == "https://blogger.googleusercontent.com/img/a/sample.png=w300-h300-p-k-no-nu"', ctx)).toBe(true)
+
+    expect(evaluateExpression('data:img sourceSet [300, 600] sourceSet "16:9"', ctx)).toBe(
+      evaluateExpression('sourceSet(data:img, [300, 600], "16:9")', ctx),
+    )
+  })
+
+  it('evaluates YouTube image modifiers (.isYouTube, .youtubeMaxResDefaultUrl)', () => {
+    const ctx = {
+      ytThumb: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+      ytWatch: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      normalImg: 'https://blogger.googleusercontent.com/img/a/sample.png',
+    }
+    expect(evaluateExpression('data:ytThumb.isYouTube', ctx)).toBe(true)
+    expect(evaluateExpression('data:ytThumb.youtubeMaxResDefaultUrl', ctx)).toBe(
+      'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+    )
+    expect(evaluateExpression('data:ytWatch.youtubeMaxResDefaultUrl', ctx)).toBe(
+      'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
+    )
+    expect(evaluateExpression('data:normalImg.isYouTube', ctx)).toBe(false)
+    expect(evaluateExpression('data:normalImg.youtubeMaxResDefaultUrl', ctx)).toBe(false)
+  })
+
+  it('enforces snippet length clamping [50, 1000], link preservation, linebreaks, and Unicode ellipsis', () => {
+    const html = '<p>Hello <a href="https://example.com">world</a>!<br/>Second line with <b>bold</b> text and extra words to exceed fifty characters easily in tests.</p>'
+
+    const clampedMin = snippet(html, { length: 10, links: false, linebreaks: false })
+    expect(clampedMin.length).toBe(50)
+    expect(clampedMin.endsWith('\u2026')).toBe(true)
+    expect(clampedMin).not.toContain('<a')
+    expect(clampedMin).not.toContain('\n')
+
+    const withLinksAndBreaks = snippet('<p>Visit <a href="https://example.com">Example</a><br/>Now</p>', {
+      length: 200,
+      links: true,
+      linebreaks: true,
+    })
+    expect(withLinksAndBreaks).toBe('Visit <a href="https://example.com">Example</a>\nNow')
   })
 })

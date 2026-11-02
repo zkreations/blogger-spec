@@ -14,8 +14,8 @@ import {
   getWidget,
   getWidgetSettings,
 } from '../src/catalogs/index.js'
+import { getWorkspacePaths, loadFixturesManifest, setCustomWorkspaceRoot } from '../src/node.js'
 import { parseExpression, validateExpression, validateTemplateStructure } from '../src/parser/index.js'
-import { getWorkspacePaths, setCustomWorkspaceRoot } from '../src/paths.js'
 import { evaluateExpressionBudget } from '../src/quota.js'
 import { runConformance } from '../src/runner.js'
 import { verifyArtifactsFreshness } from '../src/tooling/compiler.js'
@@ -79,7 +79,7 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
           }
           return []
         },
-      })
+      }, { fixtures: manifest })
 
       expect(report.total).toBe(manifest.fixtures.length)
       expect(report.passed).toBeGreaterThanOrEqual(2)
@@ -193,10 +193,11 @@ describe('blogger-spec Integrity & Deep Modules Suite', () => {
       )).toThrow(`Rejected fixture 'mock-diag-1' must define at least one expected diagnostic code.`)
     })
 
-    it('fails clearly when the default manifest is missing', () => {
+    it('fails clearly when fixtures are omitted or workspace manifest is missing', () => {
+      expect(() => runConformance({})).toThrow('Fixtures must be provided via options.fixtures')
       try {
         setCustomWorkspaceRoot(join(tmpdir(), 'missing-blogger-spec-fixtures'))
-        expect(() => runConformance({})).toThrow('Fixtures manifest not found:')
+        expect(() => loadFixturesManifest()).toThrow('Fixtures manifest not found:')
       }
       finally {
         setCustomWorkspaceRoot(null)

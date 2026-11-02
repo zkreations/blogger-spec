@@ -35,15 +35,15 @@ export function buildContactFormData(
   return {
     title: spec.getWidgetDefaultTitle('ContactForm', locale),
     submitUrl,
-    contactFormNameMsg: spec.getLocalizedMessage('widgets.ContactForm.contactFormNameMsg', locale) || 'Name',
-    contactFormEmailMsg: spec.getLocalizedMessage('widgets.ContactForm.contactFormEmailMsg', locale) || 'Email',
-    contactFormMessageMsg: spec.getLocalizedMessage('widgets.ContactForm.contactFormMessageMsg', locale) || 'Message',
-    contactFormSendMsg: spec.getLocalizedMessage('widgets.ContactForm.contactFormSendMsg', locale) || 'Send',
-    contactFormMessageSendingMsg: spec.getLocalizedMessage('widgets.ContactForm.contactFormMessageSendingMsg', locale) || 'Sending...',
-    contactFormMessageSentMsg: spec.getLocalizedMessage('widgets.ContactForm.contactFormMessageSentMsg', locale) || 'Your message has been sent.',
-    contactFormMessageNotSentMsg: spec.getLocalizedMessage('widgets.ContactForm.contactFormMessageNotSentMsg', locale) || 'Could not send message. Please try again later.',
-    contactFormEmptyMessageMsg: spec.getLocalizedMessage('widgets.ContactForm.contactFormEmptyMessageMsg', locale) || 'Message field cannot be empty.',
-    contactFormInvalidEmailMsg: spec.getLocalizedMessage('widgets.ContactForm.contactFormInvalidEmailMsg', locale) || 'A valid email is required.',
+    contactFormNameMsg: spec.getTranslation('widgets.ContactForm.contactFormNameMsg', locale) || 'Name',
+    contactFormEmailMsg: spec.getTranslation('widgets.ContactForm.contactFormEmailMsg', locale) || 'Email',
+    contactFormMessageMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageMsg', locale) || 'Message',
+    contactFormSendMsg: spec.getTranslation('widgets.ContactForm.contactFormSendMsg', locale) || 'Send',
+    contactFormMessageSendingMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageSendingMsg', locale) || 'Sending...',
+    contactFormMessageSentMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageSentMsg', locale) || 'Your message has been sent.',
+    contactFormMessageNotSentMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageNotSentMsg', locale) || 'Could not send message. Please try again later.',
+    contactFormEmptyMessageMsg: spec.getTranslation('widgets.ContactForm.contactFormEmptyMessageMsg', locale) || 'Message field cannot be empty.',
+    contactFormInvalidEmailMsg: spec.getTranslation('widgets.ContactForm.contactFormInvalidEmailMsg', locale) || 'A valid email is required.',
   }
 }
 
@@ -51,11 +51,30 @@ export function buildAttributionData(
   blogTitle: string,
   spec: SpecCatalog,
   locale = 'en',
+  options?: { readonly year?: number, readonly posts?: readonly BloggerPostData[] },
 ): Record<string, any> {
-  const currentYear = new Date().getFullYear()
+  let resolvedYear = options?.year
+  if (resolvedYear === undefined && options?.posts && options.posts.length > 0) {
+    for (const post of options.posts) {
+      const isoMatch = post.publishedIso?.match(/^(\d{4})/)
+      if (isoMatch) {
+        const y = Number.parseInt(isoMatch[1]!, 10)
+        if (!resolvedYear || y > resolvedYear) {
+          resolvedYear = y
+        }
+      }
+      else if (post.timestamp) {
+        const y = new Date(post.timestamp).getUTCFullYear()
+        if (!Number.isNaN(y) && (!resolvedYear || y > resolvedYear)) {
+          resolvedYear = y
+        }
+      }
+    }
+  }
+  const copyrightYear = resolvedYear ?? 2026
   return {
     title: spec.getWidgetDefaultTitle('Attribution', locale),
-    copyright: `Copyright ${currentYear} ${blogTitle}. Powered by Blogger.`,
+    copyright: `Copyright ${copyrightYear} ${blogTitle}. Powered by Blogger.`,
     bloggerUrl: 'https://www.blogger.com',
     imageAuthor: '',
   }

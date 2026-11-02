@@ -36,7 +36,7 @@ import { parseExpression } from '../ast.js'
 import { getSpecCatalog } from '../catalogs/index.js'
 import { collectDefaultMarkups, indexIncludables, resolveIncludable } from '../includable-resolver.js'
 import { parseTemplate } from '../parser/template-parser.js'
-import { compileSkinCss } from '../skin-compiler.js'
+import { parseSkinSource } from '../skin-compiler.js'
 import { detectTemplateVersion } from '../version.js'
 
 export interface BloggerLowerOptions {
@@ -48,6 +48,8 @@ export interface BloggerLowerOptions {
 
 interface LoweringContext {
   readonly catalog: SpecCatalog
+  readonly layoutVersion: BloggerLayoutVersion
+  readonly defaultWidgetVersion: number
   readonly symbolTable: Record<string, BirIncludable>
   readonly defaultmarkups: readonly BloggerDirectiveNode[]
   currentWidgetId?: string
@@ -111,26 +113,6 @@ export function toBirAttrValue(
   return { kind: 'static', value: String(attr.value) }
 }
 
-function parseSkinCss(rawCss: string): Array<{ kind: 'text', value: string } | { kind: 'variable', variable: string }> {
-  const result: Array<{ kind: 'text', value: string } | { kind: 'variable', variable: string }> = []
-  const regex = /\$\(([\w.:-]+)\)/g
-  let lastIndex = 0
-  let match = regex.exec(rawCss)
-
-  while (match !== null) {
-    if (match.index > lastIndex) {
-      result.push({ kind: 'text', value: rawCss.slice(lastIndex, match.index) })
-    }
-    result.push({ kind: 'variable', variable: match[1]! })
-    lastIndex = regex.lastIndex
-    match = regex.exec(rawCss)
-  }
-  if (lastIndex < rawCss.length) {
-    result.push({ kind: 'text', value: rawCss.slice(lastIndex) })
-  }
-  return result
-}
-
 function extractSkin(doc: BloggerDocumentNode, skinOverrides?: Record<string, string>): BirSkin {
   let skinNode: BloggerDirectiveNode | undefined
   let templateSkinNode: BloggerDirectiveNode | undefined
@@ -164,18 +146,20 @@ function extractSkin(doc: BloggerDocumentNode, skinOverrides?: Record<string, st
       }
     }
     try {
-      const compiled = compileSkinCss(cdataContent, {
-        overrides: skinOverrides,
-        wrap: 'none',
-        stripMetadataTags: true,
+      const parsed = parseSkinSource(cdataContent)
+      variables = parsed.variables.map((v) => {
+        const override = skinOverrides?.[v.name] ?? skinOverrides?.[v.name.replace(/\./g, '_')]
+        const effectiveValue = override ?? v.value
+        return {
+          name: v.name,
+          type: v.type,
+          default: v.default,
+          ...(effectiveValue !== undefined ? { value: effectiveValue } : {}),
+          ...(v.group !== undefined ? { group: v.group } : {}),
+          ...(v.description !== undefined ? { description: v.description } : {}),
+        }
       })
-      variables = Object.entries(compiled.symbols).map(([name, sym]) => ({
-        name: sym.name ?? name,
-        type: sym.type,
-        default: sym.default ?? sym.value ?? '',
-        ...(sym.value !== undefined ? { value: sym.value } : {}),
-      }))
-      css = parseSkinCss(compiled.css)
+      css = parsed.chunks
     }
     catch {
       css = [{ kind: 'text', value: cdataContent }]
@@ -190,12 +174,8 @@ function extractSkin(doc: BloggerDocumentNode, skinOverrides?: Record<string, st
       }
     }
     try {
-      const compiled = compileSkinCss(cdataContent, {
-        overrides: skinOverrides,
-        wrap: 'none',
-        stripMetadataTags: true,
-      })
-      templateSkinCss = parseSkinCss(compiled.css)
+      const parsed = parseSkinSource(cdataContent)
+      templateSkinCss = parsed.chunks
     }
     catch {
       templateSkinCss = [{ kind: 'text', value: cdataContent }]
@@ -268,89 +248,9 @@ function extractElementMutations(
         }
         continue
       }
-      if (child.name === 'b:if') {
-        const hasOnlyMutations = child.children.every(
-          c => (c.type === 'Directive' && (c.name === 'b:class' || c.name === 'b:attr' || c.name === 'b:elseif' || c.name === 'b:else'))
-            || (c.type === 'Text' && c.value.trim() === ''),
-        )
-        if (hasOnlyMutations) {
-          const ifCondAttr = child.attributes.find(a => a.name === 'cond' || a.name === 'test')
-          const ifCond = ensureExpression(ifCondAttr?.value, context.catalog)
-          let currentBranchCond: BloggerExpressionNode | undefined = ifCond
-
-          for (const sub of child.children) {
-            if (sub.type === 'Directive') {
-              if (sub.name === 'b:elseif' || (sub.name as string) === 'b:else-if') {
-                const subCond = sub.attributes.find(a => a.name === 'cond' || a.name === 'test')
-                currentBranchCond = ensureExpression(subCond?.value, context.catalog)
-                continue
-              }
-              if (sub.name === 'b:else') {
-                currentBranchCond = undefined
-                continue
-              }
-              if (sub.name === 'b:class') {
-                const nameAttr = sub.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
-                if (nameAttr) {
-                  classes.push({
-                    name: toBirAttrValue(nameAttr, context.catalog),
-                    ...(currentBranchCond ? { cond: currentBranchCond } : {}),
-                  })
-                }
-              }
-              else if (sub.name === 'b:attr') {
-                const nameAttr = sub.attributes.find(a => a.name === 'name')
-                const valAttr = sub.attributes.find(a => a.name === 'value' || a.name === 'expr:value')
-                const attrName = String(nameAttr?.value ?? '')
-                if (attrName && attrName !== 'b:whitespace') {
-                  attributes.push({
-                    name: attrName,
-                    value: toBirAttrValue(valAttr, context.catalog),
-                    ...(currentBranchCond ? { cond: currentBranchCond } : {}),
-                  })
-                }
-              }
-            }
-          }
-          continue
-        }
-      }
-      if (child.name === 'b:tag') {
-        const condAttr = child.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
-        const condVal = condAttr ? ensureExpression(condAttr.value, context.catalog) : undefined
-        const isStaticallyFalse = condVal?.type === 'Literal' && (condVal.value === false || condVal.value === 'false')
-        if (isStaticallyFalse) {
-          hadDirectives = true
-          for (const sub of child.children) {
-            if (sub.type === 'Directive') {
-              if (sub.name === 'b:class') {
-                const nameAttr = sub.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
-                if (nameAttr) {
-                  classes.push({ name: toBirAttrValue(nameAttr, context.catalog) })
-                }
-              }
-              else if (sub.name === 'b:attr') {
-                const nameAttr = sub.attributes.find(a => a.name === 'name')
-                const valAttr = sub.attributes.find(a => a.name === 'value' || a.name === 'expr:value')
-                const attrName = String(nameAttr?.value ?? '')
-                if (attrName && attrName !== 'b:whitespace') {
-                  attributes.push({ name: attrName, value: toBirAttrValue(valAttr, context.catalog) })
-                }
-              }
-              else {
-                retainedChildren.push(sub)
-              }
-            }
-            else {
-              retainedChildren.push(sub)
-            }
-          }
-          continue
-        }
-      }
     }
 
-    if (child.type === 'Text' && isVoid) {
+    if (isVoid && child.type !== 'Directive') {
       continue
     }
 
@@ -413,7 +313,7 @@ function lowerElement(node: BloggerElementNode, context: LoweringContext): BirEl
     ...(whitespaceRemove ? { whitespaceRemove: true } : {}),
     attributes: [...baseAttributes, ...childAttributes],
     classes: [...baseClasses, ...childClasses],
-    children: isVoid ? [] : lowerNodes(retainedChildren, context),
+    children: lowerNodes(retainedChildren, context),
   }
 }
 
@@ -453,21 +353,39 @@ function lowerTagDirective(node: BloggerDirectiveNode, context: LoweringContext)
     }
   }
 
-  const { classes: childClasses, attributes: childAttributes, retainedChildren, whitespaceRemove: childWhitespaceRemove }
-    = extractElementMutations(node.children, false, context)
-
-  if (childWhitespaceRemove) {
-    whitespaceRemove = true
+  // Keep child <b:class> and <b:attr> inside BirTag.children so that when cond=false,
+  // wrapper-only inline attributes are omitted while child mutations hoist to the ancestor.
+  let hadDirectiveChild = false
+  const filteredRawChildren: BloggerTemplateNode[] = []
+  for (const child of node.children) {
+    if (child.type === 'Directive') {
+      hadDirectiveChild = true
+      if (child.name === 'b:attr') {
+        const attrName = String(child.attributes.find(a => a.name === 'name')?.value ?? '')
+        const attrVal = String(child.attributes.find(a => a.name === 'value')?.value ?? '')
+        if (attrName === 'b:whitespace') {
+          if (attrVal === 'remove') {
+            whitespaceRemove = true
+          }
+          continue
+        }
+      }
+    }
+    filteredRawChildren.push(child)
   }
+
+  const finalChildren = (hadDirectiveChild || whitespaceRemove)
+    ? filteredRawChildren.filter(c => !isWhitespaceOnly(c))
+    : filteredRawChildren
 
   return {
     kind: 'tag',
     tag: toBirAttrValue(nameAttr, context.catalog),
     ...(condAttr ? { cond: ensureExpression(condAttr.value, context.catalog) } : {}),
     ...(whitespaceRemove ? { whitespaceRemove: true } : {}),
-    attributes: [...baseAttributes, ...childAttributes],
-    classes: [...baseClasses, ...childClasses],
-    children: lowerNodes(retainedChildren, context),
+    attributes: baseAttributes,
+    classes: baseClasses,
+    children: lowerNodes(finalChildren, context),
   }
 }
 
@@ -643,8 +561,12 @@ function lowerIncludeDirective(node: BloggerDirectiveNode, context: LoweringCont
       ...(res.failureComment ? { failureComment: res.failureComment } : {}),
     }
 
-    if (res.tier === 'platform_server' && !context.symbolTable[target]) {
+    if (res.tier === 'platform_server' && !context.symbolTable[`server:${target}`]) {
       const stubHtml = res.serverInclusion?.markup ?? ''
+      const baseName = target.startsWith('super.') ? target.slice('super.'.length) : target
+      const incDef = context.catalog.getInclusion(baseName)
+      const varMatch = incDef?.server_markup ? /^<b:includable\b[^>]+\bvar=['"]([^'"]+)['"]/i.exec(incDef.server_markup.trim()) : null
+      const serverParams = varMatch?.[1] ? [varMatch[1]] : []
       let stubBody: BirNode[] = []
       if (stubHtml) {
         try {
@@ -655,10 +577,10 @@ function lowerIncludeDirective(node: BloggerDirectiveNode, context: LoweringCont
           stubBody = [{ kind: 'text', value: stubHtml }]
         }
       }
-      context.symbolTable[target] = {
+      context.symbolTable[`server:${target}`] = {
         id: target,
         tier: 'platform_server',
-        params: [],
+        params: serverParams,
         body: stubBody,
       }
     }
@@ -691,6 +613,11 @@ function lowerIncludableDirective(
 
   if (!id)
     return
+
+  // super.* namespace is strictly reserved for platform_server inclusions
+  if (id.startsWith('super.') && (context.currentDefaultMarkupType || context.currentWidgetId)) {
+    return
+  }
 
   const params: string[] = []
   if (varAttr?.value) {
@@ -734,47 +661,158 @@ function lowerIncludableDirective(
   }
 
   if (tier === 'local_widget' && ownerWidgetId) {
-    context.symbolTable[`${ownerWidgetId}:${id}`] = includable
-    if (!context.symbolTable[id] || context.symbolTable[id].tier !== 'local_widget') {
-      context.symbolTable[id] = includable
-    }
+    context.symbolTable[`widget:${ownerWidgetId}:${id}`] = includable
   }
   else if (tier === 'gadget_specific' && ownerWidgetId) {
-    context.symbolTable[`default:${ownerWidgetId}:${id}`] = includable
-    if (!context.symbolTable[id]) {
-      context.symbolTable[id] = includable
-    }
+    context.symbolTable[`gadget:${ownerWidgetId}:${id}`] = includable
   }
   else if (tier === 'universal_widget') {
     context.symbolTable[`all:${id}`] = includable
-    if (!context.symbolTable[id]) {
-      context.symbolTable[id] = includable
-    }
   }
   else if (tier === 'shared_common') {
     context.symbolTable[`common:${id}`] = includable
-    if (!context.symbolTable[id]) {
-      context.symbolTable[id] = includable
-    }
   }
   else {
-    context.symbolTable[id] = includable
+    context.symbolTable[`server:${id}`] = includable
   }
 }
 
 function lowerDefaultMarkup(node: BloggerDirectiveNode, context: LoweringContext): void {
   const typeAttr = node.attributes.find(a => a.name === 'type')
-  const dmType = String(typeAttr?.value ?? 'Common')
+  const rawType = String(typeAttr?.value ?? 'Common')
+  const targetTypes = rawType.split(',').map(t => t.trim()).filter(Boolean)
   const prevType = context.currentDefaultMarkupType
-  context.currentDefaultMarkupType = dmType
 
-  for (const child of node.children) {
-    if (child.type === 'Directive' && child.name === 'b:includable') {
-      lowerIncludableDirective(child, context)
+  for (const dmType of (targetTypes.length > 0 ? targetTypes : ['Common'])) {
+    context.currentDefaultMarkupType = dmType
+    for (const child of node.children) {
+      if (child.type === 'Directive' && child.name === 'b:includable') {
+        lowerIncludableDirective(child, context)
+      }
     }
   }
 
   context.currentDefaultMarkupType = prevType
+}
+
+function extractWidgetSettings(
+  children: readonly BloggerTemplateNode[],
+  widgetType: string,
+  catalog: SpecCatalog,
+): Record<string, unknown> | undefined {
+  const settingsNode = children.find(
+    (c): c is BloggerDirectiveNode => c.type === 'Directive' && c.name === 'b:widget-settings',
+  )
+  if (!settingsNode) {
+    return undefined
+  }
+
+  const widgetSpec = widgetType ? catalog.getWidgetSettings(widgetType) : undefined
+  const canonicalDefs = (widgetSpec?.canonical ?? {}) as Record<string, any>
+  const result: Record<string, unknown> = {}
+
+  for (const child of settingsNode.children) {
+    if (child.type !== 'Directive' || child.name !== 'b:widget-setting') {
+      continue
+    }
+    const nameAttr = child.attributes.find(a => a.name === 'name')
+    const settingName = String(nameAttr?.value ?? '').trim()
+    if (!settingName) {
+      continue
+    }
+
+    let rawText = ''
+    for (const sub of child.children) {
+      if (sub.type === 'CData' || sub.type === 'Text') {
+        rawText += sub.value
+      }
+    }
+
+    const def = canonicalDefs[settingName]
+    const trimmed = rawText.trim()
+    let coerced: unknown = rawText
+
+    if (def?.type === 'boolean' || (!def && (trimmed === 'true' || trimmed === 'false' || trimmed === 'yes' || trimmed === 'no'))) {
+      const lower = trimmed.toLowerCase()
+      coerced = lower === 'true' || lower === 'yes'
+    }
+    else if (def?.type === 'number' || (!def && settingName !== 'content' && /^-?\d+(?:\.\d+)?$/.test(trimmed))) {
+      coerced = Number(trimmed)
+    }
+    else if (def?.value_transform === 'lowercase') {
+      coerced = trimmed.toLowerCase()
+    }
+
+    result[settingName] = coerced
+
+    const boundPath: unknown = def?.bound_runtime_data
+    if (typeof boundPath === 'string' && boundPath.startsWith('data:')) {
+      const cleanBound = boundPath.slice(5)
+      if (cleanBound && !cleanBound.includes('.') && !(cleanBound in result)) {
+        result[cleanBound] = coerced
+      }
+    }
+  }
+
+  const patterns = (widgetSpec as any)?.patterns as Array<{ template?: string, paired_with?: string }> | undefined
+  if (Array.isArray(patterns)) {
+    const hasLinkPairs = patterns.some(p => p.template === 'link-{index}')
+    if (hasLinkPairs && !('links' in result)) {
+      const indices = new Set<number>()
+      for (const key of Object.keys(result)) {
+        const match = /^(?:link|text)-(\d+)$/.exec(key)
+        if (match) {
+          indices.add(Number(match[1]))
+        }
+      }
+      if (indices.size > 0) {
+        let links = Array.from(indices)
+          .sort((a, b) => a - b)
+          .map(idx => ({
+            name: String(result[`text-${idx}`] ?? ''),
+            target: String(result[`link-${idx}`] ?? ''),
+          }))
+        if (result.sorting === 'alphabetical') {
+          links = [...links].sort((a, b) => a.name.localeCompare(b.name))
+        }
+        else if (result.sorting === 'reverse_alphabetical') {
+          links = [...links].sort((a, b) => b.name.localeCompare(a.name))
+        }
+        if (typeof result.shownum === 'number' && result.shownum > 0) {
+          links = links.slice(0, result.shownum)
+        }
+        result.links = links
+      }
+    }
+
+    const hasItemSeries = patterns.some(p => p.template === 'item-{index}')
+    if (hasItemSeries && !('items' in result)) {
+      const indices = new Set<number>()
+      for (const key of Object.keys(result)) {
+        const match = /^item-(\d+)$/.exec(key)
+        if (match) {
+          indices.add(Number(match[1]))
+        }
+      }
+      if (indices.size > 0) {
+        let items = Array.from(indices)
+          .sort((a, b) => a - b)
+          .map(idx => String(result[`item-${idx}`] ?? ''))
+        if (result.sorting === 'alphabetical') {
+          items = [...items].sort((a, b) => a.localeCompare(b))
+        }
+        else if (result.sorting === 'reverse_alphabetical') {
+          items = [...items].sort((a, b) => b.localeCompare(a))
+        }
+        if (typeof result.shownum === 'number' && result.shownum > 0) {
+          items = items.slice(0, result.shownum)
+        }
+        result.items = items
+      }
+    }
+  }
+
+  return Object.keys(result).length > 0 ? result : undefined
 }
 
 function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): BirNode[] {
@@ -795,6 +833,8 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
       const exprAttr = node.attributes.find(a => a.name === 'expr' || a.name === 'value')
       return [{
         kind: 'output',
+        source: 'eval',
+        tagName: 'b:eval',
         expr: ensureExpression(exprAttr?.value, context.catalog),
       }]
     }
@@ -804,24 +844,34 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
       const fullPath = msgName.startsWith('messages.') ? `data:${msgName}` : `data:messages.${msgName}`
       return [{
         kind: 'output',
+        source: 'message',
+        tagName: 'b:message',
         expr: parseExpression(fullPath, { catalog: context.catalog }),
       }]
     }
     case 'b:section': {
       const idAttr = node.attributes.find(a => a.name === 'id')
+      const nameAttr = node.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
       const classAttr = node.attributes.find(a => a.name === 'class')
-      const tagAttr = node.attributes.find(a => a.name === 'tag')
+      const tagAttr = node.attributes.find(a => a.name === 'tag' || a.name === 'expr:tag')
+      const condAttr = node.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
       const sectionId = idAttr?.value ? String(idAttr.value) : undefined
       const className = classAttr?.value ? String(classAttr.value) : undefined
-      const tag = tagAttr?.value ? String(tagAttr.value) : undefined
+      const isV3 = context.layoutVersion === 3
+      const hasV3SuppressedAttr = isV3 && node.attributes.some(
+        a => a.name === 'maxwidgets' || a.name === 'showaddelement',
+      )
       const prevSection = context.currentSectionId
       context.currentSectionId = sectionId
       const container: BirContainer = {
         kind: 'container',
         role: 'section',
         ...(sectionId ? { id: sectionId } : {}),
+        ...(nameAttr ? { name: toBirAttrValue(nameAttr, context.catalog) } : {}),
         ...(className ? { className } : {}),
-        ...(tag ? { tag } : {}),
+        ...(tagAttr ? { tag: toBirAttrValue(tagAttr, context.catalog) } : {}),
+        ...(condAttr ? { cond: ensureExpression(condAttr.value, context.catalog) } : {}),
+        ...(hasV3SuppressedAttr ? { suppressedInV3: true } : {}),
         children: lowerNodes(filterContainerChildren(node.children), context),
       }
       context.currentSectionId = prevSection
@@ -831,8 +881,18 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
       const idAttr = node.attributes.find(a => a.name === 'id')
       const typeAttr = node.attributes.find(a => a.name === 'type')
       const titleAttr = node.attributes.find(a => a.name === 'title')
+      const condAttr = node.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
+      const visibleAttr = node.attributes.find(a => a.name === 'visible')
+      const versionAttr = node.attributes.find(a => a.name === 'version')
       const widgetId = String(idAttr?.value ?? '')
       const widgetType = String(typeAttr?.value ?? '')
+      const parsedVersion = versionAttr?.value !== undefined ? Number(versionAttr.value) : undefined
+      const version = parsedVersion !== undefined && !Number.isNaN(parsedVersion)
+        ? parsedVersion
+        : context.defaultWidgetVersion
+      const visible = visibleAttr !== undefined ? isTruthyValue(visibleAttr.value) : undefined
+      const settings = extractWidgetSettings(node.children, widgetType, context.catalog)
+
       const prevWidget = context.currentWidgetId
       const prevType = context.currentWidgetType
       const prevLocals = context.currentWidgetLocals
@@ -840,11 +900,14 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
       context.currentWidgetType = widgetType
       context.currentWidgetLocals = indexIncludables(node.children)
 
-      // Includables are extracted into context.symbolTable
+      // Includables and widget-settings are extracted structurally
       const nonIncludableChildren: BloggerTemplateNode[] = []
       for (const child of node.children) {
         if (child.type === 'Directive' && child.name === 'b:includable') {
           lowerIncludableDirective(child, context)
+        }
+        else if (child.type === 'Directive' && (child.name === 'b:widget-settings' || child.name === 'b:widget-setting')) {
+          continue
         }
         else if (!isWhitespaceOnly(child)) {
           nonIncludableChildren.push(child)
@@ -858,6 +921,10 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
         ...(widgetType ? { widgetType } : {}),
         ...(context.currentSectionId ? { sectionId: context.currentSectionId } : {}),
         ...(titleAttr !== undefined ? { title: String(titleAttr.value) } : {}),
+        version,
+        ...(condAttr ? { cond: ensureExpression(condAttr.value, context.catalog) } : {}),
+        ...(visible !== undefined ? { visible } : {}),
+        ...(settings ? { settings } : {}),
         children: lowerNodes(nonIncludableChildren, context),
       }
       context.currentWidgetId = prevWidget
@@ -865,6 +932,9 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
       context.currentWidgetLocals = prevLocals
       return [container]
     }
+    case 'b:widget-settings':
+    case 'b:widget-setting':
+      return []
     case 'b:defaultmarkups':
       for (const child of node.children) {
         if (child.type === 'Directive' && child.name === 'b:defaultmarkup') {
@@ -903,9 +973,9 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
       lowerIncludableDirective(node, context)
       return []
     case 'b:skin':
+      return [{ kind: 'skin', role: 'page-skin' }]
     case 'b:template-skin':
-      // Extracted separately into BIR root.skin
-      return []
+      return [{ kind: 'skin', role: 'template-skin' }]
     case 'b:whitespace':
       return []
     case 'b:comment': {
@@ -920,6 +990,8 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
       if (node.name.startsWith('data:')) {
         return [{
           kind: 'output',
+          source: 'data',
+          tagName: node.name.slice(5),
           expr: parseExpression(node.name, { catalog: context.catalog }),
         }]
       }
@@ -966,10 +1038,21 @@ export function lowerDocument(
   const versionRes = sourceXml ? detectTemplateVersion(sourceXml, catalog) : undefined
   const layoutVersion: BloggerLayoutVersion = options?.layoutVersion ?? versionRes?.version ?? 3
 
+  const htmlEl = doc.children.find(
+    (c): c is BloggerElementNode => c.type === 'Element' && c.name.toLowerCase() === 'html',
+  )
+  const defaultWidgetAttr = htmlEl?.attributes.find(a => a.name === 'b:defaultwidgetversion')
+  const parsedDefaultWidgetVer = defaultWidgetAttr ? Number(defaultWidgetAttr.value) : Number.NaN
+  const defaultWidgetVersion = !Number.isNaN(parsedDefaultWidgetVer)
+    ? parsedDefaultWidgetVer
+    : (layoutVersion === 1 ? 1 : 2)
+
   const defaultmarkups = collectDefaultMarkups(doc)
   const symbolTable: Record<string, BirIncludable> = {}
   const context: LoweringContext = {
     catalog,
+    layoutVersion,
+    defaultWidgetVersion,
     symbolTable,
     defaultmarkups,
   }
@@ -983,7 +1066,7 @@ export function lowerDocument(
   const skin = extractSkin(doc, options?.skinOverrides)
 
   return {
-    birVersion: '1',
+    birVersion: '2',
     layoutVersion,
     root: rootNodes,
     symbolTable,

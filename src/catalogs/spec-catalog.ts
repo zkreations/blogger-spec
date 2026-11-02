@@ -1096,7 +1096,48 @@ export class SpecCatalog {
   }
 
   getLocale(code: string): BloggerLocaleRecord | undefined {
-    return this.localeMap.get(code.toLowerCase())
+    const clean = code.trim().toLowerCase()
+    if (!clean) {
+      return undefined
+    }
+    const underscore = clean.replace(/-/g, '_')
+    const legacyAliases: Readonly<Record<string, string>> = {
+      iw: 'he',
+      in: 'id',
+      ji: 'yi',
+      tl: 'fil',
+      nb: 'no',
+      nn: 'no',
+    }
+    return this.localeMap.get(clean)
+      ?? this.localeMap.get(underscore)
+      ?? (legacyAliases[clean] ? this.localeMap.get(legacyAliases[clean]!) : undefined)
+  }
+
+  resolveBcp47Locale(locale = 'en'): string {
+    const clean = locale.trim()
+    if (!clean) {
+      return 'en'
+    }
+    const record = this.getLocale(clean)
+    if (record?.bcp47) {
+      return record.bcp47
+    }
+    const legacyAliases: Readonly<Record<string, string>> = {
+      iw: 'he',
+      in: 'id',
+      ji: 'yi',
+      tl: 'fil',
+      nb: 'no',
+      nn: 'no',
+    }
+    const parts = clean.split(/[-_]/)
+    const mappedBase = legacyAliases[parts[0]?.toLowerCase() || '']
+    if (mappedBase) {
+      parts[0] = mappedBase
+      return parts.join('-')
+    }
+    return clean.replace(/_/g, '-')
   }
 
   getAllLocales(): Record<string, BloggerLocaleRecord> {
@@ -1108,11 +1149,26 @@ export class SpecCatalog {
     return rec ? rec.language_direction === 'rtl' : false
   }
 
+  private lookupLocaleValue<T>(values: Readonly<Record<string, T>> | undefined, locale: string): T | undefined {
+    if (!values) {
+      return undefined
+    }
+    const trimmed = locale.trim()
+    const clean = trimmed.toLowerCase()
+    const underscore = trimmed.replace(/-/g, '_')
+    const cleanUnderscore = clean.replace(/-/g, '_')
+    const rec = this.getLocale(trimmed)
+    return values[trimmed]
+      ?? values[underscore]
+      ?? values[clean]
+      ?? values[cleanUnderscore]
+      ?? (rec ? (values[rec.underscore_code] ?? values[rec.language]) : undefined)
+  }
+
   getTranslation(key: string, locale = 'en'): string | undefined {
     if (!this.localesCatalog?.translations) {
       return undefined
     }
-    const cleanLocale = locale.toLowerCase()
 
     if (key.startsWith('messages.')) {
       const msgKey = key.slice(9)
@@ -1129,13 +1185,13 @@ export class SpecCatalog {
         const platform = platforms?.[platKey]
         if (platform) {
           const entry = field === 'shareMessage' ? platform.share_message : platform.name
-          return entry?.values?.[locale] ?? entry?.values?.[cleanLocale] ?? entry?.default
+          return this.lookupLocaleValue<string>(entry?.values, locale) ?? entry?.default
         }
         return undefined
       }
       const entry = (this.localesCatalog.translations.globals as any)?.[globKey]
       if (entry) {
-        return entry.values?.[locale] ?? entry.values?.[cleanLocale] ?? entry.default
+        return this.lookupLocaleValue<string>(entry.values, locale) ?? entry.default
       }
       return undefined
     }
@@ -1147,7 +1203,7 @@ export class SpecCatalog {
       const widgetTranslations = this.localesCatalog.translations.widgets?.[widgetType]
       const entry = widgetTranslations?.[propPath]
       if (entry) {
-        return entry.values?.[locale] ?? entry.values?.[cleanLocale] ?? entry.default
+        return this.lookupLocaleValue<string>(entry.values, locale) ?? entry.default ?? undefined
       }
       return undefined
     }
@@ -1160,27 +1216,37 @@ export class SpecCatalog {
     if (!entry) {
       return undefined
     }
-    const clean = locale.toLowerCase()
-    return entry.values?.[locale] ?? entry.values?.[clean] ?? entry.default
+    return this.lookupLocaleValue<string>(entry.values, locale) ?? entry.default
+  }
+
+  getAllLocalizedMessages(locale = 'en'): Record<string, string> {
+    const result: Record<string, string> = {}
+    const messagesMap = this.localesCatalog?.translations?.messages ?? {}
+    for (const key of Object.keys(messagesMap)) {
+      const val = this.getLocalizedMessage(key, locale)
+      if (val !== undefined) {
+        result[key] = val
+      }
+    }
+    return result
   }
 
   getWidgetNavMessage(widgetType = 'Blog', locale = 'en'): string {
     const entry = (this.localesCatalog?.translations?.widgets as any)?.[widgetType]?.navMessage
-    const clean = locale.toLowerCase()
-    return entry?.values?.[locale] ?? entry?.values?.[clean] ?? entry?.default ?? 'Sorry, the page you were looking for in this blog does not exist.'
+    return this.lookupLocaleValue<string>(entry?.values, locale)
+      ?? entry?.default
+      ?? 'Sorry, the page you were looking for in this blog does not exist.'
   }
 
   getWidgetDefaultTitle(widgetType: string, locale = 'en'): string {
     const entry = (this.localesCatalog?.translations?.widgets as any)?.[widgetType]?.defaultTitle
       ?? (this.localesCatalog?.translations?.widgets as any)?.[widgetType]?.name
-    const clean = locale.toLowerCase()
-    return entry?.values?.[locale] ?? entry?.values?.[clean] ?? entry?.default ?? widgetType
+    return this.lookupLocaleValue<string>(entry?.values, locale) ?? entry?.default ?? widgetType
   }
 
   getFormattedGlobalMessage(key: string, locale = 'en', params: Record<string, string> = {}): string {
     const entry = (this.localesCatalog?.translations?.globals as any)?.[key]
-    const clean = locale.toLowerCase()
-    let msg: string = entry?.values?.[locale] ?? entry?.values?.[clean] ?? entry?.default ?? ''
+    let msg: string = this.lookupLocaleValue<string>(entry?.values, locale) ?? entry?.default ?? ''
     for (const [k, v] of Object.entries(params)) {
       msg = msg.split(k).join(v)
     }
@@ -1189,15 +1255,16 @@ export class SpecCatalog {
 
   getArchiveRangeMessage(year: number, month?: number, locale = 'en'): string {
     const entry = (this.localesCatalog?.translations?.globals as any)?.['view.archive.rangeMessage']
-    const clean = locale.toLowerCase()
-    const template: string = entry?.values?.[locale] ?? entry?.values?.[clean] ?? entry?.default ?? 'Showing posts from August, 2026'
+    const template: string = this.lookupLocaleValue<string>(entry?.values, locale)
+      ?? entry?.default
+      ?? 'Showing posts from August, 2026'
 
     let periodText = String(year)
     if (month && month >= 1 && month <= 12) {
       try {
-        const intlLocale = clean.startsWith('es') ? 'es-ES' : (clean.startsWith('en') ? 'en-US' : locale)
-        const date = new Date(year, month - 1, 1)
-        const monthName = date.toLocaleString(intlLocale, { month: 'long' })
+        const intlLocale = this.resolveBcp47Locale(locale)
+        const date = new Date(Date.UTC(year, month - 1, 1))
+        const monthName = new Intl.DateTimeFormat(intlLocale, { month: 'long', timeZone: 'UTC' }).format(date)
         periodText = `${monthName}, ${year}`
       }
       catch {
@@ -1212,8 +1279,7 @@ export class SpecCatalog {
     if (!entry?.plural_forms) {
       return this.getLocalizedMessage(messageKey, locale)
     }
-    const clean = locale.toLowerCase()
-    const localeForms = entry.plural_forms[locale] ?? entry.plural_forms[clean] ?? entry.plural_forms.en
+    const localeForms = this.lookupLocaleValue(entry.plural_forms, locale) ?? entry.plural_forms.en
     if (!localeForms) {
       return entry.default
     }
@@ -1222,7 +1288,7 @@ export class SpecCatalog {
       return localeForms[strCount]
     }
     try {
-      const pr = new Intl.PluralRules(locale)
+      const pr = new Intl.PluralRules(this.resolveBcp47Locale(locale))
       const category = pr.select(count)
       let rep = '5'
       if (category === 'zero') {
@@ -1344,6 +1410,10 @@ export class SpecCatalog {
       throw new Error('Missing compiler_limits.max_directive_nesting_depth in directives catalog')
     }
     return limit
+  }
+
+  getIncludeRecursionLimit(): number {
+    return (this.getCompilerLimits() as any)?.max_include_recursion_depth ?? 43
   }
 
   getCompilerQuotas(): BloggerCompilerQuotas | undefined {
@@ -1481,6 +1551,9 @@ export class SpecCatalog {
   isTruthy(value: any): boolean {
     if (value === null || value === undefined) {
       return false
+    }
+    if (Object.prototype.toString.call(value) === '[object String]' || (typeof value === 'object' && value !== null && Boolean((value as any)[Symbol.for('blogger-spec.skin-value')]))) {
+      value = String(value)
     }
     if (typeof value === 'boolean') {
       return value

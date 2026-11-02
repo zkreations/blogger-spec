@@ -280,12 +280,14 @@ export async function resolveBloggerContext(
     })
 
     const blogLocale = config.overrides?.blog?.locale || config.config?.blog?.locale || 'en'
+    const blogTimeZone = config.config?.blog?.timeZone
     const postSaa = config.overrides?.view?.saa || config.overrides?.saa || (config.overrides?.blog as any)?.saa
     const rawPosts: readonly BloggerRawEntry[] = feed.entry || []
     const commentFrameBaseUrl = config.commentFrameBaseUrl || config.config?.blog?.commentFrameBaseUrl
     const postOptions = {
       saa: postSaa,
       dateFormat: config.config?.blog?.postDateFormat,
+      timeZone: blogTimeZone,
       titleAndEnclosureLinks: config.config?.blog?.titleAndEnclosureLinks,
       commentFrameBaseUrl,
     }
@@ -303,17 +305,15 @@ export async function resolveBloggerContext(
 
     if (blogLocale) {
       const spec = getSpecCatalog()
-      const messagesMap = (spec as any).localesCatalog?.translations?.messages || {}
-      context.messages = context.messages || {}
-      for (const msgKey of Object.keys(messagesMap)) {
-        const localized = spec.getLocalizedMessage(msgKey, blogLocale)
-        if (localized) {
-          context.messages[msgKey] = localized
-        }
+      context.messages = {
+        ...(context.messages || {}),
+        ...spec.getAllLocalizedMessages(blogLocale),
       }
       if (context.messages.location !== undefined) {
-        context.messages.location = spec.getLocalizedMessage('widgets.Blog.byline.location.label', blogLocale)
-          || (blogLocale.startsWith('es') ? 'Ubicación' : 'Location')
+        const locationLabel = spec.getTranslation('widgets.Blog.byline.location.label', blogLocale)
+        if (locationLabel) {
+          context.messages.location = locationLabel
+        }
       }
     }
 
@@ -368,7 +368,7 @@ export async function resolveBloggerContext(
           const rawComments: readonly BloggerRawEntry[] = commentsResponse?.feed?.entry || []
           if (rawComments.length > 0) {
             const normalizedComments = rawComments
-              .map(c => normalizeCommentEntry(c, mapper, effectiveBlogId, blogLocale, config.config?.blog?.commentDateFormat))
+              .map(c => normalizeCommentEntry(c, mapper, effectiveBlogId, blogLocale, config.config?.blog?.commentDateFormat, blogTimeZone))
               .sort((a, b) => a.timestampValue - b.timestampValue)
             ;(targetPost as any).comments = normalizedComments
             ;(targetPost as any).numberOfComments = normalizedComments.length
@@ -409,19 +409,8 @@ export async function resolveBloggerContext(
         context.view.search.query = effectiveQ
         context.view.searchQuery = effectiveQ
         const spec = getSpecCatalog()
-        const labelTemplate = spec.getFormattedGlobalMessage('view.search.resultsMessage', blogLocale, { LABEL: effectiveQ })
-        const labelTemplateHtml = spec.getFormattedGlobalMessage('view.search.resultsMessageHtml', blogLocale, { LABEL: effectiveQ })
-        const isEs = blogLocale.startsWith('es')
-        context.view.search.resultsMessage = isEs
-          ? `Mostrando entradas que coinciden con la búsqueda de ${effectiveQ}`
-          : (blogLocale.startsWith('en')
-              ? `Showing posts matching the search for ${effectiveQ}`
-              : labelTemplate || `Showing posts matching the search for ${effectiveQ}`)
-        context.view.search.resultsMessageHtml = isEs
-          ? `Mostrando entradas que coinciden con la búsqueda de <b>${effectiveQ}</b>`
-          : (blogLocale.startsWith('en')
-              ? `Showing posts matching the search for <b>${effectiveQ}</b>`
-              : labelTemplateHtml || `Showing posts matching the search for <b>${effectiveQ}</b>`)
+        context.view.search.resultsMessage = spec.getFormattedGlobalMessage('view.search.resultsMessage', blogLocale, { LABEL: effectiveQ })
+        context.view.search.resultsMessageHtml = spec.getFormattedGlobalMessage('view.search.resultsMessageHtml', blogLocale, { LABEL: effectiveQ })
       }
 
       if (!effectiveQ && !pathLabel && !searchParams?.get('label') && searchParams?.get('updated-max')) {
@@ -429,9 +418,8 @@ export async function resolveBloggerContext(
         context.view.search = context.view.search || {}
         const spec = getSpecCatalog()
         const olderMsg = spec.getLocalizedMessage('olderPosts', blogLocale) || 'Older Posts'
-        const isEs = blogLocale.startsWith('es')
-        context.view.search.resultsMessage = isEs ? 'Mostrando entradas anteriores' : `Showing ${olderMsg.toLowerCase()}`
-        context.view.search.resultsMessageHtml = isEs ? 'Mostrando entradas anteriores' : `Showing ${olderMsg.toLowerCase()}`
+        context.view.search.resultsMessage = olderMsg
+        context.view.search.resultsMessageHtml = olderMsg
       }
 
       const effectiveLabel = pathLabel
@@ -736,6 +724,7 @@ export async function resolveBloggerContext(
     if (!context.widgetData.BlogArchive1 && normalizedPosts.length > 0) {
       const archiveHierarchy = buildArchiveHierarchy(normalizedPosts, mapper, {
         locale: blogLocale,
+        timeZone: blogTimeZone,
         widgetId: 'BlogArchive1',
       })
       context.widgetData.BlogArchive1 = {

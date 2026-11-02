@@ -7,7 +7,7 @@
   "additionalProperties": false,
   "required": ["birVersion", "layoutVersion", "root", "symbolTable", "skin"],
   "properties": {
-    "birVersion": { "const": "1" },
+    "birVersion": { "const": "2" },
     "layoutVersion": { "enum": [1, 2, 3, "v1", "v2", "v3"] },
     "root": { "$ref": "#/$defs/nodeList" },
     "symbolTable": {
@@ -119,9 +119,19 @@
         { "$ref": "#/$defs/include" },
         { "$ref": "#/$defs/output" },
         { "$ref": "#/$defs/container" },
+        { "$ref": "#/$defs/skinStyle" },
         { "$ref": "#/$defs/attrMutation" },
         { "$ref": "#/$defs/classMutationNode" }
       ]
+    },
+    "skinStyle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "role"],
+      "properties": {
+        "kind": { "const": "skin" },
+        "role": { "enum": ["page-skin", "template-skin"] }
+      }
     },
     "element": {
       "type": "object",
@@ -136,9 +146,7 @@
         "attributes": { "type": "array", "items": { "$ref": "#/$defs/attribute" } },
         "classes": { "type": "array", "items": { "$ref": "#/$defs/classMutation" } },
         "children": { "$ref": "#/$defs/nodeList" }
-      },
-      "if": { "properties": { "isVoid": { "const": true } } },
-      "then": { "properties": { "children": { "maxItems": 0 } } }
+      }
     },
     "text": {
       "type": "object",
@@ -297,10 +305,12 @@
     "output": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["kind", "expr"],
+      "required": ["kind", "source", "expr"],
       "properties": {
         "kind": { "const": "output" },
-        "expr": { "$ref": "#/$defs/expression" }
+        "source": { "enum": ["data", "eval", "message"] },
+        "expr": { "$ref": "#/$defs/expression" },
+        "tagName": { "type": "string" }
       }
     },
     "container": {
@@ -311,11 +321,17 @@
         "kind": { "const": "container" },
         "role": { "enum": ["section", "widget"] },
         "id": { "type": "string" },
+        "name": { "$ref": "#/$defs/attrValue" },
         "widgetType": { "type": "string" },
         "sectionId": { "type": "string" },
         "title": { "type": "string" },
         "className": { "type": "string" },
-        "tag": { "type": "string" },
+        "tag": { "$ref": "#/$defs/attrValue" },
+        "version": { "type": "number" },
+        "cond": { "$ref": "#/$defs/expression" },
+        "visible": { "type": "boolean" },
+        "suppressedInV3": { "type": "boolean" },
+        "settings": { "type": "object" },
         "children": { "$ref": "#/$defs/nodeList" }
       }
     },
@@ -355,7 +371,8 @@
               "type": { "type": "string", "minLength": 1 },
               "default": { "type": "string" },
               "value": { "type": "string" },
-              "group": { "type": "string" }
+              "group": { "type": "string" },
+              "description": { "type": "string" }
             }
           }
         },

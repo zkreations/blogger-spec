@@ -13,7 +13,7 @@ describe('bIR Top-Level Compiler API', () => {
     const ir = compileToIR(xml)
 
     expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
-    expect(ir.birVersion).toBe('1')
+    expect(ir.birVersion).toBe('2')
     expect(ir.layoutVersion).toBe(3)
     expect(ir.root.length).toBeGreaterThan(0)
     expect(Object.keys(ir.symbolTable).length).toBeGreaterThan(100)
@@ -26,7 +26,7 @@ describe('bIR Top-Level Compiler API', () => {
     for (const [id, f] of Object.entries(frags.fixtures as Record<string, any>)) {
       const ir = compileToIR(f.input.source)
       expect(validateBir(ir), `Fragment ${id} failed validation: ${JSON.stringify(validateBir.errors)}`).toBe(true)
-      expect(ir.birVersion).toBe('1')
+      expect(ir.birVersion).toBe('2')
     }
   })
 

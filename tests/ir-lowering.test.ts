@@ -39,7 +39,7 @@ describe('bir lowering engine', () => {
     expect(img.classes[1].cond.type).toBe('DataPath')
   })
 
-  it('hoists conditional mutations across b:if inside a void element', () => {
+  it('preserves b:if directive children inside a void element for mutually exclusive branch evaluation', () => {
     const xml = `<img src='photo.png'>
   <b:attr name='b:whitespace' value='remove'/>
   <b:if cond='data:view.isPost'>
@@ -51,11 +51,15 @@ describe('bir lowering engine', () => {
 
     const img = ir.root[0] as any
     expect(img.isVoid).toBe(true)
-    expect(img.children).toHaveLength(0)
-    expect(img.classes).toHaveLength(1)
-    expect(img.classes[0].name).toEqual({ kind: 'static', value: 'in-post' })
-    expect(img.classes[0].cond.type).toBe('DataPath')
-    expect(img.classes[0].cond.raw).toBe('data:view.isPost')
+    expect(img.whitespaceRemove).toBe(true)
+    expect(img.classes).toHaveLength(0)
+    expect(img.children).toHaveLength(1)
+    expect(img.children[0].kind).toBe('if')
+    expect(img.children[0].branches[0].test.raw).toBe('data:view.isPost')
+    expect(img.children[0].branches[0].children[0]).toEqual({
+      kind: 'classMutation',
+      name: { kind: 'static', value: 'in-post' },
+    })
   })
 
   it('lowers non-void elements and preserves children while hoisting direct mutations', () => {
@@ -182,7 +186,7 @@ describe('bir lowering engine', () => {
     expect(sw.cases[2].match).toBeUndefined()
   })
 
-  it('lowers dynamic b:tag with cond and mutations', () => {
+  it('lowers dynamic b:tag keeping wrapper inline classes separate from child mutations', () => {
     const xml = `<b:tag name='section' cond='data:view.isPost' class='post-section'>
   <b:class name='elevated'/>
   <p>Inside section</p>
@@ -196,12 +200,17 @@ describe('bir lowering engine', () => {
     expect(tagNode.cond.type).toBe('DataPath')
     expect(tagNode.classes).toEqual([
       { name: { kind: 'static', value: 'post-section' } },
-      { name: { kind: 'static', value: 'elevated' } },
     ])
-    expect(tagNode.children).toHaveLength(1)
+    expect(tagNode.children).toHaveLength(2)
+    expect(tagNode.children[0]).toEqual({
+      kind: 'classMutation',
+      name: { kind: 'static', value: 'elevated' },
+    })
+    expect(tagNode.children[1].kind).toBe('element')
+    expect(tagNode.children[1].tag).toBe('p')
   })
 
-  it('desugars b:eval and <data:...> tags into output nodes', () => {
+  it('desugars b:eval and <data:...> tags into differentiated output nodes', () => {
     const xml = `<div>
   <b:eval expr='data:blog.title ?: "Default"'/>
   <data:blog.pageTitle/>
@@ -212,12 +221,15 @@ describe('bir lowering engine', () => {
     const div = ir.root[0] as any
     expect(div.children).toHaveLength(2)
     expect(div.children[0].kind).toBe('output')
+    expect(div.children[0].source).toBe('eval')
     expect(div.children[0].expr.type).toBe('ConditionalExpression')
     expect(div.children[1].kind).toBe('output')
+    expect(div.children[1].source).toBe('data')
+    expect(div.children[1].tagName).toBe('blog.pageTitle')
     expect(div.children[1].expr.type).toBe('DataPath')
   })
 
-  it('extracts includables from widgets into symbolTable', () => {
+  it('extracts includables from widgets into prefixed symbolTable', () => {
     const xml = `<b:section id='main'>
   <b:widget id='Blog1' type='Blog'>
     <b:includable id='main'>
@@ -232,10 +244,11 @@ describe('bir lowering engine', () => {
     const ir = lowerTemplate(xml)
     expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
 
-    expect(ir.symbolTable['Blog1:main']).toBeDefined()
-    expect(ir.symbolTable['Blog1:post']).toBeDefined()
-    expect(ir.symbolTable.post.params).toEqual(['p'])
-    const article = ir.symbolTable.post.body[0] as any
+    expect(ir.symbolTable['widget:Blog1:main']).toBeDefined()
+    expect(ir.symbolTable['widget:Blog1:post']).toBeDefined()
+    expect(ir.symbolTable['widget:Blog1:post'].params).toEqual(['p'])
+    expect(ir.symbolTable.post).toBeUndefined()
+    const article = ir.symbolTable['widget:Blog1:post'].body[0] as any
     expect(article.tag).toBe('article')
 
     const sec = ir.root[0] as any
@@ -269,7 +282,7 @@ describe('bir lowering engine', () => {
 </b:defaultmarkups>`
     const ir = lowerTemplate(xml)
     expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
-    const wt = ir.symbolTable['widget-title']
+    const wt = ir.symbolTable['common:widget-title']
     expect(wt).toBeDefined()
     expect(wt.body).toHaveLength(2)
     expect(wt.body[0].kind).toBe('attrMutation')

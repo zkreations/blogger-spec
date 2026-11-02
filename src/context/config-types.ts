@@ -59,6 +59,7 @@ export interface BloggerBlogConfiguration {
   readonly $schema?: string
   readonly blog?: {
     readonly locale?: string
+    readonly timeZone?: string
     readonly adultContent?: boolean
     readonly analyticsMeasurementId?: string
     readonly isPrivate?: boolean

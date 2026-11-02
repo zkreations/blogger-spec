@@ -159,8 +159,10 @@ export function resolveIncludable(
   const widgetId = context.widgetId || 'Widget'
   const catalog = options?.catalog ?? getSpecCatalog()
 
-  // Tier 1: local_widget (only applicable when not in pure global scope)
-  if (!context.isGlobalScope && registry?.localIncludables) {
+  const isSuper = targetId.startsWith('super.')
+
+  // Tier 1: local_widget (only applicable when not in pure global scope and not super.*)
+  if (!isSuper && !context.isGlobalScope && registry?.localIncludables) {
     const localMap = normalizeLocalIncludables(registry.localIncludables)
     const localNode = localMap.get(targetId)
     if (localNode) {
@@ -180,7 +182,7 @@ export function resolveIncludable(
   }
 
   // Tier 2: gadget_specific (<b:defaultmarkup type='WidgetType'>)
-  if (!context.isGlobalScope && widgetType && defaultmarkups.length > 0) {
+  if (!isSuper && !context.isGlobalScope && widgetType && defaultmarkups.length > 0) {
     // Iterate in reverse document order to strictly enforce `last_block_wins`
     for (let i = defaultmarkups.length - 1; i >= 0; i--) {
       const dm = defaultmarkups[i]!
@@ -206,7 +208,7 @@ export function resolveIncludable(
   }
 
   // Tier 3: universal_widget (<b:defaultmarkup type='All'>)
-  if (defaultmarkups.length > 0) {
+  if (!isSuper && !context.isGlobalScope && defaultmarkups.length > 0) {
     // Iterate in reverse to enforce `last_block_wins`
     for (let i = defaultmarkups.length - 1; i >= 0; i--) {
       const dm = defaultmarkups[i]!
@@ -228,7 +230,7 @@ export function resolveIncludable(
   }
 
   // Tier 4: shared_common (<b:defaultmarkup type='Common'>)
-  if (defaultmarkups.length > 0) {
+  if (!isSuper && defaultmarkups.length > 0) {
     // Iterate in reverse to enforce `last_block_wins`
     for (let i = defaultmarkups.length - 1; i >= 0; i--) {
       const dm = defaultmarkups[i]!
@@ -250,7 +252,6 @@ export function resolveIncludable(
   }
 
   // Tier 5: platform_server (Standard platform inclusions from catalog)
-  const isSuper = targetId.startsWith('super.')
   const baseName = isSuper ? targetId.slice('super.'.length) : targetId
   if (catalog.isServerInclusion(baseName) || isSuper) {
     const serverResult = expandServerInclusion(targetId, {

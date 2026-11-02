@@ -43,6 +43,10 @@
             "max_directive_nesting_depth": {
               "type": "integer",
               "minimum": 1
+            },
+            "max_include_recursion_depth": {
+              "type": "integer",
+              "minimum": 1
             }
           },
           "additionalProperties": false

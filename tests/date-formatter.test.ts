@@ -71,4 +71,17 @@ describe('date-formatter and TR35 format operator', () => {
     expect(formatIcuDate(null, 'yyyy')).toBe('')
     expect(formatIcuDate(undefined, 'yyyy')).toBe('')
   })
+
+  it('formats dates across multiple canonical locales from locales.json and honors UTC/timeZone offsets', () => {
+    expect(formatIcuDate(sampleDate, 'MMMM', 'fr')).toMatch(/octobre/i)
+    expect(formatIcuDate(sampleDate, 'yyyy年M月d日', 'ja')).toBe('2026年10月15日')
+    expect(formatIcuDate(sampleDate, 'MMMM', 'pt_BR')).toMatch(/outubro/i)
+    expect(formatIcuDate(sampleDate, 'MMMM', 'ar')).toBeTruthy()
+    expect(formatIcuDate(sampleDate, 'MMMM', 'iw')).toBe(formatIcuDate(sampleDate, 'MMMM', 'he'))
+
+    // 2026-10-15T23:30:00Z is Oct 15 in UTC, but Oct 16 in +02:00 / Europe/Madrid
+    const boundaryIso = '2026-10-15T23:30:00Z'
+    expect(formatIcuDate(boundaryIso, 'yyyy-MM-dd HH:mm', 'en', 'UTC')).toBe('2026-10-15 23:30')
+    expect(formatIcuDate(boundaryIso, 'yyyy-MM-dd HH:mm', 'en', '+02:00')).toBe('2026-10-16 01:30')
+  })
 })

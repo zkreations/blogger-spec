@@ -29,8 +29,8 @@ describe('void elements with mutation children', () => {
 describe('bir.schema.json', () => {
   const validate = validator()
   const doc = {
-    birVersion: '1',
-    layoutVersion: 'v3',
+    birVersion: '2',
+    layoutVersion: 3,
     root: [
       {
         kind: 'element',
@@ -44,28 +44,40 @@ describe('bir.schema.json', () => {
         kind: 'if',
         branches: [{ test: { type: 'Literal', value: true }, children: [{ kind: 'text', value: 'x' }] }],
       },
+      { kind: 'skin', role: 'page-skin' },
+      { kind: 'output', source: 'data', tagName: 'data:blog.title', expr: { type: 'DataPath', raw: 'data:blog.title', members: [] } },
       { kind: 'include', target: 'badge', resolution: { tier: 'local_widget', resolved: true }, args: {} },
     ],
     symbolTable: {
-      badge: { id: 'badge', tier: 'local_widget', params: ['item'], body: [] },
+      'widget:Blog1:badge': { id: 'badge', tier: 'local_widget', params: ['item'], body: [] },
     },
     skin: { variables: [], css: [] },
   }
 
-  it('accepts a valid IR document', () => {
+  it('accepts a valid BIR v2 document', () => {
     expect(validate(doc), JSON.stringify(validate.errors)).toBe(true)
   })
 
-  it('rejects void elements that keep children', () => {
-    const bad = structuredClone(doc)
-    ;(bad.root[0] as any).children = [{ kind: 'text', value: 'x' }]
-    expect(validate(bad)).toBe(false)
+  it('accepts void elements that host directive children such as BirIf', () => {
+    const withDirective = structuredClone(doc)
+    ;(withDirective.root[0] as any).children = [
+      {
+        kind: 'if',
+        branches: [{ test: { type: 'Literal', value: true }, children: [{ kind: 'classMutation', name: { kind: 'static', value: 'active' } }] }],
+      },
+    ]
+    expect(validate(withDirective), JSON.stringify(validate.errors)).toBe(true)
   })
 
-  it('rejects unknown node kinds and missing symbolTable', () => {
+  it('rejects legacy birVersion "1", unknown node kinds, and missing symbolTable', () => {
+    const legacy = structuredClone(doc) as any
+    legacy.birVersion = '1'
+    expect(validate(legacy)).toBe(false)
+
     const bad = structuredClone(doc) as any
     bad.root.push({ kind: 'bogus' })
     expect(validate(bad)).toBe(false)
+
     const noSym = structuredClone(doc) as any
     delete noSym.symbolTable
     expect(validate(noSym)).toBe(false)

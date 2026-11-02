@@ -4,6 +4,8 @@
  * with zero external dependencies and bi-directional postMessage height negotiation.
  */
 
+import { getSpecCatalog } from '../catalogs/index.js'
+
 export interface CommentFrameStubOptions {
   readonly locale?: string
   readonly skin?: 'emporio' | 'soho' | 'notable' | 'contempo' | string
@@ -13,13 +15,14 @@ export interface CommentFrameStubOptions {
 
 export function getCommentFrameStubHtml(options: CommentFrameStubOptions = {}): string {
   const locale = options.locale || 'en'
-  const isEs = locale.startsWith('es')
-  const placeholder = isEs ? 'Introduce tu comentario...' : 'Enter your comment...'
+  const spec = getSpecCatalog()
+  const langAttr = spec.resolveBcp47Locale(locale)
+  const placeholder = spec.getLocalizedMessage('postAComment', locale) || 'Post a Comment'
   const initialHeight = options.initialHeight ?? 66
   const expandedHeight = options.expandedHeight ?? 250
 
   return `<!DOCTYPE html>
-<html lang="${locale}">
+<html lang="${langAttr}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">

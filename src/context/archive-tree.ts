@@ -1,5 +1,6 @@
 import type { BloggerPostData } from './types.js'
 import type { UrlMapper } from './url-mapper.js'
+import { getSpecCatalog } from '../catalogs/index.js'
 
 export interface BloggerArchivePostLink {
   readonly title: string
@@ -28,6 +29,7 @@ export interface BloggerArchiveYearInterval {
 export interface BuildArchiveHierarchyOptions {
   readonly widgetId?: string
   readonly locale?: string
+  readonly timeZone?: string
   readonly defaultExpclass?: 'expanded' | 'collapsed'
 }
 
@@ -42,26 +44,49 @@ export function buildArchiveHierarchy(
 
   const widgetId = options.widgetId || 'BlogArchive1'
   const locale = options.locale || 'en'
+  const timeZone = options.timeZone
   const expclass = options.defaultExpclass || 'expanded'
   const blogOrigin = mapper.blogHost ? `https://${mapper.blogHost}` : ''
 
   const yearMap = new Map<number, Map<number, BloggerPostData[]>>()
 
   for (const post of posts) {
-    let date: Date | null = null
-    if (post.publishedIso) {
-      date = new Date(post.publishedIso)
-    }
-    else if (post.timestamp) {
-      date = new Date(post.timestamp)
+    let year: number | undefined
+    let month: number | undefined
+
+    if (!timeZone && post.publishedIso) {
+      const isoMatch = /^(\d{4})-(\d{2})/.exec(post.publishedIso)
+      if (isoMatch) {
+        year = Number.parseInt(isoMatch[1]!, 10)
+        month = Number.parseInt(isoMatch[2]!, 10)
+      }
     }
 
-    if (!date || Number.isNaN(date.getTime())) {
+    if (year === undefined || month === undefined) {
+      const date = post.publishedIso ? new Date(post.publishedIso) : (post.timestamp ? new Date(post.timestamp) : null)
+      if (!date || Number.isNaN(date.getTime())) {
+        continue
+      }
+      if (timeZone && timeZone !== 'UTC') {
+        try {
+          const parts = new Intl.DateTimeFormat('en-US', { timeZone, year: 'numeric', month: 'numeric' }).formatToParts(date)
+          year = Number.parseInt(parts.find(p => p.type === 'year')?.value || '', 10)
+          month = Number.parseInt(parts.find(p => p.type === 'month')?.value || '', 10)
+        }
+        catch {
+          year = date.getUTCFullYear()
+          month = date.getUTCMonth() + 1
+        }
+      }
+      else {
+        year = date.getUTCFullYear()
+        month = date.getUTCMonth() + 1
+      }
+    }
+
+    if (!year || !month || Number.isNaN(year) || Number.isNaN(month)) {
       continue
     }
-
-    const year = date.getFullYear()
-    const month = date.getMonth() + 1 // 1-12
 
     let monthMap = yearMap.get(year)
     if (!monthMap) {
@@ -80,8 +105,8 @@ export function buildArchiveHierarchy(
   const sortedYears = Array.from(yearMap.keys()).sort((a, b) => b - a)
   const result: BloggerArchiveYearInterval[] = []
 
-  const intlLocale = locale.startsWith('es') ? 'es-ES' : 'en-US'
-  const monthFormatter = new Intl.DateTimeFormat(intlLocale, { month: 'long' })
+  const intlLocale = getSpecCatalog().resolveBcp47Locale(locale)
+  const monthFormatter = new Intl.DateTimeFormat(intlLocale, { month: 'long', timeZone: 'UTC' })
 
   for (const year of sortedYears) {
     const monthMap = yearMap.get(year)!
@@ -94,7 +119,7 @@ export function buildArchiveHierarchy(
       const monthPosts = monthMap.get(month)!
       totalYearPosts += monthPosts.length
 
-      const sampleDate = new Date(year, month - 1, 1)
+      const sampleDate = new Date(Date.UTC(year, month - 1, 1))
       const rawMonthName = monthFormatter.format(sampleDate)
       const monthName = rawMonthName.charAt(0).toUpperCase() + rawMonthName.slice(1)
       const monthStr = String(month).padStart(2, '0')

@@ -450,10 +450,10 @@ export function inferExpressionType(
         }
         return 'unknown'
       }
-      if (op === 'filter') {
+      if (op === 'filter' || op === 'where') {
         return calleeType
       }
-      if (op === 'map') {
+      if (op === 'map' || op === 'select') {
         let itemType = 'unknown'
         if (calleeType.startsWith('array[') && calleeType.endsWith(']')) {
           itemType = calleeType.slice(6, -1)

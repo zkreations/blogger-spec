@@ -1,66 +1,133 @@
+import { getSpecCatalog } from '../catalogs/index.js'
+
+const ISO_OFFSET_REGEX = /([+-])(\d{2}):?(\d{2})$/
+
 export function formatIcuDate(
   input: Date | string | number | null | undefined,
   pattern: string,
   locale = 'en',
+  timeZone?: string,
 ): string {
   if (input === null || input === undefined || input === '') {
     return ''
   }
 
-  const date = input instanceof Date ? input : new Date(input)
-  if (Number.isNaN(date.getTime())) {
+  const rawDate = input instanceof Date ? input : new Date(input)
+  if (Number.isNaN(rawDate.getTime())) {
     return String(input)
   }
 
-  const cleanLocale = locale.replace(/_/g, '-')
-  const intlLocale = cleanLocale.startsWith('es')
-    ? 'es-ES'
-    : (cleanLocale.startsWith('en') && !cleanLocale.includes('-') ? 'en-US' : cleanLocale)
+  let effectiveDate = rawDate
+  let effectiveTimeZone = timeZone || 'UTC'
+  let fixedTzLabel = effectiveTimeZone
 
-  const fullWeekday = date.toLocaleString(intlLocale, { weekday: 'long' })
-  const shortWeekday = date.toLocaleString(intlLocale, { weekday: 'short' })
-  const narrowWeekday = date.toLocaleString(intlLocale, { weekday: 'narrow' })
-  const fullMonth = date.toLocaleString(intlLocale, { month: 'long' })
-  const shortMonth = date.toLocaleString(intlLocale, { month: 'short' })
-  const narrowMonth = date.toLocaleString(intlLocale, { month: 'narrow' })
+  if (!timeZone && typeof input === 'string') {
+    const offsetMatch = ISO_OFFSET_REGEX.exec(input.trim())
+    if (offsetMatch) {
+      const sign = offsetMatch[1] === '-' ? -1 : 1
+      const offsetHours = Number.parseInt(offsetMatch[2]!, 10)
+      const offsetMins = Number.parseInt(offsetMatch[3]!, 10)
+      const totalOffsetMs = sign * (offsetHours * 60 + offsetMins) * 60000
+      effectiveDate = new Date(rawDate.getTime() + totalOffsetMs)
+      effectiveTimeZone = 'UTC'
+      fixedTzLabel = `GMT${offsetMatch[1]}${offsetMatch[2]}:${offsetMatch[3]}`
+    }
+  }
 
-  const yearFull = String(date.getFullYear())
+  const intlLocale = getSpecCatalog().resolveBcp47Locale(locale)
+
+  let yearNum = effectiveDate.getUTCFullYear()
+  let monthIdx = effectiveDate.getUTCMonth() + 1
+  let dayVal = effectiveDate.getUTCDate()
+  let hour24 = effectiveDate.getUTCHours()
+  let minVal = effectiveDate.getUTCMinutes()
+  let secVal = effectiveDate.getUTCSeconds()
+
+  if (effectiveTimeZone !== 'UTC') {
+    try {
+      const numParts = new Intl.DateTimeFormat('en-US', {
+        timeZone: effectiveTimeZone,
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+        hourCycle: 'h23',
+      }).formatToParts(effectiveDate)
+      for (const p of numParts) {
+        if (p.type === 'year')
+          yearNum = Number.parseInt(p.value, 10)
+        else if (p.type === 'month')
+          monthIdx = Number.parseInt(p.value, 10)
+        else if (p.type === 'day')
+          dayVal = Number.parseInt(p.value, 10)
+        else if (p.type === 'hour')
+          hour24 = Number.parseInt(p.value, 10) % 24
+        else if (p.type === 'minute')
+          minVal = Number.parseInt(p.value, 10)
+        else if (p.type === 'second')
+          secVal = Number.parseInt(p.value, 10)
+      }
+      const tzParts = new Intl.DateTimeFormat(intlLocale, {
+        timeZone: effectiveTimeZone,
+        timeZoneName: 'short',
+      }).formatToParts(effectiveDate)
+      fixedTzLabel = tzParts.find(p => p.type === 'timeZoneName')?.value || effectiveTimeZone
+    }
+    catch {
+      effectiveTimeZone = 'UTC'
+      fixedTzLabel = 'UTC'
+    }
+  }
+
+  const calendarInstant = new Date(Date.UTC(yearNum, monthIdx - 1, dayVal, hour24, minVal, secVal))
+
+  const fullWeekday = new Intl.DateTimeFormat(intlLocale, { weekday: 'long', timeZone: 'UTC' }).format(calendarInstant)
+  const shortWeekday = new Intl.DateTimeFormat(intlLocale, { weekday: 'short', timeZone: 'UTC' }).format(calendarInstant)
+  const narrowWeekday = new Intl.DateTimeFormat(intlLocale, { weekday: 'narrow', timeZone: 'UTC' }).format(calendarInstant)
+  const fullMonth = new Intl.DateTimeFormat(intlLocale, { month: 'long', timeZone: 'UTC' }).format(calendarInstant)
+  const shortMonth = new Intl.DateTimeFormat(intlLocale, { month: 'short', timeZone: 'UTC' }).format(calendarInstant)
+  const narrowMonth = new Intl.DateTimeFormat(intlLocale, { month: 'narrow', timeZone: 'UTC' }).format(calendarInstant)
+
+  const yearFull = String(yearNum)
   const yearShort = yearFull.slice(-2)
-  const monthNum = String(date.getMonth() + 1)
+  const monthNum = String(monthIdx)
   const month2 = monthNum.padStart(2, '0')
-  const dayNum = String(date.getDate())
+  const dayNum = String(dayVal)
   const day2 = dayNum.padStart(2, '0')
 
-  const startOfYear = new Date(date.getFullYear(), 0, 1)
-  const dayOfYearNum = Math.floor((date.getTime() - startOfYear.getTime()) / 86400000) + 1
+  const startOfYearUtc = Date.UTC(yearNum, 0, 1)
+  const currentDayUtc = Date.UTC(yearNum, monthIdx - 1, dayVal)
+  const dayOfYearNum = Math.floor((currentDayUtc - startOfYearUtc) / 86400000) + 1
   const dayOfYearStr = String(dayOfYearNum)
   const dayOfYear2 = dayOfYearStr.padStart(2, '0')
   const dayOfYear3 = dayOfYearStr.padStart(3, '0')
 
-  const weekOfYearNum = Math.ceil((dayOfYearNum + startOfYear.getDay()) / 7)
+  const startOfYearDow = new Date(startOfYearUtc).getUTCDay()
+  const weekOfYearNum = Math.ceil((dayOfYearNum + startOfYearDow) / 7)
   const weekOfYearStr = String(weekOfYearNum)
   const weekOfYear2 = weekOfYearStr.padStart(2, '0')
-  const weekOfMonthStr = String(Math.ceil((date.getDate() + new Date(date.getFullYear(), date.getMonth(), 1).getDay()) / 7))
 
-  const h24Num = String(date.getHours())
+  const startOfMonthDow = new Date(Date.UTC(yearNum, monthIdx - 1, 1)).getUTCDay()
+  const weekOfMonthStr = String(Math.ceil((dayVal + startOfMonthDow) / 7))
+
+  const h24Num = String(hour24)
   const h24_2 = h24Num.padStart(2, '0')
-  const h12 = date.getHours() % 12 || 12
+  const h12 = hour24 % 12 || 12
   const h12Num = String(h12)
   const h12_2 = h12Num.padStart(2, '0')
-  const minNum = String(date.getMinutes())
+  const minNum = String(minVal)
   const min2 = minNum.padStart(2, '0')
-  const secNum = String(date.getSeconds())
+  const secNum = String(secVal)
   const sec2 = secNum.padStart(2, '0')
 
-  let dayPeriod = ''
+  let dayPeriod = hour24 >= 12 ? 'PM' : 'AM'
   try {
-    const parts = new Intl.DateTimeFormat(intlLocale, { hour: 'numeric', hour12: true }).formatToParts(date)
-    dayPeriod = parts.find(p => p.type === 'dayPeriod')?.value
-      || (date.getHours() >= 12 ? (cleanLocale.startsWith('es') ? 'p. m.' : 'PM') : (cleanLocale.startsWith('es') ? 'a. m.' : 'AM'))
+    const parts = new Intl.DateTimeFormat(intlLocale, { hour: 'numeric', hour12: true, timeZone: 'UTC' }).formatToParts(calendarInstant)
+    dayPeriod = parts.find(p => p.type === 'dayPeriod')?.value || dayPeriod
   }
-  catch {
-    dayPeriod = date.getHours() >= 12 ? (cleanLocale.startsWith('es') ? 'p. m.' : 'PM') : (cleanLocale.startsWith('es') ? 'a. m.' : 'AM')
-  }
+  catch {}
 
   // eslint-disable-next-line regexp/prefer-character-class
   const tokenRegex = /'([^']+)'|YYYY|yyyy|YY|yy|MMMMM|MMMM|MMM|MM|M|dd|d|DDD|DD|D|ww|w|W|EEEE|EEE|EE|E|HH|H|hh|h|mm|m|ss|s|aaaa|a|bbbb|BBBB|z/g
@@ -132,7 +199,7 @@ export function formatIcuDate(
       case 'BBBB':
         return dayPeriod
       case 'z':
-        return 'UTC'
+        return fixedTzLabel
       default:
         return match
     }

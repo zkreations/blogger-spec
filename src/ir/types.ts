@@ -92,17 +92,33 @@ export interface BirInclude {
   readonly args: Readonly<Record<string, BirAttrValue>>
 }
 
-export interface BirOutput { readonly kind: 'output', readonly expr: BloggerExpressionNode }
+export interface BirOutput {
+  readonly kind: 'output'
+  readonly source: 'data' | 'eval' | 'message'
+  readonly expr: BloggerExpressionNode
+  readonly tagName?: string
+}
+
+export interface BirSkinStyle {
+  readonly kind: 'skin'
+  readonly role: 'page-skin' | 'template-skin'
+}
 
 export interface BirContainer {
   readonly kind: 'container'
   readonly role: 'section' | 'widget'
   readonly id?: string
+  readonly name?: BirAttrValue
   readonly widgetType?: string
   readonly sectionId?: string
   readonly title?: string
   readonly className?: string
-  readonly tag?: string
+  readonly tag?: BirAttrValue
+  readonly version?: number
+  readonly cond?: BloggerExpressionNode
+  readonly visible?: boolean
+  readonly suppressedInV3?: boolean
+  readonly settings?: Readonly<Record<string, unknown>>
   readonly children: readonly BirNode[]
 }
 
@@ -132,6 +148,7 @@ export type BirNode
     | BirInclude
     | BirOutput
     | BirContainer
+    | BirSkinStyle
     | BirAttrMutation
     | BirClassMutationNode
 
@@ -144,13 +161,13 @@ export interface BirIncludable {
 }
 
 export interface BirSkin {
-  readonly variables: ReadonlyArray<{ readonly name: string, readonly type: string, readonly default: string, readonly value?: string, readonly group?: string }>
+  readonly variables: ReadonlyArray<{ readonly name: string, readonly type: string, readonly default: string, readonly value?: string, readonly group?: string, readonly description?: string }>
   readonly css: ReadonlyArray<{ readonly kind: 'text', readonly value: string } | { readonly kind: 'variable', readonly variable: string }>
   readonly templateSkinCss?: ReadonlyArray<{ readonly kind: 'text', readonly value: string } | { readonly kind: 'variable', readonly variable: string }>
 }
 
 export interface BloggerIRDocument {
-  readonly birVersion: '1'
+  readonly birVersion: '2'
   readonly layoutVersion: BloggerLayoutVersion
   readonly root: readonly BirNode[]
   readonly symbolTable: Readonly<Record<string, BirIncludable>>

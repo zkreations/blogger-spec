@@ -10,6 +10,7 @@ import type {
   BloggerRawFeed,
 } from './types.js'
 import type { UrlMapper } from './url-mapper.js'
+import { getSpecCatalog } from '../catalogs/index.js'
 import { formatIcuDate } from './date-formatter.js'
 
 export { formatIcuDate }
@@ -18,6 +19,7 @@ export interface NormalizePostOptions {
   readonly saa?: string
   readonly titleAndEnclosureLinks?: boolean
   readonly dateFormat?: string
+  readonly timeZone?: string
   readonly commentFrameBaseUrl?: string
 }
 
@@ -78,6 +80,7 @@ export function formatBloggerDate(
   isoString: string | undefined,
   locale = 'en',
   pattern?: string,
+  timeZone?: string,
 ): { date: string, timestamp: number } {
   if (!isoString) {
     return { date: '', timestamp: 0 }
@@ -90,16 +93,28 @@ export function formatBloggerDate(
 
   const timestamp = parsed.getTime()
   try {
-    const intlLocale = locale === 'en' ? 'en-US' : (locale === 'es' ? 'es-ES' : locale)
-    if (!pattern) {
-      const formatter = new Intl.DateTimeFormat(intlLocale, {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric',
-      })
-      return { date: formatter.format(parsed), timestamp }
+    if (pattern) {
+      return { date: formatIcuDate(isoString, pattern, locale, timeZone), timestamp }
     }
-    return { date: formatIcuDate(parsed, pattern, locale), timestamp }
+    const intlLocale = getSpecCatalog().resolveBcp47Locale(locale)
+    let displayDate = parsed
+    let fmtTz = timeZone || 'UTC'
+    if (!timeZone) {
+      const offsetMatch = /([+-])(\d{2}):?(\d{2})$/.exec(isoString.trim())
+      if (offsetMatch) {
+        const sign = offsetMatch[1] === '-' ? -1 : 1
+        const totalOffsetMs = sign * (Number.parseInt(offsetMatch[2]!, 10) * 60 + Number.parseInt(offsetMatch[3]!, 10)) * 60000
+        displayDate = new Date(timestamp + totalOffsetMs)
+        fmtTz = 'UTC'
+      }
+    }
+    const formatter = new Intl.DateTimeFormat(intlLocale, {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+      timeZone: fmtTz,
+    })
+    return { date: formatter.format(displayDate), timestamp }
   }
   catch {
     return { date: isoString, timestamp }
@@ -125,8 +140,8 @@ export function normalizePostEntry(
   const body = entry.content?.$t || entry.summary?.$t || ''
   const snippets = createSnippets(entry.summary?.$t || entry.content?.$t || '')
 
-  const published = formatBloggerDate(entry.published?.$t, locale, dateFormat)
-  const updated = formatBloggerDate(entry.updated?.$t, locale, dateFormat)
+  const published = formatBloggerDate(entry.published?.$t, locale, dateFormat, options.timeZone)
+  const updated = formatBloggerDate(entry.updated?.$t, locale, dateFormat, options.timeZone)
 
   let thumbnail = entry.media$thumbnail?.url || ''
   if (thumbnail.startsWith('//')) {
@@ -208,6 +223,9 @@ export function normalizePostEntry(
     showThreadedComments: true,
     hasJumpLink: body.includes('<!--more-->'),
     comments: [],
+    cmtfpIframe: '',
+    noNewCommentsText: '',
+    commentRangeText: '',
     commentFormIframeSrc: (() => {
       const origin = mapper.blogHost
         ? `https://${mapper.blogHost}`
@@ -275,8 +293,8 @@ export function normalizePageAsPostEntry(
   const body = entry.content?.$t || entry.summary?.$t || ''
   const snippets = createSnippets(entry.summary?.$t || entry.content?.$t || '')
 
-  const published = formatBloggerDate(entry.published?.$t, locale, dateFormat)
-  const updated = formatBloggerDate(entry.updated?.$t, locale, dateFormat)
+  const published = formatBloggerDate(entry.published?.$t, locale, dateFormat, options.timeZone)
+  const updated = formatBloggerDate(entry.updated?.$t, locale, dateFormat, options.timeZone)
 
   let thumbnail = entry.media$thumbnail?.url || ''
   if (thumbnail.startsWith('//')) {
@@ -363,6 +381,7 @@ export function normalizeCommentEntry(
   blogId: string,
   locale = 'en',
   dateFormat?: string,
+  timeZone?: string,
 ): BloggerCommentData {
   const id = extractId(entry.id?.$t)
   const rawAuthor = entry.author?.[0]
@@ -386,11 +405,11 @@ export function normalizeCommentEntry(
 
   const extProps = entry.gd$extendedProperty || []
   const displayTimeProp = extProps.find(p => p.name === 'blogger.displayTime')
-  const timestamp = (dateFormat ? formatBloggerDate(entry.published?.$t, locale, dateFormat).date : displayTimeProp?.value)
-    || formatBloggerDate(entry.published?.$t, locale, dateFormat).date
+  const timestamp = (dateFormat ? formatBloggerDate(entry.published?.$t, locale, dateFormat, timeZone).date : displayTimeProp?.value)
+    || formatBloggerDate(entry.published?.$t, locale, dateFormat, timeZone).date
 
-  const pubDate = new Date(entry.published?.$t || Date.now())
-  const timestampValue = Number.isNaN(pubDate.getTime()) ? 0 : pubDate.getTime()
+  const pubDate = entry.published?.$t ? new Date(entry.published.$t) : null
+  const timestampValue = !pubDate || Number.isNaN(pubDate.getTime()) ? 0 : pubDate.getTime()
   const timestampAbs = Math.floor(timestampValue / 1000)
 
   const relatedLink = entry.link?.find(l => l.rel === 'related')?.href
