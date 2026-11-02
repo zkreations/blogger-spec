@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest'
 import { getGlobals, getMockContext, getSpecCatalog } from '../src/index.js'
 import { getWorkspacePaths } from '../src/paths.js'
 
-describe('canonical mock contexts suite (Plan 05)', () => {
+describe('canonical mock contexts suite', () => {
   const views: BloggerViewId[] = [
     'homepage',
     'post_listing',

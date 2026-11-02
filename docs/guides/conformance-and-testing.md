@@ -131,7 +131,7 @@ Each entry in the `covers` array must explicitly identify the subsystem or eleme
 To maintain the authority of `blogger-spec`, **no fixture is added based on assumptions or outdated documentation**. The normative workflow is:
 
 1. **Empirical Production Evidence:**
-   - The behavior must be observed in Blogger's actual engine by installing a test template or inspecting raw captures in `.workbench/captures/raw/`.
+   - The behavior must be observed in Blogger's actual production engine by deploying a test template or inspecting live output against empirical captures.
 2. **Fixture Creation:**
    - Add the test case in the appropriate category within `fixtures/` (`expressions/`, `templates/`, `diagnostics/`).
 3. **Rebuilding the Global Manifest:**

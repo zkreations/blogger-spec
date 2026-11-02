@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import Ajv2020 from 'ajv/dist/2020.js'
 import { describe, expect, it } from 'vitest'
 import { compileToIR, parseIR, serializeIR } from '../src/ir/index.js'
@@ -7,7 +7,7 @@ const schema = JSON.parse(readFileSync(new URL('../catalogs/schemas/bir.schema.j
 const ajv = new (Ajv2020 as unknown as new (opts: any) => any)({ strict: false })
 const validateBir = ajv.compile(schema)
 
-describe('bIR Top-Level Compiler API (Phase 4)', () => {
+describe('bIR Top-Level Compiler API', () => {
   it('compiles full canonical template (hamlet.xml) into valid language-agnostic BIR', () => {
     const xml = readFileSync(new URL('../fixtures/templates/samples/hamlet.xml', import.meta.url), 'utf8')
     const ir = compileToIR(xml)
@@ -19,33 +19,6 @@ describe('bIR Top-Level Compiler API (Phase 4)', () => {
     expect(Object.keys(ir.symbolTable).length).toBeGreaterThan(100)
     expect(ir.skin.variables.length).toBeGreaterThan(10)
     expect(ir.skin.css.length).toBeGreaterThan(0)
-  })
-
-  it('compiles production workbench sample basico.xml if present', () => {
-    const url = new URL('../.workbench/samples/basico.xml', import.meta.url)
-    if (!existsSync(url)) {
-      return
-    }
-    const xml = readFileSync(url, 'utf8')
-    const ir = compileToIR(xml)
-
-    expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
-    expect(ir.birVersion).toBe('1')
-    expect(ir.root.length).toBeGreaterThan(0)
-    expect(Object.keys(ir.symbolTable).length).toBeGreaterThan(10)
-  })
-
-  it('compiles production workbench sample laertes.xml if present', () => {
-    const url = new URL('../.workbench/samples/laertes.xml', import.meta.url)
-    if (!existsSync(url)) {
-      return
-    }
-    const xml = readFileSync(url, 'utf8')
-    const ir = compileToIR(xml)
-
-    expect(validateBir(ir), JSON.stringify(validateBir.errors)).toBe(true)
-    expect(ir.birVersion).toBe('1')
-    expect(ir.root.length).toBeGreaterThan(0)
   })
 
   it('compiles all production fragments from prod_fragments.json cleanly into BIR', () => {

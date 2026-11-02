@@ -85,6 +85,20 @@ describe('canonical Views Conformance (hamlet.xml & ReferenceRenderer)', () => {
       expect(output.length).toBeGreaterThan(1000)
       expect(output).not.toMatch(/<b:(?:if|loop|with|switch|tag|eval|attr|class)/)
       expect(output).not.toMatch(/<data:[\w.:]+(?:\/>|>)/)
+
+      // Verify structural containers and widgets are rendered
+      expect(output).toContain('id="header"')
+      expect(output).toContain('id="content"')
+      expect(output).toContain('id="sidebar"')
+      expect(output).toContain('id=\'page-skin-1\'')
+      expect(output).toContain('Blog1')
+      expect(output).toContain('Header1')
+
+      // Verify clean attributes on <img> tags (Level 3 Dynamic Dereferencing)
+      expect(output).not.toContain('id="data:id"')
+      expect(output).not.toContain('sizes="data:sizes"')
+      expect(output).not.toContain('loading="data:loading"')
+      expect(output).not.toContain('alt="data:alt"')
     }
   })
 

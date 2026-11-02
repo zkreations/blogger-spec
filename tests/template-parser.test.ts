@@ -174,9 +174,6 @@ describe('parseTemplate AST parser', () => {
 
   describe('production templates empirical conformance', () => {
     const canonicalSamplePath = path.join(getWorkspacePaths().fixtures, 'templates/samples/hamlet.xml')
-    const workbenchSamplesDir = path.join(getWorkspacePaths().workbench, 'samples')
-    const basicoPath = path.join(workbenchSamplesDir, 'basico.xml')
-    const laertesPath = path.join(workbenchSamplesDir, 'laertes.xml')
 
     it('successfully parses canonical hamlet.xml production template', () => {
       const xml = fs.readFileSync(canonicalSamplePath, 'utf8')
@@ -185,18 +182,27 @@ describe('parseTemplate AST parser', () => {
       expect(doc.children.length).toBeGreaterThan(0)
     })
 
-    it.runIf(fs.existsSync(basicoPath))('empirically parses basico.xml workbench sample', () => {
-      const xml = fs.readFileSync(basicoPath, 'utf8')
+    it('successfully parses nested directives up to quota limit (48 levels)', () => {
+      let openTags = ''
+      let closeTags = ''
+      for (let i = 0; i < 48; i++) {
+        openTags += `<b:with value='"level"' var='v${i}'>`
+        closeTags += '</b:with>'
+      }
+      const xml = `${openTags}<span>Deep Content</span>${closeTags}`
       const doc = parseTemplate(xml)
       expect(doc.type).toBe('Document')
-      expect(doc.children.length).toBeGreaterThan(0)
     })
 
-    it.runIf(fs.existsSync(laertesPath))('empirically parses laertes.xml workbench sample', () => {
-      const xml = fs.readFileSync(laertesPath, 'utf8')
-      const doc = parseTemplate(xml)
-      expect(doc.type).toBe('Document')
-      expect(doc.children.length).toBeGreaterThan(0)
+    it('rejects directive nesting exceeding 50 levels with syntax error', () => {
+      let openTags = ''
+      let closeTags = ''
+      for (let i = 0; i < 52; i++) {
+        openTags += `<b:with value='"level"' var='v${i}'>`
+        closeTags += '</b:with>'
+      }
+      const xml = `${openTags}<span>Overflow Content</span>${closeTags}`
+      expect(() => parseTemplate(xml)).toThrowError(BloggerTemplateSyntaxError)
     })
   })
 })

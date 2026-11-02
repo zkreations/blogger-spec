@@ -30,6 +30,7 @@ import {
   getDirectiveNestingLimit,
   getDirectives,
   getDirectiveSnippet,
+  getDomMutationPipeline,
   getExpressionQuotaDiagnostic,
   getExpressionQuotaLimit,
   getExpressionQuotaWarning,
@@ -53,6 +54,7 @@ import {
   getOperators,
   getOperatorSnippet,
   getPrecedenceHierarchy,
+  getRenderPipeline,
   getScalarTypes,
   getSchema,
   getScope,
@@ -410,6 +412,73 @@ describe('catalogs and store formal verification suite', () => {
         expect(canBeAtRoot('b:case')).toBe(false)
         expect(canBeAtRoot('Variable')).toBe(false)
       })
+
+      it('exposes canonical dom_mutation_pipeline from directives catalog', () => {
+        const pipeline = getDomMutationPipeline()
+        expect(pipeline).toBeDefined()
+
+        expect(pipeline?.target_resolution.traversed_containers).toContain('b:if')
+        expect(pipeline?.target_resolution.traversed_containers).toContain('b:loop')
+        expect(pipeline?.target_resolution.traversed_containers).toContain('b:tag[cond=false]')
+        expect(pipeline?.target_resolution.boundary_crossings).toContain('b:include')
+
+        expect(pipeline?.class_mutation.mode).toBe('accumulate')
+        expect(pipeline?.class_mutation.separator).toBe(' ')
+        expect(pipeline?.class_mutation.existing_class_policy).toBe('preserve')
+        expect(pipeline?.class_mutation.loop_accumulation).toBe(true)
+
+        expect(pipeline?.attr_mutation.mode).toBe('upsert_or_omit')
+        expect(pipeline?.attr_mutation.empty_value_policy).toBe('omit_completely')
+        expect(pipeline?.attr_mutation.overwrite_policy).toBe('overwrite_existing')
+        expect(pipeline?.attr_mutation.allows_id_override).toBe(true)
+
+        const whitespaceAttr = pipeline?.attr_mutation.special_pseudo_attributes['b:whitespace']
+        expect(whitespaceAttr).toBeDefined()
+        expect(whitespaceAttr?.value).toBe('remove')
+        expect(whitespaceAttr?.suppressed_from_output).toBe(true)
+        expect(whitespaceAttr?.forces_clean_void_closure).toBe(true)
+
+        expect(pipeline?.tag_unwrapping.false_condition_behavior).toBe('unwrap_children_and_hoist_mutations')
+      })
+
+      it('documents widget synthetic wrapper mutation and hoisting in constraints', () => {
+        const catalog = getSpecCatalog()
+        const widgetDef = catalog.getDirective('b:widget')
+        expect(widgetDef?.constraints?.synthetic_wrapper_mutation).toBeDefined()
+
+        const tagDef = catalog.getDirective('b:tag')
+        expect(tagDef?.constraints?.unwrapping_hoisting).toBeDefined()
+      })
+
+      it('exposes canonical render_pipeline and execution phases specification', () => {
+        const pipeline = getRenderPipeline()
+        const catalogPipeline = getSpecCatalog().getRenderPipeline()
+
+        expect(pipeline).toBeDefined()
+        expect(catalogPipeline).toBeDefined()
+        expect(pipeline?.execution_model).toBe('ast_walk_with_scope_and_mutation_buffer')
+        expect(pipeline?.phases.length).toBe(5)
+
+        const phase1 = pipeline?.phases.find(p => p.phase === 1)
+        expect(phase1?.name).toBe('registration')
+        expect(phase1?.operations).toContain('collect_defaultmarkups')
+
+        const phase2 = pipeline?.phases.find(p => p.phase === 2)
+        expect(phase2?.name).toBe('skin_processing')
+        expect(phase2?.operations).toContain('substitute_variable_references')
+
+        const phase3 = pipeline?.phases.find(p => p.phase === 3)
+        expect(phase3?.name).toBe('synthetic_containers')
+        expect(phase3?.operations).toContain('emit_section_container')
+
+        const phase4 = pipeline?.phases.find(p => p.phase === 4)
+        expect(phase4?.name).toBe('scope_management')
+        expect(phase4?.operations).toContain('push_global_scope')
+
+        const phase5 = pipeline?.phases.find(p => p.phase === 5)
+        expect(phase5?.name).toBe('dom_mutation_buffer')
+        expect(phase5?.operations).toContain('intercept_b_class_mutations')
+      })
     })
 
     describe('operators domain', () => {
@@ -595,7 +664,7 @@ describe('catalogs and store formal verification suite', () => {
       })
     })
 
-    describe('compiler limits, quotas, and canonical accessors (SSoT phase 3)', () => {
+    describe('compiler limits, quotas, and canonical accessors', () => {
       it('retrieves compiler limits and directive nesting limit from canonical directives catalog', () => {
         const limits = getCompilerLimits()
         expect(limits).toBeDefined()
@@ -708,7 +777,7 @@ describe('catalogs and store formal verification suite', () => {
       })
     })
 
-    describe('dynamic mutation and SSoT propagation across all engine domains (Phase 5)', () => {
+    describe('dynamic mutation and SSoT propagation across all engine domains', () => {
       function createClonedMasterCatalogs() {
         const raw = getAllCatalogs()
         return JSON.parse(JSON.stringify(raw)) as Record<string, any>
@@ -994,7 +1063,7 @@ describe('catalogs and store formal verification suite', () => {
       })
     })
 
-    describe('store reactivity, module constants, and canonical void elements (Phase 4)', () => {
+    describe('store reactivity, module constants, and canonical void elements', () => {
       it('retrieves html void elements and cdata directives from canonical directives catalog', () => {
         const voidElements = getHtmlVoidElements()
         expect(voidElements).toBeInstanceOf(Set)
@@ -1100,7 +1169,7 @@ describe('catalogs and store formal verification suite', () => {
     })
   })
 
-  describe('schema-driven types and declaration generation (Phase 2)', () => {
+  describe('schema-driven types and declaration generation', () => {
     it('generates canonical domain and schema types from catalogs and JSON schemas', () => {
       const generatedContent = generateDomainTypes()
       expect(generatedContent).toContain('export type BloggerDirectiveName =')

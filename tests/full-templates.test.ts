@@ -1,15 +1,16 @@
-import type { BloggerEngineAdapter, BloggerFixture } from '../src/types.js'
+import type { BloggerFixture } from '../src/types.js'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
+  createDefaultEngineAdapter,
   normalizeHtmlString,
   parseTemplate,
   runConformance,
 } from '../src/index.js'
 import { getWorkspacePaths } from '../src/paths.js'
 
-describe('full templates conformance suite (Plan 08)', () => {
+describe('full templates conformance suite', () => {
   const fullTemplatesPath = join(getWorkspacePaths().fixtures, 'templates', 'full_templates.json')
   const suiteData = JSON.parse(readFileSync(fullTemplatesPath, 'utf-8')) as {
     subsystem: string
@@ -59,21 +60,17 @@ describe('full templates conformance suite (Plan 08)', () => {
     })
   })
 
-  describe('runConformance with full template adapter', () => {
+  describe('runConformance with canonical renderer adapter', () => {
     it('achieves 100% pass rate on full template suite with conforming adapter', () => {
-      const mockRenderAdapter: BloggerEngineAdapter = {
-        renderTemplate(source, _context) {
-          const matched = suiteData.fixtures.find(f => f.input.source === source)
-          if (matched && matched.expected.outcome === 'html' && matched.expected.html) {
-            return matched.expected.html
-          }
-          return '<div>fallback</div>'
-        },
-      }
-
-      const report = runConformance(mockRenderAdapter, {
+      const adapter = createDefaultEngineAdapter()
+      const report = runConformance(adapter, {
         fixtures: suiteData.fixtures,
       })
+
+      if (report.failed > 0) {
+        const failures = report.results.filter(r => !r.passed)
+        console.error('Full template failures:', JSON.stringify(failures, null, 2))
+      }
 
       expect(report.total).toBe(suiteData.fixtures.length)
       expect(report.passed).toBe(suiteData.fixtures.length)

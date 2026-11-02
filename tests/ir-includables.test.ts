@@ -7,7 +7,7 @@ const schema = JSON.parse(readFileSync(new URL('../catalogs/schemas/bir.schema.j
 const ajv = new (Ajv2020 as unknown as new (opts: any) => any)({ strict: false, allErrors: true })
 const validateBir = ajv.compile(schema)
 
-describe('bir includables symbol table and resolution (phase 3)', () => {
+describe('bir includables symbol table and resolution', () => {
   it('resolves Tier 1: local_widget includables within the calling widget', () => {
     const xml = `<b:section id='header'>
   <b:widget id='Header1' type='Header'>

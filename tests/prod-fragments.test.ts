@@ -2,11 +2,17 @@ import type { BloggerFixture, BloggerFixturesManifest } from '../src/types.js'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { evaluateExpression, parseExpression, parseTemplate, validateTemplateExpressions } from '../src/index.js'
+import {
+  createDefaultEngineAdapter,
+  evaluateExpression,
+  parseExpression,
+  parseTemplate,
+  validateTemplateExpressions,
+} from '../src/index.js'
 import { getWorkspacePaths } from '../src/paths.js'
 import { runConformance } from '../src/runner.js'
 
-describe('production template fragments suite (Priority 1)', () => {
+describe('production template fragments suite', () => {
   const prodFragmentsPath = join(getWorkspacePaths().fixtures, 'templates', 'prod_fragments.json')
   const suiteData = JSON.parse(readFileSync(prodFragmentsPath, 'utf-8')) as {
     subsystem: string
@@ -55,21 +61,14 @@ describe('production template fragments suite (Priority 1)', () => {
   })
 
   it('integrates seamlessly with the conformance test runner harness', () => {
-    const report = runConformance(
-      {
-        renderTemplate: (source) => {
-          const matched = suiteData.fixtures.find(f => f.input.source === source)
-          return matched?.expected.html || ''
-        },
-      },
-      {
-        fixtures: suiteData.fixtures,
-      },
-    )
+    const report = runConformance(createDefaultEngineAdapter(), {
+      fixtures: suiteData.fixtures,
+    })
 
     expect(report.total).toBe(8)
     expect(report.passed).toBe(8)
     expect(report.failed).toBe(0)
+    expect(report.skipped).toBe(0)
   })
 
   it('verifies that prod_fragments are indexed in the global fixtures manifest', () => {

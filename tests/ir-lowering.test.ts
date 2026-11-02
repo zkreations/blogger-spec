@@ -7,7 +7,7 @@ const schema = JSON.parse(readFileSync(new URL('../catalogs/schemas/bir.schema.j
 const ajv = new (Ajv2020 as unknown as new (opts: any) => any)({ strict: false, allErrors: true })
 const validateBir = ajv.compile(schema)
 
-describe('bir lowering engine (phase 2)', () => {
+describe('bir lowering engine', () => {
   it('desugars void element hosting mutations and b:whitespace="remove"', () => {
     const xml = `<img src='avatar.jpg'>
   <b:attr name='b:whitespace' value='remove'/>

@@ -9,7 +9,7 @@ import {
 } from '../src/index.js'
 import { getWorkspacePaths } from '../src/paths.js'
 
-describe('runtime expression evaluator (Plan 06)', () => {
+describe('runtime expression evaluator', () => {
   it('conforms 100% to all official and observed expression fixtures', () => {
     const dir = join(getWorkspacePaths().fixtures, 'expressions')
     expect(existsSync(dir)).toBe(true)
@@ -87,7 +87,19 @@ describe('runtime expression evaluator (Plan 06)', () => {
     })
 
     expect(report.total).toBe(176)
+    expect(report.passed).toBe(176)
     expect(report.failed).toBe(0)
-    expect(report.passed).toBe(164)
+    expect(report.skipped).toBe(0)
+  })
+
+  it('evaluates variadic functional operators (+, and, or, ?:) with 3+ operands', () => {
+    expect(evaluateExpression('+("Alpha", " ", "Beta", " ", "Gamma")', {})).toBe('Alpha Beta Gamma')
+    expect(evaluateExpression('+(1, 2, 3, 4)', {})).toBe(10)
+    expect(evaluateExpression('and(true, true, false)', {})).toBe(false)
+    expect(evaluateExpression('and(true, true, true)', {})).toBe(true)
+    expect(evaluateExpression('or(false, false, true)', {})).toBe(true)
+    expect(evaluateExpression('or(false, false, false)', {})).toBe(false)
+    expect(evaluateExpression('?:(data:missing1, data:missing2, "fallback")', {})).toBe('fallback')
+    expect(evaluateExpression('?:(data:missing1, "first-fallback", "second-fallback")', {})).toBe('first-fallback')
   })
 })

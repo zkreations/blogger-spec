@@ -7,7 +7,14 @@ import type {
   BloggerFixturesManifest,
 } from './types.js'
 import { existsSync, readFileSync } from 'node:fs'
+import { getSpecCatalog } from './catalogs/index.js'
+import { BloggerReferenceRenderer } from './ir/reference-renderer.js'
 import { evaluateExpression } from './parser/expr-evaluator.js'
+import {
+  validateExpression,
+  validateTemplateExpressions,
+  validateTemplateStructure,
+} from './parser/template-validator.js'
 import { getWorkspacePaths } from './paths.js'
 
 function resolveDefaultManifest(): BloggerFixturesManifest {
@@ -28,6 +35,9 @@ export function normalizeHtmlString(html?: string): string {
 
   let result = html
     .replace(/\r\n/g, '\n')
+    .replace(/<style([^>]*)><!--([\s\S]*?)--><\/style>/gi, (_match, attrs, content) => `<style${attrs}>${content.trim()}</style>`)
+    .replace(/&#39;|&apos;/g, '\'')
+    .replace(/&amp;/g, '&')
     .replace(/>\s+/g, '>')
     .replace(/\s+</g, '<')
     .replace(/\s+/g, ' ')
@@ -237,6 +247,23 @@ export function runConformance(
 export function createDefaultEngineAdapter(): BloggerEngineAdapter {
   return {
     evaluateExpression: (expr: string, context?: Record<string, any>) => evaluateExpression(expr, context),
+    analyze: (source: string, kind: 'template' | 'expression' = 'template') => {
+      const catalog = getSpecCatalog()
+      if (kind === 'expression') {
+        return validateExpression(source, catalog)
+      }
+      return [
+        ...validateTemplateStructure(source, catalog),
+        ...validateTemplateExpressions(source, catalog),
+      ]
+    },
+    renderTemplate: (source: string, context?: Record<string, any>) => {
+      const renderer = new BloggerReferenceRenderer({ emitWrappers: true })
+      if (!source.includes('<html') && !source.includes('<!DOCTYPE')) {
+        return renderer.compileFragment(source, context || {})
+      }
+      return renderer.render(source, context || {})
+    },
   }
 }
 

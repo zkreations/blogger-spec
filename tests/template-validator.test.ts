@@ -865,6 +865,10 @@ describe('helpers & canonical structure validation suite', () => {
       // Valid functional operators should NOT trigger BX1017
       const validDiags = validateExpression('resizeImage(data:post.featuredImage, 400)')
       expect(validDiags.some(d => d.code === 'BX1017')).toBe(false)
+
+      // Operators with infix-only syntax (e.g. where, filter) must trigger BX1017 if used as standalone function call
+      const whereFuncDiags = validateExpression('where(data:posts, p => p.id)')
+      expect(whereFuncDiags.some(d => d.code === 'BX1017')).toBe(true)
     })
 
     it('detects prohibited strict equality operators === and !== (BX1018)', () => {
