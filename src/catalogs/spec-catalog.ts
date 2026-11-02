@@ -1249,9 +1249,7 @@ export class SpecCatalog {
         return templateStr.replace(new RegExp(`\\b${rep}\\b`), strCount)
       }
     }
-    catch {
-      // Fallback
-    }
+    catch {}
     return localeForms['5']?.replace(/\b5\b/, strCount) ?? `${count} ${entry.default}`
   }
 

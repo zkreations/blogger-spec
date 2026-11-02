@@ -45,7 +45,6 @@ export function buildArchiveHierarchy(
   const expclass = options.defaultExpclass || 'expanded'
   const blogOrigin = mapper.blogHost ? `https://${mapper.blogHost}` : ''
 
-  // Group posts by Year -> Month
   const yearMap = new Map<number, Map<number, BloggerPostData[]>>()
 
   for (const post of posts) {
@@ -78,7 +77,6 @@ export function buildArchiveHierarchy(
     postList.push(post)
   }
 
-  // Sort years descending
   const sortedYears = Array.from(yearMap.keys()).sort((a, b) => b - a)
   const result: BloggerArchiveYearInterval[] = []
 

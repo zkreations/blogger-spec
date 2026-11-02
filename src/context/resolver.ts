@@ -210,7 +210,6 @@ export async function resolveBloggerContext(
     defaultTtlMs: config.cache?.ttlMs,
   })
 
-  // Consulta paralela de posts y páginas
   const [postsResponse, pagesResponse] = await Promise.all([
     client.fetchPosts(effectiveBlogId, { maxResults: 25 }),
     client.fetchPages(effectiveBlogId),
@@ -219,7 +218,6 @@ export async function resolveBloggerContext(
   const feed = postsResponse?.feed
 
   if (feed) {
-    // Derivar host del blog del feed
     const alternateLink = feed.link?.find(l => l.rel === 'alternate')?.href || ''
     let derivedHost = ''
     try {
@@ -255,10 +253,8 @@ export async function resolveBloggerContext(
     const blogMeta = normalizeBlogMetadata(feed, mapper, effectiveBlogId)
     const headerData = normalizeHeader(feed, mapper)
 
-    // Fusionar metadatos del blog
     context.blog = deepMerge(context.blog, blogMeta)
 
-    // Localizar mensajes conforme al idioma del blog
     if (blogLocale) {
       const spec = getSpecCatalog()
       const messagesMap = (spec as any).localesCatalog?.translations?.messages || {}
@@ -288,10 +284,8 @@ export async function resolveBloggerContext(
       }
     }
 
-    // Inicializar contenedores de widgets si no existen
     context.widgetData = context.widgetData || {}
 
-    // Inyectar datos en Blog1
     const blog1 = context.widgetData.Blog1 || {}
     let activePosts = normalizedPosts.slice()
 
@@ -330,9 +324,7 @@ export async function resolveBloggerContext(
           }
         }
       }
-      catch {
-        // ignore
-      }
+      catch {}
     }
 
     if (viewId === 'post' || viewId === 'static_page') {
@@ -353,7 +345,6 @@ export async function resolveBloggerContext(
           context.view.url = targetPost.url
           context.view.description = targetPost.snippets.short
 
-          // Fetch and attach comments for post
           const commentsResponse = await client.fetchComments(effectiveBlogId, targetPost.id)
           const rawComments: readonly BloggerRawEntry[] = commentsResponse?.feed?.entry || []
           if (rawComments.length > 0) {
@@ -603,7 +594,6 @@ export async function resolveBloggerContext(
           }
         }
         else if (viewId === 'post_listing' || updatedMax || updatedMin) {
-          // Newer Posts link
           if (startIndex <= (maxResults || 8)) {
             blog1.newerPageUrl = mapper.mapUrl(blogMeta.homepageUrl || (blogOrigin ? `${blogOrigin}/` : '/'))
           }
@@ -615,7 +605,6 @@ export async function resolveBloggerContext(
             blog1.newerPageUrl = mapper.mapUrl(`${blogOrigin}/search?updated-max=${prevDate}&max-results=${maxResults || 8}&start=${prevStart}${byDateSuffix}`)
           }
 
-          // Older Posts link
           if (hasMoreOlder) {
             const lastPost = activePosts[activePosts.length - 1]
             const nextDate = lastPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
@@ -657,7 +646,6 @@ export async function resolveBloggerContext(
       applyBlogConfiguration(context, config.config, viewId, activePosts)
     }
 
-    // Inyectar datos en PageList1
     const currentPath = (viewId === 'static_page' ? context.view?.url || config.overrides?.view?.url : undefined)
     const normalizedPages = rawPages.map(e => normalizePageEntry(e, mapper, currentPath))
     const pageListTitle = spec.getWidgetDefaultTitle('PageList', blogLocale) || 'Pages'
@@ -674,7 +662,6 @@ export async function resolveBloggerContext(
     }
     context.widgetData.PageList = context.widgetData.PageList1
 
-    // Inyectar datos en Label1
     const labelTitle = spec.getWidgetDefaultTitle('Label', blogLocale) || 'Labels'
     if (context.widgetData.Label1) {
       context.widgetData.Label1.labels = normalizedLabels
@@ -692,7 +679,6 @@ export async function resolveBloggerContext(
     }
     context.widgetData.Label = context.widgetData.Label1
 
-    // Inyectar datos en Header1
     const headerTitle = headerData.title || spec.getWidgetDefaultTitle('Header', blogLocale)
     if (context.widgetData.Header1) {
       context.widgetData.Header1.title = headerTitle
@@ -707,7 +693,6 @@ export async function resolveBloggerContext(
     }
     context.widgetData.Header = context.widgetData.Header1
 
-    // Inyectar FeaturedPost1 con el primer post si está disponible
     if (normalizedPosts.length > 0) {
       const featured = normalizedPosts[0]
       context.widgetData.FeaturedPost1 = {
@@ -720,7 +705,6 @@ export async function resolveBloggerContext(
       context.widgetData.FeaturedPost = context.widgetData.FeaturedPost1
     }
 
-    // Inyectar datos en BlogArchive1 si no existe
     if (!context.widgetData.BlogArchive1 && normalizedPosts.length > 0) {
       const archiveHierarchy = buildArchiveHierarchy(normalizedPosts, mapper, {
         locale: blogLocale,
@@ -734,7 +718,6 @@ export async function resolveBloggerContext(
       context.widgetData.BlogArchive = context.widgetData.BlogArchive1
     }
 
-    // Inyectar datos en PopularPosts1 si no existe
     if (!context.widgetData.PopularPosts1 && normalizedPosts.length > 0) {
       context.widgetData.PopularPosts1 = buildPopularPostsData(normalizedPosts, spec, blogLocale, 5)
       context.widgetData.PopularPosts = context.widgetData.PopularPosts1

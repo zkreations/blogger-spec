@@ -50,12 +50,10 @@ describe('parseTemplate AST parser', () => {
     const body = html.children.find((c: any) => c.type === 'Element' && c.name === 'body')
     expect(body).toBeDefined()
 
-    // Comment node preservation
     const comment = body.children.find((c: any) => c.type === 'Comment')
     expect(comment).toBeDefined()
     expect(comment.value.trim()).toBe('Main section container')
 
-    // Widget and includable traversal
     const section = body.children.find((c: any) => c.type === 'Directive' && c.name === 'b:section')
     expect(section).toBeDefined()
     const widget = section.children.find((c: any) => c.type === 'Directive' && c.name === 'b:widget')

@@ -48,7 +48,6 @@ describe('archive-tree hierarchy generator', () => {
 
     expect(hierarchy.length).toBe(2)
 
-    // Year 2023
     const year2023 = hierarchy[0]!
     expect(year2023.name).toBe('2023')
     expect(year2023.url).toBe('https://myblog.example.com/2023/')
@@ -56,7 +55,6 @@ describe('archive-tree hierarchy generator', () => {
     expect(year2023.toggleId).toBe('BlogArchive1_2023')
     expect(year2023.data.length).toBe(2)
 
-    // Month November
     const nov = year2023.data[0]!
     expect(nov.name).toBe('November')
     expect(nov.url).toBe('https://myblog.example.com/2023/11/')
@@ -66,7 +64,6 @@ describe('archive-tree hierarchy generator', () => {
     expect(nov.posts[0]!.title).toBe('First Post in November 2023')
     expect(nov.posts[1]!.title).toBe('Second Post in November 2023')
 
-    // Month April
     const apr = year2023.data[1]!
     expect(apr.name).toBe('April')
     expect(apr.url).toBe('https://myblog.example.com/2023/04/')
@@ -74,7 +71,6 @@ describe('archive-tree hierarchy generator', () => {
     expect(apr.toggleId).toBe('BlogArchive1_2023_04')
     expect(apr.posts.length).toBe(1)
 
-    // Year 2022
     const year2022 = hierarchy[1]!
     expect(year2022.name).toBe('2022')
     expect(year2022.url).toBe('https://myblog.example.com/2022/')
