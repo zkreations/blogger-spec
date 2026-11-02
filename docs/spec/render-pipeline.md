@@ -64,6 +64,11 @@ For expressions like `expr:name='"widget:" + data:widget.type'`:
    -->
    ```
 
+### 2.4. Subroutine Call Stack & Recursion Guard
+To prevent call stack exhaustion (`RangeError`) caused by circular subroutine dependencies (e.g. `<b:include name='A'/>` invoking `B` which in turn invokes `A`), compilers and reference engines enforce a maximum call depth:
+- **Default limit:** `maxIncludeDepth: 30` (analogous to `maxDepth: 50` in expression parsing).
+- **Behavior upon limit:** Further recursive expansion is aborted and a diagnostic comment (`<!-- recursion depth limit exceeded ([TargetId]) -->`) is emitted, guaranteeing process stability.
+
 ---
 
 ## 3. Phase 2: `<b:skin>` Compilation

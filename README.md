@@ -35,6 +35,8 @@ flowchart LR
 | `blogger-spec/data-path` | `resolveDataPath` across globals, widgets, platform types, messages, scoped variables, and skin variables. |
 | `blogger-spec/scope` | `ScopeEnvironment`: scope stack with shadowing and the precedence `lambda → loop → with → includable → widget → global`. |
 | `blogger-spec/version` | Layout version detection (v1, v2, v3). |
+| `blogger-spec/context` | Universal context resolver (`resolveBloggerContext`), Atom feed normalizer, URL mapper, and dynamic widget builders (`buildArchiveHierarchy`, `buildPopularPostsData`). |
+| `blogger-spec/ir` | Normalized intermediate representation (BIR), BIR compiler (`compileToIR`), and canonical reference HTML renderer (`BloggerReferenceRenderer`) with `maxIncludeDepth` recursion safety. |
 | `blogger-spec/catalogs` | Query facade, `getMockContext`, and snippet generators. |
 | `blogger-spec/inclusion-expander` | Server-side inclusion expansion and macro inlining. |
 | `blogger-spec/runner` | `runConformance`, `runSpecConformance`, `normalizeHtmlString`. |
@@ -218,6 +220,59 @@ getOperatorSnippet('filter')
 
 const ctx = getMockContext('post', { blog: { title: 'Custom Blog Title' } })
 ctx.view.isPost // true
+```
+
+### Resolve Blogger contexts (online & offline)
+
+Resolve canonical context structures from live Atom feeds or generate offline mock contexts deterministically:
+
+```typescript
+import { resolveBloggerContext } from 'blogger-spec'
+
+// Online resolution against any Blogger blog
+const onlineCtx = await resolveBloggerContext({
+  blogId: '1234567890123456789',
+  view: 'label_search',
+  targetUrl: 'https://example.com/search/label/news',
+  urlMode: 'remote',
+})
+
+// Offline resolution with local overrides
+const offlineCtx = await resolveBloggerContext({
+  offline: true,
+  view: 'homepage',
+  overrides: { blog: { title: 'Local Dev Blog' } },
+})
+```
+
+### Generate dynamic archive trees
+
+Construct hierarchical year/month date trees with canonical URLs, post counts, and toggle IDs directly from post entries:
+
+```typescript
+import { buildArchiveHierarchy, createUrlMapper } from 'blogger-spec'
+
+const mapper = createUrlMapper({ blogHost: 'example.com', urlMode: 'remote' })
+const archiveTree = buildArchiveHierarchy(posts, mapper, {
+  locale: 'es',
+  widgetId: 'BlogArchive1',
+})
+// [ { name: '2026', url: 'https://example.com/2026/', post-count: 12, data: [...] } ]
+```
+
+### Reference HTML rendering & BIR compilation
+
+Compile templates to language-agnostic Intermediate Representation (BIR) or render to HTML using the hermetic reference renderer with recursion safety:
+
+```typescript
+import { BloggerReferenceRenderer, compileToIR } from 'blogger-spec'
+
+// Compile to JSON-serializable IR
+const bir = compileToIR(templateXml)
+
+// Hermetic reference HTML evaluation with recursion guard
+const renderer = new BloggerReferenceRenderer({ maxIncludeDepth: 30 })
+const html = renderer.render(templateXml, onlineCtx)
 ```
 
 ## Conformance testing

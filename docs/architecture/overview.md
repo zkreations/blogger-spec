@@ -33,6 +33,8 @@ flowchart LR
 - **Atomic runtime evaluation:** Evaluates expressions with canonical relaxed equality (`isEqual`), null-safety, and collection lambdas (`filter`, `map`).
 - **Hierarchical subroutine resolution:** Determines the exact includable to dispatch following the 6-tier ontological hierarchy (`resolveIncludable`).
 - **Theme Designer skin compiler:** Extracts variables, decomposes compound fonts, and substitutes `$(...)` syntax within `<b:skin>` (`compileSkinCss`).
+- **Universal context resolution:** Online and offline context synthesis across 12 canonical views (`resolveBloggerContext`) with deterministic Atom feed normalization and dynamic secondary widget builders (`buildArchiveHierarchy`, `buildPopularPostsData`).
+- **Intermediate Representation & Reference Renderer:** Language-agnostic BIR compilation (`compileToIR`) and zero-dependency reference HTML renderer (`BloggerReferenceRenderer`) equipped with recursion guards (`maxIncludeDepth`).
 - **Canonical mock contexts:** 12 pre-built canonical views (`getMockContext`) validated under Draft 2020-12 schemas.
 - **Conformance suite and test harness:** Universal test runner (`runConformance`) backed by 300+ empirical fixtures verified against Blogger's production engine.
 
