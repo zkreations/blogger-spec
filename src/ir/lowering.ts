@@ -714,19 +714,27 @@ function lowerIncludableDirective(
 
   if (tier === 'local_widget' && ownerWidgetId) {
     context.symbolTable[`${ownerWidgetId}:${id}`] = includable
-    context.symbolTable[id] = includable
+    if (!context.symbolTable[id] || context.symbolTable[id].tier !== 'local_widget') {
+      context.symbolTable[id] = includable
+    }
   }
   else if (tier === 'gadget_specific' && ownerWidgetId) {
     context.symbolTable[`default:${ownerWidgetId}:${id}`] = includable
-    context.symbolTable[id] = includable
+    if (!context.symbolTable[id]) {
+      context.symbolTable[id] = includable
+    }
   }
   else if (tier === 'universal_widget') {
     context.symbolTable[`all:${id}`] = includable
-    context.symbolTable[id] = includable
+    if (!context.symbolTable[id]) {
+      context.symbolTable[id] = includable
+    }
   }
   else if (tier === 'shared_common') {
     context.symbolTable[`common:${id}`] = includable
-    context.symbolTable[id] = includable
+    if (!context.symbolTable[id]) {
+      context.symbolTable[id] = includable
+    }
   }
   else {
     context.symbolTable[id] = includable

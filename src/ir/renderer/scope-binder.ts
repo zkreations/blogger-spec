@@ -84,6 +84,8 @@ export function bindWidgetScope(
 ): { widgetCtx: Record<string, unknown>, wrapperTarget: MutationTarget } {
   const rawWidgetData = (parentCtx.widgets as any)?.[widgetId]
     ?? (parentCtx.widgetData as any)?.[widgetId]
+    ?? (parentCtx.widgetData as any)?.[`${widgetType}1`]
+    ?? (parentCtx.widgetData as any)?.[widgetType]
     ?? {}
 
   const widgetData = { ...rawWidgetData }
@@ -144,7 +146,14 @@ export function bindIncludeScope(
     else if (argName === 'data' && (!subroutine.params || subroutine.params.length === 0)) {
       if (val && typeof val === 'object' && !Array.isArray(val)) {
         Object.assign(subCtx, val)
-        subCtx.data = { ...widgetBaseData, ...(val as Record<string, any>) }
+        const parentData = (parentCtx.data && typeof parentCtx.data === 'object')
+          ? (parentCtx.data as Record<string, any>)
+          : {}
+        subCtx.data = { ...parentData, ...widgetBaseData, ...(val as Record<string, any>) }
+      }
+      else if (Array.isArray(val)) {
+        subCtx.data = val
+        subCtx['data:'] = val
       }
       else {
         subCtx.data = val

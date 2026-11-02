@@ -42,7 +42,7 @@ export interface BloggerReferenceRendererOptions extends BloggerCompileIROptions
 
   /**
    * Maximum call depth for <b:include> subroutine invocations to prevent RangeError from infinite loops.
-   * Defaults to 30.
+   * Defaults to 43 (canonical Blogger Core recursion ceiling; fails on frame 44).
    */
   readonly maxIncludeDepth?: number
 }
@@ -233,11 +233,13 @@ export class BloggerReferenceRenderer {
         if (!node.dynamicTarget && node.resolution?.tier === 'unresolved') {
           return node.resolution.failureComment ?? '<!-- unresolved -->'
         }
-        const maxDepth = this.currentOptions?.maxIncludeDepth ?? 30
+        const maxDepth = this.currentOptions?.maxIncludeDepth ?? 43
         if (this.includeDepth >= maxDepth) {
           return `<!-- recursion depth limit exceeded (${target}) -->`
         }
-        const subroutine = this.findIncludable(target)
+        const widgetId = (ctx.widget as any)?.id
+        const widgetType = (ctx.widget as any)?.type
+        const subroutine = this.findIncludable(target, widgetId, widgetType)
         if (!subroutine) {
           return node.resolution?.failureComment ?? '<!-- unresolved -->'
         }
@@ -269,8 +271,7 @@ export class BloggerReferenceRenderer {
           const { widgetCtx, wrapperTarget } = bindWidgetScope(widgetId, widgetType, sectionId, node.title, ctx)
           this.pipeline.pushTarget(wrapperTarget)
 
-          const mainSub = (widgetId ? this.findIncludable(`${widgetId}:main`) : undefined)
-            ?? this.findIncludable('main')
+          const mainSub = this.findIncludable('main', widgetId, widgetType)
 
           let bodyHtml = ''
           if (mainSub) {
@@ -296,7 +297,7 @@ export class BloggerReferenceRenderer {
         if (!name) {
           return ''
         }
-        const val = this.pipeline.resolveAttrValue(node.value, ctx, normalizeUrls)
+        const val = this.pipeline.resolveAttrValue(node.value, ctx, normalizeUrls, true)
         this.pipeline.applyAttrMutation(name, val)
         return ''
       }
@@ -317,8 +318,40 @@ export class BloggerReferenceRenderer {
     }
   }
 
-  private findIncludable(targetId: string): BirIncludable | undefined {
-    return this.currentIr?.symbolTable[targetId]
+  private findIncludable(targetId: string, widgetId?: string, widgetType?: string): BirIncludable | undefined {
+    if (!this.currentIr) {
+      return undefined
+    }
+
+    // 0. Prefijo explícito o inclusión de servidor (super.* o all-head-content)
+    if (targetId in this.currentIr.symbolTable) {
+      if (targetId.includes(':') || targetId.startsWith('super.') || this.currentIr.symbolTable[targetId]?.tier === 'platform_server') {
+        return this.currentIr.symbolTable[targetId]
+      }
+    }
+
+    // 1. Tier 1: local_widget (privado al widget contenedor)
+    if (widgetId && `${widgetId}:${targetId}` in this.currentIr.symbolTable) {
+      return this.currentIr.symbolTable[`${widgetId}:${targetId}`]
+    }
+
+    // 2. Tier 2: gadget_specific (<b:defaultmarkup type='WidgetType'>)
+    if (widgetType && `default:${widgetType}:${targetId}` in this.currentIr.symbolTable) {
+      return this.currentIr.symbolTable[`default:${widgetType}:${targetId}`]
+    }
+
+    // 3. Tier 3: universal_widget (<b:defaultmarkup type='All'>)
+    if (`all:${targetId}` in this.currentIr.symbolTable) {
+      return this.currentIr.symbolTable[`all:${targetId}`]
+    }
+
+    // 4. Tier 4: shared_common (<b:defaultmarkup type='Common'>)
+    if (`common:${targetId}` in this.currentIr.symbolTable) {
+      return this.currentIr.symbolTable[`common:${targetId}`]
+    }
+
+    // 5. Fallback a clave directa
+    return this.currentIr.symbolTable[targetId]
   }
 }
 

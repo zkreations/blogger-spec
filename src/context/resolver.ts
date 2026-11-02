@@ -190,6 +190,14 @@ export async function resolveBloggerContext(
     if (config.config) {
       applyBlogConfiguration(context, config.config, viewId)
     }
+    if (context.widgetData) {
+      for (const [key, val] of Object.entries(context.widgetData)) {
+        const typeMatch = key.match(/^([a-z]+)\d+$/i)
+        if (typeMatch && !context.widgetData[typeMatch[1]!]) {
+          context.widgetData[typeMatch[1]!] = val
+        }
+      }
+    }
     if (config.overrides) {
       return deepMerge(context, config.overrides)
     }
@@ -390,15 +398,21 @@ export async function resolveBloggerContext(
         context.view.search = context.view.search || {}
         context.view.search.query = effectiveQ
         context.view.searchQuery = effectiveQ
-        context.view.search.resultsMessage = `Showing posts matching the search for ${effectiveQ}`
-        context.view.search.resultsMessageHtml = `Showing posts matching the search for <b>${effectiveQ}</b>`
+        const isEs = blogLocale.startsWith('es')
+        context.view.search.resultsMessage = isEs
+          ? `Mostrando entradas que coinciden con la búsqueda de ${effectiveQ}`
+          : `Showing posts matching the search for ${effectiveQ}`
+        context.view.search.resultsMessageHtml = isEs
+          ? `Mostrando entradas que coinciden con la búsqueda de <b>${effectiveQ}</b>`
+          : `Showing posts matching the search for <b>${effectiveQ}</b>`
       }
 
       if (!effectiveQ && !pathLabel && !searchParams?.get('label') && searchParams?.get('updated-max')) {
         context.view = context.view || {}
         context.view.search = context.view.search || {}
-        context.view.search.resultsMessage = 'Showing older posts'
-        context.view.search.resultsMessageHtml = 'Showing older posts'
+        const isEs = blogLocale.startsWith('es')
+        context.view.search.resultsMessage = isEs ? 'Mostrando entradas anteriores' : 'Showing older posts'
+        context.view.search.resultsMessageHtml = isEs ? 'Mostrando entradas anteriores' : 'Showing older posts'
       }
 
       const effectiveLabel = pathLabel
@@ -637,6 +651,7 @@ export async function resolveBloggerContext(
     blog1.numPosts = activePosts.length
     blog1.title = spec.getWidgetDefaultTitle('Blog', blogLocale) || 'Blog Posts'
     context.widgetData.Blog1 = blog1
+    context.widgetData.Blog = blog1
 
     if (config.config) {
       applyBlogConfiguration(context, config.config, viewId, activePosts)
@@ -657,6 +672,7 @@ export async function resolveBloggerContext(
         links: normalizedPages,
       }
     }
+    context.widgetData.PageList = context.widgetData.PageList1
 
     // Inyectar datos en Label1
     const labelTitle = spec.getWidgetDefaultTitle('Label', blogLocale) || 'Labels'
@@ -674,6 +690,7 @@ export async function resolveBloggerContext(
         showFreqNumbers: false,
       }
     }
+    context.widgetData.Label = context.widgetData.Label1
 
     // Inyectar datos en Header1
     const headerTitle = headerData.title || spec.getWidgetDefaultTitle('Header', blogLocale)
@@ -688,6 +705,7 @@ export async function resolveBloggerContext(
         title: headerTitle,
       }
     }
+    context.widgetData.Header = context.widgetData.Header1
 
     // Inyectar FeaturedPost1 con el primer post si está disponible
     if (normalizedPosts.length > 0) {
@@ -699,6 +717,7 @@ export async function resolveBloggerContext(
         snippet: featured.snippets.long,
         postUrl: featured.url,
       }
+      context.widgetData.FeaturedPost = context.widgetData.FeaturedPost1
     }
 
     // Inyectar datos en BlogArchive1 si no existe
@@ -712,11 +731,13 @@ export async function resolveBloggerContext(
         style: 'HIERARCHY',
         data: archiveHierarchy,
       }
+      context.widgetData.BlogArchive = context.widgetData.BlogArchive1
     }
 
     // Inyectar datos en PopularPosts1 si no existe
     if (!context.widgetData.PopularPosts1 && normalizedPosts.length > 0) {
       context.widgetData.PopularPosts1 = buildPopularPostsData(normalizedPosts, spec, blogLocale, 5)
+      context.widgetData.PopularPosts = context.widgetData.PopularPosts1
     }
 
     const cookieChoices = config.cookieChoices ?? config.config?.blog?.cookieChoices ?? false

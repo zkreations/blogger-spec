@@ -27,7 +27,12 @@ export class DomMutationPipeline {
     return this.stack[this.stack.length - 1]
   }
 
-  resolveAttrValue(val: BirAttrValue, ctx: Record<string, unknown>, normalizeUrls = false): string | undefined {
+  resolveAttrValue(
+    val: BirAttrValue,
+    ctx: Record<string, unknown>,
+    normalizeUrls = false,
+    preserveBooleanFalse = false,
+  ): string | undefined {
     if (val.kind === 'static') {
       return val.value
     }
@@ -51,7 +56,10 @@ export class DomMutationPipeline {
       }
     }
 
-    if (evalResult === null || evalResult === undefined || evalResult === false || evalResult === '') {
+    if (evalResult === null || evalResult === undefined || evalResult === '') {
+      return undefined
+    }
+    if (evalResult === false && !preserveBooleanFalse) {
       return undefined
     }
     const resStr = String(evalResult)
@@ -84,7 +92,7 @@ export class DomMutationPipeline {
       if (attr.cond !== undefined && !isTruthy(evaluateExpression(attr.cond, ctx as Record<string, any>))) {
         continue
       }
-      const val = this.resolveAttrValue(attr.value, ctx, normalizeUrls)
+      const val = this.resolveAttrValue(attr.value, ctx, normalizeUrls, true)
       if (val !== undefined && val !== null && val !== '') {
         attrsMap.set(attr.name, val)
       }
