@@ -25,6 +25,18 @@ function unboxScalar(val: any): any {
   return val
 }
 
+function compareRelational(left: any, right: any): { l: any, r: any } {
+  const l = unboxScalar(left)
+  const r = unboxScalar(right)
+  if (typeof l === 'number' && typeof r === 'string' && r.trim() !== '' && !Number.isNaN(Number(r))) {
+    return { l, r: Number(r) }
+  }
+  if (typeof r === 'number' && typeof l === 'string' && l.trim() !== '' && !Number.isNaN(Number(l))) {
+    return { l: Number(l), r }
+  }
+  return { l, r }
+}
+
 export function isEqual(left: any, right: any): boolean {
   if (left === right)
     return true
@@ -292,7 +304,7 @@ export function applyModifier(target: any, modifier: string): any {
   return undefined
 }
 
-export function resizeImage(url: any, size: any, ratio?: string): any {
+export function resizeImage(url: any, size: any, ratio?: any): any {
   if (url === null || url === undefined)
     return undefined
 
@@ -317,8 +329,9 @@ export function resizeImage(url: any, size: any, ratio?: string): any {
   const targetWidth = dim
   let targetHeight = dim
 
-  if (ratio) {
-    const parts = ratio.split(':').map(Number)
+  const ratioStr = ratio != null ? String(ratio) : ''
+  if (ratioStr) {
+    const parts = ratioStr.split(':').map(Number)
     const rw = parts[0]
     const rh = parts[1]
     targetHeight = rw && rh ? Math.floor((dim * rh) / rw) : dim
@@ -350,7 +363,7 @@ export function resizeImage(url: any, size: any, ratio?: string): any {
   return res
 }
 
-export function sourceSet(url: any, sizes: any, ratio?: string): string {
+export function sourceSet(url: any, sizes: any, ratio?: any): string {
   if (!Array.isArray(sizes) || url === null || url === undefined)
     return ''
   return sizes
@@ -816,16 +829,15 @@ export class ExpressionEvaluator {
     }
 
     if (op === '<' || op === 'lt' || op === '>' || op === 'gt' || op === '<=' || op === 'lte' || op === '>=' || op === 'gte') {
-      const leftVal = this.evaluate(node.left, context, locals)
-      const rightVal = this.evaluate(node.right, context, locals)
+      const { l, r } = compareRelational(this.evaluate(node.left, context, locals), this.evaluate(node.right, context, locals))
       if (op === '<' || op === 'lt')
-        return leftVal < rightVal
+        return l < r
       if (op === '>' || op === 'gt')
-        return leftVal > rightVal
+        return l > r
       if (op === '<=' || op === 'lte')
-        return leftVal <= rightVal
+        return l <= r
       if (op === '>=' || op === 'gte')
-        return leftVal >= rightVal
+        return l >= r
     }
 
     if (op === 'in' || op === 'not in') {
@@ -966,19 +978,23 @@ export class ExpressionEvaluator {
     }
 
     if (fn === 'lt') {
-      return args[0] < args[1]
+      const { l, r } = compareRelational(args[0], args[1])
+      return l < r
     }
 
     if (fn === 'gt') {
-      return args[0] > args[1]
+      const { l, r } = compareRelational(args[0], args[1])
+      return l > r
     }
 
     if (fn === 'lte') {
-      return args[0] <= args[1]
+      const { l, r } = compareRelational(args[0], args[1])
+      return l <= r
     }
 
     if (fn === 'gte') {
-      return args[0] >= args[1]
+      const { l, r } = compareRelational(args[0], args[1])
+      return l >= r
     }
 
     if (fn === 'in') {
