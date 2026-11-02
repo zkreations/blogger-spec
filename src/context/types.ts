@@ -30,6 +30,8 @@ export interface BloggerContextConfig {
   readonly fetch?: typeof fetch
   /** Si es true, inyecta el aviso oficial de cookies (cookieChoiceInfo) antes de </body> */
   readonly cookieChoices?: boolean
+  /** URL base personalizada para el iframe del formulario de comentarios (evita bloqueos CORS y SameSite en dev local) */
+  readonly commentFrameBaseUrl?: string
 }
 
 export interface BloggerRawText {

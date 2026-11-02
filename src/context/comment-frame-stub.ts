@@ -1,0 +1,145 @@
+/**
+ * Canonical Comment Frame Stub for local development and preview environments.
+ * Emulates Blogger's embedded comment form iframe (data:post.commentFormIframeSrc)
+ * with zero external dependencies and bi-directional postMessage height negotiation.
+ */
+
+export interface CommentFrameStubOptions {
+  readonly locale?: string
+  readonly skin?: 'emporio' | 'soho' | 'notable' | 'contempo' | string
+  readonly initialHeight?: number
+  readonly expandedHeight?: number
+}
+
+export function getCommentFrameStubHtml(options: CommentFrameStubOptions = {}): string {
+  const locale = options.locale || 'en'
+  const isEs = locale.startsWith('es')
+  const placeholder = isEs ? 'Introduce tu comentario...' : 'Enter your comment...'
+  const initialHeight = options.initialHeight ?? 66
+  const expandedHeight = options.expandedHeight ?? 250
+
+  return `<!DOCTYPE html>
+<html lang="${locale}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blogger Comment Frame (Emulated)</title>
+  <style>
+    :root {
+      --border: #e5e5e5;
+      --avatar-bg: #e5e5e5;
+      --border-focus: #10b981;
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    }
+
+    * {
+      box-sizing: border-box;
+      background-color: transparent;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      outline: none;
+    }
+
+    body {
+      font-family: var(--font-family);
+      font-size: 1rem;
+      padding: 8px 12px;
+      overflow: hidden;
+    }
+
+    .input-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--avatar-bg);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .textarea-wrapper {
+      flex: 1;
+      position: relative;
+    }
+
+    .textarea-wrapper::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 2px;
+      width: 100%;
+      background-color: var(--border-focus);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .textarea-wrapper:not(:focus-within)::after {
+      transform: scaleX(0);
+      opacity: 0;
+    }
+
+    textarea {
+      width: 100%;
+      padding-block: .5rem;
+      border-bottom: 1px solid var(--border);
+      font-family: inherit;
+      font-size: 1rem;
+      resize: none;
+      display: block;
+      field-sizing: content;
+      max-height: 150px;
+      scrollbar-width: thin;
+    }
+  </style>
+</head>
+<body>
+  <div class="input-row">
+    <div class="avatar" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="i i-user"><circle cx="12" cy="6" r="4"></circle><path d="M3 22a1 1 0 0118 0Z"></path></svg>
+    </div>
+    <div class="textarea-wrapper">
+      <textarea id="comment-text" placeholder="${placeholder}"></textarea>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const textarea = document.getElementById('comment-text');
+      const initialHeight = ${initialHeight};
+      const expandedHeight = ${expandedHeight};
+
+      function notifyParent(height) {
+        if (window.parent && window.parent !== window) {
+          try {
+            window.parent.postMessage(JSON.stringify({ action: 'setHeight', height: height }), '*');
+            window.parent.postMessage('setHeight:' + height, '*');
+          } catch (e) {}
+        }
+      }
+
+      function expand() {
+        notifyParent(expandedHeight);
+      }
+
+      function collapse() {
+        if (!textarea.value.trim()) {
+          notifyParent(initialHeight);
+        }
+      }
+
+      textarea.addEventListener('focus', expand);
+      textarea.addEventListener('blur', collapse);
+
+      // Notify parent on startup
+      notifyParent(initialHeight);
+    })();
+  </script>
+</body>
+</html>`
+}

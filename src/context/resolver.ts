@@ -108,6 +108,25 @@ function applyBlogConfiguration(
   }
 
   const postsToApply = activePosts || (Array.isArray(blog1.posts) ? blog1.posts : [])
+  if (blogConfig.blog?.commentFrameBaseUrl) {
+    const base = blogConfig.blog.commentFrameBaseUrl
+    const separator = base.includes('?') ? '&' : '?'
+    const locale = blogConfig.blog.locale || context.blog?.locale || 'en'
+    const origin = context.blog?.homepageUrl || ''
+    for (const post of postsToApply) {
+      if (!post || typeof post !== 'object')
+        continue
+      const id = post.id ? String(post.id) : ''
+      const queryParts = [
+        `po=${encodeURIComponent(id)}`,
+        `hl=${encodeURIComponent(locale)}`,
+      ]
+      if (origin) {
+        queryParts.push(`origin=${encodeURIComponent(origin)}`)
+      }
+      post.commentFormIframeSrc = `${base}${separator}${queryParts.join('&')}`
+    }
+  }
   for (const post of postsToApply) {
     if (!post || typeof post !== 'object')
       continue
@@ -191,6 +210,30 @@ export async function resolveBloggerContext(
     if (config.config) {
       applyBlogConfiguration(context, config.config, viewId)
     }
+    const commentFrameBaseUrl = config.commentFrameBaseUrl || config.config?.blog?.commentFrameBaseUrl
+    if (commentFrameBaseUrl) {
+      const postsToUpdate = [
+        ...(Array.isArray(context.widgetData?.Blog1?.posts) ? context.widgetData.Blog1.posts : []),
+        ...(context.widgetData?.Blog1?.post ? [context.widgetData.Blog1.post] : []),
+        ...(context.view?.post ? [context.view.post] : []),
+      ]
+      const separator = commentFrameBaseUrl.includes('?') ? '&' : '?'
+      const locale = config.overrides?.blog?.locale || config.config?.blog?.locale || context.blog?.locale || 'en'
+      const origin = context.blog?.homepageUrl || ''
+      for (const post of postsToUpdate) {
+        if (!post || typeof post !== 'object')
+          continue
+        const id = post.id ? String(post.id) : ''
+        const queryParts = [
+          `po=${encodeURIComponent(id)}`,
+          `hl=${encodeURIComponent(locale)}`,
+        ]
+        if (origin) {
+          queryParts.push(`origin=${encodeURIComponent(origin)}`)
+        }
+        post.commentFormIframeSrc = `${commentFrameBaseUrl}${separator}${queryParts.join('&')}`
+      }
+    }
     if (context.widgetData) {
       for (const [key, val] of Object.entries(context.widgetData)) {
         const typeMatch = key.match(/^([a-z]+)\d+$/i)
@@ -239,10 +282,12 @@ export async function resolveBloggerContext(
     const blogLocale = config.overrides?.blog?.locale || config.config?.blog?.locale || 'en'
     const postSaa = config.overrides?.view?.saa || config.overrides?.saa || (config.overrides?.blog as any)?.saa
     const rawPosts: readonly BloggerRawEntry[] = feed.entry || []
+    const commentFrameBaseUrl = config.commentFrameBaseUrl || config.config?.blog?.commentFrameBaseUrl
     const postOptions = {
       saa: postSaa,
       dateFormat: config.config?.blog?.postDateFormat,
       titleAndEnclosureLinks: config.config?.blog?.titleAndEnclosureLinks,
+      commentFrameBaseUrl,
     }
     const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, effectiveBlogId, blogLocale, postOptions))
 

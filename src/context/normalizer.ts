@@ -18,6 +18,7 @@ export interface NormalizePostOptions {
   readonly saa?: string
   readonly titleAndEnclosureLinks?: boolean
   readonly dateFormat?: string
+  readonly commentFrameBaseUrl?: string
 }
 
 export function stripHtml(html: string): string {
@@ -222,6 +223,11 @@ export function normalizePostEntry(
       if (origin) {
         queryParts.push(`origin=${encodeURIComponent(origin)}`)
       }
+      if (options.commentFrameBaseUrl) {
+        const base = options.commentFrameBaseUrl
+        const separator = base.includes('?') ? '&' : '?'
+        return `${base}${separator}${queryParts.join('&')}`
+      }
       return `https://www.blogger.com/comment/frame/${blogId}?${queryParts.join('&')}`
     })(),
   }
@@ -331,9 +337,22 @@ export function normalizePageAsPostEntry(
       const origin = mapper.blogHost
         ? `https://${mapper.blogHost}`
         : (alternateLink.startsWith('http') ? new URL(alternateLink).origin : '')
-      const originParam = origin ? `&origin=${origin}` : ''
-      const saaParam = saa ? `&saa=${saa}` : ''
-      return `https://www.blogger.com/comment/frame/${blogId}?pa=${id}&hl=${locale}${saaParam}${originParam}`
+      const queryParts = [
+        `pa=${encodeURIComponent(id)}`,
+        `hl=${encodeURIComponent(locale)}`,
+      ]
+      if (saa) {
+        queryParts.push(`saa=${encodeURIComponent(saa)}`)
+      }
+      if (origin) {
+        queryParts.push(`origin=${encodeURIComponent(origin)}`)
+      }
+      if (options.commentFrameBaseUrl) {
+        const base = options.commentFrameBaseUrl
+        const separator = base.includes('?') ? '&' : '?'
+        return `${base}${separator}${queryParts.join('&')}`
+      }
+      return `https://www.blogger.com/comment/frame/${blogId}?${queryParts.join('&')}`
     })(),
   }
 }

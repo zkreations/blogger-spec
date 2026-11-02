@@ -60,6 +60,10 @@
           "type": "boolean",
           "default": false,
           "description": "Enables injection of the official Blogger cookie consent notice (cookieChoiceInfo) before </body>."
+        },
+        "commentFrameBaseUrl": {
+          "type": "string",
+          "description": "Custom base URL for the comment form iframe (data:post.commentFormIframeSrc), preventing CORS and frame restrictions in local dev environments."
         }
       }
     },

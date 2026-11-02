@@ -1,5 +1,6 @@
 export * from './archive-tree.js'
 export * from './client.js'
+export * from './comment-frame-stub.js'
 export * from './config-types.js'
 export * from './config-validator.js'
 export * from './date-formatter.js'
