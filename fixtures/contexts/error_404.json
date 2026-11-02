@@ -1,15 +1,15 @@
 {
   "blog": {
-    "title": "Mi Blog de Pruebas",
-    "description": "Bitácora sobre tecnología, diseño web y desarrollo de plantillas.",
-    "url": "https://ejemplo.blogspot.com/",
-    "canonicalUrl": "https://ejemplo.blogspot.com/",
-    "homepageUrl": "https://ejemplo.blogspot.com/",
+    "title": "Hamlet",
+    "description": "Theme for development",
+    "url": "https://hamlet.zkreations.com/",
+    "canonicalUrl": "https://hamlet.zkreations.com/",
+    "homepageUrl": "https://hamlet.zkreations.com/",
     "bloggerUrl": "https://www.blogger.com",
-    "blogId": "1234567890123456789",
-    "blogspotFaviconUrl": "https://ejemplo.blogspot.com/favicon.ico",
-    "locale": "es",
-    "localeUnderscoreDelimited": "es",
+    "blogId": "5408826600056783247",
+    "blogspotFaviconUrl": "https://hamlet.zkreations.com/favicon.ico",
+    "locale": "en",
+    "localeUnderscoreDelimited": "en",
     "languageDirection": "ltr",
     "encoding": "UTF-8",
     "isMobileRequest": false,
@@ -19,18 +19,19 @@
     "adsenseHasAds": false,
     "adsenseAutoAds": false,
     "enabledCommentProfileImages": true,
-    "metaDescription": "Bitácora sobre tecnología, diseño web y desarrollo de plantillas.",
+    "metaDescription": "Theme for development",
     "pageType": "error_page",
-    "pageTitle": "Página no encontrada - Mi Blog de Pruebas",
-    "pageName": "Página no encontrada - Mi Blog de Pruebas",
-    "searchUrl": "https://ejemplo.blogspot.com/search",
+    "pageTitle": "Page Not Found - Hamlet",
+    "pageName": "Page Not Found - Hamlet",
+    "searchUrl": "https://hamlet.zkreations.com/search",
     "adsenseClientId": "ca-pub-1234567890123456",
-    "adsenseHostId": "ca-host-pub-1556223355139109"
+    "adsenseHostId": "ca-host-pub-1556223355139109",
+    "language": "en"
   },
   "view": {
     "type": "error",
-    "title": "Página no encontrada - Mi Blog de Pruebas",
-    "description": "La página solicitada no se ha encontrado en este blog.",
+    "title": "Hamlet",
+    "description": "Theme for development",
     "url": "https://ejemplo.blogspot.com/404",
     "isHomepage": false,
     "isPost": false,
@@ -42,28 +43,102 @@
     "isSingleItem": false
   },
   "messages": {
-    "archive": "Archivo",
-    "at": "a la(s)",
-    "authorSaid": "%1 dijo&hellip;",
-    "by": "por",
-    "comments": "Comentarios",
-    "deleteComment": "Eliminar comentario",
-    "home": "Inicio",
-    "morePosts": "Más entradas",
-    "newer": "Más recientes",
-    "newerPosts": "Entradas más recientes",
-    "older": "Más antiguas",
-    "olderPosts": "Entradas más antiguas",
-    "noResultsFound": "No se han encontrado resultados",
-    "postAComment": "Publicar un comentario",
+    "archive": "Archive",
+    "at": "at",
+    "authorSaid": "__ARG1__ said&hellip;",
+    "by": "By",
+    "comments": "Comments",
+    "deleteComment": "Delete Comment",
+    "home": "Home",
+    "morePosts": "More posts",
+    "newer": "Newer",
+    "newerPosts": "Newer Posts",
+    "older": "Older",
+    "olderPosts": "Older Posts",
+    "noResultsFound": "No results found",
+    "postAComment": "Post a Comment",
     "postComment": "Publicar comentario",
-    "posts": "Entradas",
-    "readMore": "Leer más",
-    "search": "Buscar",
-    "share": "Compartir",
-    "subscribe": "Suscribirse",
-    "labels": "Etiquetas",
-    "location": "Ubicación"
+    "posts": "Posts",
+    "readMore": "Read more",
+    "search": "Search",
+    "share": "Share",
+    "subscribe": "Subscribe",
+    "labels": "Labels",
+    "location": "Location",
+    "adsGoHere": "Ads go here",
+    "authorSaidWithLink": "<a href=\"__ARG2__\" rel=\"nofollow\">__ARG1__</a> said&hellip;",
+    "blogArchive": "Blog Archive",
+    "blogAuthors": "Blog authors",
+    "byAuthor": "By __ARG1__",
+    "byAuthorLink": "By <a href=\"__ARG2__\">__ARG1__</a>",
+    "configurationRequired": "Configuration required",
+    "copy": "Copy",
+    "copyToClipboard": "Copy to clipboard",
+    "dynamicViewsNotAvailable": "This theme is not compatible with the blog's current settings. If you would like to use this theme, please ensure the blog is public and allows blog feeds.",
+    "edit": "Edit",
+    "emailAddress": "Email Address",
+    "emailPost": "Email Post",
+    "euCookieNotice": "This site uses cookies from Google to deliver its services, to personalize ads and to analyze traffic. Information about your use of this site is shared with Google. By using this site, you agree to its use of cookies.",
+    "euCookieNotice2018": "This site uses cookies from Google to deliver its services and to analyze traffic. Your IP address and user-agent are shared with Google along with performance and security metrics to ensure quality of service, generate usage statistics, and to detect and address abuse.",
+    "euCookieNoticeCloseButton": "Got it",
+    "euCookieResponsibility": "It is your responsibility to notify your visitors about cookies used on your blog. See http://www.blogger.com/go/cookiechoices for more details.",
+    "euCookieResponsibility2018": "It is your responsibility to notify your visitors about cookies used and data collected on your blog. Blogger makes a standard notification available for you to use on your blog, and you can customize it or replace with your own notice. See http://www.blogger.com/go/cookiechoices for more details.",
+    "featured": "Featured",
+    "getEmailNotifications": "Get email notifications",
+    "gotIt": "Got it",
+    "hidden": "Hidden",
+    "image": "Image",
+    "joinTheConversation": "Join the conversation",
+    "keepReading": "Keep reading",
+    "latestPosts": "Latest Posts",
+    "learnMore": "Learn More",
+    "linkCopiedToClipboard": "Link copied to clipboard!",
+    "loadMorePosts": "Load more posts",
+    "loading": "Loading&hellip;",
+    "moreEllipsis": "More&hellip;",
+    "myBlogList": "My Blog List",
+    "myFavoriteSites": "My favorite sites",
+    "myPhoto": "My photo",
+    "newest": "Newest",
+    "noTitle": "No title",
+    "ok": "Ok",
+    "oldest": "Oldest",
+    "on": "on",
+    "onlyTeamMembersCanComment": "Note: Only a member of this blog may post a comment.",
+    "photo": "Photo",
+    "popularPosts": "Popular Posts",
+    "popularPostsFromThisBlog": "Popular posts from this blog",
+    "postLink": "Post Link",
+    "postedBy": "Posted by",
+    "postedByAuthor": "Posted by __ARG1__",
+    "postedByAuthorLink": "Posted by <a href=\"__ARG2__\">__ARG1__</a>",
+    "poweredByBlogger": "Powered by Blogger",
+    "poweredByBloggerLink": "Powered by <a href='__ARG1__' target='_blank'>Blogger</a>",
+    "recentPosts": "Recent posts",
+    "reportAbuse": "Report Abuse",
+    "searchBlog": "Search blog",
+    "searchThisBlog": "Search this blog",
+    "shareOtherApps": "Other Apps",
+    "shareToOtherApps": "Share to other apps",
+    "showAll": "Show all",
+    "showLess": "Show less",
+    "showMore": "Show more",
+    "skipToMainContent": "Skip to main content",
+    "someOfMyFavoriteSites": "Some of my favorite sites",
+    "subscribeTo": "Subscribe to:",
+    "subscribeToThisBlog": "Subscribe to this blog",
+    "templateImagesBy": "Theme images by __ARG1__",
+    "templateImagesByLink": "Theme images by <a href=\"__ARG1__\">__ARG2__</a>",
+    "theresNothingHere": "There's nothing here!",
+    "title": "Title",
+    "viewAll": "View all",
+    "viewMyCompleteProfile": "View my complete profile",
+    "visible": "Visible",
+    "visitProfile": "Visit profile",
+    "visitSite": "Visit site",
+    "widget": "Gadget",
+    "widgetNotAvailableInPreview": "This content is not available in blog preview.",
+    "youMayLikeThesePosts": "You may like these posts"
   },
   "skin": {
     "vars": {
@@ -79,246 +154,264 @@
       {
         "id": "Blog1",
         "type": "Blog",
-        "sectionId": "main",
-        "title": "Entradas del blog"
+        "title": "Blog Posts",
+        "sectionId": "content"
       }
     ],
     "Header": [
       {
         "id": "Header1",
         "type": "Header",
-        "sectionId": "header",
-        "title": "Mi Blog de Pruebas"
+        "title": "Hamlet",
+        "description": "Theme for development",
+        "sectionId": "header"
       }
     ],
     "PageList": [
       {
         "id": "PageList1",
         "type": "PageList",
-        "sectionId": "header",
-        "title": "Páginas"
+        "title": "Pages",
+        "sectionId": "sidebar"
       }
     ],
     "Label": [
       {
         "id": "Label1",
         "type": "Label",
-        "sectionId": "sidebar",
-        "title": "Etiquetas"
+        "title": "Labels",
+        "sectionId": "sidebar"
       }
     ],
     "BlogArchive": [
       {
         "id": "BlogArchive1",
         "type": "BlogArchive",
-        "sectionId": "sidebar",
-        "title": "Archivo del blog"
-      }
-    ],
-    "FeaturedPost": [
-      {
-        "id": "FeaturedPost1",
-        "type": "FeaturedPost",
-        "sectionId": "sidebar",
-        "title": "Entrada destacada"
+        "title": "Blog Archive",
+        "sectionId": "sidebar"
       }
     ],
     "PopularPosts": [
       {
         "id": "PopularPosts1",
         "type": "PopularPosts",
-        "sectionId": "sidebar",
-        "title": "Entradas populares"
-      }
-    ],
-    "Profile": [
-      {
-        "id": "Profile1",
-        "type": "Profile",
-        "sectionId": "sidebar",
-        "title": "Sobre el autor"
-      }
-    ],
-    "HTML": [
-      {
-        "id": "HTML1",
-        "type": "HTML",
-        "sectionId": "sidebar",
-        "title": "HTML Personalizado"
+        "title": "Popular Posts",
+        "sectionId": "sidebar"
       }
     ],
     "LinkList": [
       {
         "id": "LinkList1",
         "type": "LinkList",
-        "sectionId": "sidebar",
-        "title": "Enlaces Útiles"
-      }
-    ],
-    "BlogSearch": [
-      {
-        "id": "BlogSearch1",
-        "type": "BlogSearch",
-        "sectionId": "sidebar",
-        "title": "Buscar en el blog"
+        "title": "Useful Links",
+        "sectionId": "sidebar"
       }
     ],
     "ContactForm": [
       {
         "id": "ContactForm1",
         "type": "ContactForm",
-        "sectionId": "sidebar",
-        "title": "Formulario de contacto"
+        "title": "Contact Form",
+        "sectionId": "sidebar"
       }
     ],
     "Stats": [
       {
         "id": "Stats1",
         "type": "Stats",
-        "sectionId": "footer",
-        "title": "Estadísticas del blog"
-      }
-    ],
-    "Translate": [
-      {
-        "id": "Translate1",
-        "type": "Translate",
-        "sectionId": "sidebar",
-        "title": "Traducir"
+        "title": "Total Pageviews",
+        "sectionId": "footer"
       }
     ],
     "Attribution": [
       {
         "id": "Attribution1",
         "type": "Attribution",
-        "sectionId": "footer",
-        "title": "Atribución"
+        "title": "Attribution",
+        "sectionId": "footer"
+      }
+    ],
+    "Profile": [
+      {
+        "id": "Profile1",
+        "type": "Profile",
+        "title": "About Me",
+        "sectionId": "sidebar"
+      }
+    ],
+    "HTML": [
+      {
+        "id": "HTML1",
+        "type": "HTML",
+        "title": "Custom HTML",
+        "sectionId": "sidebar"
+      }
+    ],
+    "BlogSearch": [
+      {
+        "id": "BlogSearch1",
+        "type": "BlogSearch",
+        "title": "Search This Blog",
+        "sectionId": "sidebar"
+      }
+    ],
+    "FeaturedPost": [
+      {
+        "id": "FeaturedPost1",
+        "type": "FeaturedPost",
+        "title": "Featured Post",
+        "sectionId": "sidebar"
+      }
+    ],
+    "Translate": [
+      {
+        "id": "Translate1",
+        "type": "Translate",
+        "title": "Translate",
+        "sectionId": "sidebar"
       }
     ]
   },
   "widgetData": {
     "Blog1": {
-      "title": "Entradas del blog",
-      "numPosts": 7,
+      "title": "Blog Posts",
+      "numPosts": 0,
       "languageCode": "es",
       "allBylineItems": [
         {
           "name": "share",
-          "label": "Compartir"
+          "label": "Share"
         },
         {
           "name": "author",
-          "label": "Por"
+          "label": "By"
         },
         {
           "name": "timestamp",
-          "label": "a la(s)"
+          "label": "at"
         },
         {
           "name": "comments",
-          "label": "Comentarios"
+          "label": "Comments"
         },
         {
           "name": "icons",
-          "label": "Iconos"
+          "label": "Icons"
         },
         {
           "name": "labels",
-          "label": "Etiquetas"
+          "label": "Labels"
         },
         {
           "name": "location",
-          "label": "Ubicación"
+          "label": "Location"
         }
       ],
-      "posts": []
+      "posts": [],
+      "navMessage": "Sorry, the page you were looking for in this blog does not exist."
     },
     "Header1": {
-      "title": "Mi Blog de Pruebas",
-      "description": "Bitácora sobre tecnología, diseño web y desarrollo de plantillas.",
+      "title": "Hamlet",
+      "description": "Theme for development",
       "image": "",
       "imagePlacement": "BEHIND",
-      "shrinkToFit": false
+      "shrinkToFit": false,
+      "url": "https://hamlet.zkreations.com/"
     },
     "PageList1": {
-      "title": "Páginas",
+      "title": "Pages",
       "links": [
         {
-          "id": "c0",
-          "title": "Inicio",
-          "href": "https://ejemplo.blogspot.com/",
+          "id": "2772603359269059586",
+          "title": "Typography",
+          "href": "https://hamlet.zkreations.com/p/typography.html",
           "isCurrentPage": false
         },
         {
-          "id": "2001",
-          "title": "Acerca de Nosotros",
-          "href": "https://ejemplo.blogspot.com/p/acerca-de.html",
-          "isCurrentPage": false
-        },
-        {
-          "id": "2002",
-          "title": "Contacto",
-          "href": "https://ejemplo.blogspot.com/p/contacto.html",
+          "id": "3930577390084377949",
+          "title": "Contact",
+          "href": "https://hamlet.zkreations.com/p/contact.html",
           "isCurrentPage": false
         }
       ]
     },
     "Label1": {
-      "title": "Etiquetas",
+      "title": "Labels",
       "display": "list",
-      "showFreqNumbers": true,
+      "showFreqNumbers": false,
       "labels": [
         {
-          "name": "blogger",
-          "count": 5,
-          "url": "https://ejemplo.blogspot.com/search/label/blogger",
-          "cssSize": 5
+          "name": "adventure",
+          "count": 1,
+          "url": "https://hamlet.zkreations.com/search/label/adventure"
         },
         {
-          "name": "tecnologia",
-          "count": 3,
-          "url": "https://ejemplo.blogspot.com/search/label/tecnologia",
-          "cssSize": 3
-        },
-        {
-          "name": "diseño",
+          "name": "biodiversity",
           "count": 2,
-          "url": "https://ejemplo.blogspot.com/search/label/dise%C3%B1o",
-          "cssSize": 2
+          "url": "https://hamlet.zkreations.com/search/label/biodiversity"
+        },
+        {
+          "name": "bridge",
+          "count": 1,
+          "url": "https://hamlet.zkreations.com/search/label/bridge"
+        },
+        {
+          "name": "essay",
+          "count": 7,
+          "url": "https://hamlet.zkreations.com/search/label/essay"
+        },
+        {
+          "name": "inspiration",
+          "count": 3,
+          "url": "https://hamlet.zkreations.com/search/label/inspiration"
+        },
+        {
+          "name": "mountains",
+          "count": 1,
+          "url": "https://hamlet.zkreations.com/search/label/mountains"
+        },
+        {
+          "name": "nature",
+          "count": 5,
+          "url": "https://hamlet.zkreations.com/search/label/nature"
+        },
+        {
+          "name": "photo",
+          "count": 4,
+          "url": "https://hamlet.zkreations.com/search/label/photo"
         }
       ]
     },
     "BlogArchive1": {
-      "title": "Archivo del blog",
+      "title": "Blog Archive",
       "style": "HIERARCHY",
       "data": [
         {
-          "name": "2026",
-          "url": "https://ejemplo.blogspot.com/2026/",
+          "name": "2023",
+          "url": "https://hamlet.zkreations.com/2023/",
           "post-count": 3,
           "expclass": "expanded",
-          "toggleId": "BlogArchive1_2026",
+          "toggleId": "BlogArchive1_2023",
           "posts": [],
           "data": [
             {
-              "name": "octubre",
-              "url": "https://ejemplo.blogspot.com/2026/10/",
+              "name": "November",
+              "url": "https://hamlet.zkreations.com/2023/11/",
               "post-count": 3,
               "expclass": "expanded",
-              "toggleId": "BlogArchive1_2026_10",
-              "data": [],
+              "toggleId": "BlogArchive1_2023_11",
               "posts": [
                 {
-                  "title": "Guía Definitiva de Plantillas Blogger",
-                  "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html"
+                  "title": "The Importance of Environmental Care",
+                  "url": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html"
                 },
                 {
-                  "title": "Novedades de XML en Blogger Layouts v3",
-                  "url": "https://ejemplo.blogspot.com/2026/10/novedades-de-xml.html"
+                  "title": "Submerged in Beauty",
+                  "url": "https://hamlet.zkreations.com/2023/04/submerged-in-beauty.html"
                 },
                 {
-                  "title": "Optimización de Fuentes e Imágenes para la Web",
-                  "url": "https://ejemplo.blogspot.com/2026/10/optimizacion-de-fuentes.html"
+                  "title": "The Mysterious Black House",
+                  "url": "https://hamlet.zkreations.com/2023/04/the-mysterious-black-house.html"
                 }
               ]
             }
@@ -327,133 +420,54 @@
       ]
     },
     "FeaturedPost1": {
-      "title": "Entrada destacada",
-      "postDisplay": "SHOW_ALL",
-      "posts": [
-        {
-          "id": "1001",
-          "title": "Guía Definitiva de Plantillas Blogger",
-          "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html",
-          "absoluteUrl": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html",
-          "body": "<p>Aprende las mejores prácticas para crear temas modernos en Blogger Layouts v3. Este artículo cubre la resolución ontológica de includables, expresiones lambda y la compilación de Theme Designer.</p>",
-          "date": "28 de octubre de 2026",
-          "lastUpdated": "28 de octubre de 2026",
-          "featuredImage": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200",
-          "thumbnailUrl": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=150",
-          "author": {
-            "name": "Abel",
-            "profileUrl": "https://www.blogger.com/profile/0123456789",
-            "aboutMe": "Desarrollador web y autor de especificaciones de plantillas.",
-            "authorPhoto": {
-              "url": "https://lh3.googleusercontent.com/a/default-user=s80-c",
-              "width": 80,
-              "height": 80,
-              "alt": "Foto de Abel"
-            }
-          },
-          "labels": [
-            {
-              "name": "tecnologia",
-              "url": "https://ejemplo.blogspot.com/search/label/tecnologia"
-            },
-            {
-              "name": "blogger",
-              "url": "https://ejemplo.blogspot.com/search/label/blogger"
-            }
-          ],
-          "snippets": {
-            "short": "Aprende las mejores prácticas para crear temas modernos en Blogger...",
-            "long": "Aprende las mejores prácticas para crear temas modernos en Blogger Layouts v3 paso a paso con ejemplos reales y pruebas empíricas."
-          },
-          "numberOfComments": 2,
-          "allowComments": true,
-          "allowNewComments": true,
-          "showThreadedComments": true,
-          "hasJumpLink": true,
-          "comments": [
-            {
-              "id": "c1001",
-              "author": "Carlos",
-              "authorAvatarSrc": "https://lh3.googleusercontent.com/a/default-user=s35-c",
-              "authorUrl": "https://carlos.dev",
-              "authorUserType": "BLOGGER",
-              "body": "<p>Excelente artículo sobre plantillas Blogger. Muy completo.</p>",
-              "timestamp": "28 de octubre de 2026, 10:30",
-              "timestampValue": 1793201400000,
-              "timestampAbs": 1793201400000,
-              "inReplyTo": "",
-              "isDeleted": false,
-              "adminClass": "",
-              "deleteUrl": "https://www.blogger.com/delete-comment.g?blogID=1234567890123456789&postID=c1001",
-              "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html#c1001",
-              "anchorName": "c1001"
-            },
-            {
-              "id": "c1002",
-              "author": "Abel",
-              "authorAvatarSrc": "https://lh3.googleusercontent.com/a/default-user=s80-c",
-              "authorUrl": "https://www.blogger.com/profile/0123456789",
-              "authorUserType": "BLOGGER",
-              "body": "<p>¡Muchas gracias Carlos! Me alegra que te sirva de guía.</p>",
-              "timestamp": "28 de octubre de 2026, 11:15",
-              "timestampValue": 1793204100000,
-              "timestampAbs": 1793204100000,
-              "inReplyTo": "c1001",
-              "isDeleted": false,
-              "adminClass": "is-admin",
-              "deleteUrl": "https://www.blogger.com/delete-comment.g?blogID=1234567890123456789&postID=c1002",
-              "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html#c1002",
-              "anchorName": "c1002"
-            }
-          ],
-          "commentFormIframeSrc": "https://www.blogger.com/comment-iframe.g?blogID=1234567890123456789&postID=1001"
-        }
-      ]
+      "title": "Featured Post",
+      "postId": "8389032230243957219",
+      "postTitle": "The Importance of Environmental Care",
+      "snippet": "Our planet is facing a crisis. From rising temperatures to devastating natural disasters, it's clear that we must take action to protect the environment. But why is environmental care so important, and what can we do to make a difference? The Importa…",
+      "postUrl": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html"
     },
     "PopularPosts1": {
-      "title": "Entradas populares",
+      "title": "Popular Posts",
       "postDisplay": {
-        "showAuthor": true,
-        "showDate": true,
-        "showFeaturedImage": true,
         "showSnippet": true,
-        "showTitle": true
+        "showTitle": true,
+        "showAuthor": true
       },
       "posts": [
         {
-          "id": "1001",
-          "title": "Guía Definitiva de Plantillas Blogger",
-          "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html",
-          "absoluteUrl": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html",
-          "body": "<p>Aprende las mejores prácticas para crear temas modernos en Blogger Layouts v3. Este artículo cubre la resolución ontológica de includables, expresiones lambda y la compilación de Theme Designer.</p>",
-          "date": "28 de octubre de 2026",
-          "lastUpdated": "28 de octubre de 2026",
+          "id": "8389032230243957219",
+          "title": "The Importance of Environmental Care",
+          "url": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html",
+          "absoluteUrl": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html",
+          "body": "<p>Our planet is facing a crisis. From rising temperatures to devastating natural disasters, it's clear that human activity is taking a toll on the environment.</p>",
+          "date": "April 22, 2023",
+          "lastUpdated": "November 1, 2026",
           "featuredImage": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200",
           "thumbnailUrl": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=150",
           "author": {
-            "name": "Abel",
-            "profileUrl": "https://www.blogger.com/profile/0123456789",
-            "aboutMe": "Desarrollador web y autor de especificaciones de plantillas.",
+            "name": "Iveth",
+            "profileUrl": "https://www.blogger.com/profile/05162121526782264118",
+            "aboutMe": "Theme designer and web developer.",
             "authorPhoto": {
-              "url": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+              "url": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh2_arOdF_6xLjOEaKR63hFWGqRcV9DoUrWdx1TLNCPeA29Gp1z1A1CzQSTLSbm28yBf4heS79dKKGO7KSn_FqIVYVNE6RFlwD_MZZecjOK__-RC04tgn5vHo_qdvA57UiBnOvISHO8j5zjzmV0UcZrgg0gx_ClEEpSJXZShICyPhY6iA/s220/IMG_20230925_145047.jpg",
               "width": 80,
               "height": 80,
-              "alt": "Foto de Abel"
+              "alt": "Iveth"
             }
           },
           "labels": [
             {
-              "name": "tecnologia",
-              "url": "https://ejemplo.blogspot.com/search/label/tecnologia"
+              "name": "biodiversity",
+              "url": "https://hamlet.zkreations.com/search/label/biodiversity"
             },
             {
-              "name": "blogger",
-              "url": "https://ejemplo.blogspot.com/search/label/blogger"
+              "name": "nature",
+              "url": "https://hamlet.zkreations.com/search/label/nature"
             }
           ],
           "snippets": {
-            "short": "Aprende las mejores prácticas para crear temas modernos en Blogger...",
-            "long": "Aprende las mejores prácticas para crear temas modernos en Blogger Layouts v3 paso a paso con ejemplos reales y pruebas empíricas."
+            "short": "Our planet is facing a crisis. From rising temperatures to devastating...",
+            "long": "Our planet is facing a crisis. From rising temperatures to devastating natural disasters, it's clear that human activity is taking a toll on the environment."
           },
           "numberOfComments": 2,
           "allowComments": true,
@@ -462,140 +476,84 @@
           "hasJumpLink": true,
           "comments": [
             {
-              "id": "c1001",
-              "author": "Carlos",
-              "authorAvatarSrc": "https://lh3.googleusercontent.com/a/default-user=s35-c",
-              "authorUrl": "https://carlos.dev",
+              "id": "7495685752728051999",
+              "author": "Iveth",
+              "authorAvatarSrc": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh2_arOdF_6xLjOEaKR63hFWGqRcV9DoUrWdx1TLNCPeA29Gp1z1A1CzQSTLSbm28yBf4heS79dKKGO7KSn_FqIVYVNE6RFlwD_MZZecjOK__-RC04tgn5vHo_qdvA57UiBnOvISHO8j5zjzmV0UcZrgg0gx_ClEEpSJXZShICyPhY6iA/s220/IMG_20230925_145047.jpg",
+              "authorUrl": "https://www.blogger.com/profile/05162121526782264118",
               "authorUserType": "BLOGGER",
-              "body": "<p>Excelente artículo sobre plantillas Blogger. Muy completo.</p>",
-              "timestamp": "28 de octubre de 2026, 10:30",
-              "timestampValue": 1793201400000,
-              "timestampAbs": 1793201400000,
+              "body": "<p>Thank you for sharing your thoughts! I believe that awareness is the first step.</p>",
+              "timestamp": "November 1, 2026 at 5:58 PM",
+              "timestampValue": 1793584722190,
+              "timestampAbs": 1793584722,
               "inReplyTo": "",
               "isDeleted": false,
-              "adminClass": "",
-              "deleteUrl": "https://www.blogger.com/delete-comment.g?blogID=1234567890123456789&postID=c1001",
-              "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html#c1001",
-              "anchorName": "c1001"
-            },
-            {
-              "id": "c1002",
-              "author": "Abel",
-              "authorAvatarSrc": "https://lh3.googleusercontent.com/a/default-user=s80-c",
-              "authorUrl": "https://www.blogger.com/profile/0123456789",
-              "authorUserType": "BLOGGER",
-              "body": "<p>¡Muchas gracias Carlos! Me alegra que te sirva de guía.</p>",
-              "timestamp": "28 de octubre de 2026, 11:15",
-              "timestampValue": 1793204100000,
-              "timestampAbs": 1793204100000,
-              "inReplyTo": "c1001",
-              "isDeleted": false,
-              "adminClass": "is-admin",
-              "deleteUrl": "https://www.blogger.com/delete-comment.g?blogID=1234567890123456789&postID=c1002",
-              "url": "https://ejemplo.blogspot.com/2026/10/guia-definitiva-de-plantillas.html#c1002",
-              "anchorName": "c1002"
+              "adminClass": "blog-admin pid-672146995",
+              "deleteUrl": "https://www.blogger.com/comment/delete/5408826600056783247/7495685752728051999",
+              "url": "https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html?showComment=1793584722190#c7495685752728051999",
+              "anchorName": "c7495685752728051999"
             }
           ],
-          "commentFormIframeSrc": "https://www.blogger.com/comment-iframe.g?blogID=1234567890123456789&postID=1001"
-        },
-        {
-          "id": "1002",
-          "title": "Novedades de XML en Blogger Layouts v3",
-          "url": "https://ejemplo.blogspot.com/2026/10/novedades-de-xml.html",
-          "absoluteUrl": "https://ejemplo.blogspot.com/2026/10/novedades-de-xml.html",
-          "body": "<p>Revisión en profundidad de los atributos expr:*, b:with, b:switch y las nuevas capacidades de manipulación semántica del DOM.</p>",
-          "date": "20 de octubre de 2026",
-          "lastUpdated": "21 de octubre de 2026",
-          "featuredImage": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1200",
-          "thumbnailUrl": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=150",
-          "author": {
-            "name": "Abel",
-            "profileUrl": "https://www.blogger.com/profile/0123456789",
-            "aboutMe": "Desarrollador web y autor de especificaciones de plantillas.",
-            "authorPhoto": {
-              "url": "https://lh3.googleusercontent.com/a/default-user=s80-c",
-              "width": 80,
-              "height": 80,
-              "alt": "Foto de Abel"
-            }
-          },
-          "labels": [
-            {
-              "name": "blogger",
-              "url": "https://ejemplo.blogspot.com/search/label/blogger"
-            }
-          ],
-          "snippets": {
-            "short": "Revisión en profundidad de los atributos expr:* y directivas...",
-            "long": "Revisión en profundidad de los atributos expr:*, b:with, b:switch y las nuevas capacidades semánticas de Layouts v3."
-          },
-          "numberOfComments": 0,
-          "allowComments": true,
-          "allowNewComments": true,
-          "showThreadedComments": true,
-          "hasJumpLink": false,
-          "comments": [],
-          "commentFormIframeSrc": "https://www.blogger.com/comment-iframe.g?blogID=1234567890123456789&postID=1002"
+          "commentFormIframeSrc": "https://www.blogger.com/comment/frame/5408826600056783247?po=8389032230243957219&hl=en&origin=https%3A%2F%2Fhamlet.zkreations.com"
         }
       ]
     },
     "Profile1": {
-      "title": "Sobre el autor",
+      "title": "About Me",
       "team": false,
-      "displayname": "Abel",
-      "aboutme": "Desarrollador web enfocado en la especificación de estándares y plantillas para Blogger.",
-      "location": "Perú",
+      "displayname": "Iveth",
+      "aboutme": "Theme designer and web developer for Blogger Layouts v3.",
+      "location": "United States",
       "showlocation": true,
       "showaboutme": true,
       "hasgoogleprofile": true,
-      "userUrl": "https://www.blogger.com/profile/0123456789",
+      "userUrl": "https://www.blogger.com/profile/05162121526782264118",
       "authorPhoto": {
-        "url": "https://lh3.googleusercontent.com/a/default-user=s80-c",
+        "url": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh2_arOdF_6xLjOEaKR63hFWGqRcV9DoUrWdx1TLNCPeA29Gp1z1A1CzQSTLSbm28yBf4heS79dKKGO7KSn_FqIVYVNE6RFlwD_MZZecjOK__-RC04tgn5vHo_qdvA57UiBnOvISHO8j5zjzmV0UcZrgg0gx_ClEEpSJXZShICyPhY6iA/s220/IMG_20230925_145047.jpg",
         "width": 80,
         "height": 80
       }
     },
     "HTML1": {
-      "title": "HTML Personalizado",
-      "content": "<div class=\"widget-content\">Contenido HTML de prueba</div>"
+      "title": "Custom HTML",
+      "content": "<div class=\"widget-content\">Sample custom HTML content</div>"
     },
     "LinkList1": {
-      "title": "Enlaces Útiles",
+      "title": "Useful Links",
       "shownum": 3,
       "sorting": "none",
       "links": [
         {
-          "name": "Inicio",
-          "target": "https://ejemplo.blogspot.com/"
+          "name": "Home",
+          "target": "https://hamlet.zkreations.com/"
         },
         {
-          "name": "Acerca de",
-          "target": "https://ejemplo.blogspot.com/p/acerca-de.html"
+          "name": "Typography",
+          "target": "https://hamlet.zkreations.com/p/typography.html"
         },
         {
-          "name": "Contacto",
-          "target": "https://ejemplo.blogspot.com/p/contacto.html"
+          "name": "Contact",
+          "target": "https://hamlet.zkreations.com/p/contact.html"
         }
       ]
     },
     "BlogSearch1": {
-      "title": "Buscar en el blog"
+      "title": "Search This Blog"
     },
     "ContactForm1": {
-      "title": "Formulario de contacto",
+      "title": "Contact Form",
       "submitUrl": "https://www.blogger.com/contact-form.do",
-      "contactFormNameMsg": "Nombre",
-      "contactFormEmailMsg": "Correo electrónico",
-      "contactFormMessageMsg": "Mensaje",
-      "contactFormSendMsg": "Enviar",
-      "contactFormSendingMsg": "Enviando...",
-      "contactFormSentMsg": "Tu mensaje ha sido enviado.",
-      "contactFormNotSentMsg": "No se pudo enviar el mensaje. Inténtalo de nuevo más tarde.",
-      "contactFormEmptyMessageMsg": "El campo de mensaje no puede estar vacío.",
-      "contactFormInvalidEmailMsg": "Es necesario un correo electrónico válido."
+      "contactFormNameMsg": "Name",
+      "contactFormEmailMsg": "Email",
+      "contactFormMessageMsg": "Message",
+      "contactFormSendMsg": "Send",
+      "contactFormSendingMsg": "Sending...",
+      "contactFormSentMsg": "Your message has been sent.",
+      "contactFormNotSentMsg": "Could not send message. Please try again later.",
+      "contactFormEmptyMessageMsg": "Message field cannot be empty.",
+      "contactFormInvalidEmailMsg": "A valid email is required."
     },
     "Stats1": {
-      "title": "Estadísticas del blog",
+      "title": "Total Pageviews",
       "showAnimatedCounter": true,
       "showGraphicalCounter": false,
       "showSparkline": true,
@@ -603,13 +561,13 @@
       "totalVisits": 125430
     },
     "Translate1": {
-      "title": "Traducir",
+      "title": "Translate",
       "layout": "VERTICAL",
-      "pageLanguage": "es"
+      "pageLanguage": "en"
     },
     "Attribution1": {
-      "title": "Atribución",
-      "copyright": "© 2026 Hamlet Blog. Con tecnología de Blogger.",
+      "title": "Attribution",
+      "copyright": "Copyright 2026 Hamlet. Powered by Blogger.",
       "bloggerUrl": "https://www.blogger.com",
       "imageAuthor": ""
     }
