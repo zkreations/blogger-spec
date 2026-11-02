@@ -4,9 +4,12 @@
  */
 import type { BloggerCompileIROptions } from './compiler.js'
 import type { BirIncludable, BirNode, BloggerIRDocument } from './types.js'
+import { getSpecCatalog } from '../catalogs/index.js'
+import { expandServerInclusion } from '../inclusion-expander.js'
 import { evaluateExpression, isEqual } from '../parser/index.js'
 import { isTruthy } from '../type-system.js'
 import { compileToIR } from './compiler.js'
+import { lowerTemplate } from './lowering.js'
 import { DomMutationPipeline } from './renderer/dom-mutation-pipeline.js'
 import { HTML_VOID_ELEMENTS } from './renderer/html-serializer.js'
 import {
@@ -136,7 +139,7 @@ export class BloggerReferenceRenderer {
         this.pipeline.pushTarget(target)
 
         let childrenHtml = ''
-        if (!node.isVoid) {
+        if (!node.isVoid || (!node.selfClosing && !node.whitespaceRemove)) {
           childrenHtml = this.renderNodes(node.children, ctx)
 
           if (node.tag.toLowerCase() === 'head' && this.currentIr?.skin) {
@@ -148,8 +151,9 @@ export class BloggerReferenceRenderer {
         const attrStr = this.pipeline.serializeAttributes(target, normalizeUrls)
 
         const isVoid = node.isVoid && HTML_VOID_ELEMENTS.has(node.tag.toLowerCase())
-        if (isVoid) {
-          return `<${node.tag}${attrStr}/>`
+        if (isVoid && (node.selfClosing || node.whitespaceRemove)) {
+          const selfClosing = this.currentOptions?.selfClosingVoid !== false
+          return selfClosing ? `<${node.tag}${attrStr}/>` : `<${node.tag}${attrStr}>`
         }
         const markup = `<${node.tag}${attrStr}>${childrenHtml}</${node.tag}>`
         return isHtml ? `<!DOCTYPE html>\n${markup}` : markup
@@ -174,8 +178,9 @@ export class BloggerReferenceRenderer {
         this.pipeline.popTarget()
         const attrStr = this.pipeline.serializeAttributes(target, normalizeUrls)
 
-        if (isVoid) {
-          return `<${tagName}${attrStr}>`
+        if (isVoid && node.whitespaceRemove && !innerHtml.trim()) {
+          const selfClosing = this.currentOptions?.selfClosingVoid !== false
+          return selfClosing ? `<${tagName}${attrStr}/>` : `<${tagName}${attrStr}>`
         }
         return `<${tagName}${attrStr}>${innerHtml}</${tagName}>`
       }
@@ -350,13 +355,34 @@ export class BloggerReferenceRenderer {
       return this.currentIr.symbolTable[`common:${targetId}`]
     }
 
-    // 5. Fallback a clave directa
+    // 5. Tier 5: platform_server fallback (e.g. all-head-content or super.*)
+    const spec = getSpecCatalog()
+    const isSuper = targetId.startsWith('super.')
+    const baseName = isSuper ? targetId.slice('super.'.length) : targetId
+    if (spec.isServerInclusion(baseName) || isSuper) {
+      const serverResult = expandServerInclusion(targetId, { catalog: spec, useLocalStub: true })
+      const markup = serverResult?.markup || ''
+      let body: readonly BirNode[] = []
+      if (markup) {
+        try {
+          const subIr = lowerTemplate(`<b:includable id='_stub'>${markup}</b:includable>`, { catalog: spec })
+          body = subIr.symbolTable._stub?.body ?? subIr.root
+        }
+        catch {
+          body = [{ kind: 'text', value: markup }]
+        }
+      }
+      const includable: BirIncludable = {
+        id: targetId,
+        tier: 'platform_server',
+        params: [],
+        body,
+      }
+      ;(this.currentIr.symbolTable as Record<string, BirIncludable>)[targetId] = includable
+      return includable
+    }
+
+    // 6. Fallback a clave directa
     return this.currentIr.symbolTable[targetId]
   }
 }
-
-/**
- * Backward-compatible alias for BloggerReferenceRenderer.
- * @deprecated Use BloggerReferenceRenderer instead.
- */
-export { BloggerReferenceRenderer as SimpleBloggerCompiler }

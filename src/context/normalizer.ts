@@ -10,82 +10,14 @@ import type {
   BloggerRawFeed,
 } from './types.js'
 import type { UrlMapper } from './url-mapper.js'
+import { formatIcuDate } from './date-formatter.js'
+
+export { formatIcuDate }
 
 export interface NormalizePostOptions {
   readonly saa?: string
   readonly titleAndEnclosureLinks?: boolean
   readonly dateFormat?: string
-}
-
-export function formatIcuDate(
-  date: Date,
-  pattern: string,
-  locale = 'en',
-): string {
-  const cleanLocale = locale.replace(/_/g, '-')
-  const intlLocale = cleanLocale.startsWith('es')
-    ? 'es-ES'
-    : (cleanLocale.startsWith('en') && !cleanLocale.includes('-') ? 'en-US' : cleanLocale)
-
-  const fullWeekday = date.toLocaleString(intlLocale, { weekday: 'long' })
-  const shortWeekday = date.toLocaleString(intlLocale, { weekday: 'short' })
-  const fullMonth = date.toLocaleString(intlLocale, { month: 'long' })
-  const shortMonth = date.toLocaleString(intlLocale, { month: 'short' })
-  const yearFull = String(date.getFullYear())
-  const yearShort = yearFull.slice(-2)
-  const monthNum = String(date.getMonth() + 1)
-  const month2 = monthNum.padStart(2, '0')
-  const dayNum = String(date.getDate())
-  const day2 = dayNum.padStart(2, '0')
-  const h24Num = String(date.getHours())
-  const h24_2 = h24Num.padStart(2, '0')
-  const h12 = date.getHours() % 12 || 12
-  const h12Num = String(h12)
-  const h12_2 = h12Num.padStart(2, '0')
-  const minNum = String(date.getMinutes())
-  const min2 = minNum.padStart(2, '0')
-  const secNum = String(date.getSeconds())
-  const sec2 = secNum.padStart(2, '0')
-
-  let dayPeriod = ''
-  try {
-    const parts = new Intl.DateTimeFormat(intlLocale, { hour: 'numeric', hour12: true }).formatToParts(date)
-    dayPeriod = parts.find(p => p.type === 'dayPeriod')?.value
-      || (date.getHours() >= 12 ? (cleanLocale.startsWith('es') ? 'p. m.' : 'PM') : (cleanLocale.startsWith('es') ? 'a. m.' : 'AM'))
-  }
-  catch {
-    dayPeriod = date.getHours() >= 12 ? (cleanLocale.startsWith('es') ? 'p. m.' : 'PM') : (cleanLocale.startsWith('es') ? 'a. m.' : 'AM')
-  }
-
-  const tokenRegex = /'([^']+)'|EEEE|EEE|MMMM|MMM|MM|M|dd|d|yyyy|yy|HH|H|hh|h|mm|m|ss|[saz]/g
-
-  return pattern.replace(tokenRegex, (match, quoted) => {
-    if (quoted !== undefined)
-      return quoted
-    switch (match) {
-      case 'EEEE': return fullWeekday
-      case 'EEE': return shortWeekday
-      case 'MMMM': return fullMonth
-      case 'MMM': return shortMonth
-      case 'MM': return month2
-      case 'M': return monthNum
-      case 'dd': return day2
-      case 'd': return dayNum
-      case 'yyyy': return yearFull
-      case 'yy': return yearShort
-      case 'HH': return h24_2
-      case 'H': return h24Num
-      case 'hh': return h12_2
-      case 'h': return h12Num
-      case 'mm': return min2
-      case 'm': return minNum
-      case 'ss': return sec2
-      case 's': return secNum
-      case 'a': return dayPeriod
-      case 'z': return 'UTC'
-      default: return match
-    }
-  })
 }
 
 export function stripHtml(html: string): string {

@@ -371,50 +371,11 @@ function lowerElement(node: BloggerElementNode, context: LoweringContext): BirEl
 
   const baseClasses: BirClassMutation[] = []
   const baseAttributes: BirAttribute[] = []
+  let whitespaceRemove = false
 
   for (const attr of node.attributes) {
-    if (attr.name === 'class') {
-      baseClasses.push({ name: { kind: 'static', value: String(attr.value) } })
-    }
-    else if (attr.name === 'expr:class') {
-      baseClasses.push({ name: { kind: 'expr', expr: ensureExpression(attr.value, context.catalog) } })
-    }
-    else if (attr.name.startsWith('expr:')) {
-      baseAttributes.push({
-        name: attr.name.slice(5),
-        value: { kind: 'expr', expr: ensureExpression(attr.value, context.catalog) },
-      })
-    }
-    else {
-      baseAttributes.push({
-        name: attr.name,
-        value: { kind: 'static', value: String(attr.value) },
-      })
-    }
-  }
-
-  const { classes: childClasses, attributes: childAttributes, retainedChildren }
-    = extractElementMutations(node.children, isVoid, context)
-
-  return {
-    kind: 'element',
-    tag: tagName,
-    isVoid,
-    attributes: [...baseAttributes, ...childAttributes],
-    classes: [...baseClasses, ...childClasses],
-    children: isVoid ? [] : lowerNodes(retainedChildren, context),
-  }
-}
-
-function lowerTagDirective(node: BloggerDirectiveNode, context: LoweringContext): BirTag {
-  const nameAttr = node.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
-  const condAttr = node.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
-
-  const baseClasses: BirClassMutation[] = []
-  const baseAttributes: BirAttribute[] = []
-
-  for (const attr of node.attributes) {
-    if (attr.name === 'name' || attr.name === 'expr:name' || attr.name === 'cond' || attr.name === 'expr:cond') {
+    if (attr.name === 'b:whitespace' && String(attr.value) === 'remove') {
+      whitespaceRemove = true
       continue
     }
     if (attr.name === 'class') {
@@ -437,13 +398,73 @@ function lowerTagDirective(node: BloggerDirectiveNode, context: LoweringContext)
     }
   }
 
-  const { classes: childClasses, attributes: childAttributes, retainedChildren }
+  const { classes: childClasses, attributes: childAttributes, retainedChildren, whitespaceRemove: childWhitespaceRemove }
+    = extractElementMutations(node.children, isVoid, context)
+
+  if (childWhitespaceRemove) {
+    whitespaceRemove = true
+  }
+
+  return {
+    kind: 'element',
+    tag: tagName,
+    isVoid,
+    ...(node.selfClosing ? { selfClosing: true } : {}),
+    ...(whitespaceRemove ? { whitespaceRemove: true } : {}),
+    attributes: [...baseAttributes, ...childAttributes],
+    classes: [...baseClasses, ...childClasses],
+    children: isVoid ? [] : lowerNodes(retainedChildren, context),
+  }
+}
+
+function lowerTagDirective(node: BloggerDirectiveNode, context: LoweringContext): BirTag {
+  const nameAttr = node.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
+  const condAttr = node.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
+
+  const baseClasses: BirClassMutation[] = []
+  const baseAttributes: BirAttribute[] = []
+  let whitespaceRemove = false
+
+  for (const attr of node.attributes) {
+    if (attr.name === 'name' || attr.name === 'expr:name' || attr.name === 'cond' || attr.name === 'expr:cond') {
+      continue
+    }
+    if (attr.name === 'b:whitespace' && String(attr.value) === 'remove') {
+      whitespaceRemove = true
+      continue
+    }
+    if (attr.name === 'class') {
+      baseClasses.push({ name: { kind: 'static', value: String(attr.value) } })
+    }
+    else if (attr.name === 'expr:class') {
+      baseClasses.push({ name: { kind: 'expr', expr: ensureExpression(attr.value, context.catalog) } })
+    }
+    else if (attr.name.startsWith('expr:')) {
+      baseAttributes.push({
+        name: attr.name.slice(5),
+        value: { kind: 'expr', expr: ensureExpression(attr.value, context.catalog) },
+      })
+    }
+    else {
+      baseAttributes.push({
+        name: attr.name,
+        value: { kind: 'static', value: String(attr.value) },
+      })
+    }
+  }
+
+  const { classes: childClasses, attributes: childAttributes, retainedChildren, whitespaceRemove: childWhitespaceRemove }
     = extractElementMutations(node.children, false, context)
+
+  if (childWhitespaceRemove) {
+    whitespaceRemove = true
+  }
 
   return {
     kind: 'tag',
     tag: toBirAttrValue(nameAttr, context.catalog),
     ...(condAttr ? { cond: ensureExpression(condAttr.value, context.catalog) } : {}),
+    ...(whitespaceRemove ? { whitespaceRemove: true } : {}),
     attributes: [...baseAttributes, ...childAttributes],
     classes: [...baseClasses, ...childClasses],
     children: lowerNodes(retainedChildren, context),

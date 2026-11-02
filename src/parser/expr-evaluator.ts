@@ -6,6 +6,7 @@ import type {
   BloggerIdentifierNode,
   BloggerLiteralNode,
 } from '../ast.js'
+import { formatIcuDate } from '../context/date-formatter.js'
 import { isTruthy } from '../type-system.js'
 import { parseExpression } from './expr-parser.js'
 
@@ -366,41 +367,10 @@ export function snippet(text: any, options?: any): string {
   return clean
 }
 
-export function format(dateVal: any, pattern: string): string {
+export function format(dateVal: any, pattern: string, locale = 'en'): string {
   if (dateVal === null || dateVal === undefined)
     return ''
-
-  const str = String(dateVal)
-  const m = str.match(/^(\d{4})-(\d{2})-(\d{2})(?:T(\d{2}):(\d{2}):(\d{2}))?/)
-  if (m) {
-    const y = m[1]
-    const mo = m[2]
-    const d = m[3]
-    if (pattern === 'yyyy')
-      return y
-    if (pattern === 'yyyy-MM-dd')
-      return `${y}-${mo}-${d}`
-    return pattern
-      .replace(/yyyy/g, y)
-      .replace(/MM/g, mo)
-      .replace(/dd/g, d)
-  }
-
-  const d = new Date(dateVal)
-  if (Number.isNaN(d.getTime()))
-    return str
-  const y = String(d.getUTCFullYear())
-  const mo = String(d.getUTCMonth() + 1).padStart(2, '0')
-  const da = String(d.getUTCDate()).padStart(2, '0')
-
-  if (pattern === 'yyyy')
-    return y
-  if (pattern === 'yyyy-MM-dd')
-    return `${y}-${mo}-${da}`
-  return pattern
-    .replace(/yyyy/g, y)
-    .replace(/MM/g, mo)
-    .replace(/dd/g, da)
+  return formatIcuDate(dateVal, String(pattern), locale)
 }
 
 export class ExpressionEvaluator {
@@ -786,7 +756,8 @@ export class ExpressionEvaluator {
     if (op === 'format') {
       const leftVal = this.evaluate(node.left, context, locals)
       const rightVal = this.evaluate(node.right, context, locals)
-      return format(leftVal, String(rightVal))
+      const locale = context.blog?.locale || (context as any)?.locale || 'en'
+      return format(leftVal, String(rightVal), locale)
     }
 
     if (op === 'snippet') {
@@ -932,7 +903,8 @@ export class ExpressionEvaluator {
     }
 
     if (fn === 'format') {
-      return format(args[0], args[1])
+      const locale = context.blog?.locale || (context as any)?.locale || 'en'
+      return format(args[0], args[1], locale)
     }
 
     if (fn === 'snippet') {

@@ -25,6 +25,8 @@ export interface BirElement {
   readonly kind: 'element'
   readonly tag: string
   readonly isVoid: boolean
+  readonly selfClosing?: boolean
+  readonly whitespaceRemove?: boolean
   readonly attributes: readonly BirAttribute[]
   readonly classes: readonly BirClassMutation[]
   readonly children: readonly BirNode[]
@@ -38,6 +40,7 @@ export interface BirTag {
   readonly kind: 'tag'
   readonly tag: BirAttrValue
   readonly cond?: BloggerExpressionNode
+  readonly whitespaceRemove?: boolean
   readonly attributes: readonly BirAttribute[]
   readonly classes: readonly BirClassMutation[]
   readonly children: readonly BirNode[]

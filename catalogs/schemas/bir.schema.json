@@ -131,6 +131,8 @@
         "kind": { "const": "element" },
         "tag": { "type": "string", "minLength": 1 },
         "isVoid": { "type": "boolean" },
+        "selfClosing": { "type": "boolean" },
+        "whitespaceRemove": { "type": "boolean" },
         "attributes": { "type": "array", "items": { "$ref": "#/$defs/attribute" } },
         "classes": { "type": "array", "items": { "$ref": "#/$defs/classMutation" } },
         "children": { "$ref": "#/$defs/nodeList" }
@@ -173,6 +175,7 @@
         "kind": { "const": "tag" },
         "tag": { "$ref": "#/$defs/attrValue" },
         "cond": { "$ref": "#/$defs/expression" },
+        "whitespaceRemove": { "type": "boolean" },
         "attributes": { "type": "array", "items": { "$ref": "#/$defs/attribute" } },
         "classes": { "type": "array", "items": { "$ref": "#/$defs/classMutation" } },
         "children": { "$ref": "#/$defs/nodeList" }

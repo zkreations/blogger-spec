@@ -13,6 +13,7 @@ import {
   normalizePageEntry,
   normalizePostEntry,
 } from './normalizer.js'
+import { resolveBloggerRoute } from './routing.js'
 import { buildPopularPostsData } from './secondary-widgets.js'
 import { createUrlMapper } from './url-mapper.js'
 
@@ -290,42 +291,15 @@ export async function resolveBloggerContext(
     let activePosts = normalizedPosts.slice()
 
     const activeUrl = config.overrides?.view?.url || config.targetUrl || context.view?.url || ''
-    let searchParams: URLSearchParams | undefined
-    let pathLabel: string | undefined
-    let pathYear: number | undefined
-    let pathMonth: number | undefined
-    let pathDay: number | undefined
-    if (activeUrl) {
-      try {
-        const parsed = new URL(activeUrl, 'https://blogger.local')
-        searchParams = parsed.searchParams
-        const labelMatch = parsed.pathname.match(/\/search\/label\/([^/?#]+)/)
-        if (labelMatch) {
-          pathLabel = decodeURIComponent(labelMatch[1].replace(/\+/g, ' '))
-        }
-
-        const dailyMatch = parsed.pathname.match(/\/(\d{4})_(\d{2})_(\d{2})_archive\.html/)
-        if (dailyMatch) {
-          pathYear = Number.parseInt(dailyMatch[1], 10)
-          pathMonth = Number.parseInt(dailyMatch[2], 10)
-          pathDay = Number.parseInt(dailyMatch[3], 10)
-        }
-        else {
-          const monthlyMatch = parsed.pathname.match(/\/(\d{4})\/(\d{1,2})\/?$/)
-          if (monthlyMatch) {
-            pathYear = Number.parseInt(monthlyMatch[1], 10)
-            pathMonth = Number.parseInt(monthlyMatch[2], 10)
-          }
-          else {
-            const yearlyMatch = parsed.pathname.match(/\/(\d{4})\/?$/)
-            if (yearlyMatch) {
-              pathYear = Number.parseInt(yearlyMatch[1], 10)
-            }
-          }
-        }
-      }
-      catch {}
-    }
+    const resolvedRoute = resolveBloggerRoute(activeUrl)
+    const searchParams: URLSearchParams | undefined = resolvedRoute.searchParams
+    const isArchiveRoute = resolvedRoute.viewId === 'archive_yearly'
+      || resolvedRoute.viewId === 'archive_monthly'
+      || resolvedRoute.viewId === 'archive_weekly_daily'
+    const pathLabel: string | undefined = resolvedRoute.params.label
+    const pathYear: number | undefined = isArchiveRoute ? resolvedRoute.params.year : undefined
+    const pathMonth: number | undefined = isArchiveRoute ? resolvedRoute.params.month : undefined
+    const pathDay: number | undefined = isArchiveRoute ? resolvedRoute.params.day : undefined
 
     if (viewId === 'post' || viewId === 'static_page') {
       if (viewId === 'post') {
@@ -389,21 +363,30 @@ export async function resolveBloggerContext(
         context.view.search = context.view.search || {}
         context.view.search.query = effectiveQ
         context.view.searchQuery = effectiveQ
+        const spec = getSpecCatalog()
+        const labelTemplate = spec.getFormattedGlobalMessage('view.search.resultsMessage', blogLocale, { LABEL: effectiveQ })
+        const labelTemplateHtml = spec.getFormattedGlobalMessage('view.search.resultsMessageHtml', blogLocale, { LABEL: effectiveQ })
         const isEs = blogLocale.startsWith('es')
         context.view.search.resultsMessage = isEs
           ? `Mostrando entradas que coinciden con la búsqueda de ${effectiveQ}`
-          : `Showing posts matching the search for ${effectiveQ}`
+          : (blogLocale.startsWith('en')
+              ? `Showing posts matching the search for ${effectiveQ}`
+              : labelTemplate || `Showing posts matching the search for ${effectiveQ}`)
         context.view.search.resultsMessageHtml = isEs
           ? `Mostrando entradas que coinciden con la búsqueda de <b>${effectiveQ}</b>`
-          : `Showing posts matching the search for <b>${effectiveQ}</b>`
+          : (blogLocale.startsWith('en')
+              ? `Showing posts matching the search for <b>${effectiveQ}</b>`
+              : labelTemplateHtml || `Showing posts matching the search for <b>${effectiveQ}</b>`)
       }
 
       if (!effectiveQ && !pathLabel && !searchParams?.get('label') && searchParams?.get('updated-max')) {
         context.view = context.view || {}
         context.view.search = context.view.search || {}
+        const spec = getSpecCatalog()
+        const olderMsg = spec.getLocalizedMessage('olderPosts', blogLocale) || 'Older Posts'
         const isEs = blogLocale.startsWith('es')
-        context.view.search.resultsMessage = isEs ? 'Mostrando entradas anteriores' : 'Showing older posts'
-        context.view.search.resultsMessageHtml = isEs ? 'Mostrando entradas anteriores' : 'Showing older posts'
+        context.view.search.resultsMessage = isEs ? 'Mostrando entradas anteriores' : `Showing ${olderMsg.toLowerCase()}`
+        context.view.search.resultsMessageHtml = isEs ? 'Mostrando entradas anteriores' : `Showing ${olderMsg.toLowerCase()}`
       }
 
       const effectiveLabel = pathLabel

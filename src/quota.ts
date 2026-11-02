@@ -335,7 +335,7 @@ export function forEachExpressionToken(
     if (token.type === 'DATA_PREFIX') {
       const startOffset = token.start.offset
       let lastConsumed = token
-      i++ // skip 'data:'
+      i++
 
       if (rawTokens[i]?.type === 'IDENTIFIER') {
         lastConsumed = rawTokens[i]!

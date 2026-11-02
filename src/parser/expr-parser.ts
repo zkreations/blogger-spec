@@ -204,7 +204,7 @@ export class ExpressionParser {
       }
 
       case 'LPAREN': {
-        this.advance() // '('
+        this.advance()
         const inner = this.parseExpression(0)
         this.consume('RPAREN', 'Expected \')\' to close parenthesized expression')
         return inner
@@ -237,10 +237,10 @@ export class ExpressionParser {
         // Functional subtraction: -(20, 10)
         if (this.check('LPAREN')) {
           const savedPos = this.current
-          this.advance() // '('
+          this.advance()
           const args = this.parseArgumentList()
           if (this.check('RPAREN')) {
-            const closeParen = this.advance() // ')'
+            const closeParen = this.advance()
             if (args.length !== 1) {
               const node: BloggerCallExpressionNode = {
                 type: 'CallExpression',
@@ -348,7 +348,7 @@ export class ExpressionParser {
       case 'QUESTION': {
         const opToken = this.advance()
         if (this.check('LPAREN')) {
-          this.advance() // '('
+          this.advance()
           const args = this.parseArgumentList()
           const closeParen = this.consume('RPAREN', 'Expected \')\' after functional operator arguments')
           if (opToken.type === 'QUESTION' && args.length === 3) {
@@ -476,7 +476,7 @@ export class ExpressionParser {
       let endTokenPos: TokenPosition
 
       if (this.check('LPAREN')) {
-        this.advance() // '('
+        this.advance()
         const paramToken = this.consume('IDENTIFIER', 'Expected lambda parameter identifier')
         parameter = paramToken.value
         this.consume('ARROW', 'Expected \'=>\' after lambda parameter')
@@ -520,8 +520,8 @@ export class ExpressionParser {
 
     // 7. General binary expressions (arithmetic, relational, transforms, slices)
     if (opInfo.isComposite) {
-      this.advance() // consume 'not'
-      this.advance() // consume 'in' or 'contains'
+      this.advance()
+      this.advance()
     }
     else {
       this.advance()
@@ -541,7 +541,7 @@ export class ExpressionParser {
   }
 
   private parseDataPath(): BloggerDataPathNode {
-    const dataPrefixToken = this.advance() // 'data:'
+    const dataPrefixToken = this.advance()
     const startLoc = dataPrefixToken.start
 
     const members: BloggerDataPathNode['members'] = []
@@ -558,7 +558,7 @@ export class ExpressionParser {
 
     while (!this.isAtEnd()) {
       if (this.check('DOT')) {
-        this.advance() // '.'
+        this.advance()
         if (this.checkPropertyName()) {
           const memberToken = this.advance()
           members.push({ property: memberToken.value, computed: false })
@@ -575,7 +575,7 @@ export class ExpressionParser {
         }
       }
       else if (this.check('LBRACKET')) {
-        this.advance() // '['
+        this.advance()
         const indexExpr = this.parseExpression(0)
         const closeBracket = this.consume('RBRACKET', 'Expected \']\' after index expression')
         if (indexExpr.type === 'Literal' && (typeof indexExpr.value === 'string' || typeof indexExpr.value === 'number')) {
@@ -603,13 +603,13 @@ export class ExpressionParser {
   }
 
   private parseArrayExpression(): BloggerArrayExpressionNode {
-    const startTok = this.advance() // '['
+    const startTok = this.advance()
     const elements: BloggerExpressionNode[] = []
 
     if (!this.check('RBRACKET')) {
       elements.push(this.parseExpression(0))
       while (this.check('COMMA')) {
-        this.advance() // ','
+        this.advance()
         if (this.check('RBRACKET')) {
           break
         }
@@ -626,10 +626,10 @@ export class ExpressionParser {
   }
 
   private parseBracedExpression(): BloggerObjectExpressionNode | BloggerArrayExpressionNode {
-    const startTok = this.advance() // '{'
+    const startTok = this.advance()
 
     if (this.check('RBRACE')) {
-      const closeBrace = this.advance() // '}'
+      const closeBrace = this.advance()
       return {
         type: 'ObjectExpression',
         properties: [],
@@ -659,7 +659,7 @@ export class ExpressionParser {
 
     properties.push(this.parseProperty())
     while (this.check('COMMA')) {
-      this.advance() // ','
+      this.advance()
       if (this.check('RBRACE')) {
         break
       }
@@ -679,7 +679,7 @@ export class ExpressionParser {
 
     elements.push(this.parseExpression(0))
     while (this.check('COMMA')) {
-      this.advance() // ','
+      this.advance()
       if (this.check('RBRACE')) {
         break
       }
@@ -739,7 +739,7 @@ export class ExpressionParser {
     if (!this.check('RPAREN')) {
       args.push(this.parseExpression(0))
       while (this.check('COMMA')) {
-        this.advance() // ','
+        this.advance()
         if (this.check('RPAREN')) {
           break
         }

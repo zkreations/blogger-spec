@@ -4,7 +4,6 @@ import { describe, expect, it } from 'vitest'
 import {
   BloggerReferenceRenderer,
   normalizeHtmlString,
-  SimpleBloggerCompiler,
 } from '../src/index.js'
 import { getWorkspacePaths } from '../src/paths.js'
 
@@ -98,13 +97,6 @@ describe('bloggerReferenceRenderer', () => {
         expect(compiled.trim()).toBe(fixture.expected.html.trim())
       }
     }
-  })
-
-  it('provides backward-compatible SimpleBloggerCompiler class alias', () => {
-    const compiler = new SimpleBloggerCompiler()
-    expect(compiler).toBeInstanceOf(BloggerReferenceRenderer)
-    const res = compiler.compileFragment('<span><data:foo/></span>', { foo: 'bar' })
-    expect(res).toBe('<span>bar</span>')
   })
 
   it('injects cookieChoiceInfo singleton before </body> when blog.cookieChoices is true', () => {
