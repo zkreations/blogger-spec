@@ -92,7 +92,7 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(ctx.blog.blogId).toBe('5408826600056783247')
 
       const blogPosts = ctx.widgetData.Blog1.posts
-      expect(blogPosts.length).toBe(5)
+      expect(blogPosts.length).toBe(9)
       expect(blogPosts[0].title).toBe('The Importance of Environmental Care')
       expect(blogPosts[0].url).toBe('/2023/04/the-importance-of-environmental-care.html')
 
@@ -260,7 +260,7 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(ctx.view.search.query).toBe('The')
       expect(ctx.widgetData.Blog1.posts.length).toBeGreaterThan(0)
       // Highest frequency of 'the' among feed posts comes first
-      expect(ctx.widgetData.Blog1.posts[0].title).toBe('A Tale of Tranquility by the Lake')
+      expect(ctx.widgetData.Blog1.posts[0].title).toBe('Islands rising above the sea')
     })
 
     it('resolves static page view into Blog1.posts with allowComments false and marks active PageList link', async () => {

@@ -186,13 +186,14 @@ describe('blogger blog configuration & context subsystem', () => {
     })
 
     it('applies per-entry searchDescription and commentMode triads', async () => {
+      const postId = '8389032230243957219'
       const context = await resolveBloggerContext({
         offline: true,
         view: 'post',
-        targetId: '1001',
+        targetId: postId,
         config: {
           entries: {
-            1001: {
+            [postId]: {
               searchDescription: 'Custom meta description for post 1001',
               commentMode: 'RESTRICTED',
             },
@@ -209,13 +210,14 @@ describe('blogger blog configuration & context subsystem', () => {
     })
 
     it('disables comments entirely when commentLocation is HIDDEN or commentMode is DISABLED', async () => {
+      const postId = '8389032230243957219'
       const context = await resolveBloggerContext({
         offline: true,
         view: 'post',
-        targetId: '1001',
+        targetId: postId,
         config: {
           entries: {
-            1001: {
+            [postId]: {
               commentMode: 'DISABLED',
             },
           },

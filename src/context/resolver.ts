@@ -114,7 +114,11 @@ function applyBlogConfiguration(
     if (entryCfg) {
       if (entryCfg.searchDescription !== undefined) {
         post.snippets = { ...(post.snippets || {}), short: entryCfg.searchDescription }
-        if ((viewId === 'post' || viewId === 'static_page') && String(post.id) === String(context.view?.postId || context.view?.pageId)) {
+        const targetViewId = context.view?.postId ?? context.view?.pageId
+        const isTargetPost = targetViewId !== undefined
+          && (String(post.id) === String(targetViewId)
+            || Number.parseInt(String(post.id), 10) === Number(targetViewId))
+        if ((viewId === 'post' || viewId === 'static_page') && isTargetPost) {
           context.view.description = entryCfg.searchDescription
           context.blog.metaDescription = entryCfg.searchDescription
         }
@@ -257,6 +261,9 @@ export async function resolveBloggerContext(
           context.messages[msgKey] = localized
         }
       }
+      if (context.messages.location !== undefined) {
+        context.messages.location = blogLocale === 'en' ? 'Location' : 'Ubicación'
+      }
     }
 
     if (viewId !== 'post' && viewId !== 'static_page') {
@@ -382,6 +389,15 @@ export async function resolveBloggerContext(
         context.view.search = context.view.search || {}
         context.view.search.query = effectiveQ
         context.view.searchQuery = effectiveQ
+        context.view.search.resultsMessage = `Showing posts matching the search for ${effectiveQ}`
+        context.view.search.resultsMessageHtml = `Showing posts matching the search for <b>${effectiveQ}</b>`
+      }
+
+      if (!effectiveQ && !pathLabel && !searchParams?.get('label') && searchParams?.get('updated-max')) {
+        context.view = context.view || {}
+        context.view.search = context.view.search || {}
+        context.view.search.resultsMessage = 'Showing older posts'
+        context.view.search.resultsMessageHtml = 'Showing older posts'
       }
 
       const effectiveLabel = pathLabel
@@ -615,8 +631,10 @@ export async function resolveBloggerContext(
       activePosts = activePosts.slice(0, config.config.blog.postsPerPage)
     }
 
+    const spec = getSpecCatalog()
     blog1.posts = activePosts
     blog1.numPosts = activePosts.length
+    blog1.title = spec.getWidgetDefaultTitle('Blog', blogLocale) || 'Blog Posts'
     context.widgetData.Blog1 = blog1
 
     if (config.config) {
@@ -626,14 +644,11 @@ export async function resolveBloggerContext(
     // Inyectar datos en PageList1
     const currentPath = (viewId === 'static_page' ? context.view?.url || config.overrides?.view?.url : undefined)
     const normalizedPages = rawPages.map(e => normalizePageEntry(e, mapper, currentPath))
-    const spec = getSpecCatalog()
-    const pageListTitle = spec.getWidgetDefaultTitle('PageList', blogLocale)
+    const pageListTitle = spec.getWidgetDefaultTitle('PageList', blogLocale) || 'Pages'
 
     if (context.widgetData.PageList1) {
       context.widgetData.PageList1.links = normalizedPages
-      if (!context.widgetData.PageList1.title) {
-        context.widgetData.PageList1.title = pageListTitle
-      }
+      context.widgetData.PageList1.title = pageListTitle
     }
     else {
       context.widgetData.PageList1 = {
@@ -643,12 +658,10 @@ export async function resolveBloggerContext(
     }
 
     // Inyectar datos en Label1
-    const labelTitle = spec.getWidgetDefaultTitle('Label', blogLocale)
+    const labelTitle = spec.getWidgetDefaultTitle('Label', blogLocale) || 'Labels'
     if (context.widgetData.Label1) {
       context.widgetData.Label1.labels = normalizedLabels
-      if (!context.widgetData.Label1.title) {
-        context.widgetData.Label1.title = labelTitle
-      }
+      context.widgetData.Label1.title = labelTitle
       if (config.overrides?.widgetData?.Label1?.showFreqNumbers === undefined) {
         context.widgetData.Label1.showFreqNumbers = false
       }
@@ -699,7 +712,7 @@ export async function resolveBloggerContext(
         context.view.type = 'item'
       }
       else if (viewId === 'error_404') {
-        context.view.type = 'error_page'
+        context.view.type = 'error'
       }
       else {
         context.view.type = 'feed'

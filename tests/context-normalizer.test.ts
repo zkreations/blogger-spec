@@ -74,7 +74,7 @@ describe('context normalizer suite with real Hamlet fixtures', () => {
       expect(post.title).toBe('The Importance of Environmental Care')
       expect(post.url).toBe('/2023/04/the-importance-of-environmental-care.html')
       expect(post.absoluteUrl).toBe('https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html')
-      expect(post.numberOfComments).toBe(4)
+      expect(post.numberOfComments).toBe(8)
       expect(post.author.name).toBe('Iveth')
       expect(post.author.authorPhoto.url).toBeDefined()
       expect(post.labels.length).toBe(3)
@@ -123,21 +123,21 @@ describe('context normalizer suite with real Hamlet fixtures', () => {
   describe('normalizeCommentEntry', () => {
     it('normalizes comment entry with threading, admin classes, and author data', () => {
       const entries = commentsFeedJson.feed.entry
-      const rootComment = normalizeCommentEntry(entries[3], mapper, blogId)
-      const replyComment = normalizeCommentEntry(entries[1], mapper, blogId)
+      const rootComment = normalizeCommentEntry(entries[5], mapper, blogId)
+      const replyComment = normalizeCommentEntry(entries[0], mapper, blogId)
 
-      expect(rootComment.id).toBe('5032424365300934236')
+      expect(rootComment.id).toBe('6705207078299915657')
       expect(rootComment.author).toBe('Anonymous')
       expect(rootComment.inReplyTo).toBe('')
       expect(rootComment.adminClass).toBe('blog-admin pid-1793582710')
-      expect(rootComment.deleteUrl).toBe(`https://www.blogger.com/comment/delete/${blogId}/5032424365300934236`)
+      expect(rootComment.deleteUrl).toBe(`https://www.blogger.com/comment/delete/${blogId}/6705207078299915657`)
 
-      expect(replyComment.id).toBe('4084576595224636469')
-      expect(replyComment.author).toBe('Kai Haruto')
-      expect(replyComment.authorUrl).toBe('https://www.blogger.com/profile/05991519695825559144')
+      expect(replyComment.id).toBe('8064342041772266330')
+      expect(replyComment.author).toBe('Iveth')
+      expect(replyComment.authorUrl).toBe('https://www.blogger.com/profile/05162121526782264118')
       expect(replyComment.authorUserType).toBe('BLOGGER')
-      expect(replyComment.inReplyTo).toBe('5032424365300934236')
-      expect(replyComment.adminClass).toBe('blog-admin pid-1462240053')
+      expect(replyComment.inReplyTo).toBe('60561644326638835')
+      expect(replyComment.adminClass).toBe('blog-admin pid-672146995')
     })
   })
 

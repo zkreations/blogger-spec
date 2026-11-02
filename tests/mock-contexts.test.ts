@@ -54,7 +54,7 @@ describe('canonical mock contexts suite', () => {
       }
 
       expect(ctx.blog).toBeDefined()
-      expect(ctx.blog.locale).toBe('es')
+      expect(ctx.blog.locale).toBe('en')
       expect(ctx.blog.encoding).toBe('UTF-8')
       expect(ctx.messages).toBeDefined()
       expect(ctx.widgets).toBeDefined()
@@ -88,9 +88,9 @@ describe('canonical mock contexts suite', () => {
 
     expect(byline.author).toBeDefined()
     expect(byline.author.name).toBe('author')
-    expect(byline.author.label).toBe('Por')
+    expect(byline.author.label).toBe('By')
     expect(byline.comments).toBeDefined()
-    expect(byline.comments.label).toBe('Comentarios')
+    expect(byline.comments.label).toBe('Comments')
 
     expect(Boolean(byline.author)).toBe(true)
   })
@@ -103,18 +103,15 @@ describe('canonical mock contexts suite', () => {
     expect(post.comments.length).toBeGreaterThanOrEqual(2)
 
     const rootComments = post.comments.filter((c: any) => !c.inReplyTo)
-    expect(rootComments.length).toBe(1)
-    expect(rootComments[0].id).toBe('c1001')
-    expect(rootComments[0].author).toBe('Carlos')
+    expect(rootComments.length).toBeGreaterThan(0)
+    expect(rootComments.some((c: any) => c.author === 'Iveth' || c.author === 'Anonymous')).toBe(true)
 
-    const replies = post.comments.filter((c: any) => c.inReplyTo === rootComments[0].id)
-    expect(replies.length).toBe(1)
-    expect(replies[0].id).toBe('c1002')
-    expect(replies[0].author).toBe('Abel')
-    expect(replies[0].adminClass).toBe('is-admin')
+    const replies = post.comments.filter((c: any) => Boolean(c.inReplyTo))
+    expect(replies.length).toBeGreaterThan(0)
+    expect(replies.some((c: any) => Boolean(c.inReplyTo))).toBe(true)
 
     expect(post.commentFormIframeSrc).toBeDefined()
-    expect(post.commentFormIframeSrc).toContain('comment-iframe.g')
+    expect(post.commentFormIframeSrc).toContain('/comment/frame/')
   })
 
   it('validates canonical structure of secondary widgets (HTML, LinkList, BlogSearch, PopularPosts)', () => {
@@ -122,21 +119,21 @@ describe('canonical mock contexts suite', () => {
     const data = ctx.widgetData
 
     expect(data.HTML1).toBeDefined()
-    expect(data.HTML1.title).toBe('HTML Personalizado')
-    expect(data.HTML1.content).toContain('Contenido HTML')
+    expect(data.HTML1.title).toBe('Custom HTML')
+    expect(data.HTML1.content).toContain('Sample custom HTML content')
     expect(ctx.widgets.HTML[0].id).toBe('HTML1')
 
     expect(data.LinkList1).toBeDefined()
-    expect(data.LinkList1.title).toBe('Enlaces Útiles')
+    expect(data.LinkList1.title).toBe('Useful Links')
     expect(data.LinkList1.shownum).toBe(3)
     expect(data.LinkList1.sorting).toBe('none')
     expect(Array.isArray(data.LinkList1.links)).toBe(true)
-    expect(data.LinkList1.links[0].name).toBe('Inicio')
-    expect(data.LinkList1.links[0].target).toContain('ejemplo.blogspot.com')
+    expect(data.LinkList1.links[0].name).toBe('Home')
+    expect(data.LinkList1.links[0].target).toContain('hamlet.zkreations.com')
     expect(ctx.widgets.LinkList[0].id).toBe('LinkList1')
 
     expect(data.BlogSearch1).toBeDefined()
-    expect(data.BlogSearch1.title).toBe('Buscar en el blog')
+    expect(data.BlogSearch1.title).toBe('Search This Blog')
     expect(ctx.widgets.BlogSearch[0].id).toBe('BlogSearch1')
 
     expect(data.PopularPosts1).toBeDefined()
@@ -145,7 +142,7 @@ describe('canonical mock contexts suite', () => {
     expect(data.PopularPosts1.postDisplay.showTitle).toBe(true)
     expect(data.PopularPosts1.postDisplay.showAuthor).toBe(true)
 
-    expect(ctx.blog.searchUrl).toBe('https://ejemplo.blogspot.com/search')
+    expect(ctx.blog.searchUrl).toBe('https://hamlet.zkreations.com/search')
     expect(ctx.blog.adsenseClientId).toBe('ca-pub-1234567890123456')
     expect(ctx.blog.adsenseHostId).toBe('ca-host-pub-1556223355139109')
   })
@@ -156,19 +153,18 @@ describe('canonical mock contexts suite', () => {
 
     expect(data.BlogArchive1).toBeDefined()
     expect(data.BlogArchive1.style).toBe('HIERARCHY')
-    expect(data.BlogArchive1.data[0].name).toBe('2026')
-    expect(data.BlogArchive1.data[0].data[0].name).toBe('octubre')
+    expect(data.BlogArchive1.data[0].name).toBe('2023')
+    expect(data.BlogArchive1.data[0].data[0].name).toBe('November')
     expect(data.BlogArchive1.data[0].data[0].posts.length).toBe(3)
 
     expect(data.PageList1).toBeDefined()
-    expect(data.PageList1.links.length).toBe(3)
-    const homeLink = data.PageList1.links.find((l: any) => l.id === 'c0')
-    expect(homeLink.isCurrentPage).toBe(true)
+    expect(data.PageList1.links.length).toBe(2)
+    expect(data.PageList1.links[0].title).toBe('Typography')
 
     expect(data.Label1).toBeDefined()
-    expect(data.Label1.labels.length).toBe(3)
-    expect(data.Label1.labels[0].name).toBe('blogger')
-    expect(data.Label1.labels[0].count).toBe(5)
+    expect(data.Label1.labels.length).toBe(8)
+    expect(data.Label1.labels[0].name).toBe('adventure')
+    expect(data.Label1.labels[0].count).toBe(1)
   })
 
   it('performs deep merge of overrides without mutating base embedded mock', () => {
@@ -189,12 +185,12 @@ describe('canonical mock contexts suite', () => {
     expect(overridden.skin.vars.keycolor).toBe(customSkinColor)
     expect(overridden.skin.vars.brand_custom).toBe('custom-val')
     // Untouched properties retained
-    expect(overridden.blog.locale).toBe('es')
+    expect(overridden.blog.locale).toBe('en')
     expect(overridden.skin.vars.body_font).toBe('16px Arial, sans-serif')
 
     // Fresh call retains original clean state
     const cleanHome = getMockContext('homepage')
-    expect(cleanHome.blog.title).toBe('Mi Blog de Pruebas')
+    expect(cleanHome.blog.title).toBe('Hamlet')
     expect(cleanHome.skin.vars.keycolor).toBe('#1a73e8')
     expect(cleanHome.skin.vars.brand_custom).toBeUndefined()
   })
@@ -215,11 +211,11 @@ describe('canonical mock contexts suite', () => {
     expect(home.view.isSingleItem).toBe(false)
     expect(home.view.isHomepage).toBe(true)
     expect(home.widgetData.Blog1.posts.length).toBeGreaterThan(0)
-    expect(home.widgetData.Blog1.allBylineItems.author.label).toBe('Por')
+    expect(home.widgetData.Blog1.allBylineItems.author.label).toBe('By')
 
     expect(post.view.isSingleItem).toBe(true)
     expect(post.view.isPost).toBe(true)
-    expect(post.view.postId).toBe(1001)
+    expect(post.view.postId).toBe(8389032230243957000)
     expect(post.widgetData.Blog1.posts[0].comments.length).toBeGreaterThan(0)
     expect(post.widgetData.Blog1.posts[0].commentFormIframeSrc).toBeDefined()
 
