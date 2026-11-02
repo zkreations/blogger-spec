@@ -647,7 +647,7 @@ export async function resolveBloggerContext(
       }
     }
 
-    if (viewId === 'homepage' && config.config?.blog?.postsPerPage && !searchParams) {
+    if (viewId === 'homepage' && config.config?.blog?.postsPerPage && (!searchParams || searchParams.size === 0)) {
       activePosts = activePosts.slice(0, config.config.blog.postsPerPage)
     }
 
