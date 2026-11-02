@@ -35,12 +35,12 @@ flowchart LR
 | `blogger-spec/data-path` | `resolveDataPath` across globals, widgets, platform types, messages, scoped variables, and skin variables. |
 | `blogger-spec/scope` | `ScopeEnvironment`: scope stack with shadowing and the precedence `lambda → loop → with → includable → widget → global`. |
 | `blogger-spec/version` | Layout version detection (v1, v2, v3). |
-| `blogger-spec/context` | Universal context resolver (`resolveBloggerContext`), Atom feed normalizer, URL mapper, and dynamic widget builders (`buildArchiveHierarchy`, `buildPopularPostsData`). |
-| `blogger-spec/ir` | Normalized intermediate representation (BIR), BIR compiler (`compileToIR`), and canonical reference HTML renderer (`BloggerReferenceRenderer`) with `maxIncludeDepth` recursion safety. |
+| `blogger-spec/context` | Universal context resolver (`resolveBloggerContext`), Atom feed normalizer, IANA `timeZone`-aware TR35 date formatter (`formatIcuDate`), static feed adapter (`createStaticFeedFetch`), URL mapper, and dynamic widget builders (`buildArchiveHierarchy`, `buildPopularPostsData`). |
+| `blogger-spec/ir` | Normalized intermediate representation (BIR v2), BIR compiler (`compileToIR`), and canonical reference HTML renderer (`BloggerReferenceRenderer`) with `maxIncludeDepth: 43` recursion safety. |
 | `blogger-spec/catalogs` | Query facade, `getMockContext`, and snippet generators. |
 | `blogger-spec/inclusion-expander` | Server-side inclusion expansion and macro inlining. |
-| `blogger-spec/runner` | `runConformance`, `runSpecConformance`, `normalizeHtmlString`. |
-| `blogger-spec/node` | Optional Node-only `FsCatalogStore`. |
+| `blogger-spec/runner` | Browser/Edge-safe `runConformance`, `runSpecConformance`, `normalizeHtmlString`. |
+| `blogger-spec/node` | Node-only filesystem utilities (`FsCatalogStore`, `loadFixturesManifest`, `getWorkspacePaths`, `resolveWorkspacePath`). |
 
 ### How an expression flows
 
@@ -271,19 +271,22 @@ import { BloggerReferenceRenderer, compileToIR } from 'blogger-spec'
 const bir = compileToIR(templateXml)
 
 // Hermetic reference HTML evaluation with recursion guard
-const renderer = new BloggerReferenceRenderer({ maxIncludeDepth: 30 })
+const renderer = new BloggerReferenceRenderer({ maxIncludeDepth: 43 })
 const html = renderer.render(templateXml, onlineCtx)
 ```
 
 ## Conformance testing
 
 ```typescript
-import { runSpecConformance } from 'blogger-spec/runner'
+import { runSpecConformance } from 'blogger-spec'
+import { loadFixturesManifest } from 'blogger-spec/node'
 
 const results = runSpecConformance({
   evaluateExpression: (expr, ctx) => myEngine.eval(expr, ctx),
   renderTemplate: (tpl, ctx) => myEngine.render(tpl, ctx),
   analyze: (source, mode) => myLinter.lint(source),
+}, {
+  fixtures: loadFixturesManifest().fixtures,
 })
 
 console.log(`Passed ${results.passed} / ${results.total}`)

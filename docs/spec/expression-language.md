@@ -33,12 +33,13 @@ Blogger supports two syntactic styles for many operations: **infix** (fluent tem
 | :--- | :--- | :--- | :--- |
 | **Membership / Contains** | `data:post.labels contains "News"` | `contains(data:post.labels, "News")` | Checks whether an element belongs to a collection or substring. |
 | **Inverse Membership** | `"News" in data:post.labels` | `in("News", data:post.labels)` | Checks whether the left value resides within the right collection. |
-| **CDN Image Resizing** | `data:post.featuredImage resizeImage 400` | `resizeImage(data:post.featuredImage, 400)` | Applies Google CDN scaling and cropping parameters (`=w400-h...`). |
+| **CDN Image Resizing** | `data:post.featuredImage resizeImage 400` or `data:img resizeImage 300 resizeImage "1:1"` | `resizeImage(data:post.featuredImage, 400, "1:1")` | Applies Google CDN scaling and cropping parameters (`=w400-h...`) and preserves `.width`/`.height` and string modifiers. |
+| **Responsive Image Set** | `data:img sourceSet [300, 600] sourceSet "1:1"` | `sourceSet(data:img, [300, 600], "1:1")` | Generates a responsive `srcset` descriptor list. |
 | **Append URL Parameters** | `data:blog.url params { m: "1" }` | `params(data:blog.url, { m: "1" })` | Appends query parameters while preserving URL encoding. |
-| **Date Formatting** | `data:post.date format "yyyy-MM-dd"` | `format(data:post.date, "yyyy-MM-dd")` | Applies a locale-aware date-time formatting mask. |
+| **Date Formatting** | `data:post.date format "yyyy-MM-dd"` | `format(data:post.date, "yyyy-MM-dd")` | Applies a locale-aware and IANA `timeZone`-aware ICU formatting mask. |
 
 > [!NOTE]
-> Purely arithmetic operators (`+`, `-`, `*`, `/`, `%`) and logical operators (`and`, `or`, `?:`) are only available in infix form. Certain operators like `sourceSet(...)` operate exclusively in functional form.
+> Arithmetic (`+`, `-`, `*`, `/`, `%`), logical (`and`, `or`, `not`), fallback (`?:`), and relational (`eq`, `neq`, `lt`, `gt`, `lte`, `gte`) operators support both infix and functional forms. Notably, `+`, `and`, `or`, and `?:` accept variadic functional calls with 3+ operands (e.g. `+("a", "b", "c")`, `?:(data:a, data:b, "fallback")`). Non-existent aliases `ne`, `le`, and `ge` are rejected by the parser and validator (`BX1017`).
 
 ---
 
@@ -51,13 +52,13 @@ data:posts filter (p => p.labels any (l => l.name == "Featured"))
 ```
 
 ### 3.1. Supported Collection Operators
-- `filter`: Returns a new array with elements satisfying the predicate.
-- `map`: Transforms each element according to the return expression.
+- `filter` (alias `where`): Returns a new array with elements satisfying the predicate.
+- `map` (alias `select`): Transforms each element according to the projection expression (`array[T]`).
 - `any`: Returns `true` if at least one element satisfies the condition.
 - `all`: Returns `true` if all elements satisfy the condition.
 - `none`: Returns `true` if no elements satisfy the condition.
 - `count`: Counts elements that satisfy the predicate.
-- `first`: Returns the first element satisfying the condition, or the first item of the array.
+- `first`: Returns the first element satisfying the condition, or `undefined` if none match.
 
 ### 3.2. Lambda Iterator Normative Rule (`BX1019`)
 The iteration identifier in a lambda is a purely local lexical variable:

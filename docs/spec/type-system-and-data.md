@@ -113,22 +113,24 @@ Modifiers are runtime computed properties accessed via dot notation:
 | `string` | `.jsonEscaped` | `string` | Escapes quotes and slashes for inline JSON within `<script>`. |
 | `string` | `.jsEscaped` | `string` | Escapes line breaks and control characters for JavaScript strings. |
 | `image` | `.isResizable` | `boolean` | `true` if the image is hosted on Google's CDN and accepts `resizeImage`. |
-| `image` | `.isYoutube` | `boolean` | `true` if the URL is a YouTube video thumbnail. |
+| `image` | `.isYouTube` | `boolean` | `true` if the URL is a YouTube video thumbnail (`ytimg.com` / `img.youtube.com`). |
 | `image` | `.youtubeMaxResDefaultUrl` | `url` | Max-resolution URL (`maxresdefault.jpg`) for YouTube thumbnails. |
 | `array` | `.length` / `.size` | `number` | Number of items in the collection. |
 | `array` | `.first` | `element` | First item of the collection (or `undefined` if empty). |
 | `array` | `.last` | `element` | Last item of the collection. |
 | `array` | `.empty` | `boolean` | `true` if length is 0. |
 
-### 3.2. Skin Modifiers (Inside-Skin and `data:skin.vars.*` Expressions)
-| Skin Type | Modifier | Output Type | Description |
-| :--- | :--- | :--- | :--- |
-| `skin:font` | `.family` | `string` | Font family stack or name (e.g. `Arial, sans-serif`). |
-| `skin:font` | `.size` | `string` | Font size with CSS unit (e.g. `14px`, `1rem`). |
-| `skin:font` | `.style` | `string` | CSS font style (`normal`, `italic`, `oblique`). |
-| `skin:font` | `.weight` | `string` | CSS font weight (`normal`, `bold`, `700`). |
-| `skin:color`| `.red` / `.green` / `.blue` | `number` | Integer RGB channels (0 to 255). |
-| `skin:color`| `.alpha` | `number` | Alpha transparency channel (0.0 to 1.0). |
+### 3.2. Skin Modifiers (Inside-Skin `$(...)` vs Outside-Skin `data:skin.vars.*`)
+| Skin Type | Modifier | Output Type | Scope Availability | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| `skin:font` | `.family` | `string` | `$(...)` & `data:skin.vars.*` | Font family stack or name (e.g. `Arial, sans-serif`). |
+| `skin:font` | `.size` | `string` | `$(...)` & `data:skin.vars.*` | Font size with CSS unit (e.g. `14px`, `1rem`). |
+| `skin:font` | `.style` | `string` | `$(...)` only | CSS font style (`normal`, `italic`, `oblique`). |
+| `skin:font` | `.weight` | `string` | `$(...)` only | CSS font weight (`normal`, `bold`, `700`). |
+| `skin:background` | `.color` / `.image` | `string` | `$(...)` & `data:skin.vars.*` | Background color or `url(...)` / `none` token. |
+| `skin:background` | `.repeat` / `.attachment` / `.position` | `string` | `$(...)` only | CSS background shorthand sub-tokens. |
+| `skin:color`| `.red` / `.green` / `.blue` | `number` | `$(...)` & `data:skin.vars.*` | Integer RGB channels (0 to 255). |
+| `skin:color`| `.alpha` | `number` | `$(...)` & `data:skin.vars.*` | Alpha transparency channel (0.0 to 1.0). |
 
 ---
 

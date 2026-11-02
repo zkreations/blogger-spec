@@ -22,8 +22,9 @@ flowchart LR
 To certify your tool, provide an adapter object implementing one or more evaluation methods:
 
 ```typescript
-import type { BloggerConformanceAdapter } from 'blogger-spec/runner'
-import { runConformance } from 'blogger-spec/runner'
+import type { BloggerConformanceAdapter } from 'blogger-spec'
+import { runConformance } from 'blogger-spec'
+import { loadFixturesManifest } from 'blogger-spec/node'
 
 // Implement methods supported by your tool:
 const adapter: BloggerConformanceAdapter = {
@@ -45,7 +46,9 @@ const adapter: BloggerConformanceAdapter = {
 }
 
 // Run the complete fixture suite
-const report = runConformance(adapter)
+const report = runConformance(adapter, {
+  fixtures: loadFixturesManifest().fixtures,
+})
 
 console.log(`Conformance: ${report.passed} of ${report.total} tests passed.`)
 if (report.failed > 0) {

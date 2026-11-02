@@ -66,20 +66,21 @@ For expressions like `expr:name='"widget:" + data:widget.type'`:
 
 ### 2.4. Subroutine Call Stack & Recursion Guard
 To prevent call stack exhaustion (`RangeError`) caused by circular subroutine dependencies (e.g. `<b:include name='A'/>` invoking `B` which in turn invokes `A`), compilers and reference engines enforce a maximum call depth:
-- **Default limit:** `maxIncludeDepth: 30` (analogous to `maxDepth: 50` in expression parsing).
+- **Default limit:** `maxIncludeDepth: 43` (configured in `catalogs/directives.json` under `execution_limits.max_include_recursion_depth`, matching Blogger Core's 43-frame ceiling).
 - **Behavior upon limit:** Further recursive expansion is aborted and a diagnostic comment (`<!-- recursion depth limit exceeded ([TargetId]) -->`) is emitted, guaranteeing process stability.
 
 ---
 
 ## 3. Phase 2: `<b:skin>` Compilation
 
-`<b:skin>` holds CSS mixed with Theme Designer tags (`<Variable>`, `<Group>`). The compiler turns it into plain CSS.
+`<b:skin>` holds CSS mixed with Theme Designer tags (`<Variable>`, `<Group>`) and optional XML flow directives (`<b:if>`, `<b:switch>`, `<b:with>`). In BIR v2 (`birVersion: '2'`), `<b:skin>` and `<b:template-skin>` lower to `BirSkinStyle` (`kind: 'skinStyle'`).
 
-### 3.1. Variable Substitution
+### 3.1. Variable Substitution & Flow Directives
 1. Parse every `<Variable name="..." type="..." default="..." value="..."/>` in the CDATA.
-2. Active value: `value` if present, otherwise `default`.
-3. Replace each `$(variable.name)` reference with its value.
-4. Convert dotted names to underscores for template access (`data:skin.vars.body_font`).
+2. Active value: `value` if present, otherwise `default` (overridden only by exact dotted matches in `ctx.skin.vars`).
+3. Evaluate any XML flow directives (`<b:if>`, `<b:elseif>`, `<b:else>`, `<b:switch>`, `<b:case>`, `<b:default>`, `<b:with>`) embedded in the CDATA before variable interpolation.
+4. Replace each `$(variable.name)` reference with its resolved value.
+5. Convert dotted names to underscores for template access (`data:skin.vars.body_font`), exposing only `.size`/`.family` on `font` and `.color`/`.image` on `background` outside `<b:skin>`.
 
 ### 3.2. Font Variables
 A `type="font"` variable exposes four sub-properties:
