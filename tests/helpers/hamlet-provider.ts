@@ -1,8 +1,8 @@
-import type { BloggerViewId } from '../types.js'
+import type { BloggerViewId } from '../../src/types.js'
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { getWorkspacePaths } from '../paths.js'
-import { resolveBloggerContext } from './resolver.js'
+import { resolveBloggerContext } from '../../src/context/resolver.js'
+import { getWorkspacePaths } from '../../src/paths.js'
 
 export const HAMLET_BLOG_ID = '5408826600056783247'
 export const HAMLET_BASE_URL = 'https://hamlet.zkreations.com'

@@ -135,6 +135,9 @@
         "Translate1": { "type": "object" },
         "Attribution1": { "type": "object" }
       },
+      "propertyNames": {
+        "pattern": "^[A-Za-z0-9_]+$"
+      },
       "additionalProperties": true
     }
   },

@@ -6,9 +6,9 @@ import {
   getMockContext,
   normalizeHtmlString,
   resolveBloggerContext,
-  resolveHamletContext,
 } from '../src/index.js'
 import { getWorkspacePaths } from '../src/paths.js'
+import { resolveHamletContext } from './helpers/hamlet-provider.js'
 
 describe('canonical Views Conformance (hamlet.xml & ReferenceRenderer)', () => {
   const paths = getWorkspacePaths()

@@ -5,7 +5,7 @@ import { join } from 'node:path'
 import process from 'node:process'
 import addFormats from 'ajv-formats'
 import Ajv2020 from 'ajv/dist/2020.js'
-import { resolveHamletContext } from '../context/hamlet.js'
+import { resolveHamletContext } from '../../tests/helpers/hamlet-provider.js'
 import { getWorkspacePaths } from '../paths.js'
 
 const CANONICAL_VIEWS: readonly BloggerViewId[] = [
@@ -264,6 +264,9 @@ function canonicalizeEnglishContext(context: Record<string, any>, viewId: Blogge
     contactFormSendingMsg: 'Sending...',
     contactFormSentMsg: 'Your message has been sent.',
     contactFormNotSentMsg: 'Could not send message. Please try again later.',
+    contactFormMessageSendingMsg: 'Sending...',
+    contactFormMessageSentMsg: 'Your message has been sent.',
+    contactFormMessageNotSentMsg: 'Could not send message. Please try again later.',
     contactFormEmptyMessageMsg: 'Message field cannot be empty.',
     contactFormInvalidEmailMsg: 'A valid email is required.',
   }

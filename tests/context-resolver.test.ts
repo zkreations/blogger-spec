@@ -104,6 +104,12 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(labels.length).toBeGreaterThan(0)
       expect(labels[0].url).toContain('/search/label/')
 
+      // Dynamically populated BlogArchive and PopularPosts
+      expect(ctx.widgetData.BlogArchive1).toBeDefined()
+      expect(ctx.widgetData.BlogArchive1.data.length).toBeGreaterThan(0)
+      expect(ctx.widgetData.PopularPosts1).toBeDefined()
+      expect(ctx.widgetData.PopularPosts1.posts.length).toBeGreaterThan(0)
+
       // Canonical messages from mock must still be preserved
       expect(ctx.messages.archive).toBeDefined()
     })

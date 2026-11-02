@@ -39,6 +39,7 @@ export function generateDts(): string {
     'export { getAllCatalogs, getCatalog, getCommonWidget, getDiagnostics, getDirectives, getGlobals, getInclusions, getLocales, getMessages, getMockContext, getOperators, getScopes, getSettings, getTypes, getWidgets, validateDirectiveNesting, };',
     'export * from \'./ast.js\';',
     'export * from \'./catalogs/index.js\';',
+    'export * from \'./context/index.js\';',
     'export * from \'./data-path.js\';',
     'export * from \'./includable-resolver.js\';',
     'export * from \'./inclusion-expander.js\';',

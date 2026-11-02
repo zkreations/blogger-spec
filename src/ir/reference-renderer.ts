@@ -39,12 +39,23 @@ export interface BloggerReferenceRendererOptions extends BloggerCompileIROptions
    * Defaults to false (preserving exact Blogger markup).
    */
   readonly normalizeProtocolRelativeUrls?: boolean
+
+  /**
+   * Maximum call depth for <b:include> subroutine invocations to prevent RangeError from infinite loops.
+   * Defaults to 30.
+   */
+  readonly maxIncludeDepth?: number
 }
 
+/**
+ * Canonical Reference Implementation and hermetic HTML renderer for Blogger Intermediate Representation (BIR).
+ * Serves as an empirical testing oracle and local evaluation engine for blogger-spec.
+ */
 export class BloggerReferenceRenderer {
   private currentIr?: BloggerIRDocument
   private currentOptions?: BloggerReferenceRendererOptions
   private readonly pipeline = new DomMutationPipeline()
+  private includeDepth = 0
 
   constructor(private readonly defaultOptions: BloggerReferenceRendererOptions = {}) {}
 
@@ -60,6 +71,7 @@ export class BloggerReferenceRenderer {
     const ir = typeof input === 'string' ? compileToIR(input, mergedOptions) : input
     this.currentIr = ir
     this.currentOptions = mergedOptions
+    this.includeDepth = 0
     this.pipeline.clear()
 
     const effectiveContext = injectSkinVariables(ir.skin, context)
@@ -221,12 +233,22 @@ export class BloggerReferenceRenderer {
         if (!node.dynamicTarget && node.resolution?.tier === 'unresolved') {
           return node.resolution.failureComment ?? '<!-- unresolved -->'
         }
+        const maxDepth = this.currentOptions?.maxIncludeDepth ?? 30
+        if (this.includeDepth >= maxDepth) {
+          return `<!-- recursion depth limit exceeded (${target}) -->`
+        }
         const subroutine = this.findIncludable(target)
         if (!subroutine) {
           return node.resolution?.failureComment ?? '<!-- unresolved -->'
         }
-        const subCtx = bindIncludeScope(subroutine, node.args, ctx)
-        return this.renderNodes(subroutine.body, subCtx)
+        this.includeDepth++
+        try {
+          const subCtx = bindIncludeScope(subroutine, node.args, ctx)
+          return this.renderNodes(subroutine.body, subCtx)
+        }
+        finally {
+          this.includeDepth--
+        }
       }
 
       case 'container': {

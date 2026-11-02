@@ -2,7 +2,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import process from 'node:process'
-import { resolveHamletContext } from '../context/hamlet.js'
+import { resolveHamletContext } from '../../tests/helpers/hamlet-provider.js'
 import { BloggerReferenceRenderer } from '../ir/reference-renderer.js'
 import { getWorkspacePaths } from '../paths.js'
 import { normalizeHtmlString } from '../runner.js'

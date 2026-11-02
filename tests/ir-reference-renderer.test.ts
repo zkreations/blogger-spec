@@ -158,4 +158,26 @@ describe('bloggerReferenceRenderer', () => {
     expect(html).not.toContain('id="data:id"')
     expect(html).not.toContain('id=')
   })
+
+  it('guards against infinite recursion in b:include with maxIncludeDepth', () => {
+    const xml = `
+      <b:defaultmarkups>
+        <b:defaultmarkup type='Common'>
+          <b:includable id='loopA'>
+            <p>Loop A</p>
+            <b:include name='loopB'/>
+          </b:includable>
+          <b:includable id='loopB'>
+            <p>Loop B</p>
+            <b:include name='loopA'/>
+          </b:includable>
+        </b:defaultmarkup>
+      </b:defaultmarkups>
+      <div><b:include name='loopA'/></div>
+    `.trim()
+
+    const limitedRenderer = new BloggerReferenceRenderer({ maxIncludeDepth: 5 })
+    const output = limitedRenderer.compileFragment(xml)
+    expect(output).toContain('<!-- recursion depth limit exceeded (loop')
+  })
 })

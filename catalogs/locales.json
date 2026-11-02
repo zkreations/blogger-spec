@@ -9286,6 +9286,13 @@
             "zh_TW": "All Posts",
             "zu": "All Posts"
           }
+        },
+        "defaultTitle": {
+          "default": "Blog Archive",
+          "values": {
+            "en": "Blog Archive",
+            "es": "Archivo del blog"
+          }
         }
       },
       "BlogList": {
@@ -10016,6 +10023,13 @@
             "zh_TW": "傳送中...",
             "zu": "Iyathumela..."
           }
+        },
+        "defaultTitle": {
+          "default": "Contact Form",
+          "values": {
+            "en": "Contact Form",
+            "es": "Formulario de contacto"
+          }
         }
       },
       "Feed": {
@@ -10156,6 +10170,13 @@
         "authorPhoto.alt": {
           "default": null,
           "values": {}
+        },
+        "defaultTitle": {
+          "default": "About Me",
+          "values": {
+            "en": "About Me",
+            "es": "Datos personales"
+          }
         }
       },
       "Subscribe": {
@@ -10657,6 +10678,78 @@
           "values": {
             "en": "Featured Post",
             "es": "Entrada destacada"
+          }
+        }
+      },
+      "PopularPosts": {
+        "defaultTitle": {
+          "default": "Popular Posts",
+          "values": {
+            "en": "Popular Posts",
+            "es": "Entradas populares"
+          }
+        }
+      },
+      "LinkList": {
+        "defaultTitle": {
+          "default": "Useful Links",
+          "values": {
+            "en": "Useful Links",
+            "es": "Enlaces de interés"
+          }
+        }
+      },
+      "HTML": {
+        "defaultTitle": {
+          "default": "Custom HTML",
+          "values": {
+            "en": "Custom HTML",
+            "es": "HTML personalizado"
+          }
+        }
+      },
+      "BlogSearch": {
+        "defaultTitle": {
+          "default": "Search This Blog",
+          "values": {
+            "en": "Search This Blog",
+            "es": "Buscar en este blog"
+          }
+        }
+      },
+      "Stats": {
+        "defaultTitle": {
+          "default": "Total Pageviews",
+          "values": {
+            "en": "Total Pageviews",
+            "es": "Total de páginas vistas"
+          }
+        }
+      },
+      "Translate": {
+        "defaultTitle": {
+          "default": "Translate",
+          "values": {
+            "en": "Translate",
+            "es": "Traductor"
+          }
+        }
+      },
+      "Attribution": {
+        "defaultTitle": {
+          "default": "Attribution",
+          "values": {
+            "en": "Attribution",
+            "es": "Atribución"
+          }
+        }
+      },
+      "AdSense": {
+        "defaultTitle": {
+          "default": "AdSense",
+          "values": {
+            "en": "AdSense",
+            "es": "AdSense"
           }
         }
       }

@@ -2,6 +2,7 @@ import type { BloggerViewId } from '../generated/types.generated.js'
 import type { BloggerBlogConfiguration } from './config-types.js'
 import type { BloggerContextConfig, BloggerRawEntry } from './types.js'
 import { getMockContext, getSpecCatalog } from '../catalogs/index.js'
+import { buildArchiveHierarchy } from './archive-tree.js'
 import { BloggerFeedClient } from './client.js'
 import {
   normalizeBlogMetadata,
@@ -12,9 +13,8 @@ import {
   normalizePageEntry,
   normalizePostEntry,
 } from './normalizer.js'
+import { buildPopularPostsData } from './secondary-widgets.js'
 import { createUrlMapper } from './url-mapper.js'
-
-export const DEFAULT_BLOG_ID = '5408826600056783247'
 
 function deepMerge(target: any, source: any): any {
   if (!source || typeof source !== 'object') {
@@ -163,7 +163,7 @@ export async function resolveBloggerContext(
   if (!blogId && !config.offline) {
     throw new Error('blogId is required to resolve Blogger context')
   }
-  const effectiveBlogId = blogId || DEFAULT_BLOG_ID
+  const effectiveBlogId = blogId || ''
   const viewId: BloggerViewId = config.view || 'homepage'
   const urlMode = config.urlMode || 'relative'
   const baseUrl = config.baseUrl
@@ -262,7 +262,8 @@ export async function resolveBloggerContext(
         }
       }
       if (context.messages.location !== undefined) {
-        context.messages.location = blogLocale === 'en' ? 'Location' : 'Ubicación'
+        context.messages.location = spec.getLocalizedMessage('widgets.Blog.byline.location.label', blogLocale)
+          || (blogLocale.startsWith('es') ? 'Ubicación' : 'Location')
       }
     }
 
@@ -698,6 +699,24 @@ export async function resolveBloggerContext(
         snippet: featured.snippets.long,
         postUrl: featured.url,
       }
+    }
+
+    // Inyectar datos en BlogArchive1 si no existe
+    if (!context.widgetData.BlogArchive1 && normalizedPosts.length > 0) {
+      const archiveHierarchy = buildArchiveHierarchy(normalizedPosts, mapper, {
+        locale: blogLocale,
+        widgetId: 'BlogArchive1',
+      })
+      context.widgetData.BlogArchive1 = {
+        title: spec.getWidgetDefaultTitle('BlogArchive', blogLocale),
+        style: 'HIERARCHY',
+        data: archiveHierarchy,
+      }
+    }
+
+    // Inyectar datos en PopularPosts1 si no existe
+    if (!context.widgetData.PopularPosts1 && normalizedPosts.length > 0) {
+      context.widgetData.PopularPosts1 = buildPopularPostsData(normalizedPosts, spec, blogLocale, 5)
     }
 
     const cookieChoices = config.cookieChoices ?? config.config?.blog?.cookieChoices ?? false
