@@ -135,10 +135,11 @@ describe('runtime expression evaluator', () => {
       { title: 'C', active: true },
     ])
 
+    const blogCtx = { widgetType: 'Blog' }
     const selectAst = parseExpression('data:posts select (p => p.title)')
-    expect(inferExpressionType(selectAst)).toBe('array[string]')
+    expect(inferExpressionType(selectAst, blogCtx)).toBe('array[string]')
     const whereAst = parseExpression('data:posts where (p => p.allowComments)')
-    expect(inferExpressionType(whereAst)).toBe('array[object]')
+    expect(inferExpressionType(whereAst, blogCtx)).toBe('array[object]')
   })
 
   it('supports 3-operand infix chaining and string modifiers on resizeImage and sourceSet', () => {

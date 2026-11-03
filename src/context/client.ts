@@ -3,6 +3,7 @@ import type { BloggerRawFeedResponse } from './types.js'
 export interface FeedClientOptions {
   readonly fetchFn?: typeof fetch
   readonly defaultTtlMs?: number
+  readonly apiBaseUrl?: string
 }
 
 interface CacheEntry {
@@ -13,11 +14,13 @@ interface CacheEntry {
 export class BloggerFeedClient {
   private readonly fetchFn: typeof fetch
   private readonly defaultTtlMs: number
+  private readonly apiBaseUrl: string
   private readonly cache = new Map<string, CacheEntry>()
 
   constructor(options: FeedClientOptions = {}) {
     this.fetchFn = options.fetchFn || globalThis.fetch
     this.defaultTtlMs = options.defaultTtlMs ?? 3600_000 // 1 hour
+    this.apiBaseUrl = (options.apiBaseUrl ?? 'https://www.blogger.com/feeds').replace(/\/+$/, '')
   }
 
   async fetchJson<T = any>(url: string, ttlMs = this.defaultTtlMs): Promise<T | null> {
@@ -63,7 +66,7 @@ export class BloggerFeedClient {
     if (options.q)
       params.set('q', options.q)
 
-    let path = `https://www.blogger.com/feeds/${blogId}/posts/default`
+    let path = `${this.apiBaseUrl}/${blogId}/posts/default`
     if (options.category) {
       path += `/-/${encodeURIComponent(options.category)}`
     }
@@ -73,24 +76,24 @@ export class BloggerFeedClient {
   }
 
   async fetchPost(blogId: string, postId: string): Promise<BloggerRawFeedResponse | null> {
-    const url = `https://www.blogger.com/feeds/${blogId}/posts/default/${postId}?alt=json`
+    const url = `${this.apiBaseUrl}/${blogId}/posts/default/${postId}?alt=json`
     return this.fetchJson<BloggerRawFeedResponse>(url)
   }
 
   async fetchPages(blogId: string): Promise<BloggerRawFeedResponse | null> {
-    const url = `https://www.blogger.com/feeds/${blogId}/pages/default?alt=json`
+    const url = `${this.apiBaseUrl}/${blogId}/pages/default?alt=json`
     return this.fetchJson<BloggerRawFeedResponse>(url)
   }
 
   async fetchPage(blogId: string, pageId: string): Promise<BloggerRawFeedResponse | null> {
-    const url = `https://www.blogger.com/feeds/${blogId}/pages/default/${pageId}?alt=json`
+    const url = `${this.apiBaseUrl}/${blogId}/pages/default/${pageId}?alt=json`
     return this.fetchJson<BloggerRawFeedResponse>(url)
   }
 
   async fetchComments(blogId: string, postId?: string): Promise<BloggerRawFeedResponse | null> {
     const url = postId
-      ? `https://www.blogger.com/feeds/${blogId}/${postId}/comments/default?alt=json`
-      : `https://www.blogger.com/feeds/${blogId}/comments/default?alt=json`
+      ? `${this.apiBaseUrl}/${blogId}/${postId}/comments/default?alt=json`
+      : `${this.apiBaseUrl}/${blogId}/comments/default?alt=json`
     return this.fetchJson<BloggerRawFeedResponse>(url)
   }
 

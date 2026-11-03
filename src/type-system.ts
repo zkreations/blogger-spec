@@ -296,9 +296,8 @@ export function inferExpressionType(
           }
           currentType = rootType
         }
-        else {
-          const widgetName = context?.widgetType ?? 'Blog'
-          const widget = catalog.getWidget(widgetName)
+        else if (context?.widgetType) {
+          const widget = catalog.getWidget(context.widgetType)
           const widgetPropDef = widget?.canonical?.[first.property]
           if (widgetPropDef) {
             const rootType = widgetPropDef.type ?? 'object'
@@ -311,6 +310,9 @@ export function inferExpressionType(
             currentType = context.globals[first.property]!
           }
         }
+        else if (context?.globals?.[first.property]) {
+          currentType = context.globals[first.property]!
+        }
       }
 
       if (node.members.length === 1) {
@@ -318,8 +320,7 @@ export function inferExpressionType(
       }
 
       const globalDef = catalog.getGlobal(`data:${first.property}`)
-      const widgetName = context?.widgetType ?? 'Blog'
-      const widget = catalog.getWidget(widgetName)
+      const widget = context?.widgetType ? catalog.getWidget(context.widgetType) : undefined
       const widgetPropDef = widget?.canonical?.[first.property]
 
       for (let i = 1; i < node.members.length; i++) {
@@ -501,7 +502,7 @@ export function inferExpressionType(
       if (modType !== 'unknown') {
         return modType
       }
-      if (objType === 'post' || objType === 'object') {
+      if (objType === 'post' || (objType === 'object' && context?.widgetType === 'Blog')) {
         const blogWidget = catalog.getWidget('Blog')
         if (blogWidget?.canonical?.posts?.item_properties?.[propName]) {
           return blogWidget.canonical.posts.item_properties[propName]!.type ?? 'unknown'

@@ -456,9 +456,10 @@ describe('canonical type system & coercion engine', () => {
     })
 
     it('infers lambda pipelines and collection transformations', () => {
-      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:posts count (p => p.id > 0)'))).toBe('number')
-      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:posts any (p => p.isDraft)'))).toBe('boolean')
-      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:posts filter (p => p.id > 0)'))).toBe('array[object]')
+      const blogCtx: TypeSystemExports.TypeContext = { widgetType: 'Blog' }
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:posts count (p => p.id > 0)'), blogCtx)).toBe('number')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:posts any (p => p.isDraft)'), blogCtx)).toBe('boolean')
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:posts filter (p => p.id > 0)'), blogCtx)).toBe('array[object]')
 
       const context: TypeSystemExports.TypeContext = {
         variables: {
@@ -510,8 +511,8 @@ describe('canonical type system & coercion engine', () => {
       expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:allBylineItems[0].name'), blogContext)).toBe('string')
       expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:allBylineItems.author.label'), blogContext)).toBe('string')
 
-      // Falls back to Blog by default when widgetType is omitted
-      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:allBylineItems'))).toBe('array[object]')
+      // Strictly isolates widget properties: returns unknown when widgetType is omitted
+      expect(TypeSystemExports.inferExpressionType(RootExports.parseExpression('data:allBylineItems'))).toBe('unknown')
     })
   })
 })

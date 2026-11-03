@@ -198,6 +198,20 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(res2).toBeDefined()
       expect(mockFetch).toHaveBeenCalledTimes(1)
     })
+
+    it('honors custom apiBaseUrl for local proxying or tests', async () => {
+      const mockFetch = createMockFetch()
+      const client = new BloggerFeedClient({
+        fetchFn: mockFetch,
+        apiBaseUrl: 'http://localhost:3000/mock-feeds',
+      })
+
+      await client.fetchPosts('123')
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('http://localhost:3000/mock-feeds/123/posts/default?alt=json'),
+        expect.any(Object),
+      )
+    })
   })
 
   describe('url parameter filtering and pagination resolution', () => {
