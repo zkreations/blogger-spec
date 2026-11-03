@@ -746,11 +746,49 @@ function extractWidgetSettings(
 
     result[settingName] = coerced
 
+    if (def?.serialization_format === 'json' || settingName === 'pageListJson') {
+      try {
+        const parsed = JSON.parse(trimmed)
+        if (Array.isArray(parsed)) {
+          result.links = parsed.map((item: any) => ({
+            title: String(item.title ?? item.name ?? ''),
+            href: String(item.href ?? item.target ?? ''),
+          }))
+        }
+        else if (parsed && typeof parsed === 'object') {
+          result.links = (Object.values(parsed) as any[])
+            .map((item: any) => ({
+              title: String(item.title ?? item.name ?? ''),
+              href: String(item.href ?? item.target ?? ''),
+              position: typeof item.position === 'number' ? item.position : undefined,
+            }))
+            .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
+        }
+      }
+      catch {}
+    }
+
     const boundPath: unknown = def?.bound_runtime_data
     if (typeof boundPath === 'string' && boundPath.startsWith('data:')) {
       const cleanBound = boundPath.slice(5)
-      if (cleanBound && !cleanBound.includes('.') && !(cleanBound in result)) {
+      if (cleanBound === 'links[0].title') {
+        result.homeTitle = coerced
+        if (Array.isArray(result.links) && result.links.length > 0 && result.links[0]) {
+          result.links[0] = { ...result.links[0], title: String(coerced) }
+        }
+      }
+      else if (cleanBound && !cleanBound.includes('.') && !(cleanBound in result)) {
         result[cleanBound] = coerced
+      }
+      else if (cleanBound && cleanBound.includes('.')) {
+        const parts = cleanBound.split('.')
+        let curr: any = result
+        for (let i = 0; i < parts.length - 1; i++) {
+          const part = parts[i]!
+          curr[part] = curr[part] || {}
+          curr = curr[part]
+        }
+        curr[parts[parts.length - 1]!] = coerced
       }
     }
   }

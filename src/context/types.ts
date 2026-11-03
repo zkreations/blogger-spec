@@ -1,3 +1,4 @@
+import type { BloggerDocumentNode } from '../ast.js'
 import type { BloggerViewId } from '../generated/types.generated.js'
 import type { BloggerBlogConfiguration } from './config-types.js'
 
@@ -32,6 +33,18 @@ export interface BloggerContextConfig {
   readonly cookieChoices?: boolean
   /** URL base personalizada para el iframe del formulario de comentarios (evita bloqueos CORS y SameSite en dev local) */
   readonly commentFrameBaseUrl?: string
+  /** XML del tema o documento para descubrimiento automático de widgets y extracción de <b:widget-settings> */
+  readonly templateXml?: string
+  /** AST ya parseado (alternativa de alto rendimiento a templateXml) */
+  readonly templateAst?: BloggerDocumentNode
+}
+
+export interface DiscoveredWidget {
+  readonly id: string
+  readonly type: string
+  readonly title?: string
+  readonly version?: number
+  readonly settings?: Record<string, unknown>
 }
 
 export interface BloggerRawText {

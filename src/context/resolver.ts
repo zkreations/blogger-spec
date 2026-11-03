@@ -1,6 +1,6 @@
 import type { BloggerViewId } from '../generated/types.generated.js'
 import type { BloggerBlogConfiguration } from './config-types.js'
-import type { BloggerContextConfig, BloggerRawEntry } from './types.js'
+import type { BloggerContextConfig, BloggerRawEntry, DiscoveredWidget } from './types.js'
 import { getMockContext, getSpecCatalog } from '../catalogs/index.js'
 import { buildArchiveHierarchy } from './archive-tree.js'
 import { BloggerFeedClient } from './client.js'
@@ -16,6 +16,11 @@ import {
 import { resolveBloggerRoute } from './routing.js'
 import { buildPopularPostsData } from './secondary-widgets.js'
 import { createUrlMapper } from './url-mapper.js'
+import {
+  extractTemplateWidgets,
+  normalizeLinkItem,
+  parseCanonicalWidgetId,
+} from './widget-extractor.js'
 
 function deepMerge(target: any, source: any): any {
   if (!source || typeof source !== 'object') {
@@ -176,6 +181,286 @@ function applyBlogConfiguration(
   }
 }
 
+interface WidgetHydrationOptions {
+  context: Record<string, any>
+  config: BloggerContextConfig
+  spec: any
+  mapper: any
+  currentPath?: string
+  blogLocale: string
+  blogTimeZone?: string
+  rawPages: readonly BloggerRawEntry[]
+  rawPosts: readonly BloggerRawEntry[]
+  normalizedPages: readonly any[]
+  normalizedLabels: readonly any[]
+  normalizedPosts: readonly any[]
+  activePosts: readonly any[]
+  headerData: any
+  blog1: Record<string, any>
+}
+
+function hydrateAllWidgets(options: WidgetHydrationOptions): void {
+  const {
+    context,
+    config,
+    spec,
+    mapper,
+    currentPath,
+    blogLocale,
+    blogTimeZone,
+    normalizedPages,
+    normalizedLabels,
+    normalizedPosts,
+    activePosts,
+    headerData,
+    blog1,
+  } = options
+
+  const discoveredWidgets = new Map<string, DiscoveredWidget>()
+
+  // 1. Template XML or AST
+  if (config.templateAst || config.templateXml) {
+    const fromTemplate = extractTemplateWidgets(config.templateAst || config.templateXml!, spec)
+    for (const w of fromTemplate) {
+      discoveredWidgets.set(w.id, w)
+    }
+  }
+
+  // 2. config.widgets
+  if (config.config?.widgets) {
+    for (const key of Object.keys(config.config.widgets)) {
+      const parsed = parseCanonicalWidgetId(key)
+      if (parsed && !discoveredWidgets.has(key)) {
+        discoveredWidgets.set(key, { id: key, type: parsed.type })
+      }
+    }
+  }
+
+  // 3. overrides.widgetData
+  if (config.overrides?.widgetData) {
+    for (const key of Object.keys(config.overrides.widgetData)) {
+      const parsed = parseCanonicalWidgetId(key)
+      if (parsed && !discoveredWidgets.has(key)) {
+        discoveredWidgets.set(key, { id: key, type: parsed.type })
+      }
+    }
+  }
+
+  // 4. Existing context.widgetData keys
+  if (context.widgetData) {
+    for (const key of Object.keys(context.widgetData)) {
+      const parsed = parseCanonicalWidgetId(key)
+      if (parsed && !discoveredWidgets.has(key)) {
+        discoveredWidgets.set(key, { id: key, type: parsed.type })
+      }
+    }
+  }
+
+  // 5. Standard fallbacks if their types are not present
+  if (![...discoveredWidgets.values()].some(w => w.type === 'Blog')) {
+    discoveredWidgets.set('Blog1', { id: 'Blog1', type: 'Blog' })
+  }
+  if (![...discoveredWidgets.values()].some(w => w.type === 'Header')) {
+    discoveredWidgets.set('Header1', { id: 'Header1', type: 'Header' })
+  }
+  if (![...discoveredWidgets.values()].some(w => w.type === 'PageList')) {
+    discoveredWidgets.set('PageList1', { id: 'PageList1', type: 'PageList' })
+  }
+  if (![...discoveredWidgets.values()].some(w => w.type === 'Label')) {
+    discoveredWidgets.set('Label1', { id: 'Label1', type: 'Label' })
+  }
+  if (normalizedPosts.length > 0 && ![...discoveredWidgets.values()].some(w => w.type === 'FeaturedPost')) {
+    discoveredWidgets.set('FeaturedPost1', { id: 'FeaturedPost1', type: 'FeaturedPost' })
+  }
+  if (normalizedPosts.length > 0 && ![...discoveredWidgets.values()].some(w => w.type === 'BlogArchive')) {
+    discoveredWidgets.set('BlogArchive1', { id: 'BlogArchive1', type: 'BlogArchive' })
+  }
+
+  // 6. Hydrate each instance in cascade
+  for (const [widgetId, widget] of discoveredWidgets) {
+    const type = widget.type
+    const genericTypeConfig = config.config?.widgets?.[type]
+    const templateSettings = widget.settings
+    const instanceConfig = config.config?.widgets?.[widgetId]
+    const instanceOverrides = config.overrides?.widgetData?.[widgetId]
+    const existingData = context.widgetData[widgetId] || {}
+
+    // Cascade: Existing mock base -> Type defaults -> Template settings -> Instance config -> Instance overrides
+    let merged = deepMerge({}, existingData)
+    if (genericTypeConfig) {
+      merged = deepMerge(merged, genericTypeConfig)
+    }
+    if (templateSettings) {
+      merged = deepMerge(merged, templateSettings)
+    }
+    if (instanceConfig) {
+      merged = deepMerge(merged, instanceConfig)
+    }
+    if (instanceOverrides) {
+      merged = deepMerge(merged, instanceOverrides)
+    }
+
+    switch (type) {
+      case 'PageList': {
+        const rawLinks = instanceOverrides?.links || instanceConfig?.links || templateSettings?.links || genericTypeConfig?.links || merged.links
+        let links: any[]
+        if (Array.isArray(rawLinks) && rawLinks.length > 0) {
+          links = rawLinks
+            .map((l: any) => normalizeLinkItem(l))
+            .map((l: any) => ({
+              ...l,
+              isCurrentPage: l.isCurrentPage ?? Boolean(currentPath && (l.href === currentPath || mapper.mapUrl(l.href) === currentPath)),
+            }))
+        }
+        else {
+          links = normalizedPages.slice()
+        }
+        const hasExplicitInstanceLinks = Array.isArray(instanceConfig?.links) || Array.isArray(instanceOverrides?.links)
+        if (merged.homeTitle && links.length > 0 && links[0] && !hasExplicitInstanceLinks) {
+          links[0] = { ...links[0], title: String(merged.homeTitle) }
+        }
+        const title = instanceOverrides?.title || instanceConfig?.title || widget.title || genericTypeConfig?.title || merged.title || spec.getWidgetDefaultTitle('PageList', blogLocale) || 'Pages'
+        context.widgetData[widgetId] = {
+          ...merged,
+          title,
+          links,
+        }
+        break
+      }
+
+      case 'Label': {
+        const sorting = (merged.sorting || config.overrides?.widgetData?.Label1?.sorting || 'ALPHA').toUpperCase()
+        let labels = normalizedLabels
+        if (sorting === 'FREQUENCY') {
+          labels = [...normalizedLabels].sort((a: any, b: any) => (b.count ?? 0) - (a.count ?? 0) || a.name.localeCompare(b.name))
+        }
+        const showFreqNumbers = merged.showFreqNumbers ?? (config.overrides?.widgetData?.[widgetId]?.showFreqNumbers ?? false)
+        const title = instanceOverrides?.title || instanceConfig?.title || widget.title || genericTypeConfig?.title || merged.title || spec.getWidgetDefaultTitle('Label', blogLocale) || 'Labels'
+        context.widgetData[widgetId] = {
+          ...merged,
+          title,
+          labels,
+          showFreqNumbers,
+        }
+        break
+      }
+
+      case 'Header': {
+        const title = instanceOverrides?.title || instanceConfig?.title || widget.title || genericTypeConfig?.title || headerData.title || spec.getWidgetDefaultTitle('Header', blogLocale)
+        const description = instanceOverrides?.description || instanceConfig?.description || (widget.settings as any)?.description || genericTypeConfig?.description || headerData.description
+        const url = instanceOverrides?.url || instanceConfig?.url || (widget.settings as any)?.url || genericTypeConfig?.url || headerData.url
+        context.widgetData[widgetId] = {
+          ...headerData,
+          ...merged,
+          title,
+          description,
+          url,
+        }
+        break
+      }
+
+      case 'Blog': {
+        const title = merged.title || widget.title || spec.getWidgetDefaultTitle('Blog', blogLocale) || 'Blog Posts'
+        context.widgetData[widgetId] = deepMerge({ ...blog1, title, posts: activePosts, numPosts: activePosts.length }, merged)
+        break
+      }
+
+      case 'FeaturedPost': {
+        if (normalizedPosts.length > 0) {
+          const featured = normalizedPosts[0]!
+          context.widgetData[widgetId] = deepMerge({
+            title: spec.getWidgetDefaultTitle('FeaturedPost', blogLocale),
+            postId: featured.id,
+            postTitle: featured.title,
+            snippet: featured.snippets.long,
+            postUrl: featured.url,
+          }, merged)
+        }
+        else {
+          context.widgetData[widgetId] = merged
+        }
+        break
+      }
+
+      case 'BlogArchive': {
+        if (normalizedPosts.length > 0 && !context.widgetData[widgetId]?.data) {
+          const archiveHierarchy = buildArchiveHierarchy(normalizedPosts, mapper, {
+            locale: blogLocale,
+            timeZone: blogTimeZone,
+            widgetId,
+          })
+          context.widgetData[widgetId] = deepMerge({
+            title: spec.getWidgetDefaultTitle('BlogArchive', blogLocale),
+            style: 'HIERARCHY',
+            data: archiveHierarchy,
+          }, merged)
+        }
+        else {
+          context.widgetData[widgetId] = merged
+        }
+        break
+      }
+
+      case 'PopularPosts': {
+        if (normalizedPosts.length > 0 && !context.widgetData[widgetId]?.posts) {
+          context.widgetData[widgetId] = deepMerge(buildPopularPostsData(normalizedPosts, spec, blogLocale, 5), merged)
+        }
+        else {
+          context.widgetData[widgetId] = merged
+        }
+        break
+      }
+
+      case 'LinkList':
+      case 'TextList': {
+        const title = merged.title || widget.title || spec.getWidgetDefaultTitle(type, blogLocale) || type
+        if (Array.isArray(merged.links)) {
+          const links = merged.links
+            .map((l: any) => normalizeLinkItem(l))
+            .map((l: any) => ({ name: l.title, target: l.href, ...l }))
+          context.widgetData[widgetId] = { ...merged, title, links }
+        }
+        else {
+          context.widgetData[widgetId] = { ...merged, title }
+        }
+        break
+      }
+
+      default: {
+        const title = merged.title || widget.title || spec.getWidgetDefaultTitle(type, blogLocale) || type
+        context.widgetData[widgetId] = { ...merged, title }
+        break
+      }
+    }
+  }
+
+  // 7. Aliases por tipo
+  const typesEncountered = new Set<string>()
+  for (const w of discoveredWidgets.values()) {
+    typesEncountered.add(w.type)
+  }
+
+  for (const type of typesEncountered) {
+    const primaryId = `${type}1`
+    if (context.widgetData[primaryId]) {
+      context.widgetData[type] = context.widgetData[primaryId]
+    }
+    else {
+      const first = [...discoveredWidgets.values()].find(w => w.type === type)
+      if (first && context.widgetData[first.id]) {
+        context.widgetData[type] = context.widgetData[first.id]
+      }
+    }
+  }
+
+  // Sincronizar context.widgets si existe
+  if (context.widgets) {
+    for (const [k, v] of Object.entries(context.widgetData)) {
+      context.widgets[k] = v
+    }
+  }
+}
+
 export async function resolveBloggerContext(
   config: BloggerContextConfig = {},
 ): Promise<Record<string, any>> {
@@ -234,14 +519,34 @@ export async function resolveBloggerContext(
         post.commentFormIframeSrc = `${commentFrameBaseUrl}${separator}${queryParts.join('&')}`
       }
     }
-    if (context.widgetData) {
-      for (const [key, val] of Object.entries(context.widgetData)) {
-        const typeMatch = key.match(/^([a-z]+)\d+$/i)
-        if (typeMatch && !context.widgetData[typeMatch[1]!]) {
-          context.widgetData[typeMatch[1]!] = val
-        }
-      }
-    }
+    const spec = getSpecCatalog()
+    const blogLocale = config.overrides?.blog?.locale || config.config?.blog?.locale || context.blog?.locale || 'en'
+    const derivedHost = context.blog?.homepageUrl ? new URL(context.blog.homepageUrl).host : 'example.blogspot.com'
+    const mapper = createUrlMapper({ urlMode, baseUrl, blogHost: derivedHost })
+    const currentPath = (viewId === 'static_page' ? config.targetUrl || context.view?.url || config.overrides?.view?.url : undefined)
+    const normalizedPages = (context.widgetData?.PageList1?.links || []).map((l: any) => ({
+      ...l,
+      isCurrentPage: Boolean(currentPath && (l.href === currentPath || mapper.mapUrl(l.href) === currentPath)),
+    }))
+
+    hydrateAllWidgets({
+      context,
+      config,
+      spec,
+      mapper,
+      currentPath,
+      blogLocale,
+      blogTimeZone: config.config?.blog?.timeZone || 'UTC',
+      rawPages: [],
+      rawPosts: [],
+      normalizedPages,
+      normalizedLabels: context.widgetData?.Label1?.labels || [],
+      normalizedPosts: context.widgetData?.Blog1?.posts || [],
+      activePosts: context.widgetData?.Blog1?.posts || [],
+      headerData: context.widgetData?.Header1 || {},
+      blog1: context.widgetData?.Blog1 || {},
+    })
+
     if (config.overrides) {
       return deepMerge(context, config.overrides)
     }
@@ -662,83 +967,26 @@ export async function resolveBloggerContext(
       applyBlogConfiguration(context, config.config, viewId, activePosts)
     }
 
-    const currentPath = (viewId === 'static_page' ? context.view?.url || config.overrides?.view?.url : undefined)
+    const currentPath = (viewId === 'static_page' ? config.targetUrl || context.view?.url || config.overrides?.view?.url : undefined)
     const normalizedPages = rawPages.map(e => normalizePageEntry(e, mapper, currentPath))
-    const pageListTitle = spec.getWidgetDefaultTitle('PageList', blogLocale) || 'Pages'
 
-    if (context.widgetData.PageList1) {
-      context.widgetData.PageList1.links = normalizedPages
-      context.widgetData.PageList1.title = pageListTitle
-    }
-    else {
-      context.widgetData.PageList1 = {
-        title: pageListTitle,
-        links: normalizedPages,
-      }
-    }
-    context.widgetData.PageList = context.widgetData.PageList1
-
-    const labelTitle = spec.getWidgetDefaultTitle('Label', blogLocale) || 'Labels'
-    if (context.widgetData.Label1) {
-      context.widgetData.Label1.labels = normalizedLabels
-      context.widgetData.Label1.title = labelTitle
-      if (config.overrides?.widgetData?.Label1?.showFreqNumbers === undefined) {
-        context.widgetData.Label1.showFreqNumbers = false
-      }
-    }
-    else {
-      context.widgetData.Label1 = {
-        title: labelTitle,
-        labels: normalizedLabels,
-        showFreqNumbers: false,
-      }
-    }
-    context.widgetData.Label = context.widgetData.Label1
-
-    const headerTitle = headerData.title || spec.getWidgetDefaultTitle('Header', blogLocale)
-    if (context.widgetData.Header1) {
-      context.widgetData.Header1.title = headerTitle
-      context.widgetData.Header1.description = headerData.description
-      context.widgetData.Header1.url = headerData.url
-    }
-    else {
-      context.widgetData.Header1 = {
-        ...headerData,
-        title: headerTitle,
-      }
-    }
-    context.widgetData.Header = context.widgetData.Header1
-
-    if (normalizedPosts.length > 0) {
-      const featured = normalizedPosts[0]
-      context.widgetData.FeaturedPost1 = {
-        title: spec.getWidgetDefaultTitle('FeaturedPost', blogLocale),
-        postId: featured.id,
-        postTitle: featured.title,
-        snippet: featured.snippets.long,
-        postUrl: featured.url,
-      }
-      context.widgetData.FeaturedPost = context.widgetData.FeaturedPost1
-    }
-
-    if (!context.widgetData.BlogArchive1 && normalizedPosts.length > 0) {
-      const archiveHierarchy = buildArchiveHierarchy(normalizedPosts, mapper, {
-        locale: blogLocale,
-        timeZone: blogTimeZone,
-        widgetId: 'BlogArchive1',
-      })
-      context.widgetData.BlogArchive1 = {
-        title: spec.getWidgetDefaultTitle('BlogArchive', blogLocale),
-        style: 'HIERARCHY',
-        data: archiveHierarchy,
-      }
-      context.widgetData.BlogArchive = context.widgetData.BlogArchive1
-    }
-
-    if (!context.widgetData.PopularPosts1 && normalizedPosts.length > 0) {
-      context.widgetData.PopularPosts1 = buildPopularPostsData(normalizedPosts, spec, blogLocale, 5)
-      context.widgetData.PopularPosts = context.widgetData.PopularPosts1
-    }
+    hydrateAllWidgets({
+      context,
+      config,
+      spec,
+      mapper,
+      currentPath,
+      blogLocale,
+      blogTimeZone,
+      rawPages,
+      rawPosts,
+      normalizedPages,
+      normalizedLabels,
+      normalizedPosts,
+      activePosts,
+      headerData,
+      blog1,
+    })
 
     const cookieChoices = config.cookieChoices ?? config.config?.blog?.cookieChoices ?? false
     if (cookieChoices) {
