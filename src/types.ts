@@ -127,7 +127,7 @@ export interface BloggerDirectiveAttributesValidationResult {
   }>
   readonly invalidExpressions: string[]
   readonly inverted: Array<{
-    readonly code: string
+    readonly code: BloggerDiagnosticCode
     readonly attribute: string
     readonly expected: string
     readonly start?: number

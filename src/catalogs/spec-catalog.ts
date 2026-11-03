@@ -20,11 +20,13 @@ import type {
   BloggerHallucinatedDirectiveConfig,
   BloggerIncludableResolutionHierarchy,
   BloggerInclusionDefinition,
+  BloggerInclusionDiagnosticKey,
   BloggerInclusionsCatalog,
   BloggerLayoutVersionsCatalog,
   BloggerLocaleRecord,
   BloggerLocalesCatalog,
   BloggerMessageDefinition,
+  BloggerMessageDiagnosticKey,
   BloggerMessagesCatalog,
   BloggerOperatorDefinition,
   BloggerOperatorName,
@@ -1541,6 +1543,24 @@ export class SpecCatalog {
     return result
   }
 
+  getInclusionDiagnostic(key: BloggerInclusionDiagnosticKey): BloggerDiagnosticCode {
+    const inclusionsData = this.store.getCatalog('inclusions') as BloggerInclusionsCatalog
+    const code = inclusionsData?.domain_metadata?.standard_diagnostics?.[key]
+    if (!code) {
+      throw new Error(`Inclusion standard diagnostic '${key}' is not defined in inclusions catalog domain_metadata.standard_diagnostics`)
+    }
+    return code
+  }
+
+  getMessageDiagnostic(key: BloggerMessageDiagnosticKey): BloggerDiagnosticCode {
+    const messagesData = this.store.getCatalog('messages') as BloggerMessagesCatalog
+    const code = messagesData?.domain_metadata?.standard_diagnostics?.[key]
+    if (!code) {
+      throw new Error(`Message standard diagnostic '${key}' is not defined in messages catalog domain_metadata.standard_diagnostics`)
+    }
+    return code
+  }
+
   getScalarTypes(): readonly string[] {
     if (this.scalarTypes.length === 0) {
       throw new Error('Missing scalar_types in types catalog')
@@ -2009,6 +2029,14 @@ export function isValidSuperInclusion(widgetType: string, subroutineName: string
 
 export function getAllWidgetDefaultInclusions(catalog: SpecCatalog = getSpecCatalog()): Record<string, string[]> {
   return catalog.getAllWidgetDefaultInclusions()
+}
+
+export function getInclusionDiagnostic(key: BloggerInclusionDiagnosticKey, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticCode {
+  return catalog.getInclusionDiagnostic(key)
+}
+
+export function getMessageDiagnostic(key: BloggerMessageDiagnosticKey, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticCode {
+  return catalog.getMessageDiagnostic(key)
 }
 
 export function getSuperPrefix(catalog: SpecCatalog = getSpecCatalog()): string {

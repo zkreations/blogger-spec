@@ -78,9 +78,10 @@ function handleClosingTag(
   const top = tagStack[tagStack.length - 1]
   if (!top || top.tagName.toLowerCase() !== lower) {
     const directive = catalog.getDirective(token.tagName)
-    const invalidChildDiag = directive?.grammar?.invalid_nesting_policy?.on_invalid_child?.diagnostic
-    if (invalidChildDiag === 'BX1013' || lower === 'b:eval') {
-      const code = 'BX1013'
+    const closingTagDiag = directive?.grammar?.invalid_nesting_policy?.on_invalid_child?.diagnostic
+    const isProhibitedClosing = Boolean(closingTagDiag && directive?.grammar?.valid_children?.length === 0)
+    if (isProhibitedClosing && closingTagDiag) {
+      const code = closingTagDiag
       const rule = catalog.getDiagnostic(code)
       pushDiagnostic(diagnostics, catalog, code, token, {
         rule,
@@ -219,7 +220,7 @@ function validateNestingRules(
 
   const lowerTag = token.tagName.toLowerCase()
   if (lowerTag.startsWith('b:') && !catalog.isDirective(token.tagName) && !catalog.isDirective(lowerTag)) {
-    const diagCode = (catalog.getStandardDiagnostic('unknown_directive') || 'BX1025') as BloggerDiagnosticCode
+    const diagCode = catalog.getStandardDiagnostic('unknown_directive')
     const diagRule = catalog.getDiagnostic(diagCode)
     pushDiagnostic(diagnostics, catalog, diagCode, token, {
       rule: diagRule,
@@ -234,7 +235,7 @@ function validateNestingRules(
   if (isSection && tagStack.some(t => t.tagName === 'b:section')) {
     const violation = validateDirectiveNesting('b:section', 'b:section', catalog)
     if (violation) {
-      pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
+      pushDiagnostic(diagnostics, catalog, violation.code, token, {
         rule: violation.rule,
         message: violation.message,
       })
@@ -247,7 +248,7 @@ function validateNestingRules(
       t.tagName === 'b:widget' || t.tagName === 'b:includable' || t.tagName === 'b:defaultmarkup' || t.tagName === 'head' || t.tagName === 'b:loop',
     )
     if (invalidAncestor) {
-      const defaultProhibited = (catalog.getStandardDiagnostic('prohibited_nesting') ?? 'BX1023') as BloggerDiagnosticCode
+      const defaultProhibited = catalog.getStandardDiagnostic('prohibited_nesting')
       pushDiagnostic(diagnostics, catalog, defaultProhibited, token, {
         message: `Tag <b:section> cannot be placed inside <${invalidAncestor.tagName}>.`,
       })
@@ -260,7 +261,7 @@ function validateNestingRules(
     const violation = validateDirectiveNesting('b:widget', token.tagName, catalog)
       ?? catalog.validateDirectiveNesting('b:widget', token.tagName)
     if (violation) {
-      pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
+      pushDiagnostic(diagnostics, catalog, violation.code, token, {
         rule: violation.rule,
         message: `Tag <${token.tagName}> cannot be placed inside widgets (Blogger formats it as self-closing <${token.tagName}/> and strips its content).`,
       })
@@ -271,7 +272,7 @@ function validateNestingRules(
   if (parentToken) {
     const violation = validateDirectiveNesting(parentToken.tagName, token.tagName, catalog)
     if (violation) {
-      pushDiagnostic(diagnostics, catalog, violation.code as BloggerDiagnosticCode, token, {
+      pushDiagnostic(diagnostics, catalog, violation.code, token, {
         rule: violation.rule,
         message: violation.message,
       })
@@ -279,8 +280,8 @@ function validateNestingRules(
   }
   else if (!catalog.canBeAtRoot(token.tagName)) {
     const directiveDef = catalog.getDirective(token.tagName)
-    const policyDiag = (directiveDef?.grammar?.invalid_nesting_policy?.on_invalid_parent?.diagnostic
-      ?? catalog.getStandardDiagnostic('prohibited_nesting')) as BloggerDiagnosticCode
+    const policyDiag = directiveDef?.grammar?.invalid_nesting_policy?.on_invalid_parent?.diagnostic
+      ?? catalog.getStandardDiagnostic('prohibited_nesting')
     const rule = catalog.getDiagnostic(policyDiag)
     pushDiagnostic(diagnostics, catalog, policyDiag, token, {
       rule,
@@ -314,7 +315,7 @@ function validateDirectiveAttributeRules(
         }],
       })
     }
-    pushDiagnostic(diagnostics, catalog, inv.code as BloggerDiagnosticCode, token, {
+    pushDiagnostic(diagnostics, catalog, inv.code, token, {
       start: inv.start ?? token.tagStart,
       end: inv.end ?? token.tagEnd,
       attribute: inv.attribute,
@@ -449,7 +450,7 @@ function validateIdentifierUniqueness(
     const idVal = idAttr?.value ? idAttr.value.trim() : ''
 
     if (idVal && idVal.startsWith('super.')) {
-      const diagCode = 'BX1060' as BloggerDiagnosticCode
+      const diagCode = catalog.getInclusionDiagnostic('prohibited_super_includable_override')
       const diagRule = catalog.getDiagnostic(diagCode)
       pushDiagnostic(diagnostics, catalog, diagCode, token, {
         attribute: 'id',
@@ -506,7 +507,8 @@ function validateWidgetElement(
       const escapedType = type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
       const pattern = new RegExp(`^${escapedType}[1-9][0-9]{0,2}$`)
       if (!pattern.test(id)) {
-        pushDiagnostic(diagnostics, catalog, 'BX1047', token, {
+        const idDiagCode = catalog.getDirective('b:widget')?.attributes?.id?.diagnostic ?? 'BX1047'
+        pushDiagnostic(diagnostics, catalog, idDiagCode, token, {
           start: idAttr.start,
           end: idAttr.end,
           message: `Widget id '${id}' is invalid for type '${type}'. Expected '${type}' followed by a number between 1 and 999 (e.g. '${type}1').`,
@@ -514,8 +516,8 @@ function validateWidgetElement(
       }
 
       const widgetDef = catalog.getWidget(type)
-      if (widgetDef && (widgetDef as any).warning_diagnostic) {
-        const diagCode = (widgetDef as any).warning_diagnostic as BloggerDiagnosticCode
+      if (widgetDef?.warning_diagnostic) {
+        const diagCode = widgetDef.warning_diagnostic
         const rule = catalog.getDiagnostic(diagCode)
         pushDiagnostic(diagnostics, catalog, diagCode, token, {
           severity: rule?.severity ?? 'warning',
@@ -538,7 +540,7 @@ function validateVariableElement(
 
   for (const attr of Object.values(token.attributes)) {
     if (attr.quote === '\'') {
-      pushDiagnostic(diagnostics, catalog, 'BX1052', token, {
+      pushDiagnostic(diagnostics, catalog, catalog.getStandardDiagnostic('invalid_skin_variable_syntax'), token, {
         attribute: attr.name,
         message: `Theme Designer tags (<${token.tagName}>) strictly require double quotes ("...") for attributes. Single quotes are not supported by the Theme Designer parser.`,
       })
@@ -601,17 +603,18 @@ function validateWidgetSettingElement(
     return
   }
 
+  const invalidSettingDiag = catalog.getStandardDiagnostic('invalid_widget_setting')
+
   const dep = widgetSettingsDef.deprecated?.[settingName]
   if (dep) {
     if (settingName.startsWith('style.')) {
-      const diagCode = 'BX1056' as BloggerDiagnosticCode
-      pushDiagnostic(diagnostics, catalog, diagCode, token, {
+      pushDiagnostic(diagnostics, catalog, invalidSettingDiag, token, {
         message: `The widget settings in widget with id ${widgetId} is not valid. ${dep.reason || 'Unknown ad unit type'}`,
       })
       return
     }
     else {
-      pushDiagnostic(diagnostics, catalog, 'BX1050', token, {
+      pushDiagnostic(diagnostics, catalog, catalog.getStandardDiagnostic('deprecated_data_property'), token, {
         severity: 'warning',
         message: `Widget setting '${settingName}' is deprecated for widget type '${widgetType}'. ${dep.reason || ''}`.trim(),
       })
@@ -636,11 +639,10 @@ function validateWidgetSettingElement(
 
     if (canonical.allowed_values && canonical.allowed_values.length > 0) {
       if (!canonical.allowed_values.includes(content)) {
-        const diagCode = 'BX1056' as BloggerDiagnosticCode
         const msg = widgetType === 'BloggerButton'
           ? `The widget settings in widget with id ${widgetId} is not valid. The specified logo URL is not allowed.`
           : `The widget settings in widget with id ${widgetId} is not valid. That is not one of the acceptable values`
-        pushDiagnostic(diagnostics, catalog, diagCode, token, { message: msg })
+        pushDiagnostic(diagnostics, catalog, invalidSettingDiag, token, { message: msg })
         return
       }
     }
@@ -648,8 +650,7 @@ function validateWidgetSettingElement(
     if (canonical.minimum !== undefined) {
       const num = Number(content)
       if (!Number.isNaN(num) && num < canonical.minimum) {
-        const diagCode = 'BX1056' as BloggerDiagnosticCode
-        pushDiagnostic(diagnostics, catalog, diagCode, token, {
+        pushDiagnostic(diagnostics, catalog, invalidSettingDiag, token, {
           message: `The widget settings in widget with id ${widgetId} is not valid. Must be at least ${canonical.minimum}`,
         })
         return
@@ -658,8 +659,7 @@ function validateWidgetSettingElement(
 
     if (canonical.serialization_format === 'json') {
       if (rawContent.includes('&lt;![CDATA[')) {
-        const diagCode = 'BX1056' as BloggerDiagnosticCode
-        pushDiagnostic(diagnostics, catalog, diagCode, token, {
+        pushDiagnostic(diagnostics, catalog, invalidSettingDiag, token, {
           message: `The widget settings in widget with id ${widgetId} is not valid. Page title is invalid.`,
         })
         return
@@ -668,8 +668,7 @@ function validateWidgetSettingElement(
         JSON.parse(content)
       }
       catch {
-        const diagCode = 'BX1056' as BloggerDiagnosticCode
-        pushDiagnostic(diagnostics, catalog, diagCode, token, {
+        pushDiagnostic(diagnostics, catalog, invalidSettingDiag, token, {
           message: `The widget settings in widget with id ${widgetId} is not valid. Page title is invalid.`,
         })
       }
@@ -692,7 +691,7 @@ function validateIncludeElement(
     const val = dataAttr.value.trim()
     const isDirectBracketArray = val.startsWith('[') && val.endsWith(']')
     if (isPrimitiveScalarLiteral(val) || isDirectBracketArray) {
-      const diagCode = (catalog.getStandardDiagnostic('non_object_include_data_payload') || 'BX1031') as BloggerDiagnosticCode
+      const diagCode = catalog.getStandardDiagnostic('non_object_include_data_payload')
       const diagRule = catalog.getDiagnostic(diagCode)
       pushDiagnostic(diagnostics, catalog, diagCode, token, {
         attribute: dataAttr.name,
@@ -709,7 +708,7 @@ function validateIncludeElement(
 
     // 2. BX1058: Super inclusion warning in custom themes
     if (rawName.startsWith('super.')) {
-      const diagCode = 'BX1058' as BloggerDiagnosticCode
+      const diagCode = catalog.getInclusionDiagnostic('super_inclusion_warning')
       const diagRule = catalog.getDiagnostic(diagCode)
       pushDiagnostic(diagnostics, catalog, diagCode, token, {
         attribute: 'name',
@@ -724,7 +723,7 @@ function validateIncludeElement(
 
     // 3. BX1059: Theme-bound inclusion warning
     if (incDef?.safety === 'theme_bound') {
-      const diagCode = 'BX1059' as BloggerDiagnosticCode
+      const diagCode = catalog.getInclusionDiagnostic('theme_bound_inclusion_warning')
       const diagRule = catalog.getDiagnostic(diagCode)
       const depMsg = incDef.theme_dependency ? ` (${incDef.theme_dependency.failure_reason})` : ''
       pushDiagnostic(diagnostics, catalog, diagCode, token, {
@@ -737,7 +736,7 @@ function validateIncludeElement(
 
     // 4. BX1024: Deprecated server inclusion
     if (incDef?.deprecated || incDef?.safety === 'deprecated') {
-      const diagCode = (catalog.getStandardDiagnostic('deprecated_attribute') || 'BX1024') as BloggerDiagnosticCode
+      const diagCode = catalog.getStandardDiagnostic('deprecated_attribute')
       pushDiagnostic(diagnostics, catalog, diagCode, token, {
         attribute: 'name',
         start: nameAttr.start,
@@ -879,7 +878,7 @@ function validateDataElement(
     const messageKey = token.tagName.slice('data:messages.'.length)
     const msgDef = catalog.getMessage(messageKey)
     if (msgDef && msgDef.direct_invocation === false) {
-      const diagCode = (msgDef.diagnostic || 'BX1027') as BloggerDiagnosticCode
+      const diagCode = msgDef.diagnostic || catalog.getMessageDiagnostic('direct_parameterized_invocation')
       const diagRule = catalog.getDiagnostic(diagCode)
       pushDiagnostic(diagnostics, catalog, diagCode, token, {
         start: token.tagStart,
@@ -895,7 +894,7 @@ function validateDataElement(
     const check = checkSkinVarSubpath(idPart, catalog, skinVariables)
     if (check.isInvalid && check.normalizedSubpath) {
       const normalized = `data:skin.vars.${check.normalizedSubpath}`
-      pushDiagnostic(diagnostics, catalog, 'BX1054', token, {
+      pushDiagnostic(diagnostics, catalog, catalog.getStandardDiagnostic('invalid_skin_var_data_path'), token, {
         start: token.tagStart,
         end: token.tagEnd,
         suggestedReplacement: `<${normalized}/>`,
@@ -920,7 +919,7 @@ function validateDataElement(
           edits: [{ start: token.tagStart, end: token.tagEnd, newText: `<${replacement}/>` }],
         }]
       : undefined
-    pushDiagnostic(diagnostics, catalog, 'BX1050', token, {
+    pushDiagnostic(diagnostics, catalog, catalog.getStandardDiagnostic('deprecated_data_property'), token, {
       start: token.tagStart,
       end: token.tagEnd,
       suggestedReplacement: replacement ? `<${replacement}/>` : undefined,
@@ -939,7 +938,7 @@ function validateDataElement(
     const bracketIndex = token.attributesText.indexOf('[')
     const start = bracketIndex !== -1 ? token.attributesOffset + bracketIndex : token.attributesOffset
     const end = token.tagEnd
-    const diagCode = (catalog.getStandardDiagnostic('prohibited_bracket_indexing_in_data_tag') || 'BX1032') as BloggerDiagnosticCode
+    const diagCode = catalog.getStandardDiagnostic('prohibited_bracket_indexing_in_data_tag')
     pushDiagnostic(diagnostics, catalog, diagCode, token, {
       start,
       end,
@@ -951,7 +950,7 @@ function validateDataElement(
   // 3. BX1048: Expression operators in data:* tag (<data:post.title ?: 'Default'/>)
   const hasOperator = /[?:+\-*%!=<>&|/]|\b(?:and|or|not|in|contains)\b/.test(rawTail) || /["']/.test(rawTail)
   if (hasOperator) {
-    const diagCode = (catalog.getStandardDiagnostic('prohibited_operator_in_data_tag') || 'BX1048') as BloggerDiagnosticCode
+    const diagCode = catalog.getStandardDiagnostic('prohibited_operator_in_data_tag')
     pushDiagnostic(diagnostics, catalog, diagCode, token, {
       start: token.attributesOffset,
       end: token.tagEnd,
@@ -963,7 +962,7 @@ function validateDataElement(
   // 4. Regular attributes on data:* tag (<data:post.title class="x"/>)
   if (Object.keys(token.attributes).length > 0) {
     for (const [attrName, attrToken] of Object.entries(token.attributes)) {
-      const diagCode = (catalog.getStandardDiagnostic('unknown_directive') || 'BX1025') as BloggerDiagnosticCode
+      const diagCode = catalog.getStandardDiagnostic('unknown_directive')
       pushDiagnostic(diagnostics, catalog, diagCode, token, {
         attribute: attrName,
         start: attrToken.start,
@@ -1050,7 +1049,7 @@ export function validateExpression(
   // 1. Compiler token quota budget check (BX1021 / BX1045)
   const budget = evaluateExpressionBudget(unescaped, catalog)
   if (budget.status === 'EXCEEDED') {
-    const diagCode = catalog.getExpressionQuotaDiagnostic() || 'BX1021'
+    const diagCode = catalog.getExpressionQuotaDiagnostic() ?? 'BX1021'
     pushDiagnostic(diagnostics, catalog, diagCode, fakeToken, {
       attribute: context?.attributeName,
       start: baseStart,
@@ -1059,7 +1058,7 @@ export function validateExpression(
     })
   }
   else if (budget.status === 'WARNING') {
-    const warnDiagCode = catalog.getExpressionQuotaWarningDiagnostic() || 'BX1045'
+    const warnDiagCode = catalog.getExpressionQuotaWarningDiagnostic() ?? 'BX1045'
     pushDiagnostic(diagnostics, catalog, warnDiagCode, fakeToken, {
       attribute: context?.attributeName,
       start: baseStart,
@@ -1417,7 +1416,7 @@ export function validateExpression(
       }
 
       if (node.type === 'DataPath') {
-        const raw = (node as any).raw || ''
+        const raw = node.raw || ''
         const startOffset = node.loc?.start.offset ?? 0
         const endOffset = node.loc?.end.offset ?? startOffset + raw.length
         const baseAbsStart = baseStart + mapOffset(startOffset)
@@ -1429,7 +1428,7 @@ export function validateExpression(
           const check = checkSkinVarSubpath(varPart, catalog, context?.skinVariables)
           if (check.isInvalid && check.normalizedSubpath) {
             const normalized = `data:skin.vars.${check.normalizedSubpath}`
-            pushDiagnostic(diagnostics, catalog, 'BX1054', fakeToken, {
+            pushDiagnostic(diagnostics, catalog, catalog.getStandardDiagnostic('invalid_skin_var_data_path'), fakeToken, {
               attribute: context?.attributeName,
               start: baseAbsStart,
               end: baseAbsEnd,
@@ -1456,7 +1455,7 @@ export function validateExpression(
               }]
             : undefined
 
-          pushDiagnostic(diagnostics, catalog, 'BX1050', fakeToken, {
+          pushDiagnostic(diagnostics, catalog, catalog.getStandardDiagnostic('deprecated_data_property'), fakeToken, {
             attribute: context?.attributeName,
             start: baseAbsStart,
             end: baseAbsEnd,
@@ -1483,7 +1482,7 @@ export function validateExpression(
         }
 
         if (hallucinatedFix) {
-          pushDiagnostic(diagnostics, catalog, 'BX1051', fakeToken, {
+          pushDiagnostic(diagnostics, catalog, catalog.getStandardDiagnostic('hallucinated_data_property'), fakeToken, {
             attribute: context?.attributeName,
             start: baseAbsStart,
             end: baseAbsEnd,
@@ -1565,13 +1564,13 @@ function getExpressionPath(node: BloggerExpressionNode): string | undefined {
 
 function isDateExpressionNode(node: BloggerExpressionNode, catalog: SpecCatalog): boolean {
   if (node.type === 'DataPath') {
-    const raw = (node as any).raw || ''
+    const raw = node.raw || ''
     const cleanPath = raw.startsWith('data:') ? raw.slice(5) : raw
     if (cleanPath.endsWith('.date') || cleanPath === 'date') {
       return true
     }
-    const lastMember = (node as any).members?.[(node as any).members?.length - 1]
-    if (lastMember && typeof lastMember.property === 'string') {
+    const lastMember = node.members[node.members.length - 1]
+    if (lastMember?.property) {
       const p = lastMember.property.toLowerCase()
       if (p === 'date' || p === 'published' || p === 'lastmodified') {
         return true
@@ -1762,7 +1761,7 @@ export function validateTemplateStructure(
           }
 
           if (isConcatenatedWithoutWhitespace) {
-            const diagCode = 'BX1029' as BloggerDiagnosticCode
+            const diagCode = catalog.getMessageDiagnostic('inline_concatenated_params')
             pushDiagnostic(diagnostics, catalog, diagCode, token, {
               start: token.tagStart,
               end: token.tagEnd,
@@ -1774,7 +1773,7 @@ export function validateTemplateStructure(
         if (currentMsg.isPlural) {
           const nameAttr = token.attributes.name
           if (!nameAttr || !nameAttr.value.trim()) {
-            const diagCode = 'BX1028' as BloggerDiagnosticCode
+            const diagCode = catalog.getMessageDiagnostic('plural_param_missing_name')
             pushDiagnostic(diagnostics, catalog, diagCode, token, {
               start: token.tagStart,
               end: token.tagEnd,
@@ -1832,7 +1831,7 @@ export function validateTemplateStructure(
       const isInDefaultMarkup = defaultMarkupIncludableIds.has(name)
 
       if (!isSuper && !isDynamic && !isServerInclusion && !isInWidget && !isInDefaultMarkup) {
-        const diagCode = (catalog.getStandardDiagnostic('unresolved_inclusion') || 'BX1037') as BloggerDiagnosticCode
+        const diagCode = catalog.getStandardDiagnostic('unresolved_inclusion')
         const diagRule = catalog.getDiagnostic(diagCode)
         pushDiagnostic(diagnostics, catalog, diagCode, token, {
           attribute: nameAttr.name,
@@ -1885,7 +1884,7 @@ function validateSkinVariableReference(
       const modifiers = getSkinTypeModifiers(varType, catalog)
       if (candidateMod in modifiers) {
         const modDef = modifiers[candidateMod]
-        if (modDef && (modDef as any).available_in_skin === false) {
+        if (modDef && modDef.available_in_skin === false) {
           return {
             isValid: false,
             message: `Modifier '${candidateMod}' for skin variable '${candidateVar}' of type '${varType}' is only supported in outside-skin expressions (data:skin.vars...), not within $(...).`,
@@ -1974,7 +1973,7 @@ export function validateSkinStyles(
       const start = baseOffset + (dMatch.index ?? 0)
       const end = start + dMatch[0].length
       const replacement = `$(${varName})`
-      pushDiagnostic(diagnostics, catalog, 'BX1052', fakeToken, {
+      pushDiagnostic(diagnostics, catalog, catalog.getStandardDiagnostic('invalid_skin_variable_syntax'), fakeToken, {
         start,
         end,
         suggestedReplacement: replacement,
@@ -1996,7 +1995,7 @@ export function validateSkinStyles(
         if (!check.isValid) {
           const start = baseOffset + (pMatch.index ?? 0)
           const end = start + pMatch[0].length
-          pushDiagnostic(diagnostics, catalog, 'BX1053', fakeToken, {
+          pushDiagnostic(diagnostics, catalog, catalog.getStandardDiagnostic('unresolved_skin_variable'), fakeToken, {
             start,
             end,
             message: check.message,
@@ -2010,7 +2009,7 @@ export function validateSkinStyles(
         if (!normalizedSkinVars[rawVar]) {
           const start = baseOffset + (sMatch.index ?? 0)
           const end = start + sMatch[0].length
-          pushDiagnostic(diagnostics, catalog, 'BX1053', fakeToken, {
+          pushDiagnostic(diagnostics, catalog, catalog.getStandardDiagnostic('unresolved_skin_variable'), fakeToken, {
             start,
             end,
             message: `Referenced skin variable '${rawVar}' was not declared in a <Variable> tag within the Theme Designer skin.`,
