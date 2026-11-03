@@ -178,7 +178,7 @@ export function normalizePostEntry(
   const numberOfComments = Number.parseInt(entry.thr$total?.$t || '0', 10) || 0
   const allowComments = entry.link ? entry.link.some(l => l.rel === 'replies') : true
 
-  const titleLink = options.configuredLink !== undefined
+  const titleLink = titleAndEnclosureLinks && options.configuredLink !== undefined
     ? options.configuredLink
     : undefined
 
@@ -316,7 +316,7 @@ export function normalizePageAsPostEntry(
     authorAvatar = `https:${authorAvatar}`
   }
 
-  const titleLink = options.configuredLink !== undefined
+  const titleLink = titleAndEnclosureLinks && options.configuredLink !== undefined
     ? options.configuredLink
     : undefined
 

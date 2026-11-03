@@ -32,6 +32,8 @@ function canonicalizeEnglishContext(context: Record<string, any>, viewId: Blogge
   blog.metaDescription = 'Theme for development'
   blog.searchUrl = 'https://hamlet.zkreations.com/search'
   blog.homepageUrl = 'https://hamlet.zkreations.com/'
+  blog.adsenseClientId = 'ca-pub-1234567890123456'
+  blog.adsenseHostId = 'ca-host-pub-1556223355139109'
 
   const pageTitles: Record<BloggerViewId, string> = {
     homepage: 'Hamlet',
@@ -65,6 +67,13 @@ function canonicalizeEnglishContext(context: Record<string, any>, viewId: Blogge
       context.view.search.resultsMessage = 'Showing posts matching the search for The'
       context.view.search.resultsMessageHtml = 'Showing posts matching the search for <b>The</b>'
     }
+  }
+
+  context.skin = {
+    vars: {
+      keycolor: '#1a73e8',
+      body_font: '16px Arial, sans-serif',
+    },
   }
 
   context.messages = context.messages || {}

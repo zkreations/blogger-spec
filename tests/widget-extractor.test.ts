@@ -49,6 +49,11 @@ describe('widget-extractor', () => {
       expect(item).toEqual({ title: 'Home', href: '/', isCurrentPage: true })
     })
 
+    it('normalizes LinkList object format with name and target', () => {
+      const item = normalizeLinkItem({ name: 'facebook', target: 'https://facebook.com' })
+      expect(item).toEqual({ title: 'facebook', href: 'https://facebook.com' })
+    })
+
     it('normalizes shorthand format { "Title": "/path" }', () => {
       const item = normalizeLinkItem({ Home: '/' })
       expect(item).toEqual({ title: 'Home', href: '/' })

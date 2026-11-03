@@ -351,5 +351,48 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(blog1.olderPageUrl).toContain('updated-max=')
       expect(blog1.olderPageUrl).toContain('max-results=3')
     })
+
+    it('hydrates LinkList with canonical name and target, avoiding mock leakage in external blogs', async () => {
+      const mockFetch = createMockFetch()
+      const ctx = await resolveBloggerContext({
+        blogId: '9999999999999999999', // External blog
+        fetch: mockFetch,
+        config: {
+          widgets: {
+            LinkList1: {
+              links: [
+                { name: 'facebook', target: 'https://facebook.com/zkreations' },
+                { name: 'github', target: 'https://github.com/zkreations' },
+              ],
+            },
+          },
+        },
+      })
+
+      const linkList = ctx.widgetData.LinkList1
+      expect(linkList).toBeDefined()
+      expect(linkList.links).toHaveLength(2)
+      expect(linkList.links[0].name).toBe('facebook')
+      expect(linkList.links[0].target).toBe('https://facebook.com/zkreations')
+      expect(linkList.links[0].title).toBe('facebook')
+      expect(linkList.links[0].href).toBe('https://facebook.com/zkreations')
+    })
+
+    it('defaults LinkList to empty array when unconfigured, preventing mock leakage', async () => {
+      const mockFetch = createMockFetch()
+      const ctx = await resolveBloggerContext({
+        blogId: '9999999999999999999',
+        fetch: mockFetch,
+        config: {
+          widgets: {
+            LinkList1: {},
+          },
+        },
+      })
+
+      const linkList = ctx.widgetData.LinkList1
+      expect(linkList).toBeDefined()
+      expect(linkList.links).toEqual([])
+    })
   })
 })

@@ -5,37 +5,37 @@ import type { BloggerBlogConfiguration } from './config-types.js'
 export type BloggerUrlMode = 'remote' | 'local' | 'relative'
 
 export interface BloggerContextConfig {
-  /** ID del blog en Blogger (Default: '5408826600056783247' - Hamlet) */
+  /** Blogger blog ID (required in online mode if not provided in config.blog.id) */
   readonly blogId?: string
-  /** Vista canónica a resolver (Default: 'homepage') */
+  /** Canonical view to resolve (Default: 'homepage') */
   readonly view?: BloggerViewId
-  /** ID del post o página activo si la vista es 'post' o 'static_page' */
+  /** Active post or page ID when view is 'post' or 'static_page' */
   readonly targetId?: string
-  /** URL o path del post o página activo si la vista es 'post' o 'static_page' */
+  /** Active post or page URL or path when view is 'post' or 'static_page' */
   readonly targetUrl?: string
-  /** Configuración local y de contexto predeterminado de Blogger (blogger.config.json) */
+  /** Blogger blog configuration and default context (blogger.config.json) */
   readonly config?: BloggerBlogConfiguration
-  /** Modo de re-mapeo de URLs internas (Default: 'relative') */
+  /** Internal URL remapping mode (Default: 'relative') */
   readonly urlMode?: BloggerUrlMode
-  /** URL base para re-mapeo en modo 'local' (ej. 'http://localhost:3000') */
+  /** Base URL for remapping in 'local' mode (e.g. 'http://localhost:3000') */
   readonly baseUrl?: string
-  /** Si es true, omite llamadas HTTP y usa únicamente los mocks canónicos */
+  /** When true, skips HTTP calls and uses canonical mocks only */
   readonly offline?: boolean
-  /** Overrides explícitos que tienen máxima precedencia */
+  /** Explicit overrides with highest precedence */
   readonly overrides?: Record<string, any>
-  /** Opciones de caché en memoria */
+  /** In-memory cache options */
   readonly cache?: {
     readonly ttlMs?: number
   }
-  /** Inyección opcional de fetch (útil para tests y entornos herméticos) */
+  /** Optional fetch injection (useful for tests and hermetic environments) */
   readonly fetch?: typeof fetch
-  /** Si es true, inyecta el aviso oficial de cookies (cookieChoiceInfo) antes de </body> */
+  /** When true, injects the official cookie banner (cookieChoiceInfo) before </body> */
   readonly cookieChoices?: boolean
-  /** URL base personalizada para el iframe del formulario de comentarios (evita bloqueos CORS y SameSite en dev local) */
+  /** Custom base URL for the comment form iframe (avoids CORS and SameSite blocks during local dev) */
   readonly commentFrameBaseUrl?: string
-  /** XML del tema o documento para descubrimiento automático de widgets y extracción de <b:widget-settings> */
+  /** Theme or document XML for automatic widget discovery and <b:widget-settings> extraction */
   readonly templateXml?: string
-  /** AST ya parseado (alternativa de alto rendimiento a templateXml) */
+  /** Pre-parsed AST (high-performance alternative to templateXml) */
   readonly templateAst?: BloggerDocumentNode
 }
 

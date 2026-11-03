@@ -762,6 +762,15 @@ export class ExpressionEvaluator {
       if (typeof current === 'object' && hasDataProperty(current, propKey)) {
         current = current[propKey]
       }
+      else if (Array.isArray(current) && typeof propKey === 'string') {
+        const found = current.find((el: any) => el && typeof el === 'object' && el.name === propKey)
+        if (found !== undefined) {
+          current = found
+        }
+        else {
+          current = applyModifier(current, String(propKey))
+        }
+      }
       else {
         current = applyModifier(current, String(propKey))
       }

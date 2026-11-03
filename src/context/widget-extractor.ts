@@ -39,10 +39,10 @@ export function normalizeLinkItem(item: any): { title: string, href: string, isC
   if (!item || typeof item !== 'object') {
     return { title: String(item ?? ''), href: '' }
   }
-  if ('title' in item || 'href' in item) {
+  if ('title' in item || 'href' in item || 'name' in item || 'target' in item) {
     return {
-      title: String(item.title ?? ''),
-      href: String(item.href ?? ''),
+      title: String(item.title ?? item.name ?? ''),
+      href: String(item.href ?? item.target ?? ''),
       ...(item.isCurrentPage !== undefined ? { isCurrentPage: Boolean(item.isCurrentPage) } : {}),
     }
   }

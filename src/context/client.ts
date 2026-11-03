@@ -17,7 +17,7 @@ export class BloggerFeedClient {
 
   constructor(options: FeedClientOptions = {}) {
     this.fetchFn = options.fetchFn || globalThis.fetch
-    this.defaultTtlMs = options.defaultTtlMs ?? 3600_000 // 1 hora
+    this.defaultTtlMs = options.defaultTtlMs ?? 3600_000 // 1 hour
   }
 
   async fetchJson<T = any>(url: string, ttlMs = this.defaultTtlMs): Promise<T | null> {

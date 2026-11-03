@@ -22,7 +22,12 @@ export const HAMLET_ROUTES: Record<BloggerViewId, HamletViewRoute> = {
   post: {
     viewId: 'post',
     targetUrl: 'https://hamlet.zkreations.com/2023/04/the-importance-of-environmental-care.html',
-    overrides: { view: { saa: '85391' } },
+    overrides: {
+      view: {
+        saa: '85391',
+        featuredImage: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200',
+      },
+    },
   },
   static_page: {
     viewId: 'static_page',
