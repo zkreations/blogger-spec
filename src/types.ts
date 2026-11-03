@@ -89,12 +89,6 @@ export interface BloggerCursorContext {
   }
 }
 
-export interface BloggerHallucinatedDirectiveConfig {
-  readonly targetTag: string
-  readonly attrMap: Readonly<Record<string, string>>
-  readonly requiredAttrs?: readonly string[]
-}
-
 export interface BloggerDirectiveNestingViolation {
   code: BloggerDiagnosticCode
   rule: BloggerDiagnosticRule

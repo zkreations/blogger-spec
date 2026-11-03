@@ -2,6 +2,7 @@
  * Canonical Reference Compiler & HTML Renderer for Blogger Intermediate Representation (BIR).
  * Provides hermetic, zero-runtime-dependency evaluation of BIR documents into HTML strings.
  */
+import type { SpecCatalog } from '../catalogs/index.js'
 import type { BloggerCompileIROptions } from './compiler.js'
 import type { BirIncludable, BirNode, BloggerIRDocument } from './types.js'
 import { getSpecCatalog } from '../catalogs/index.js'
@@ -59,11 +60,14 @@ export interface BloggerReferenceRendererOptions extends BloggerCompileIROptions
 export class BloggerReferenceRenderer {
   private currentIr?: BloggerIRDocument
   private currentOptions?: BloggerReferenceRendererOptions
+  private currentCatalog: SpecCatalog = getSpecCatalog()
   private readonly pipeline = new DomMutationPipeline()
   private readonly serverSubroutineCache = new Map<string, BirIncludable>()
   private includeDepth = 0
 
-  constructor(private readonly defaultOptions: BloggerReferenceRendererOptions = {}) {}
+  constructor(private readonly defaultOptions: BloggerReferenceRendererOptions = {}) {
+    this.currentCatalog = defaultOptions.catalog ?? getSpecCatalog()
+  }
 
   /**
    * Compiles and renders a Blogger XML template or pre-compiled BIR document into HTML.
@@ -75,6 +79,7 @@ export class BloggerReferenceRenderer {
   ): string {
     const mergedOptions = { ...this.defaultOptions, ...options }
     const catalog = mergedOptions.catalog ?? getSpecCatalog()
+    this.currentCatalog = catalog
     const ir = typeof input === 'string' ? compileToIR(input, mergedOptions) : input
     this.currentIr = ir
     this.currentOptions = mergedOptions
@@ -130,19 +135,26 @@ export class BloggerReferenceRenderer {
         return `<!--${node.value}-->`
 
       case 'skin':
-        return renderSkinNode(node.role, this.currentIr?.skin, ctx)
+        return renderSkinNode(node.role, this.currentIr?.skin, ctx, this.currentCatalog)
 
       case 'output': {
         const val = evaluateExpression(node.expr, ctx as Record<string, any>)
         const cleanTag = (node.tagName ?? 'b:eval').replace(/^data:/, '')
         if (val === undefined) {
-          return node.source === 'data' ? `<!--Can't find substitution for tag [${cleanTag}]-->` : ''
+          if (node.source !== 'data') {
+            return ''
+          }
+          const missingTpl = this.currentCatalog.getRuntimeEvaluationStates().MISSING?.html_output_template
+            ?? '<!--Can\'t find substitution for tag [{tag}]-->'
+          return missingTpl.replace('{tag}', cleanTag)
         }
         if (val === null) {
           return ''
         }
         if (typeof val === 'object' && Object.prototype.toString.call(val) !== '[object String]' && !isSkinValue(val)) {
-          return `<!--Substitution is not a singleton for tag [${cleanTag}]-->`
+          const nonSingletonTpl = this.currentCatalog.getRuntimeEvaluationStates().NOT_SINGLETON?.html_output_template
+            ?? '<!--Substitution is not a singleton for tag [{tag}]-->'
+          return nonSingletonTpl.replace('{tag}', cleanTag)
         }
         return String(val)
       }

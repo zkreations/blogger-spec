@@ -142,8 +142,8 @@ export function expandServerInclusion(
     }
   }
 
-  const rawMarkup = (options?.useLocalStub && (incDef as any)?.local_stub_markup)
-    ? (incDef as any).local_stub_markup
+  const rawMarkup = (options?.useLocalStub && incDef?.local_stub_markup)
+    ? incDef.local_stub_markup
     : (incDef?.server_markup ?? '')
   let expandedMarkup = unwrap && rawMarkup ? extractIncludableBody(rawMarkup) : rawMarkup
 
@@ -195,7 +195,7 @@ export function getLocalStubInclusion(
   options?: { unwrap?: boolean },
 ): string | undefined {
   const inc = catalog.getInclusion(name)
-  const stubMarkup = (inc as any)?.local_stub_markup
+  const stubMarkup = inc?.local_stub_markup
   if (!stubMarkup)
     return undefined
 

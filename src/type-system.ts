@@ -351,13 +351,13 @@ export function inferExpressionType(
           continue
         }
 
-        if (i === 1 && (widgetPropDef as any)?.properties?.[member.property]) {
-          currentType = (widgetPropDef as any).properties[member.property]!.type ?? 'unknown'
+        if (i === 1 && widgetPropDef?.properties?.[member.property]) {
+          currentType = widgetPropDef.properties[member.property]!.type ?? 'unknown'
           continue
         }
 
-        if ((widgetPropDef as any)?.item_properties?.[member.property]) {
-          currentType = (widgetPropDef as any).item_properties[member.property]!.type ?? 'unknown'
+        if (widgetPropDef?.item_properties?.[member.property]) {
+          currentType = widgetPropDef.item_properties[member.property]!.type ?? 'unknown'
           continue
         }
 

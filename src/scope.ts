@@ -85,7 +85,7 @@ export class ScopeEnvironment {
 
   pushScope(type: BloggerScopeType, options?: BloggerPushScopeOptions): BloggerScopeFrame {
     const symbols = new Map<string, BloggerScopeSymbol>()
-    const widgetType = options?.widgetType ?? (type === 'widget' ? (this.getActiveWidgetType() ?? 'Blog') : undefined)
+    const widgetType = options?.widgetType ?? (type === 'widget' ? this.getActiveWidgetType() : undefined)
 
     if (type === 'widget' && widgetType) {
       const widget = this.catalog.getWidget(widgetType)
@@ -218,7 +218,7 @@ export class ScopeEnvironment {
   ): Record<string, BloggerScopeSymbol> {
     const result: Record<string, BloggerScopeSymbol> = {}
     const tagName = token.tagName.toLowerCase()
-    const activeWidgetType = options?.widgetType ?? this.getActiveWidgetType() ?? 'Blog'
+    const activeWidgetType = options?.widgetType ?? this.getActiveWidgetType()
 
     if (tagName === 'b:loop') {
       const valuesAttr = token.attributes.values?.value ?? token.attributes['expr:values']?.value ?? token.attributes.value?.value

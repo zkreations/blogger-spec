@@ -1,3 +1,4 @@
+import type { BloggerDataPathNode } from '../../ast.js'
 import type { BirAttribute, BirAttrValue, BirClassMutation } from '../types.js'
 import { evaluateExpression } from '../../parser/index.js'
 import { isTruthy } from '../../type-system.js'
@@ -48,11 +49,14 @@ export class DomMutationPipeline {
         evalResult = (ctx as any)[propPath]
       }
       else {
-        evalResult = evaluateExpression({
+        const parts = propPath.split('.')
+        const dataPathNode: BloggerDataPathNode = {
           type: 'DataPath',
           raw: evalResult,
-          members: propPath.split('.').map(p => ({ property: p, safeAccess: false })),
-        } as any, ctx as Record<string, any>)
+          root: parts[0] ?? '',
+          members: parts.map(p => ({ property: p, computed: false })),
+        }
+        evalResult = evaluateExpression(dataPathNode, ctx as Record<string, any>)
       }
     }
 

@@ -1,4 +1,6 @@
+import type { SpecCatalog } from './catalogs/index.js'
 import type { BloggerSkinVariableSymbol } from './data-path.js'
+import { getSpecCatalog } from './catalogs/index.js'
 import { toSkinVarIdentifier } from './data-path.js'
 
 export const SKIN_VALUE_SYMBOL = Symbol.for('blogger-spec.skin-value')
@@ -81,6 +83,7 @@ export interface CompileSkinOptions {
   readonly skinVariables?: Record<string, string | BloggerSkinVariableSymbol>
   readonly wrap?: 'page-skin' | 'template-skin' | 'none' | boolean
   readonly stripMetadataTags?: boolean
+  readonly catalog?: SpecCatalog
 }
 
 export interface BloggerCompiledSkinResult {
@@ -787,12 +790,17 @@ export function compileSkinCss(
     wrapMode = parsedSource.isTemplateSkin ? 'template-skin' : 'page-skin'
   }
 
+  const catalog = options?.catalog ?? getSpecCatalog()
+  const skinCompilation = catalog.getSkinCompilation()
+
   let finalCss = processedCss.trim()
   if (wrapMode === 'page-skin' || wrapMode === true) {
-    finalCss = `<style id='page-skin-1' type='text/css'><!--\n${finalCss}\n--></style>`
+    const wrapper = skinCompilation?.page_skin?.output_wrapper ?? '<style id=\'page-skin-1\' type=\'text/css\'><!--\n{content}\n--></style>'
+    finalCss = wrapper.replace('{content}', finalCss)
   }
   else if (wrapMode === 'template-skin') {
-    finalCss = `<style id='template-skin-1' type='text/css'><!--\n${finalCss}\n--></style>`
+    const wrapper = skinCompilation?.template_skin?.output_wrapper ?? '<style id=\'template-skin-1\' type=\'text/css\'><!--\n{content}\n--></style>'
+    finalCss = wrapper.replace('{content}', finalCss)
   }
 
   return {

@@ -32,11 +32,14 @@ import type {
   BloggerOperatorName,
   BloggerOperatorsCatalog,
   BloggerPrecedenceHierarchyLevel,
+  BloggerPropertyTranslationEntry,
   BloggerRenderPipelineCatalog,
   BloggerRootAttributesCatalog,
   BloggerRuntimeEvaluationState,
   BloggerScopeDefinition,
   BloggerScopesCatalog,
+  BloggerSettingsCatalog,
+  BloggerSharingPlatformTranslationEntry,
   BloggerSkinCompilationCatalog,
   BloggerStandardDiagnosticKey,
   BloggerStandardDiagnostics,
@@ -206,14 +209,14 @@ export class SpecCatalog {
       this.hallucinatedDirectives.set(tag.toLowerCase(), code as BloggerDiagnosticCode)
     }
 
-    const transforms = (dirCatalog.domain_metadata as any)?.hallucinated_directive_transforms || {}
+    const transforms = dirCatalog.domain_metadata?.hallucinated_directive_transforms || {}
     for (const [code, config] of Object.entries(transforms)) {
-      this.hallucinatedDirectiveTransforms.set(code, config as BloggerHallucinatedDirectiveConfig)
+      this.hallucinatedDirectiveTransforms.set(code, config)
     }
 
-    const inverted = (dirCatalog.domain_metadata as any)?.inverted_attribute_maps || {}
+    const inverted = dirCatalog.domain_metadata?.inverted_attribute_maps || {}
     for (const [code, attr] of Object.entries(inverted)) {
-      this.invertedAttributeMaps.set(code, attr as string)
+      this.invertedAttributeMaps.set(code, attr)
     }
 
     const stdDiags = (dirCatalog.domain_metadata?.standard_diagnostics as Record<string, string>) || {}
@@ -299,8 +302,8 @@ export class SpecCatalog {
       if (Array.isArray(item.operators)) {
         for (const op of item.operators) {
           if (item.associativity) {
-            this.operatorAssociativityMap.set(op, item.associativity as any)
-            this.operatorAssociativityMap.set(op.toLowerCase(), item.associativity as any)
+            this.operatorAssociativityMap.set(op, item.associativity)
+            this.operatorAssociativityMap.set(op.toLowerCase(), item.associativity)
           }
         }
       }
@@ -366,9 +369,10 @@ export class SpecCatalog {
   }
 
   private indexSettings(): void {
-    const settings = (this.store.getCatalog('settings') as any)?.widgets || {}
+    const settingsCatalog = this.store.getCatalog('settings') as BloggerSettingsCatalog
+    const settings = settingsCatalog?.widgets || {}
     for (const [name, def] of Object.entries(settings)) {
-      this.settingMap.set(name, def as any)
+      this.settingMap.set(name, def)
     }
   }
 
@@ -487,7 +491,7 @@ export class SpecCatalog {
 
   isSelfClosingDirective(tagName: string): boolean {
     const def = this.getDirective(tagName)
-    return Boolean(def?.closure_mode === 'self_closing' || (def as any)?.self_closing === true)
+    return Boolean(def?.closure_mode === 'self_closing')
   }
 
   canNest(parentTag: string, childTag: string): boolean {
@@ -1191,17 +1195,17 @@ export class SpecCatalog {
         const parts = globKey.split('.')
         const field = parts[parts.length - 1]
         const platKey = parts.length === 5 ? parts[3] : 'facebook'
-        const platforms = this.localesCatalog.translations.globals['blog.sharing.platforms'] as any
+        const platforms = this.localesCatalog.translations.globals['blog.sharing.platforms'] as Record<string, BloggerSharingPlatformTranslationEntry> | undefined
         const platform = platforms?.[platKey]
         if (platform) {
           const entry = field === 'shareMessage' ? platform.share_message : platform.name
-          return this.lookupLocaleValue<string>(entry?.values, locale) ?? entry?.default
+          return (this.lookupLocaleValue<string>(entry?.values, locale) ?? entry?.default) ?? undefined
         }
         return undefined
       }
-      const entry = (this.localesCatalog.translations.globals as any)?.[globKey]
+      const entry = this.localesCatalog.translations.globals[globKey] as BloggerPropertyTranslationEntry | undefined
       if (entry) {
-        return this.lookupLocaleValue<string>(entry.values, locale) ?? entry.default
+        return (this.lookupLocaleValue<string>(entry.values, locale) ?? entry.default) ?? undefined
       }
       return undefined
     }
@@ -1242,20 +1246,20 @@ export class SpecCatalog {
   }
 
   getWidgetNavMessage(widgetType = 'Blog', locale = 'en'): string {
-    const entry = (this.localesCatalog?.translations?.widgets as any)?.[widgetType]?.navMessage
+    const entry = this.localesCatalog?.translations?.widgets?.[widgetType]?.navMessage
     return this.lookupLocaleValue<string>(entry?.values, locale)
       ?? entry?.default
       ?? 'Sorry, the page you were looking for in this blog does not exist.'
   }
 
   getWidgetDefaultTitle(widgetType: string, locale = 'en'): string {
-    const entry = (this.localesCatalog?.translations?.widgets as any)?.[widgetType]?.defaultTitle
-      ?? (this.localesCatalog?.translations?.widgets as any)?.[widgetType]?.name
+    const entry = this.localesCatalog?.translations?.widgets?.[widgetType]?.defaultTitle
+      ?? this.localesCatalog?.translations?.widgets?.[widgetType]?.name
     return this.lookupLocaleValue<string>(entry?.values, locale) ?? entry?.default ?? widgetType
   }
 
   getFormattedGlobalMessage(key: string, locale = 'en', params: Record<string, string> = {}): string {
-    const entry = (this.localesCatalog?.translations?.globals as any)?.[key]
+    const entry = this.localesCatalog?.translations?.globals?.[key] as BloggerPropertyTranslationEntry | undefined
     let msg: string = this.lookupLocaleValue<string>(entry?.values, locale) ?? entry?.default ?? ''
     for (const [k, v] of Object.entries(params)) {
       msg = msg.split(k).join(v)
@@ -1264,7 +1268,7 @@ export class SpecCatalog {
   }
 
   getArchiveRangeMessage(year: number, month?: number, locale = 'en'): string {
-    const entry = (this.localesCatalog?.translations?.globals as any)?.['view.archive.rangeMessage']
+    const entry = this.localesCatalog?.translations?.globals?.['view.archive.rangeMessage'] as BloggerPropertyTranslationEntry | undefined
     const template: string = this.lookupLocaleValue<string>(entry?.values, locale)
       ?? entry?.default
       ?? 'Showing posts from August, 2026'
@@ -1423,7 +1427,15 @@ export class SpecCatalog {
   }
 
   getIncludeRecursionLimit(): number {
-    return (this.getCompilerLimits() as any)?.max_include_recursion_depth ?? 43
+    const limit = this.getCompilerLimits()?.max_include_recursion_depth
+    if (limit === undefined) {
+      throw new Error('Missing compiler_limits.max_include_recursion_depth in directives catalog')
+    }
+    return limit
+  }
+
+  getDefaultLocale(): string {
+    return this.localesCatalog?.domain_metadata?.default_locale ?? 'en'
   }
 
   getCompilerQuotas(): BloggerCompilerQuotas | undefined {
@@ -2045,6 +2057,10 @@ export function getSuperPrefix(catalog: SpecCatalog = getSpecCatalog()): string 
 
 export function getCompilerLimits(catalog: SpecCatalog = getSpecCatalog()): BloggerCompilerLimits | undefined {
   return catalog.getCompilerLimits()
+}
+
+export function getDefaultLocale(catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.getDefaultLocale()
 }
 
 export function getDirectiveNestingLimit(catalog: SpecCatalog = getSpecCatalog()): number {

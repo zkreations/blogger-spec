@@ -43,6 +43,7 @@ export function renderSkinNode(
   role: 'page-skin' | 'template-skin',
   skin: BirSkin | undefined,
   ctx: Record<string, unknown>,
+  catalog: SpecCatalog = getSpecCatalog(),
 ): string {
   const chunks = role === 'page-skin' ? skin?.css : skin?.templateSkinCss
   if (!chunks) {
@@ -85,18 +86,22 @@ export function renderSkinNode(
     }
   }
 
-  const id = role === 'template-skin' ? 'template-skin-1' : 'page-skin-1'
-  return `<style id='${id}' type='text/css'><!--\n${out.trim()}\n--></style>`
+  const skinComp = catalog.getSkinCompilation()
+  const wrapper = role === 'template-skin'
+    ? (skinComp?.template_skin?.output_wrapper ?? '<style id=\'template-skin-1\' type=\'text/css\'><!--\n{content}\n--></style>')
+    : (skinComp?.page_skin?.output_wrapper ?? '<style id=\'page-skin-1\' type=\'text/css\'><!--\n{content}\n--></style>')
+  return wrapper.replace('{content}', out.trim())
 }
 
 export function renderSkinStyles(
   skin: BirSkin | undefined,
   ctx: Record<string, unknown>,
+  catalog: SpecCatalog = getSpecCatalog(),
 ): string {
   if (!skin || !skin.css || skin.css.length === 0) {
     return ''
   }
-  return renderSkinNode('page-skin', skin, ctx)
+  return renderSkinNode('page-skin', skin, ctx, catalog)
 }
 
 export function injectCookieNotice(
