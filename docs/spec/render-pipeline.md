@@ -119,12 +119,14 @@ Blogger layout tags expand into HTML elements before their children are evaluate
 3. **Custom tag:** `tag='header'` or `tag='aside'` replaces `<div>` with that tag.
 
 ### 4.2. Widgets (`<b:widget>`)
-1. Every widget gets a wrapper:
+1. **Canonical ID format (`BX1047`):** Every widget `id` must match `^[Type][1-9][0-9]{0,2}$` (e.g. `PageList1`, `Header2`, `Blog1`), allowing deterministic widget type inference.
+2. Every widget gets a wrapper:
    ```html
    <div class='widget [Type]' data-version='2' id='[id]'>
    ```
-2. **Empty widgets:** with `runtime_rendering_policy: "suppress_when_empty"` and an empty primary collection (e.g. `LinkList` with no links, `Blog` with no posts), omit the wrapper and its contents entirely.
-3. **Entry point:** rendering starts by resolving the widget's `main` includable via Phase 1 rules.
+3. **Widget settings & data hydration:** `<b:widget-settings>` nodes are parsed according to `catalogs/settings.json`, resolving `pageListJson`, `homeTitle`, and `patterns` (`link-{index}`, `text-{index}`) without leaking text to the DOM.
+4. **Empty widgets:** with `runtime_rendering_policy: "suppress_when_empty"` and an empty primary collection (e.g. `LinkList` with no links, `Blog` with no posts), omit the wrapper and its contents entirely.
+5. **Entry point:** rendering starts by resolving the widget's `main` includable via Phase 1 rules.
 
 ---
 
