@@ -35,6 +35,7 @@ import type {
 import { parseExpression } from '../ast.js'
 import { getSpecCatalog } from '../catalogs/index.js'
 import { collectDefaultMarkups, indexIncludables, resolveIncludable } from '../includable-resolver.js'
+import { unescapeXmlEntities } from '../parser/lexer.js'
 import { parseTemplate } from '../parser/template-parser.js'
 import { parseSkinSource } from '../skin-compiler.js'
 import { detectTemplateVersion } from '../version.js'
@@ -1012,7 +1013,7 @@ export function lowerNodes(
         result.push(lowerElement(node, context))
         break
       case 'Text':
-        result.push({ kind: 'text', value: node.value })
+        result.push({ kind: 'text', value: unescapeXmlEntities(node.value) })
         break
       case 'CData':
         result.push({ kind: 'cdata', value: node.value })
