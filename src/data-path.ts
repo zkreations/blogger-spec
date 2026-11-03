@@ -1,6 +1,6 @@
 import type { SpecCatalog } from './catalogs/index.js'
 import type { BloggerScopeSymbol, ScopeEnvironment } from './scope.js'
-import type { BloggerMemberInfo, BloggerViewId } from './types.js'
+import type { BloggerCanonicalProperty, BloggerMemberInfo, BloggerViewId } from './types.js'
 import { getSpecCatalog } from './catalogs/index.js'
 import { getTypeModifiers, resolveModifierReturnType } from './type-system.js'
 
@@ -82,7 +82,7 @@ export function resolveDataPath(
   }
 
   const catalog = context?.catalog ?? getSpecCatalog()
-  const widgetType = context?.widgetType ?? context?.scope?.getActiveWidgetType() ?? 'Blog'
+  const widgetType = context?.widgetType ?? context?.scope?.getActiveWidgetType()
 
   const variables: Record<string, string | BloggerScopeSymbol> = {
     ...(context?.scope ? Object.fromEntries(context.scope.getAllVisibleSymbols()) : {}),
@@ -110,7 +110,7 @@ export function resolveDataPath(
       sourceCatalog = 'widgets'
       currentDef = strippedFirst === 'widget'
         ? catalog.getCommonWidget() ?? varSym
-        : catalog.getWidget(widgetType)?.canonical?.[strippedFirst] ?? varSym
+        : (widgetType ? catalog.getWidget(widgetType)?.canonical?.[strippedFirst] : undefined) ?? varSym
     }
     else if (typeof varSym === 'object' && varSym.scopeType === 'global') {
       sourceCatalog = 'globals'
@@ -129,7 +129,7 @@ export function resolveDataPath(
   else {
     const globalKey = first.startsWith('data:') ? first : `data:${first}`
     const globalDef = catalog.getGlobal(globalKey)
-    const widget = catalog.getWidget(widgetType)
+    const widget = widgetType ? catalog.getWidget(widgetType) : undefined
     const widgetPropKey = first.startsWith('data:') ? first.slice(5) : first
     const widgetProp = widget?.canonical?.[widgetPropKey]
     const widgetDep = widget?.deprecated?.[widgetPropKey]
@@ -295,7 +295,7 @@ export function resolveDataPath(
 
     if (sourceCatalog === 'messages' || first === 'messages' || first === 'data:messages') {
       const strippedFirst = first.startsWith('data:') ? first.slice(5) : first
-      const widget = catalog.getWidget(widgetType)
+      const widget = widgetType ? catalog.getWidget(widgetType) : undefined
       const widgetSubProp = currentDef?.properties?.[seg] ?? widget?.canonical?.[strippedFirst]?.properties?.[seg]
 
       if (widgetSubProp) {
@@ -474,7 +474,7 @@ export function resolveDataPath(
       continue
     }
 
-    const widget = catalog.getWidget(widgetType)
+    const widget = widgetType ? catalog.getWidget(widgetType) : undefined
     if (currentType === 'author' || first === 'author' || currentDef?.name === 'author') {
       const authorProp = widget?.canonical?.posts?.item_properties?.author?.properties?.[seg]
       if (authorProp) {
@@ -532,12 +532,12 @@ export function getTypeMembers(
 
   const def = catalog.getType(resolvedName)
 
-  const props = (def as any)?.properties
+  const props = (def as { properties?: Record<string, BloggerCanonicalProperty> } | undefined)?.properties
   if (props) {
     for (const [propName, propDef] of Object.entries(props)) {
       if (!seen.has(propName)) {
         seen.add(propName)
-        const p = propDef as any
+        const p = propDef as BloggerCanonicalProperty
         result.push({
           name: propName,
           type: p.type ?? 'string',
@@ -581,7 +581,7 @@ export function getDataPathMembers(
   context?: BloggerResolveDataPathContext,
 ): BloggerMemberInfo[] {
   const catalog = context?.catalog ?? getSpecCatalog()
-  const widgetType = context?.widgetType ?? context?.scope?.getActiveWidgetType() ?? 'Blog'
+  const widgetType = context?.widgetType ?? context?.scope?.getActiveWidgetType()
   const segments = parsePathSegments(path)
 
   if (segments.length === 0 || (segments.length === 1 && segments[0] === 'data')) {
@@ -597,12 +597,12 @@ export function getDataPathMembers(
           name: stripped,
           type: sym.type ?? 'unknown',
           sourceCatalog: 'variables',
-          description: (sym.metadata as any)?.description,
+          description: (sym.metadata as { description?: string } | undefined)?.description,
         })
       }
     }
 
-    const widget = catalog.getWidget(widgetType)
+    const widget = widgetType ? catalog.getWidget(widgetType) : undefined
     if (widget?.canonical) {
       for (const [propName, propDef] of Object.entries(widget.canonical)) {
         if (!seen.has(propName)) {
@@ -778,7 +778,7 @@ export function getDataPathMembers(
     }
   }
 
-  const widget = catalog.getWidget(widgetType)
+  const widget = widgetType ? catalog.getWidget(widgetType) : undefined
   if (resolved.type === 'post' || resolved.name === 'post') {
     const postItemProps = widget?.canonical?.posts?.item_properties
     if (postItemProps) {
