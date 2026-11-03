@@ -116,9 +116,9 @@ export function injectCookieNotice(
   const messages = (context.messages as any) ?? (context.data as any)?.messages ?? {}
   const locale = (context.blog as any)?.locale ?? (context.data as any)?.blog?.locale ?? 'en'
 
-  const text = messages.euCookieNotice2018 || catalog.getLocalizedMessage('euCookieNotice2018', locale) || 'This site uses cookies from Google to deliver its services and to analyze traffic.'
-  const learnMore = messages.learnMore || catalog.getLocalizedMessage('learnMore', locale) || 'Learn more'
-  const dismiss = messages.euCookieNoticeCloseButton || catalog.getLocalizedMessage('euCookieNoticeCloseButton', locale) || 'Got it'
+  const text = messages.euCookieNotice2018 ?? catalog.getLocalizedMessage('euCookieNotice2018', locale) ?? ''
+  const learnMore = messages.learnMore ?? catalog.getLocalizedMessage('learnMore', locale) ?? ''
+  const dismiss = messages.euCookieNoticeCloseButton ?? catalog.getLocalizedMessage('euCookieNoticeCloseButton', locale) ?? ''
 
   const cookieHtml = `<div id="cookieChoiceInfo" class="cookie-choices-info singleton-element"><div class="cookie-choices-inner"><span class="cookie-choices-text">${text}</span><span class="cookie-choices-buttons"><a href="https://www.blogger.com/go/blogspot-cookies" target="_blank" class="cookie-choices-button">${learnMore}</a><a id="cookieChoiceDismiss" href="#" class="cookie-choices-button">${dismiss}</a></span></div></div>`
 

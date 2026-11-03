@@ -52,6 +52,7 @@ export function generateDts(): string {
     'export * from \'./type-system.js\';',
     'export * from \'./types.js\';',
     'export * from \'./version.js\';',
+    'export * from \'./widget-settings.js\';',
     '',
   ].join('\n')
 }

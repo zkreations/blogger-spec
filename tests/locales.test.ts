@@ -182,5 +182,22 @@ describe('blogger locales SSOT & runtime resolution suite', () => {
       const underscoreResolved = resolveDataPath('data:blog.localeUnderscoreDelimited', { locale: 'zh-CN', catalog })
       expect(underscoreResolved?.localizedValue).toBe('zh_cn')
     })
+
+    it('formats archive range message universally across Latin, Cyrillic, Greek, and Arabic locales', () => {
+      const en = catalog.getArchiveRangeMessage(2025, 3, 'en')
+      const es = catalog.getArchiveRangeMessage(2025, 3, 'es')
+      const ru = catalog.getArchiveRangeMessage(2025, 3, 'ru')
+      const ar = catalog.getArchiveRangeMessage(2025, 3, 'ar')
+      const el = catalog.getArchiveRangeMessage(2025, 3, 'el')
+
+      expect(en).toBe('Showing posts from March, 2025')
+      expect(es).toBe('Mostrando entradas de marzo, 2025')
+      expect(ru).toContain('2025')
+      expect(ru).not.toContain('2026')
+      expect(ar).toContain('2025')
+      expect(ar).not.toContain('2026')
+      expect(el).toContain('2025')
+      expect(el).not.toContain('2026')
+    })
   })
 })

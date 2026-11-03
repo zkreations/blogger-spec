@@ -17,7 +17,11 @@ import {
   normalizePostEntry,
 } from './normalizer.js'
 import { resolveBloggerRoute } from './routing.js'
-import { buildPopularPostsData } from './secondary-widgets.js'
+import {
+  buildAttributionData,
+  buildContactFormData,
+  buildPopularPostsData,
+} from './secondary-widgets.js'
 import { createUrlMapper } from './url-mapper.js'
 import {
   extractTemplateWidgets,
@@ -25,8 +29,6 @@ import {
   parseCanonicalWidgetId,
 } from './widget-extractor.js'
 
-const BLOGGER_DEFAULT_POPULAR_POSTS_LIMIT = 4
-const BLOGGER_DEFAULT_LABEL_PAGE_SIZE = 20
 const BLOGGER_FEED_DEFAULT_MAX_RESULTS = 25
 
 function deepMerge(target: any, source: any): any {
@@ -619,9 +621,29 @@ function hydrateAllWidgets(options: WidgetHydrationOptions): void {
         break
       }
 
+      case 'Attribution': {
+        const blogTitle = (context.blog as any)?.title || headerData?.title || 'Blog'
+        const attributionDefaults = buildAttributionData(blogTitle, spec, blogLocale, {
+          posts: normalizedPosts,
+        })
+        const cleanMerged = { ...merged }
+        if (cleanMerged.copyright === null || cleanMerged.copyright === undefined) {
+          delete cleanMerged.copyright
+        }
+        context.widgetData[widgetId] = deepMerge(attributionDefaults, cleanMerged)
+        break
+      }
+
+      case 'ContactForm': {
+        const contactDefaults = buildContactFormData(spec, blogLocale)
+        context.widgetData[widgetId] = deepMerge(contactDefaults, merged)
+        break
+      }
+
       case 'PopularPosts': {
         if (normalizedPosts.length > 0 && !context.widgetData[widgetId]?.posts) {
-          const limit = merged.numPosts || BLOGGER_DEFAULT_POPULAR_POSTS_LIMIT
+          const canonicalLimit = (spec.getWidgetSettings('PopularPosts')?.canonical?.numItemsToShow?.default as number) ?? 10
+          const limit = merged.numPosts ?? merged.numItemsToShow ?? canonicalLimit
           context.widgetData[widgetId] = deepMerge(buildPopularPostsData(normalizedPosts, spec, blogLocale, limit), merged)
         }
         else {
@@ -1219,7 +1241,8 @@ export async function resolveBloggerContext(
 
       if (effectiveLabel || viewId === 'label_search') {
         const encodedLabel = encodeURIComponent(effectiveLabel || '')
-        const pageSize = maxResults || BLOGGER_DEFAULT_LABEL_PAGE_SIZE
+        const defaultLabelPageSize = spec.getBlogPagination()?.labelSearchPageSize ?? 20
+        const pageSize = maxResults || defaultLabelPageSize
 
         if (startIndex > 0 || updatedMax || updatedMin) {
           if (startIndex <= pageSize) {
@@ -1249,7 +1272,7 @@ export async function resolveBloggerContext(
           if (activePosts.length > 0) {
             const lastPost = activePosts[activePosts.length - 1]
             const nextDate = lastPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
-            blog1.olderPageUrl = mapper.mapUrl(`${blogOrigin}/search/label/${encodedLabel}?updated-max=${nextDate}&max-results=${BLOGGER_DEFAULT_LABEL_PAGE_SIZE}&start=${BLOGGER_DEFAULT_LABEL_PAGE_SIZE}&by-date=false`)
+            blog1.olderPageUrl = mapper.mapUrl(`${blogOrigin}/search/label/${encodedLabel}?updated-max=${nextDate}&max-results=${defaultLabelPageSize}&start=${defaultLabelPageSize}&by-date=false`)
           }
           else {
             blog1.olderPageUrl = ''

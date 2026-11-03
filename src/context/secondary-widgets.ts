@@ -5,9 +5,11 @@ export function buildPopularPostsData(
   posts: readonly BloggerPostData[],
   spec: SpecCatalog,
   locale = 'en',
-  limit = 5,
+  limit?: number,
 ): Record<string, any> {
-  const selectedPosts = posts.slice(0, limit).map(p => ({
+  const canonicalLimit = (spec.getWidgetSettings('PopularPosts')?.canonical?.numItemsToShow?.default as number) ?? 10
+  const effectiveLimit = limit ?? canonicalLimit
+  const selectedPosts = posts.slice(0, effectiveLimit).map(p => ({
     ...p,
     postDisplay: {
       showSnippet: true,
@@ -35,15 +37,15 @@ export function buildContactFormData(
   return {
     title: spec.getWidgetDefaultTitle('ContactForm', locale),
     submitUrl,
-    contactFormNameMsg: spec.getTranslation('widgets.ContactForm.contactFormNameMsg', locale) || 'Name',
-    contactFormEmailMsg: spec.getTranslation('widgets.ContactForm.contactFormEmailMsg', locale) || 'Email',
-    contactFormMessageMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageMsg', locale) || 'Message',
-    contactFormSendMsg: spec.getTranslation('widgets.ContactForm.contactFormSendMsg', locale) || 'Send',
-    contactFormMessageSendingMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageSendingMsg', locale) || 'Sending...',
-    contactFormMessageSentMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageSentMsg', locale) || 'Your message has been sent.',
-    contactFormMessageNotSentMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageNotSentMsg', locale) || 'Could not send message. Please try again later.',
-    contactFormEmptyMessageMsg: spec.getTranslation('widgets.ContactForm.contactFormEmptyMessageMsg', locale) || 'Message field cannot be empty.',
-    contactFormInvalidEmailMsg: spec.getTranslation('widgets.ContactForm.contactFormInvalidEmailMsg', locale) || 'A valid email is required.',
+    contactFormNameMsg: spec.getTranslation('widgets.ContactForm.contactFormNameMsg', locale) ?? 'Name',
+    contactFormEmailMsg: spec.getTranslation('widgets.ContactForm.contactFormEmailMsg', locale) ?? 'Email',
+    contactFormMessageMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageMsg', locale) ?? 'Message',
+    contactFormSendMsg: spec.getTranslation('widgets.ContactForm.contactFormSendMsg', locale) ?? 'Send',
+    contactFormMessageSendingMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageSendingMsg', locale) ?? 'Sending...',
+    contactFormMessageSentMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageSentMsg', locale) ?? 'Your message has been sent.',
+    contactFormMessageNotSentMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageNotSentMsg', locale) ?? 'Could not send message. Please try again later.',
+    contactFormEmptyMessageMsg: spec.getTranslation('widgets.ContactForm.contactFormEmptyMessageMsg', locale) ?? 'Message field cannot be empty.',
+    contactFormInvalidEmailMsg: spec.getTranslation('widgets.ContactForm.contactFormInvalidEmailMsg', locale) ?? 'A valid email is required.',
   }
 }
 
@@ -71,10 +73,11 @@ export function buildAttributionData(
       }
     }
   }
-  const copyrightYear = resolvedYear ?? 2026
+  const copyrightYear = resolvedYear ?? new Date().getFullYear()
+  const poweredBy = spec.getLocalizedMessage('poweredByBlogger', locale) ?? 'Powered by Blogger'
   return {
     title: spec.getWidgetDefaultTitle('Attribution', locale),
-    copyright: `Copyright ${copyrightYear} ${blogTitle}. Powered by Blogger.`,
+    copyright: `Copyright ${copyrightYear} ${blogTitle}. ${poweredBy}.`,
     bloggerUrl: 'https://www.blogger.com',
     imageAuthor: '',
   }

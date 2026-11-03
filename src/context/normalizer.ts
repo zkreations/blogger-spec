@@ -51,8 +51,9 @@ export function createSnippets(
   options?: CreateSnippetsOptions,
 ): { short: string, long: string } {
   const clean = stripHtml(contentOrSummary)
-  const ellipsis = options?.ellipsis ?? '…'
-  const shortLen = options?.shortLength ?? 100
+  const blogSnippets = getSpecCatalog().getBlogSnippets()
+  const ellipsis = options?.ellipsis ?? blogSnippets?.defaultEllipsis ?? '…'
+  const shortLen = options?.shortLength ?? blogSnippets?.shortLengthMin ?? 100
   const longLen = options?.longLength ?? 250
 
   const short = clean.length > shortLen ? `${clean.slice(0, shortLen).trim()}${ellipsis}` : clean
@@ -156,7 +157,8 @@ export function normalizePostEntry(
   }
 
   const rawAuthor = entry.author?.[0]
-  const authorName = rawAuthor?.name?.$t || 'Blogger'
+  const defaultAuthor = getSpecCatalog().getLocalizedMessage('anonymous', locale) ?? 'Anonymous'
+  const authorName = rawAuthor?.name?.$t || defaultAuthor
   const authorProfile = rawAuthor?.uri?.$t || ''
   let authorAvatar = rawAuthor?.gd$image?.src || 'https://lh3.googleusercontent.com/a/default-user=s80-c'
   if (authorAvatar.startsWith('//')) {
@@ -309,7 +311,8 @@ export function normalizePageAsPostEntry(
   }
 
   const rawAuthor = entry.author?.[0]
-  const authorName = rawAuthor?.name?.$t || 'Blogger'
+  const defaultAuthor = getSpecCatalog().getLocalizedMessage('anonymous', locale) ?? 'Anonymous'
+  const authorName = rawAuthor?.name?.$t || defaultAuthor
   const authorProfile = rawAuthor?.uri?.$t || ''
   let authorAvatar = rawAuthor?.gd$image?.src || 'https://lh3.googleusercontent.com/a/default-user=s80-c'
   if (authorAvatar.startsWith('//')) {
@@ -386,7 +389,8 @@ export function normalizeCommentEntry(
 ): BloggerCommentData {
   const id = extractId(entry.id?.$t)
   const rawAuthor = entry.author?.[0]
-  const author = rawAuthor?.name?.$t || 'Anonymous'
+  const defaultAuthor = getSpecCatalog().getLocalizedMessage('anonymous', locale) ?? 'Anonymous'
+  const author = rawAuthor?.name?.$t || defaultAuthor
   let authorAvatarSrc = rawAuthor?.gd$image?.src || 'https://img1.blogblog.com/img/blank.gif'
   if (authorAvatarSrc.startsWith('//')) {
     authorAvatarSrc = `https:${authorAvatarSrc}`

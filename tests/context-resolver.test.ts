@@ -394,5 +394,34 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(linkList).toBeDefined()
       expect(linkList.links).toEqual([])
     })
+
+    it('synthesizes canonical defaults for Attribution and ContactForm when discovered in template', async () => {
+      const mockFetch = createMockFetch()
+      const templateXml = `
+        <b:section id='footer'>
+          <b:widget id='Attribution1' type='Attribution'><b:includable id='main'/></b:widget>
+          <b:widget id='ContactForm1' type='ContactForm'><b:includable id='main'/></b:widget>
+        </b:section>
+      `
+      const ctx = await resolveBloggerContext({
+        blogId,
+        fetch: mockFetch,
+        templateXml,
+      })
+
+      const attribution = ctx.widgetData.Attribution1
+      expect(attribution).toBeDefined()
+      expect(attribution.title).toBe('Attribution')
+      expect(attribution.copyright).toContain('Hamlet')
+      expect(attribution.copyright).toContain('Powered by Blogger')
+      expect(attribution.bloggerUrl).toBe('https://www.blogger.com')
+
+      const contactForm = ctx.widgetData.ContactForm1
+      expect(contactForm).toBeDefined()
+      expect(contactForm.title).toBe('Contact Form')
+      expect(contactForm.submitUrl).toBe('https://www.blogger.com/contact-form.do')
+      expect(contactForm.contactFormNameMsg).toBe('Name')
+      expect(contactForm.contactFormSendMsg).toBe('Send')
+    })
   })
 })

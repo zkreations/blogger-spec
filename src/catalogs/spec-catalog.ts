@@ -1041,6 +1041,14 @@ export class SpecCatalog {
     return this.settingMap.get(widgetName)
   }
 
+  getBlogPagination(): BloggerWidgetSettingsDefinition['pagination'] {
+    return this.settingMap.get('Blog')?.pagination
+  }
+
+  getBlogSnippets(): BloggerWidgetSettingsDefinition['snippets'] {
+    return this.settingMap.get('Blog')?.snippets
+  }
+
   getAllWidgetSettings(): Record<string, BloggerWidgetSettingsDefinition> {
     const result: Record<string, BloggerWidgetSettingsDefinition> = {}
     for (const [k, v] of this.settingMap.entries()) {
@@ -1271,7 +1279,7 @@ export class SpecCatalog {
         periodText = `${month}/${year}`
       }
     }
-    return template.replace(/[A-Za-z\u00C0-\u024F]+,\s*\d{4}/, periodText)
+    return template.replace(/[\p{L}\p{M}&#;\d]+(?:\s*,\s*|\s+)\p{N}{4}/u, periodText)
   }
 
   resolvePlural(messageKey: string, count: number, locale = 'en'): string | undefined {
@@ -1838,6 +1846,14 @@ export function getWidgetSettings(widgetName: string, catalog: SpecCatalog = get
 
 export function getAllWidgetSettings(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerWidgetSettingsDefinition> {
   return catalog.getAllWidgetSettings()
+}
+
+export function getBlogPagination(catalog: SpecCatalog = getSpecCatalog()): BloggerWidgetSettingsDefinition['pagination'] {
+  return catalog.getBlogPagination()
+}
+
+export function getBlogSnippets(catalog: SpecCatalog = getSpecCatalog()): BloggerWidgetSettingsDefinition['snippets'] {
+  return catalog.getBlogSnippets()
 }
 
 export function isGlobal(name: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
