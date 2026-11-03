@@ -208,6 +208,16 @@ export function validateBlogConfig(
             })
           }
         }
+
+        if (entry.link !== undefined) {
+          if (typeof entry.link !== 'string') {
+            errors.push({
+              path: `${entryPath}/link`,
+              message: '\'link\' must be a string.',
+              code: 'INVALID_ENTRY_LINK_TYPE',
+            })
+          }
+        }
       }
     }
   }

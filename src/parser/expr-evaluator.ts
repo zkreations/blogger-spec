@@ -318,7 +318,8 @@ export function resizeImage(url: any, size: any, ratio?: any): any {
   }
 
   if (Array.isArray(size)) {
-    return size.map(s => ({
+    const sortedSizes = [...size].sort((a, b) => Number(a) - Number(b))
+    return sortedSizes.map(s => ({
       url: resizeImage(url, s, ratio),
       size: s,
     }))
@@ -579,6 +580,12 @@ export class ExpressionEvaluator {
 
         if (typeof obj === 'object' && hasDataProperty(obj, propName)) {
           return obj[propName]
+        }
+        if (Array.isArray(obj) && typeof propName === 'string') {
+          const found = obj.find((el: any) => el && typeof el === 'object' && el.name === propName)
+          if (found !== undefined) {
+            return found
+          }
         }
         return applyModifier(obj, String(propName))
       }

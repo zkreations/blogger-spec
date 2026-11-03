@@ -53,6 +53,7 @@ export type BloggerCommentDateFormat = typeof BLOGGER_COMMENT_DATE_FORMATS[numbe
 export interface BloggerEntryConfiguration {
   readonly searchDescription?: string
   readonly commentMode?: CommentMode
+  readonly link?: string
 }
 
 export interface BloggerBlogConfiguration {

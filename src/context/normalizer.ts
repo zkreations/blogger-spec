@@ -18,6 +18,7 @@ export { formatIcuDate }
 export interface NormalizePostOptions {
   readonly saa?: string
   readonly titleAndEnclosureLinks?: boolean
+  readonly configuredLink?: string
   readonly dateFormat?: string
   readonly timeZone?: string
   readonly commentFrameBaseUrl?: string
@@ -177,16 +178,16 @@ export function normalizePostEntry(
   const numberOfComments = Number.parseInt(entry.thr$total?.$t || '0', 10) || 0
   const allowComments = entry.link ? entry.link.some(l => l.rel === 'replies') : true
 
-  const titleLink = titleAndEnclosureLinks
-    ? (entry.link?.find(l => l.rel === 'enclosure')?.href || alternateLink)
+  const titleLink = options.configuredLink !== undefined
+    ? options.configuredLink
     : undefined
 
   const feedLinks: BloggerFeedLink[] | undefined = titleAndEnclosureLinks
-    ? (entry.link?.filter(l => l.rel === 'replies' || l.type?.includes('atom') || l.type?.includes('rss')) || []).map(l => ({
+    ? (entry.link?.filter(l => l.rel === 'replies' || l.rel === 'enclosure' || l.type?.includes('atom') || l.type?.includes('rss')) || []).map(l => ({
         url: mapper.mapUrl(l.href),
-        name: l.title || 'Comments',
-        feedType: l.type?.includes('atom') ? 'atom' : 'rss',
-        mimeType: l.type || 'application/atom+xml',
+        name: l.title || (l.rel === 'enclosure' ? 'Enclosure' : 'Comments'),
+        feedType: l.type?.includes('atom') ? 'atom' : (l.rel === 'enclosure' ? 'enclosure' : 'rss'),
+        mimeType: l.type || (l.rel === 'enclosure' ? 'application/octet-stream' : 'application/atom+xml'),
       }))
     : undefined
 
@@ -315,8 +316,8 @@ export function normalizePageAsPostEntry(
     authorAvatar = `https:${authorAvatar}`
   }
 
-  const titleLink = titleAndEnclosureLinks
-    ? (entry.link?.find(l => l.rel === 'enclosure')?.href || alternateLink)
+  const titleLink = options.configuredLink !== undefined
+    ? options.configuredLink
     : undefined
 
   return {

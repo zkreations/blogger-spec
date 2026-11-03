@@ -159,6 +159,22 @@ describe('runtime expression evaluator', () => {
     expect(evaluateExpression('data:img sourceSet [300, 600] sourceSet "16:9"', ctx)).toBe(
       evaluateExpression('sourceSet(data:img, [300, 600], "16:9")', ctx),
     )
+
+    const multiSizes = evaluateExpression('resizeImage(data:img, [700, 300, 500], "1:1")', ctx) as any[]
+    expect(Array.isArray(multiSizes)).toBe(true)
+    expect(multiSizes.map(s => s.size)).toEqual([300, 500, 700])
+  })
+
+  it('resolves named property lookups on arrays of named items (e.g. allBylineItems.author)', () => {
+    const ctx = {
+      allBylineItems: [
+        { name: 'author', label: 'By' },
+        { name: 'timestamp', label: 'On' },
+      ],
+    }
+    expect(evaluateExpression('data:allBylineItems.author.label', ctx)).toBe('By')
+    expect(evaluateExpression('data:allBylineItems.timestamp.label', ctx)).toBe('On')
+    expect(evaluateExpression('data:allBylineItems.comments', ctx)).toBeUndefined()
   })
 
   it('evaluates YouTube image modifiers (.isYouTube, .youtubeMaxResDefaultUrl)', () => {

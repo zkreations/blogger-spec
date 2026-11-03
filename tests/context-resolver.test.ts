@@ -301,4 +301,55 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(typographyLink.isCurrentPage).toBe(true)
     })
   })
+
+  describe('blog1 byline items and homepage pagination hydration', () => {
+    it('reacts to widget settings by omitting falsy items from allBylineItems and exposing named properties', async () => {
+      const mockFetch = createMockFetch()
+      const ctx = await resolveBloggerContext({
+        blogId,
+        fetch: mockFetch,
+        config: {
+          widgets: {
+            Blog1: {
+              showAuthor: false,
+              showTimestamp: true,
+              showLabels: true,
+            },
+          },
+        },
+      })
+
+      const blog1 = ctx.widgetData.Blog1
+      expect(blog1.allBylineItems).toBeDefined()
+      // author was set to false, so it must not be present in allBylineItems
+      expect(blog1.allBylineItems.author).toBeUndefined()
+      expect(blog1.allBylineItems.some((item: any) => item.name === 'author')).toBe(false)
+
+      // timestamp and labels were true, so they must exist both in array and as named properties
+      expect(blog1.allBylineItems.timestamp).toBeDefined()
+      expect(blog1.allBylineItems.timestamp.name).toBe('timestamp')
+      expect(blog1.allBylineItems.labels).toBeDefined()
+      expect(blog1.allBylineItems.labels.name).toBe('labels')
+    })
+
+    it('generates synthetic olderPageUrl on homepage when active posts exceed postsPerPage', async () => {
+      const mockFetch = createMockFetch()
+      const ctx = await resolveBloggerContext({
+        blogId,
+        fetch: mockFetch,
+        view: 'homepage',
+        config: {
+          blog: {
+            postsPerPage: 3,
+          },
+        },
+      })
+
+      const blog1 = ctx.widgetData.Blog1
+      expect(blog1.posts.length).toBe(3)
+      expect(blog1.olderPageUrl).toBeDefined()
+      expect(blog1.olderPageUrl).toContain('updated-max=')
+      expect(blog1.olderPageUrl).toContain('max-results=3')
+    })
+  })
 })

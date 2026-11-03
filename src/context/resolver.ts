@@ -5,6 +5,7 @@ import { getMockContext, getSpecCatalog } from '../catalogs/index.js'
 import { buildArchiveHierarchy } from './archive-tree.js'
 import { BloggerFeedClient } from './client.js'
 import {
+  extractId,
   normalizeBlogMetadata,
   normalizeCommentEntry,
   normalizeHeader,
@@ -137,6 +138,9 @@ function applyBlogConfiguration(
       continue
     const entryCfg = blogConfig.entries?.[String(post.id)] || blogConfig.entries?.[post.id]
     if (entryCfg) {
+      if (entryCfg.link !== undefined) {
+        post.link = entryCfg.link
+      }
       if (entryCfg.searchDescription !== undefined) {
         post.snippets = { ...(post.snippets || {}), short: entryCfg.searchDescription }
         const targetViewId = context.view?.postId ?? context.view?.pageId
@@ -361,7 +365,63 @@ function hydrateAllWidgets(options: WidgetHydrationOptions): void {
 
       case 'Blog': {
         const title = merged.title || widget.title || spec.getWidgetDefaultTitle('Blog', blogLocale) || 'Blog Posts'
-        context.widgetData[widgetId] = deepMerge({ ...blog1, title, posts: activePosts, numPosts: activePosts.length }, merged)
+        const baseBylineItems: Array<{ name: string, label: string }> = Array.isArray(merged.allBylineItems) && merged.allBylineItems.length > 0
+          ? merged.allBylineItems
+          : (Array.isArray(blog1.allBylineItems) && blog1.allBylineItems.length > 0
+            ? blog1.allBylineItems
+            : [
+                { name: 'share', label: 'Share' },
+                { name: 'author', label: 'By' },
+                { name: 'timestamp', label: 'at' },
+                { name: 'comments', label: 'Comments' },
+                { name: 'icons', label: 'Icons' },
+                { name: 'labels', label: 'Labels' },
+                { name: 'location', label: 'Location' },
+              ])
+
+        const settingMap: Record<string, boolean | undefined> = {
+          author: merged.showAuthor !== false,
+          timestamp: merged.showTimestamp !== false,
+          labels: merged.showLabels !== false,
+          location: merged.showLocation !== false,
+          comments: merged.showCommentLink !== false,
+          share: merged.showShareButtons !== false,
+          icons: merged.showAuthorProfile === true,
+        }
+
+        const labelOverrides: Record<string, string | undefined> = {
+          author: merged.authorLabel,
+          comments: merged.commentLabel,
+          labels: merged.postLabelsLabel,
+          location: merged.postLocationLabel,
+          timestamp: merged.timestampLabel,
+        }
+
+        const activeBylineList: any[] = []
+        for (const item of baseBylineItems) {
+          if (!item || typeof item !== 'object')
+            continue
+          const isVisible = settingMap[item.name] ?? true
+          if (isVisible) {
+            const label = labelOverrides[item.name] || item.label || ''
+            const activeItem = { ...item, label }
+            activeBylineList.push(activeItem)
+            activeBylineList[item.name] = activeItem
+          }
+        }
+
+        const blogData = {
+          ...blog1,
+          ...merged,
+          title,
+          posts: activePosts,
+          numPosts: activePosts.length,
+          allBylineItems: activeBylineList,
+        }
+        context.widgetData[widgetId] = blogData
+        if (context.widgets) {
+          context.widgets[widgetId] = blogData
+        }
         break
       }
 
@@ -596,10 +656,24 @@ export async function resolveBloggerContext(
       titleAndEnclosureLinks: config.config?.blog?.titleAndEnclosureLinks,
       commentFrameBaseUrl,
     }
-    const normalizedPosts = rawPosts.map(e => normalizePostEntry(e, mapper, effectiveBlogId, blogLocale, postOptions))
+    const normalizedPosts = rawPosts.map((e) => {
+      const entryId = extractId(e.id?.$t)
+      const configuredLink = config.config?.entries?.[entryId]?.link
+      return normalizePostEntry(e, mapper, effectiveBlogId, blogLocale, {
+        ...postOptions,
+        ...(configuredLink !== undefined ? { configuredLink } : {}),
+      })
+    })
 
     const rawPages: readonly BloggerRawEntry[] = pagesResponse?.feed?.entry || []
-    const normalizedPagePosts = rawPages.map(e => normalizePageAsPostEntry(e, mapper, effectiveBlogId, blogLocale, postOptions))
+    const normalizedPagePosts = rawPages.map((e) => {
+      const entryId = extractId(e.id?.$t)
+      const configuredLink = config.config?.entries?.[entryId]?.link
+      return normalizePageAsPostEntry(e, mapper, effectiveBlogId, blogLocale, {
+        ...postOptions,
+        ...(configuredLink !== undefined ? { configuredLink } : {}),
+      })
+    })
 
     const labelSorting = (config.overrides?.widgetData?.Label1?.sorting || 'ALPHA') as 'ALPHA' | 'FREQUENCY'
     const normalizedLabels = normalizeLabels(rawPosts, mapper, labelSorting)
@@ -953,7 +1027,14 @@ export async function resolveBloggerContext(
     }
 
     if (viewId === 'homepage' && config.config?.blog?.postsPerPage && (!searchParams || searchParams.size === 0)) {
-      activePosts = activePosts.slice(0, config.config.blog.postsPerPage)
+      const postsPerPage = config.config.blog.postsPerPage
+      if (activePosts.length > postsPerPage && !blog1.olderPageUrl) {
+        const lastPost = activePosts[postsPerPage - 1]
+        const nextDate = lastPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
+        const blogOrigin = mapper.blogHost ? `https://${mapper.blogHost}` : ''
+        blog1.olderPageUrl = mapper.mapUrl(`${blogOrigin}/search?updated-max=${nextDate}&max-results=${postsPerPage}`)
+      }
+      activePosts = activePosts.slice(0, postsPerPage)
     }
 
     const spec = getSpecCatalog()

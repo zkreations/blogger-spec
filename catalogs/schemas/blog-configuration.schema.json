@@ -97,6 +97,10 @@
           "type": "string",
           "enum": ["ALLOWED", "RESTRICTED", "DISABLED"],
           "description": "Comment permission setting: 'ALLOWED' (allow all), 'RESTRICTED' (show existing, disable new), 'DISABLED' (hide all)."
+        },
+        "link": {
+          "type": "string",
+          "description": "Custom post title link (data:posts[].link) configured in the Blogger entry editor, overriding default post URL."
         }
       }
     }

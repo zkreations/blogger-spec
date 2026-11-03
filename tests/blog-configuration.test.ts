@@ -53,6 +53,13 @@ describe('blogger blog configuration & context subsystem', () => {
       expect(res.errors.some(e => e.code === 'SEARCH_DESCRIPTION_TOO_LONG')).toBe(true)
     })
 
+    it('validates entry link as optional string', () => {
+      expect(validateBlogConfig({ entries: { e1: { link: 'https://example.com' } } }).valid).toBe(true)
+      const res = validateBlogConfig({ entries: { e1: { link: 12345 as any } } })
+      expect(res.valid).toBe(false)
+      expect(res.errors.some(e => e.code === 'INVALID_ENTRY_LINK_TYPE')).toBe(true)
+    })
+
     it('validates commentFormMessage 4096 character limit', () => {
       const validConfig = {
         blog: {
@@ -207,6 +214,25 @@ describe('blogger blog configuration & context subsystem', () => {
       expect(post.allowNewComments).toBe(false)
       expect(context.view.description).toBe('Custom meta description for post 1001')
       expect(context.blog.metaDescription).toBe('Custom meta description for post 1001')
+    })
+
+    it('binds configured title link to post.link', async () => {
+      const postId = '8389032230243957219'
+      const context = await resolveBloggerContext({
+        offline: true,
+        view: 'post',
+        targetId: postId,
+        config: {
+          entries: {
+            [postId]: {
+              link: 'https://example.com/external-article',
+            },
+          },
+        },
+      })
+
+      const post = context.widgetData.Blog1.posts[0]
+      expect(post.link).toBe('https://example.com/external-article')
     })
 
     it('disables comments entirely when commentLocation is HIDDEN or commentMode is DISABLED', async () => {
