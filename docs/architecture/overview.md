@@ -28,7 +28,14 @@ flowchart LR
   end
 ```
 
-### 1.1. What `blogger-spec` provides
+### 1.1. Deep Modular Architecture
+The core engine adheres to strict modularization principles:
+- **Expression Evaluation (`src/parser/operators/`):** Pratt evaluation is distributed across domain-specific operator modules (`arithmetic`, `comparison`, `logical`, `conditional`, `collections`, `bitwise`, `string-url`, `lambda`), coordinated via a unified facade (`src/parser/expr-evaluator.ts`).
+- **Template Lowering & BIR (`src/ir/directives/`):** Directive lowering is separated into focused handlers by lifecycle role (`flow/`, `dom/`, `output/`, `subroutines/`, `containers/`), orchestrated by `src/ir/lowering.ts`.
+- **Validation Rules (`src/parser/validation/`):** Diagnostics and structural checks are decoupled into domain rule sets (`rules/nesting-rules.ts`, `rules/section-rules.ts`, `rules/widget-rules.ts`, `rules/expression-rules.ts`, `rules/attributes-rules.ts`, `rules/skin-rules.ts`), exposed through `src/parser/template-validator.ts`.
+- **Context Synthesis (`src/context/`):** Routing, URL mapping, and feed normalization are encapsulated within dedicated services (`resolver.ts`, `routing.ts`, `normalizer.ts`, `archive-tree.ts`).
+
+### 1.2. What `blogger-spec` provides
 - **Strongly typed AST models:** Transforms Blogger XML and expressions into formal in-memory representations (`BloggerDocumentNode`, `BloggerExpressionNode`).
 - **Atomic runtime evaluation:** Evaluates expressions with canonical relaxed equality (`isEqual`), null-safety, and collection lambdas (`filter`, `map`).
 - **Hierarchical subroutine resolution:** Determines the exact includable to dispatch following the 6-tier ontological hierarchy (`resolveIncludable`).
@@ -38,7 +45,7 @@ flowchart LR
 - **Canonical mock contexts:** 12 pre-built canonical views (`getMockContext`) validated under Draft 2020-12 schemas.
 - **Conformance suite and test harness:** Universal test runner (`runConformance`) backed by 300+ empirical fixtures verified against Blogger's production engine.
 
-### 1.2. What is delegated to the consumer
+### 1.3. What is delegated to the consumer
 - **Tree traversal (AST Walker):** Assembling the resulting DOM from the AST is the responsibility of the external compiler or rendering engine (conforming to [`render-pipeline.md`](../spec/render-pipeline.md)).
 - **Development servers and watchers:** Local HTTP servers, live-reload mechanisms, and browser previewers.
 - **Proprietary Google services:** Authenticated dynamic comments, captcha verification, server-side AdSense injection, and live analytics.
@@ -106,4 +113,4 @@ To ensure repository integrity across every modification, a mandatory verificati
 2. **`pnpm run test:spec`:** Executes formal validation of all catalogs and mock contexts against their Draft 2020-12 JSON schemas, verifies cross-referential integrity (`BX` codes, types, directives), and confirms `.d.ts` freshness.
 3. **`pnpm run typecheck`:** Strict TypeScript check (`tsc --noEmit`) with strict typing enabled.
 4. **`pnpm run lint`:** ESLint format and style validation (`@antfu/eslint-config`).
-5. **`pnpm run test`:** Full execution of unit and conformance test suites in Vitest (500+ automated tests).
+5. **`pnpm run test`:** Full execution of unit and conformance test suites in Vitest (750+ automated tests).

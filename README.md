@@ -29,14 +29,14 @@ flowchart LR
 | Subpath | Purpose |
 | :--- | :--- |
 | `blogger-spec/ast` | `parseTemplate` and `parseExpression` (Pratt parser, 10 precedence levels, `maxDepth: 50`). Supports infix and functional syntax, lambdas, and bracket indexing. |
-| `blogger-spec/parser` | Tokenizer, `evaluateExpression`, directive scanning, and validators: `validateDirectiveNesting`, `validateTemplateStructure`, `validateTemplateExpressions`. |
+| `blogger-spec/parser` | Tokenizer, `evaluateExpression` (modular operator evaluators in `operators/`), directive scanning, and modular validators (`validation/rules/`): `validateDirectiveNesting`, `validateTemplateStructure`, `validateTemplateExpressions`. |
 | `blogger-spec/quota` | Token counting against the compiler's 40-token limit (`BX1021`). |
 | `blogger-spec/type-system` | Assignability, modifiers, skin modifiers, operator compatibility, and type inference. |
 | `blogger-spec/data-path` | `resolveDataPath` across globals, widgets, platform types, messages, scoped variables, and skin variables. |
 | `blogger-spec/scope` | `ScopeEnvironment`: scope stack with shadowing and the precedence `lambda → loop → with → includable → widget → global`. |
 | `blogger-spec/version` | Layout version detection (v1, v2, v3). |
 | `blogger-spec/context` | Universal context resolver (`resolveBloggerContext`), Atom feed normalizer, IANA `timeZone`-aware TR35 date formatter (`formatIcuDate`), static feed adapter (`createStaticFeedFetch`), URL mapper, and dynamic widget builders (`buildArchiveHierarchy`, `buildPopularPostsData`). |
-| `blogger-spec/ir` | Normalized intermediate representation (BIR v2), BIR compiler (`compileToIR`), and canonical reference HTML renderer (`BloggerReferenceRenderer`) with `maxIncludeDepth: 43` recursion safety. |
+| `blogger-spec/ir` | Normalized intermediate representation (BIR v2), modular directive lowerers (`directives/`), BIR compiler (`compileToIR`), and canonical reference HTML renderer (`BloggerReferenceRenderer`) with `maxIncludeDepth: 43` recursion safety. |
 | `blogger-spec/catalogs` | Query facade, `getMockContext`, and snippet generators. |
 | `blogger-spec/inclusion-expander` | Server-side inclusion expansion and macro inlining. |
 | `blogger-spec/runner` | Browser/Edge-safe `runConformance`, `runSpecConformance`, `normalizeHtmlString`. |
@@ -302,7 +302,7 @@ Official Blogger docs cover under 10% of the language and promote deprecated att
 blogger-spec/
 ├── catalogs/    # 11 JSON catalogs + schemas/
 ├── fixtures/    # contexts, expressions, templates, diagnostics (negative cases)
-├── src/         # ast, parser/, scope, data-path, type-system, quota, version, catalogs/, runner, tooling/
+├── src/         # ast, context/, ir/directives/, parser/{operators,validation}, catalogs, tooling
 └── dist/        # build output (optional catalogs/fs-store.js for Node)
 ```
 

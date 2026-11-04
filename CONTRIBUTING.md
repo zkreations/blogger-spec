@@ -45,16 +45,37 @@ blogger-spec/
 │   ├── ast.ts                # Formal AST interfaces and parseExpression / parseTemplate exports
 │   ├── data-path.ts          # Canonical deep data path navigator (resolveDataPath)
 │   ├── scope.ts              # Formalized ScopeEnvironment symbol table & scope stack
-│   ├── parser/               # Template and expression parsers, directive scanner, lexer, validator
-│   │   ├── lexer.ts          # Deterministic expression lexer with loc tracking
-│   │   ├── expr-parser.ts    # Pratt parser guided by operators.json precedence
-│   │   ├── expr-evaluator.ts # Runtime expression evaluator with safe null-tolerance
-│   │   ├── template-parser.ts # Full XML template to AST parser (strict & tolerant)
-│   │   ├── directive-scanner.ts # Fault-tolerant XML directive & tag tokenizer
-│   │   └── template-validator.ts # Directive nesting & structural template validator
 │   ├── version.ts            # Canonical template layout version detector (v1, v2, v3)
 │   ├── quota.ts              # Canonical token quota calculator (BX1021 rules)
 │   ├── type-system.ts        # Type assignability, modifiers, and operator compatibility
+│   ├── skin-compiler.ts      # Theme Designer CSS & font compiler (compileSkinCss)
+│   ├── inclusion-expander.ts # Server platform macro expansion & inlining
+│   ├── includable-resolver.ts# 6-tier ontological includable resolution
+│   ├── widget-settings.ts    # Canonical widget settings deserializer & coercion SSOT
+│   ├── context/              # Context resolution, routing, and feed normalizers
+│   │   ├── resolver.ts       # Unified online/offline Blogger context resolution
+│   │   ├── routing.ts        # Canonical route resolver and CANONICAL_VIEWS
+│   │   ├── normalizer.ts     # Atom/JSON feed entity normalization
+│   │   ├── client.ts         # In-memory Blogger feed client
+│   │   └── archive-tree.ts   # Canonical BlogArchive hierarchy builder
+│   ├── ir/                   # Intermediate Representation (BIR v2) & renderer
+│   │   ├── lowering.ts       # Template AST to BIR lowering orchestrator
+│   │   ├── reference-renderer.ts # Reference HTML renderer (maxIncludeDepth: 43)
+│   │   └── directives/       # Modular directive lower handlers
+│   │       ├── flow/         # b:if, b:loop, b:with, b:switch
+│   │       ├── dom/          # b:class, b:attr, b:tag
+│   │       ├── output/       # data:*, b:eval, b:message
+│   │       ├── subroutines/  # b:include, b:defaultmarkups, b:includable
+│   │       └── containers/   # b:section, b:widget, b:widget-settings
+│   ├── parser/               # Template and expression parsers, scanner, lexer, validator
+│   │   ├── lexer.ts          # Deterministic expression lexer with loc tracking
+│   │   ├── expr-parser.ts    # Pratt parser guided by operators.json precedence
+│   │   ├── expr-evaluator.ts # Expression evaluator facade coordinating operator modules
+│   │   ├── operators/        # Modular operator evaluators (arithmetic, logical, etc.)
+│   │   ├── template-parser.ts# Full XML template to AST parser (strict & tolerant)
+│   │   ├── directive-scanner.ts # Fault-tolerant XML directive & tag tokenizer
+│   │   ├── template-validator.ts # Facade re-exporting modular validation rules
+│   │   └── validation/       # Modular validator rules (nesting, section, widget, expr)
 │   ├── catalogs/             # Typed CatalogStore and SpecCatalog domain models
 │   ├── paths.ts              # Workspace path resolution utilities
 │   ├── runner.ts             # Conformance test runner engine
@@ -81,14 +102,16 @@ blogger-spec/
 - **Schemas**: If metadata structures change, update [`catalogs/schemas/`](catalogs/schemas/).
 
 ### 2. Engine & Parser Changes
-- **Expression Parser & Evaluator**: If grammar, lexing, recursion limits, or operator binding power changes, update [`src/parser/lexer.ts`](src/parser/lexer.ts), [`src/parser/expr-parser.ts`](src/parser/expr-parser.ts), and [`src/parser/expr-evaluator.ts`](src/parser/expr-evaluator.ts).
+- **Expression Parser & Evaluators**: If grammar, lexing, recursion limits, or operator binding power changes, update [`src/parser/lexer.ts`](src/parser/lexer.ts), [`src/parser/expr-parser.ts`](src/parser/expr-parser.ts), and [`src/parser/expr-evaluator.ts`](src/parser/expr-evaluator.ts). Specialized operator evaluation logic lives in modular domain handlers under [`src/parser/operators/`](src/parser/operators/) (`arithmetic.ts`, `comparison.ts`, `logical.ts`, `conditional.ts`, `collections.ts`, `bitwise.ts`, `string-url.ts`, `lambda.ts`).
+- **IR Compilation & Directives Lowering**: The BIR lowering pipeline translates AST nodes into normalized intermediate instructions. Lowering logic is modularized by directive category under [`src/ir/directives/`](src/ir/directives/) (`flow/`, `dom/`, `output/`, `subroutines/`, `containers/`). Update the corresponding directive handler rather than introducing monolithic branching in `src/ir/lowering.ts`.
+- **Context Resolution & Routing**: Canonical view routing and context resolution reside in [`src/context/`](src/context/) (`routing.ts`, `resolver.ts`, `normalizer.ts`). Route matching is governed by `resolveBloggerRoute` and `CANONICAL_VIEWS`.
 - **Template Parser**: If XML well-formedness rules, entity handling, or AST node construction changes, update [`src/parser/template-parser.ts`](src/parser/template-parser.ts) and [`src/ast.ts`](src/ast.ts).
 - **Directive Scanner**: If XML tag tokenization, attribute parsing, or CDATA/comment masking changes, update [`src/parser/directive-scanner.ts`](src/parser/directive-scanner.ts).
 - **Data Path Navigator & Scope Environment**: If deep data path traversal or scope stack resolution semantics change, update [`src/data-path.ts`](src/data-path.ts) and [`src/scope.ts`](src/scope.ts).
 - **Layout Versions**: If layout version heuristics change, update `domain_metadata.layout_versions` in [`catalogs/directives.json`](catalogs/directives.json) and [`src/version.ts`](src/version.ts).
 - **Token Quota**: If token cost rules or quota thresholds change, update [`src/quota.ts`](src/quota.ts).
 - **Type Checking**: If coercion matrices, truthiness, or assignability change, update [`src/type-system.ts`](src/type-system.ts).
-- **Structural Validation & Expression Audits**: If directive nesting, grammar groups, expression attribute validation, or snippet generators change, update [`catalogs/directives.json`](catalogs/directives.json), [`src/catalogs/spec-catalog.ts`](src/catalogs/spec-catalog.ts), and [`src/parser/template-validator.ts`](src/parser/template-validator.ts). Ensure `canNest`, `validateDirectiveNesting`, and `validateTemplateExpressions` reflect canonical policies.
+- **Structural Validation & Expression Audits**: If directive nesting, grammar groups, expression attribute validation, or snippet generators change, update [`catalogs/directives.json`](catalogs/directives.json), [`src/catalogs/spec-catalog.ts`](src/catalogs/spec-catalog.ts), and modular rules under [`src/parser/validation/rules/`](src/parser/validation/rules/) (`nesting-rules.ts`, `section-rules.ts`, `widget-rules.ts`, `expression-rules.ts`, `attributes-rules.ts`, `skin-rules.ts`). [`src/parser/template-validator.ts`](src/parser/template-validator.ts) serves as the unified facade re-exporting validation APIs. Ensure `canNest`, `validateDirectiveNesting`, and `validateTemplateExpressions` reflect canonical policies.
 
 ### 3. Add Conformance Fixtures
 Add empirical test cases under [`fixtures/`](fixtures/) adhering to the `BloggerFixture` discriminated union contract (`input.kind`, `expected.outcome`, `covers[]`, `verified_at`).

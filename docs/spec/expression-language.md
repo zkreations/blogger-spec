@@ -8,7 +8,7 @@
 
 Dynamic Blogger expressions (`expr:*`, `cond`, `values`, `value`) are evaluated by a two-stage engine:
 1. **Lexical and Syntactic Analysis (Parser):** A deterministic lexer (`src/parser/lexer.ts`) followed by a Pratt parser (`src/parser/expr-parser.ts`) structured around the canonical precedence table in `catalogs/operators.json`.
-2. **Runtime Evaluation / Static Analysis:** The evaluator (`src/parser/expr-evaluator.ts`) resolves ASTs safely with null tolerance, while the quota calculator (`src/quota.ts`) verifies that expressions do not exceed compiler limits.
+2. **Runtime Evaluation / Static Analysis:** The evaluator (`src/parser/expr-evaluator.ts`), backed by modular operator evaluators in `src/parser/operators/`, resolves ASTs safely with null tolerance, while the quota calculator (`src/quota.ts`) verifies that expressions do not exceed compiler limits.
 
 ```mermaid
 flowchart LR

@@ -31,7 +31,7 @@ labels: ["bug", "catalog"]
 ### Affected Component / Catalog
 - [ ] Canonical Catalog (`catalogs/<catalog>.json`)
 - [ ] Expression Parser & AST (`src/parser/expr-parser.ts`, `src/ast.ts`)
-- [ ] Directive Scanner & Structural Validator (`src/parser/directive-scanner.ts`, `src/parser/template-validator.ts`)
+- [ ] Directive Scanner & Structural Validator (`src/parser/directive-scanner.ts`, `src/parser/validation/`)
 - [ ] Template Layouts Version Detection (`src/version.ts`)
 - [ ] Type System & Coercion (`src/type-system.ts`)
 - [ ] Token Quota Engine (`src/quota.ts`)
