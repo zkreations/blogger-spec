@@ -63,4 +63,3 @@ export const bIfHandler: FlowDirectiveHandler<BirIf> = {
   render: renderIfDirective,
   tagName: 'b:if',
 }
-

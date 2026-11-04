@@ -8,11 +8,17 @@ import type { BirIncludable, BirNode, BloggerIRDocument } from './types.js'
 import { getSpecCatalog } from '../catalogs/index.js'
 import { expandServerInclusion } from '../inclusion-expander.js'
 import { evaluateExpression } from '../parser/index.js'
-import { isSkinValue } from '../skin-compiler.js'
 import { isTruthy } from '../type-system.js'
 import { formatGadgetAbortComment } from '../types.js'
 import { compileToIR } from './compiler.js'
-import { getFlowRenderer } from './directives/index.js'
+import {
+  getFlowRenderer,
+  renderAttrMutation,
+  renderBirOutput,
+  renderClassMutation,
+  renderCommentNode,
+  renderTagDirective,
+} from './directives/index.js'
 import { lowerTemplate } from './lowering.js'
 import { DomMutationPipeline } from './renderer/dom-mutation-pipeline.js'
 import { escapeAttr, HTML_VOID_ELEMENTS } from './renderer/html-serializer.js'
@@ -131,32 +137,13 @@ export class BloggerReferenceRenderer {
         return node.value
 
       case 'comment':
-        return `<!--${node.value}-->`
+        return renderCommentNode(node)
 
       case 'skin':
         return renderSkinNode(node.role, this.currentIr?.skin, ctx, this.currentCatalog)
 
-      case 'output': {
-        const val = evaluateExpression(node.expr, ctx as Record<string, any>)
-        const cleanTag = (node.tagName ?? 'b:eval').replace(/^data:/, '')
-        if (val === undefined) {
-          if (node.source !== 'data') {
-            return ''
-          }
-          const missingTpl = this.currentCatalog.getRuntimeEvaluationStates().MISSING?.html_output_template
-            ?? '<!--Can\'t find substitution for tag [{tag}]-->'
-          return missingTpl.replace('{tag}', cleanTag)
-        }
-        if (val === null) {
-          return ''
-        }
-        if (typeof val === 'object' && Object.prototype.toString.call(val) !== '[object String]' && !isSkinValue(val)) {
-          const nonSingletonTpl = this.currentCatalog.getRuntimeEvaluationStates().NOT_SINGLETON?.html_output_template
-            ?? '<!--Substitution is not a singleton for tag [{tag}]-->'
-          return nonSingletonTpl.replace('{tag}', cleanTag)
-        }
-        return String(val)
-      }
+      case 'output':
+        return renderBirOutput(node, ctx as Record<string, any>, this.currentCatalog)
 
       case 'element': {
         const isHtml = node.tag.toLowerCase() === 'html'
@@ -181,31 +168,13 @@ export class BloggerReferenceRenderer {
         return isHtml ? `<!DOCTYPE html>\n${markup}` : markup
       }
 
-      case 'tag': {
-        if (node.cond !== undefined && !isTruthy(evaluateExpression(node.cond, ctx as Record<string, any>))) {
-          return this.renderNodes(node.children, ctx)
-        }
-        const tagName = node.tag.kind === 'static'
-          ? node.tag.value
-          : String(evaluateExpression(node.tag.expr, ctx as Record<string, any>) ?? '')
-        if (!tagName) {
-          return this.renderNodes(node.children, ctx)
-        }
-        const isVoid = HTML_VOID_ELEMENTS.has(tagName.toLowerCase())
-        const target = this.pipeline.createTarget(node.attributes, node.classes, ctx, normalizeUrls)
-        this.pipeline.pushTarget(target)
-
-        const innerHtml = this.renderNodes(node.children, ctx)
-
-        this.pipeline.popTarget()
-        const attrStr = this.pipeline.serializeAttributes(target, normalizeUrls)
-
-        if (isVoid && node.whitespaceRemove && !innerHtml.trim()) {
-          const selfClosing = this.currentOptions?.selfClosingVoid !== false
-          return selfClosing ? `<${tagName}${attrStr}/>` : `<${tagName}${attrStr}>`
-        }
-        return `<${tagName}${attrStr}>${innerHtml}</${tagName}>`
-      }
+      case 'tag':
+        return renderTagDirective(node, ctx as Record<string, any>, {
+          normalizeUrls,
+          pipeline: this.pipeline,
+          renderNodes: (nodes, c) => this.renderNodes(nodes, c),
+          selfClosingVoid: this.currentOptions?.selfClosingVoid !== false,
+        })
 
       case 'if':
       case 'loop':
@@ -313,29 +282,19 @@ export class BloggerReferenceRenderer {
         return this.renderNodes(node.children, ctx)
       }
 
-      case 'attrMutation': {
-        if (node.cond !== undefined && !isTruthy(evaluateExpression(node.cond, ctx as Record<string, any>))) {
-          return ''
-        }
-        const name = this.pipeline.resolveAttrValue(node.name, ctx, normalizeUrls)
-        if (!name) {
-          return ''
-        }
-        const val = this.pipeline.resolveAttrValue(node.value, ctx, normalizeUrls, true)
-        this.pipeline.applyAttrMutation(name, val)
-        return ''
-      }
+      case 'attrMutation':
+        return renderAttrMutation(node, ctx as Record<string, any>, {
+          normalizeUrls,
+          pipeline: this.pipeline,
+          renderNodes: (nodes, c) => this.renderNodes(nodes, c),
+        })
 
-      case 'classMutation': {
-        if (node.cond !== undefined && !isTruthy(evaluateExpression(node.cond, ctx as Record<string, any>))) {
-          return ''
-        }
-        const name = this.pipeline.resolveAttrValue(node.name, ctx, normalizeUrls)
-        if (name) {
-          this.pipeline.applyClassMutation(name)
-        }
-        return ''
-      }
+      case 'classMutation':
+        return renderClassMutation(node, ctx as Record<string, any>, {
+          normalizeUrls,
+          pipeline: this.pipeline,
+          renderNodes: (nodes, c) => this.renderNodes(nodes, c),
+        })
 
       default:
         return ''

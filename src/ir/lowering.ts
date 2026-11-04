@@ -25,7 +25,6 @@ import type {
   BirNode,
   BirResolution,
   BirSkin,
-  BirTag,
   BloggerIRDocument,
 } from './types.js'
 import { parseExpression } from '../ast.js'
@@ -39,6 +38,13 @@ import { deserializeWidgetSettings } from '../widget-settings.js'
 import {
   getFlowDirectiveHandler,
   isFlowDirective,
+  lowerAttrDirective,
+  lowerClassDirective,
+  lowerCommentDirective,
+  lowerDataOutput,
+  lowerEvalDirective,
+  lowerMessageDirective,
+  lowerTagDirective,
 } from './directives/index.js'
 
 export interface BloggerLowerOptions {
@@ -319,78 +325,6 @@ function lowerElement(node: BloggerElementNode, context: LoweringContext): BirEl
   }
 }
 
-function lowerTagDirective(node: BloggerDirectiveNode, context: LoweringContext): BirTag {
-  const nameAttr = node.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
-  const condAttr = node.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
-
-  const baseClasses: BirClassMutation[] = []
-  const baseAttributes: BirAttribute[] = []
-  let whitespaceRemove = false
-
-  for (const attr of node.attributes) {
-    if (attr.name === 'name' || attr.name === 'expr:name' || attr.name === 'cond' || attr.name === 'expr:cond') {
-      continue
-    }
-    if (attr.name === 'b:whitespace' && String(attr.value) === 'remove') {
-      whitespaceRemove = true
-      continue
-    }
-    if (attr.name === 'class') {
-      baseClasses.push({ name: { kind: 'static', value: String(attr.value) } })
-    }
-    else if (attr.name === 'expr:class') {
-      baseClasses.push({ name: { kind: 'expr', expr: ensureExpression(attr.value, context.catalog) } })
-    }
-    else if (attr.name.startsWith('expr:')) {
-      baseAttributes.push({
-        name: attr.name.slice(5),
-        value: { kind: 'expr', expr: ensureExpression(attr.value, context.catalog) },
-      })
-    }
-    else {
-      baseAttributes.push({
-        name: attr.name,
-        value: { kind: 'static', value: String(attr.value) },
-      })
-    }
-  }
-
-  // Keep child <b:class> and <b:attr> inside BirTag.children so that when cond=false,
-  // wrapper-only inline attributes are omitted while child mutations hoist to the ancestor.
-  let hadDirectiveChild = false
-  const filteredRawChildren: BloggerTemplateNode[] = []
-  for (const child of node.children) {
-    if (child.type === 'Directive') {
-      hadDirectiveChild = true
-      if (child.name === 'b:attr') {
-        const attrName = String(child.attributes.find(a => a.name === 'name')?.value ?? '')
-        const attrVal = String(child.attributes.find(a => a.name === 'value')?.value ?? '')
-        if (attrName === 'b:whitespace') {
-          if (attrVal === 'remove') {
-            whitespaceRemove = true
-          }
-          continue
-        }
-      }
-    }
-    filteredRawChildren.push(child)
-  }
-
-  const finalChildren = (hadDirectiveChild || whitespaceRemove)
-    ? filteredRawChildren.filter(c => !isWhitespaceOnly(c))
-    : filteredRawChildren
-
-  return {
-    kind: 'tag',
-    tag: toBirAttrValue(nameAttr, context.catalog),
-    ...(condAttr ? { cond: ensureExpression(condAttr.value, context.catalog) } : {}),
-    ...(whitespaceRemove ? { whitespaceRemove: true } : {}),
-    attributes: baseAttributes,
-    classes: baseClasses,
-    children: lowerNodes(finalChildren, context),
-  }
-}
-
 function lowerIncludeDirective(node: BloggerDirectiveNode, context: LoweringContext): BirInclude {
   const nameAttr = node.attributes.find(a => a.name === 'name')
   const exprNameAttr = node.attributes.find(a => a.name === 'expr:name')
@@ -573,43 +507,29 @@ function lowerDefaultMarkup(node: BloggerDirectiveNode, context: LoweringContext
 }
 
 function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): BirNode[] {
+  const dirCtx: DirectiveLowerContext = {
+    catalog: context.catalog,
+    ensureExpression: val => ensureExpression(val, context.catalog),
+    filterContainerChildren,
+    isWhitespaceOnly,
+    lowerNodes: nodes => lowerNodes(nodes, context),
+    toBirAttrValue: attr => toBirAttrValue(attr, context.catalog),
+  }
+
   if (isFlowDirective(node.name)) {
     const handler = getFlowDirectiveHandler(node.name)!
-    const dirCtx: DirectiveLowerContext = {
-      catalog: context.catalog,
-      ensureExpression: val => ensureExpression(val, context.catalog),
-      filterContainerChildren,
-      isWhitespaceOnly,
-      lowerNodes: nodes => lowerNodes(nodes, context),
-    }
     return [handler.lower(node, dirCtx)]
   }
 
   switch (node.name as string) {
     case 'b:tag':
-      return [lowerTagDirective(node, context)]
+      return [lowerTagDirective(node, dirCtx)]
     case 'b:include':
       return [lowerIncludeDirective(node, context)]
-    case 'b:eval': {
-      const exprAttr = node.attributes.find(a => a.name === 'expr' || a.name === 'value')
-      return [{
-        kind: 'output',
-        source: 'eval',
-        tagName: 'b:eval',
-        expr: ensureExpression(exprAttr?.value, context.catalog),
-      }]
-    }
-    case 'b:message': {
-      const nameAttr = node.attributes.find(a => a.name === 'name')
-      const msgName = String(nameAttr?.value ?? '')
-      const fullPath = msgName.startsWith('messages.') ? `data:${msgName}` : `data:messages.${msgName}`
-      return [{
-        kind: 'output',
-        source: 'message',
-        tagName: 'b:message',
-        expr: parseExpression(fullPath, { catalog: context.catalog }),
-      }]
-    }
+    case 'b:eval':
+      return lowerEvalDirective(node, dirCtx)
+    case 'b:message':
+      return lowerMessageDirective(node, dirCtx)
     case 'b:section': {
       const idAttr = node.attributes.find(a => a.name === 'id')
       const nameAttr = node.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
@@ -706,30 +626,10 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
     case 'b:defaultmarkup':
       lowerDefaultMarkup(node, context)
       return []
-    case 'b:attr': {
-      const nameAttr = node.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
-      const valAttr = node.attributes.find(a => a.name === 'value' || a.name === 'expr:value')
-      const condAttr = node.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
-      if (!nameAttr)
-        return []
-      return [{
-        kind: 'attrMutation',
-        name: toBirAttrValue(nameAttr, context.catalog),
-        value: toBirAttrValue(valAttr, context.catalog),
-        ...(condAttr ? { cond: ensureExpression(condAttr.value, context.catalog) } : {}),
-      }]
-    }
-    case 'b:class': {
-      const nameAttr = node.attributes.find(a => a.name === 'name' || a.name === 'expr:name')
-      const condAttr = node.attributes.find(a => a.name === 'cond' || a.name === 'expr:cond')
-      if (!nameAttr)
-        return []
-      return [{
-        kind: 'classMutation',
-        name: toBirAttrValue(nameAttr, context.catalog),
-        ...(condAttr ? { cond: ensureExpression(condAttr.value, context.catalog) } : {}),
-      }]
-    }
+    case 'b:attr':
+      return lowerAttrDirective(node, dirCtx)
+    case 'b:class':
+      return lowerClassDirective(node, dirCtx)
     case 'b:includable':
       lowerIncludableDirective(node, context)
       return []
@@ -739,22 +639,11 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
       return [{ kind: 'skin', role: 'template-skin' }]
     case 'b:whitespace':
       return []
-    case 'b:comment': {
-      let commentText = ''
-      for (const c of node.children) {
-        if (c.type === 'Text')
-          commentText += c.value
-      }
-      return [{ kind: 'comment', value: commentText }]
-    }
+    case 'b:comment':
+      return lowerCommentDirective(node)
     default: {
       if (node.name.startsWith('data:')) {
-        return [{
-          kind: 'output',
-          source: 'data',
-          tagName: node.name.slice(5),
-          expr: parseExpression(node.name, { catalog: context.catalog }),
-        }]
+        return lowerDataOutput(node, dirCtx)
       }
       return lowerNodes(node.children, context)
     }

@@ -34,6 +34,7 @@ describe('flow directives suite', () => {
     filterContainerChildren: (nodes: readonly any[]) => [...nodes],
     isWhitespaceOnly: (node: any) => node.type === 'Text' && /^\s*$/.test(node.value),
     lowerNodes: (nodes: readonly any[]) => nodes.map(n => ({ kind: 'text', value: n.value ?? '' })) as any,
+    toBirAttrValue: (attr: any) => ({ kind: 'static', value: attr?.value ?? '' } as any),
   }
 
   const dummyRenderCtx = {

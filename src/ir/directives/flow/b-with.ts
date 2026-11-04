@@ -54,4 +54,3 @@ export const bWithHandler: FlowDirectiveHandler<BirWith> = {
   render: renderWithDirective,
   tagName: 'b:with',
 }
-

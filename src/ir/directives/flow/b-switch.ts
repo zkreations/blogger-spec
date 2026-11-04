@@ -80,4 +80,3 @@ export const bSwitchHandler: FlowDirectiveHandler<BirSwitch> = {
   render: renderSwitchDirective,
   tagName: 'b:switch',
 }
-
