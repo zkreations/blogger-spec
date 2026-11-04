@@ -7,30 +7,27 @@ import type { BloggerCompileIROptions } from './compiler.js'
 import type { BirIncludable, BirNode, BloggerIRDocument } from './types.js'
 import { getSpecCatalog } from '../catalogs/index.js'
 import { expandServerInclusion } from '../inclusion-expander.js'
-import { evaluateExpression } from '../parser/index.js'
-import { isTruthy } from '../type-system.js'
-import { formatGadgetAbortComment } from '../types.js'
 import { compileToIR } from './compiler.js'
 import {
+  findIncludableInSymbolTable,
   getFlowRenderer,
   renderAttrMutation,
   renderBirOutput,
   renderClassMutation,
   renderCommentNode,
+  renderIncludeDirective,
+  renderSectionContainer,
   renderTagDirective,
+  renderWidgetContainer,
 } from './directives/index.js'
 import { lowerTemplate } from './lowering.js'
 import { DomMutationPipeline } from './renderer/dom-mutation-pipeline.js'
-import { escapeAttr, HTML_VOID_ELEMENTS } from './renderer/html-serializer.js'
+import { HTML_VOID_ELEMENTS } from './renderer/html-serializer.js'
 import {
   injectCookieNotice,
   injectSkinVariables,
   renderSkinNode,
 } from './renderer/platform-singletons.js'
-import {
-  bindIncludeScope,
-  bindWidgetScope,
-} from './renderer/scope-binder.js'
 
 export interface BloggerReferenceRendererOptions extends BloggerCompileIROptions {
   /**
@@ -190,94 +187,43 @@ export class BloggerReferenceRenderer {
       }
 
       case 'include': {
-        if (node.args.cond) {
-          const condVal = node.args.cond.kind === 'static'
-            ? (node.args.cond.value === 'true' || node.args.cond.value === 'yes')
-            : evaluateExpression(node.args.cond.expr, ctx as Record<string, any>)
-          if (!isTruthy(condVal)) {
-            return ''
-          }
+        const prevDepth = this.includeDepth
+        const renderCtx = {
+          catalog: this.currentOptions?.catalog ?? getSpecCatalog(),
+          findIncludable: (targetId: string, widgetId?: string, widgetType?: string) => this.findIncludable(targetId, widgetId, widgetType),
+          includeDepth: this.includeDepth,
+          maxIncludeDepth: this.currentOptions?.maxIncludeDepth,
+          renderNodes: (nodes: readonly BirNode[], c: Record<string, any>) => {
+            this.includeDepth = renderCtx.includeDepth
+            try {
+              return this.renderNodes(nodes, c)
+            }
+            finally {
+              this.includeDepth = prevDepth
+            }
+          },
         }
-        const target = node.target ?? (node.dynamicTarget ? String(evaluateExpression(node.dynamicTarget, ctx as Record<string, any>) ?? '') : undefined)
-        if (!target) {
-          return ''
-        }
-        const catalog = this.currentOptions?.catalog ?? getSpecCatalog()
-        const maxDepth = this.currentOptions?.maxIncludeDepth ?? catalog.getIncludeRecursionLimit()
-        if (this.includeDepth >= maxDepth) {
-          return `<!-- recursion depth limit exceeded (${target}) -->`
-        }
-        const widgetId = (ctx.widget as any)?.id
-        const widgetType = (ctx.widget as any)?.type
-        const subroutine = this.findIncludable(target, widgetId, widgetType)
-        if (!subroutine) {
-          return node.resolution?.failureComment ?? formatGadgetAbortComment(widgetId || 'Widget')
-        }
-        this.includeDepth++
         try {
-          const subCtx = bindIncludeScope(subroutine, node.args, ctx)
-          return this.renderNodes(subroutine.body, subCtx)
+          return renderIncludeDirective(node, ctx as Record<string, any>, renderCtx)
         }
         finally {
-          this.includeDepth--
+          this.includeDepth = prevDepth
         }
       }
 
       case 'container': {
-        const emitWrappers = this.currentOptions?.emitWrappers !== false
+        const containerCtx = {
+          emitWrappers: this.currentOptions?.emitWrappers !== false,
+          findIncludable: (targetId: string, widgetId?: string, widgetType?: string) => this.findIncludable(targetId, widgetId, widgetType),
+          normalizeUrls,
+          pipeline: this.pipeline,
+          renderNodes: (nodes: readonly BirNode[], c: Record<string, any>) => this.renderNodes(nodes, c),
+        }
         if (node.role === 'section') {
-          if (node.cond !== undefined && !isTruthy(evaluateExpression(node.cond, ctx as Record<string, any>))) {
-            return ''
-          }
-          const sectionId = node.id ?? 'section'
-          const tag = (node.tag ? this.pipeline.resolveAttrValue(node.tag, ctx, normalizeUrls) : undefined) || 'div'
-          const nameVal = node.name ? this.pipeline.resolveAttrValue(node.name, ctx, normalizeUrls) : undefined
-          const nameAttr = nameVal ? ` name="${escapeAttr(nameVal)}"` : ''
-          const innerHtml = node.suppressedInV3 ? '' : this.renderNodes(node.children, ctx)
-          const baseClass = node.className ? `${node.className} section` : 'section'
-          const emptyClass = node.className ? `${node.className} no-items section` : 'no-items section'
-          const finalClass = innerHtml.trim() ? baseClass : emptyClass
-          return emitWrappers ? `<${tag} class="${finalClass}" id="${sectionId}"${nameAttr}>${innerHtml}</${tag}>` : innerHtml
+          return renderSectionContainer(node, ctx as Record<string, any>, containerCtx)
         }
         if (node.role === 'widget') {
-          if (node.visible === false) {
-            return ''
-          }
-          if (node.cond !== undefined && !isTruthy(evaluateExpression(node.cond, ctx as Record<string, any>))) {
-            return ''
-          }
-          const widgetId = node.id ?? ''
-          const widgetType = node.widgetType ?? ''
-          const sectionId = node.sectionId ?? 'content'
-
-          const { widgetCtx, wrapperTarget } = bindWidgetScope(
-            widgetId,
-            widgetType,
-            sectionId,
-            node.title,
-            ctx,
-            node.version ?? 2,
-            node.settings,
-          )
-          this.pipeline.pushTarget(wrapperTarget)
-
-          const mainSub = this.findIncludable('main', widgetId, widgetType)
-
-          let bodyHtml = ''
-          if (mainSub) {
-            const mainCtx = mainSub.params.length > 0
-              ? bindIncludeScope(mainSub, {}, widgetCtx, true)
-              : widgetCtx
-            bodyHtml += this.renderNodes(mainSub.body, mainCtx)
-          }
-          if (node.children.length > 0) {
-            bodyHtml += this.renderNodes(node.children, widgetCtx)
-          }
-
-          this.pipeline.popTarget()
-          const attrStr = this.pipeline.serializeAttributes(wrapperTarget, normalizeUrls)
-
-          return emitWrappers ? `<div${attrStr}>${bodyHtml}</div>` : bodyHtml
+          return renderWidgetContainer(node, ctx as Record<string, any>, containerCtx)
         }
         return this.renderNodes(node.children, ctx)
       }
@@ -306,31 +252,9 @@ export class BloggerReferenceRenderer {
       return undefined
     }
 
-    const sym = this.currentIr.symbolTable
-    const isSuper = targetId.startsWith('super.')
-
-    if (!isSuper) {
-      const inWidgetScope = Boolean(widgetId || widgetType)
-
-      if (widgetId && `widget:${widgetId}:${targetId}` in sym) {
-        return sym[`widget:${widgetId}:${targetId}`]
-      }
-
-      if (widgetType && `gadget:${widgetType}:${targetId}` in sym) {
-        return sym[`gadget:${widgetType}:${targetId}`]
-      }
-
-      if (inWidgetScope && `all:${targetId}` in sym) {
-        return sym[`all:${targetId}`]
-      }
-
-      if (`common:${targetId}` in sym) {
-        return sym[`common:${targetId}`]
-      }
-    }
-
-    if (`server:${targetId}` in sym) {
-      return sym[`server:${targetId}`]
+    const found = findIncludableInSymbolTable(targetId, this.currentIr.symbolTable, widgetId, widgetType)
+    if (found) {
+      return found
     }
 
     const cached = this.serverSubroutineCache.get(targetId)
@@ -339,6 +263,7 @@ export class BloggerReferenceRenderer {
     }
 
     const catalog = this.currentOptions?.catalog ?? getSpecCatalog()
+    const isSuper = targetId.startsWith('super.')
     const baseName = isSuper ? targetId.slice('super.'.length) : targetId
     if (catalog.isServerInclusion(baseName) || isSuper) {
       const serverResult = expandServerInclusion(targetId, { catalog, useLocalStub: true })

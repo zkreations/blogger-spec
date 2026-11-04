@@ -5,13 +5,17 @@ import type {
   BloggerTemplateNode,
 } from '../../ast.js'
 import type { SpecCatalog } from '../../catalogs/index.js'
+import type { BloggerLayoutVersion } from '../../types.js'
 import type { DomMutationPipeline } from '../renderer/dom-mutation-pipeline.js'
 import type {
   BirAttrMutation,
   BirAttrValue,
   BirClassMutation,
   BirComment,
+  BirContainer,
   BirIf,
+  BirIncludable,
+  BirInclude,
   BirLoop,
   BirNode,
   BirOutput,
@@ -22,6 +26,15 @@ import type {
 
 export interface DirectiveLowerContext {
   readonly catalog: SpecCatalog
+  readonly layoutVersion?: BloggerLayoutVersion
+  readonly defaultWidgetVersion?: number
+  symbolTable?: Record<string, BirIncludable>
+  readonly defaultmarkups?: readonly BloggerDirectiveNode[]
+  currentWidgetId?: string
+  currentWidgetType?: string
+  currentWidgetLocals?: Map<string, BloggerDirectiveNode>
+  currentDefaultMarkupType?: string
+  currentSectionId?: string
   readonly lowerNodes: (nodes: readonly BloggerTemplateNode[]) => BirNode[]
   readonly ensureExpression: (val: string | BloggerExpressionNode | undefined) => BloggerExpressionNode
   readonly filterContainerChildren: (nodes: readonly BloggerTemplateNode[]) => BloggerTemplateNode[]
@@ -34,12 +47,18 @@ export interface DirectiveRenderContext {
   readonly pipeline?: DomMutationPipeline
   readonly normalizeUrls?: boolean
   readonly selfClosingVoid?: boolean
+  readonly emitWrappers?: boolean
+  readonly maxIncludeDepth?: number
+  includeDepth?: number
   readonly renderNodes: (nodes: readonly BirNode[], ctx: Record<string, any>) => string
+  readonly findIncludable?: (targetId: string, widgetId?: string, widgetType?: string) => BirIncludable | undefined
 }
 
 export type FlowBirNode = BirIf | BirSwitch | BirLoop | BirWith
 export type DomBirNode = BirTag | BirAttrMutation | BirClassMutation
 export type OutputBirNode = BirOutput | BirComment
+export type SubroutineBirNode = BirInclude | BirIncludable
+export type ContainerBirNode = BirContainer
 
 export interface FlowDirectiveHandler<TBirNode extends FlowBirNode = FlowBirNode> {
   readonly tagName: string
