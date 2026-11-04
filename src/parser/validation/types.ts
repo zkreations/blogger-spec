@@ -24,4 +24,3 @@ export interface ValidateTemplateStructureOptions {
   readonly validateExpressions?: boolean
   readonly skinVariables?: Record<string, string | BloggerSkinVariableSymbol>
 }
-

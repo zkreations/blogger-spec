@@ -201,4 +201,3 @@ export function validateSkinStyles(
 
   return diagnostics
 }
-

@@ -685,4 +685,3 @@ export function validateTemplateExpressions(
 
   return diagnostics
 }
-

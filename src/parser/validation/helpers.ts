@@ -314,4 +314,3 @@ export function checkSkinVarSubpath(
     normalizedSubpath: toSkinVarIdentifier(subpath),
   }
 }
-
