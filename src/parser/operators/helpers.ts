@@ -197,11 +197,13 @@ export function applyModifier(target: any, modifier: string): any {
           parsed.searchParams.delete('updated-max')
           parsed.searchParams.delete('updated-min')
           parsed.searchParams.delete('m')
+          // Normalize legacy archive paths /YYYY_MM_DD_archive.html to /YYYY/MM/
+          parsed.pathname = parsed.pathname.replace(/\/(\d{4})_(\d{2})_(\d{2})_archive\.html$/, '/$1/$2/')
           const query = parsed.searchParams.toString()
           return query ? `${parsed.origin}${parsed.pathname}?${query}` : `${parsed.origin}${parsed.pathname}`
         }
         catch {
-          return base.split('?')[0]
+          return base.split('?')[0].replace(/\/(\d{4})_(\d{2})_(\d{2})_archive\.html$/, '/$1/$2/')
         }
       }
       case 'http':

@@ -1010,6 +1010,8 @@ export async function resolveBloggerContext(
   }
 
   const activeUrl = config.overrides?.view?.url || config.targetUrl || context.view?.url || ''
+  const resolvedRoute = resolveBloggerRoute(activeUrl)
+  const isArchiveDailyWeekly = resolvedRoute.viewId === 'archive_weekly_daily' || viewId === 'archive_weekly_daily'
 
   if (viewId !== 'post' && viewId !== 'static_page') {
     if (!config.overrides?.view?.title) {
@@ -1023,15 +1025,18 @@ export async function resolveBloggerContext(
       context.blog.canonicalUrl = blogMeta.homepageUrl
     }
     else {
-      context.view.url = activeUrl || blogMeta.homepageUrl
-      context.blog.canonicalUrl = context.view.url
+      let resolvedUrl = activeUrl || blogMeta.homepageUrl
+      if (isArchiveDailyWeekly) {
+        resolvedUrl = resolvedUrl.replace(/\/(\d{4})_(\d{2})_(\d{2})_archive\.html(?=[?#]|$)/, '/$1/$2/')
+      }
+      context.view.url = resolvedUrl
+      context.blog.canonicalUrl = resolvedUrl
     }
   }
 
   const blog1 = context.widgetData.Blog1 || {}
   let activePosts = normalizedPosts.slice()
 
-  const resolvedRoute = resolveBloggerRoute(activeUrl)
   const searchParams: URLSearchParams | undefined = resolvedRoute.searchParams
   const isArchiveRoute = resolvedRoute.viewId === 'archive_yearly'
     || resolvedRoute.viewId === 'archive_monthly'
@@ -1039,7 +1044,8 @@ export async function resolveBloggerContext(
   const pathLabel: string | undefined = resolvedRoute.params.label
   const pathYear: number | undefined = isArchiveRoute ? resolvedRoute.params.year : undefined
   const pathMonth: number | undefined = isArchiveRoute ? resolvedRoute.params.month : undefined
-  const pathDay: number | undefined = isArchiveRoute ? resolvedRoute.params.day : undefined
+  // Empirical rule (catalogs/globals.json): /YYYY_MM_DD_archive.html collapses to monthly archive; pathDay is omitted from filtering and context
+  const pathDay: number | undefined = (isArchiveRoute && !isArchiveDailyWeekly) ? resolvedRoute.params.day : undefined
 
   if (viewId === 'post' || viewId === 'static_page') {
     if (viewId === 'post') {

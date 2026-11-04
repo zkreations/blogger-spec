@@ -291,7 +291,8 @@
       "snippets": {
         "shortLengthMin": 100,
         "shortLengthMax": 140,
-        "defaultEllipsis": "…"
+        "longLengthMax": 1000,
+        "defaultEllipsis": "..."
       },
       "evidence": "official",
       "verified_at": "2026-10-10"

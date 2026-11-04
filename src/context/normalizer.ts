@@ -52,12 +52,12 @@ export function createSnippets(
 ): { short: string, long: string } {
   const clean = stripHtml(contentOrSummary)
   const blogSnippets = getSpecCatalog().getBlogSnippets()
-  const ellipsis = options?.ellipsis ?? blogSnippets?.defaultEllipsis ?? '…'
-  const shortLen = options?.shortLength ?? blogSnippets?.shortLengthMin ?? 100
-  const longLen = options?.longLength ?? 250
+  const ellipsis = options?.ellipsis ?? blogSnippets?.defaultEllipsis ?? '...'
+  const shortLen = options?.shortLength ?? blogSnippets?.shortLengthMax ?? 140
+  const longLen = options?.longLength ?? (blogSnippets as any)?.longLengthMax ?? 1000
 
   const short = clean.length > shortLen ? `${clean.slice(0, shortLen).trim()}${ellipsis}` : clean
-  const long = clean.length > longLen ? `${clean.slice(0, longLen).trim()}${ellipsis}` : clean
+  const long = clean.length > longLen ? clean.slice(0, longLen).trim() : clean
   return { short, long }
 }
 

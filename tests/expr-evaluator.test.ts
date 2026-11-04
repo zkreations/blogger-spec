@@ -211,4 +211,13 @@ describe('runtime expression evaluator', () => {
     })
     expect(withLinksAndBreaks).toBe('Visit <a href="https://example.com">Example</a>\nNow')
   })
+
+  it('normalizes canonical URLs stripping pagination, mobile params, and legacy archive filenames', () => {
+    const ctx = {
+      archiveUrl: 'https://example.com/2023_09_21_archive.html?m=1&updated-max=2023-10-01',
+      pageUrl: 'https://example.com/2023/09/post.html?m=1',
+    }
+    expect(evaluateExpression('data:archiveUrl.canonical', ctx)).toBe('https://example.com/2023/09/')
+    expect(evaluateExpression('data:pageUrl.canonical', ctx)).toBe('https://example.com/2023/09/post.html')
+  })
 })

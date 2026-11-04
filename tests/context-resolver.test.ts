@@ -437,5 +437,23 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(contactForm.contactFormNameMsg).toBe('Name')
       expect(contactForm.contactFormSendMsg).toBe('Send')
     })
+
+    it('empirically normalizes archive_weekly_daily routes to monthly archive without day filter', async () => {
+      const mockFetch = createMockFetch()
+      const ctx = await resolveBloggerContext({
+        blogId,
+        fetch: mockFetch,
+        view: 'archive_weekly_daily',
+        targetUrl: 'https://hamlet.zkreations.com/2023_11_17_archive.html',
+      })
+
+      expect(ctx.view.url).toBe('https://hamlet.zkreations.com/2023/11/')
+      expect(ctx.blog.canonicalUrl).toBe('https://hamlet.zkreations.com/2023/11/')
+      expect(ctx.view.archive).toBeDefined()
+      expect(ctx.view.archive.year).toBe(2023)
+      expect(ctx.view.archive.month).toBe(11)
+      expect(ctx.view.archive.day).toBeUndefined()
+      expect(ctx.widgetData.Blog1.posts.length).toBeGreaterThan(0)
+    })
   })
 })

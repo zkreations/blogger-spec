@@ -106,6 +106,7 @@
           "properties": {
             "shortLengthMin": { "type": "integer" },
             "shortLengthMax": { "type": "integer" },
+            "longLengthMax": { "type": "integer" },
             "defaultEllipsis": { "type": "string" }
           },
           "additionalProperties": false
