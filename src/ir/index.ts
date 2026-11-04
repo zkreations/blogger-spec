@@ -1,4 +1,5 @@
 export * from './compiler.js'
+export * from './directives/index.js'
 export * from './lowering.js'
 export * from './reference-renderer.js'
 export * from './renderer/index.js'

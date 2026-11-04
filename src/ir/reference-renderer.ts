@@ -7,11 +7,12 @@ import type { BloggerCompileIROptions } from './compiler.js'
 import type { BirIncludable, BirNode, BloggerIRDocument } from './types.js'
 import { getSpecCatalog } from '../catalogs/index.js'
 import { expandServerInclusion } from '../inclusion-expander.js'
-import { evaluateExpression, isEqual } from '../parser/index.js'
+import { evaluateExpression } from '../parser/index.js'
 import { isSkinValue } from '../skin-compiler.js'
 import { isTruthy } from '../type-system.js'
 import { formatGadgetAbortComment } from '../types.js'
 import { compileToIR } from './compiler.js'
+import { getFlowRenderer } from './directives/index.js'
 import { lowerTemplate } from './lowering.js'
 import { DomMutationPipeline } from './renderer/dom-mutation-pipeline.js'
 import { escapeAttr, HTML_VOID_ELEMENTS } from './renderer/html-serializer.js'
@@ -22,9 +23,7 @@ import {
 } from './renderer/platform-singletons.js'
 import {
   bindIncludeScope,
-  bindLoopScope,
   bindWidgetScope,
-  bindWithScope,
 } from './renderer/scope-binder.js'
 
 export interface BloggerReferenceRendererOptions extends BloggerCompileIROptions {
@@ -208,49 +207,17 @@ export class BloggerReferenceRenderer {
         return `<${tagName}${attrStr}>${innerHtml}</${tagName}>`
       }
 
-      case 'if': {
-        for (const branch of node.branches) {
-          if (!branch.test || isTruthy(evaluateExpression(branch.test, ctx as Record<string, any>))) {
-            return this.renderNodes(branch.children, ctx)
-          }
+      case 'if':
+      case 'loop':
+      case 'with':
+      case 'switch': {
+        const handler = getFlowRenderer(node.kind)
+        if (handler) {
+          return handler.render(node as any, ctx as Record<string, any>, {
+            renderNodes: (nodes, c) => this.renderNodes(nodes, c),
+          })
         }
         return ''
-      }
-
-      case 'loop': {
-        const list = evaluateExpression(node.values, ctx as Record<string, any>)
-        if (!Array.isArray(list)) {
-          return ''
-        }
-        const items = node.reverse ? [...list].reverse() : list
-        let out = ''
-        items.forEach((item, index) => {
-          const loopCtx = bindLoopScope(item, index, node.var, node.index, ctx)
-          out += this.renderNodes(node.children, loopCtx)
-        })
-        return out
-      }
-
-      case 'with': {
-        const withCtx = bindWithScope(node.bindings, ctx)
-        return this.renderNodes(node.children, withCtx)
-      }
-
-      case 'switch': {
-        const val = evaluateExpression(node.on, ctx as Record<string, any>)
-        let defaultCase: readonly BirNode[] | undefined
-        for (const c of node.cases) {
-          if (c.match) {
-            const matchVal = evaluateExpression(c.match, ctx as Record<string, any>)
-            if (isEqual(val, matchVal)) {
-              return this.renderNodes(c.children, ctx)
-            }
-          }
-          else {
-            defaultCase = c.children
-          }
-        }
-        return defaultCase ? this.renderNodes(defaultCase, ctx) : ''
       }
 
       case 'include': {

@@ -13,23 +13,19 @@ import type {
 } from '../ast.js'
 import type { SpecCatalog } from '../catalogs/index.js'
 import type { BloggerIncludableResolutionTier, BloggerLayoutVersion } from '../types.js'
+import type { DirectiveLowerContext } from './directives/index.js'
 import type {
   BirAttribute,
   BirAttrValue,
   BirClassMutation,
   BirContainer,
   BirElement,
-  BirIf,
   BirIncludable,
   BirInclude,
-  BirLoop,
   BirNode,
   BirResolution,
   BirSkin,
-  BirSwitch,
   BirTag,
-  BirWith,
-  BirWithBinding,
   BloggerIRDocument,
 } from './types.js'
 import { parseExpression } from '../ast.js'
@@ -40,6 +36,10 @@ import { parseTemplate } from '../parser/template-parser.js'
 import { parseSkinSource } from '../skin-compiler.js'
 import { detectTemplateVersion } from '../version.js'
 import { deserializeWidgetSettings } from '../widget-settings.js'
+import {
+  getFlowDirectiveHandler,
+  isFlowDirective,
+} from './directives/index.js'
 
 export interface BloggerLowerOptions {
   readonly catalog?: SpecCatalog
@@ -391,131 +391,6 @@ function lowerTagDirective(node: BloggerDirectiveNode, context: LoweringContext)
   }
 }
 
-function lowerIfDirective(node: BloggerDirectiveNode, context: LoweringContext): BirIf {
-  const ifCondAttr = node.attributes.find(a => a.name === 'cond' || a.name === 'test')
-  const firstTest = ensureExpression(ifCondAttr?.value, context.catalog)
-
-  const rawBranches: Array<{ test?: BloggerExpressionNode, rawChildren: BloggerTemplateNode[] }> = [
-    { test: firstTest, rawChildren: [] },
-  ]
-  let currentBranch = rawBranches[0]!
-
-  for (const child of node.children) {
-    if (child.type === 'Directive' && (child.name === 'b:elseif' || (child.name as string) === 'b:else-if')) {
-      const condAttr = child.attributes.find(a => a.name === 'cond' || a.name === 'test')
-      currentBranch = { test: ensureExpression(condAttr?.value, context.catalog), rawChildren: [] }
-      rawBranches.push(currentBranch)
-      continue
-    }
-    if (child.type === 'Directive' && child.name === 'b:else') {
-      currentBranch = { test: undefined, rawChildren: [] }
-      rawBranches.push(currentBranch)
-      continue
-    }
-    currentBranch.rawChildren.push(child)
-  }
-
-  return {
-    kind: 'if',
-    branches: rawBranches.map(branch => ({
-      ...(branch.test ? { test: branch.test } : {}),
-      children: lowerNodes(filterContainerChildren(branch.rawChildren), context),
-    })),
-  }
-}
-
-function lowerSwitchDirective(node: BloggerDirectiveNode, context: LoweringContext): BirSwitch {
-  const onAttr = node.attributes.find(a => a.name === 'var' || a.name === 'expr' || a.name === 'value')
-  const onExpr = ensureExpression(onAttr?.value, context.catalog)
-
-  const cases: Array<{ match?: BloggerExpressionNode, children: BirNode[] }> = []
-  let currentCase: { match?: BloggerExpressionNode, rawChildren: BloggerTemplateNode[] } | null = null
-
-  for (const child of node.children) {
-    if (child.type === 'Directive' && child.name === 'b:case') {
-      const valAttr = child.attributes.find(a => a.name === 'value' || a.name === 'expr:value')
-      let matchExpr: BloggerExpressionNode
-      if (valAttr && !valAttr.name.startsWith('expr:') && !valAttr.isExpression && typeof valAttr.value === 'string') {
-        matchExpr = { type: 'Literal', value: valAttr.value }
-      }
-      else {
-        matchExpr = ensureExpression(valAttr?.value, context.catalog)
-      }
-      currentCase = { match: matchExpr, rawChildren: [] }
-      cases.push({ match: currentCase.match, children: [] })
-      continue
-    }
-    if (child.type === 'Directive' && child.name === 'b:default') {
-      currentCase = { match: undefined, rawChildren: [] }
-      cases.push({ children: [] })
-      continue
-    }
-    if (currentCase) {
-      if (!isWhitespaceOnly(child)) {
-        currentCase.rawChildren.push(child)
-        const lastCase = cases[cases.length - 1]!
-        const lowered = lowerNodes([child], context)
-        ;(lastCase as any).children.push(...lowered)
-      }
-    }
-  }
-
-  return {
-    kind: 'switch',
-    on: onExpr,
-    cases,
-  }
-}
-
-function lowerLoopDirective(node: BloggerDirectiveNode, context: LoweringContext): BirLoop {
-  const valuesAttr = node.attributes.find(a => a.name === 'values' || a.name === 'expr:values')
-  const varAttr = node.attributes.find(a => a.name === 'var')
-  const indexAttr = node.attributes.find(a => a.name === 'index')
-  const reverseAttr = node.attributes.find(a => a.name === 'reverse')
-
-  return {
-    kind: 'loop',
-    values: ensureExpression(valuesAttr?.value, context.catalog),
-    var: String(varAttr?.value ?? 'item'),
-    ...(indexAttr?.value ? { index: String(indexAttr.value) } : {}),
-    ...(isTruthyValue(reverseAttr?.value) ? { reverse: true } : {}),
-    children: lowerNodes(filterContainerChildren(node.children), context),
-  }
-}
-
-function lowerWithDirective(node: BloggerDirectiveNode, context: LoweringContext): BirWith {
-  const bindings: BirWithBinding[] = []
-
-  const varAttr = node.attributes.find(a => a.name === 'var')
-  const valAttr = node.attributes.find(a => a.name === 'value' || a.name === 'expr:value')
-  if (varAttr?.value) {
-    bindings.push({
-      var: String(varAttr.value),
-      value: ensureExpression(valAttr?.value, context.catalog),
-      isDynamicDereference: valAttr?.name === 'expr:value' ? true : undefined,
-    })
-  }
-
-  // Handle multi-variable with: var2, value2, var3, value3...
-  for (let i = 2; i <= 9; i++) {
-    const vAttr = node.attributes.find(a => a.name === `var${i}`)
-    const valA = node.attributes.find(a => a.name === `value${i}` || a.name === `expr:value${i}`)
-    if (vAttr?.value) {
-      bindings.push({
-        var: String(vAttr.value),
-        value: ensureExpression(valA?.value, context.catalog),
-        isDynamicDereference: valA?.name === `expr:value${i}` ? true : undefined,
-      })
-    }
-  }
-
-  return {
-    kind: 'with',
-    bindings: bindings.length > 0 ? bindings : [{ var: 'item', value: { type: 'Literal', value: null } }],
-    children: lowerNodes(filterContainerChildren(node.children), context),
-  }
-}
-
 function lowerIncludeDirective(node: BloggerDirectiveNode, context: LoweringContext): BirInclude {
   const nameAttr = node.attributes.find(a => a.name === 'name')
   const exprNameAttr = node.attributes.find(a => a.name === 'expr:name')
@@ -698,17 +573,21 @@ function lowerDefaultMarkup(node: BloggerDirectiveNode, context: LoweringContext
 }
 
 function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): BirNode[] {
+  if (isFlowDirective(node.name)) {
+    const handler = getFlowDirectiveHandler(node.name)!
+    const dirCtx: DirectiveLowerContext = {
+      catalog: context.catalog,
+      ensureExpression: val => ensureExpression(val, context.catalog),
+      filterContainerChildren,
+      isWhitespaceOnly,
+      lowerNodes: nodes => lowerNodes(nodes, context),
+    }
+    return [handler.lower(node, dirCtx)]
+  }
+
   switch (node.name as string) {
     case 'b:tag':
       return [lowerTagDirective(node, context)]
-    case 'b:if':
-      return [lowerIfDirective(node, context)]
-    case 'b:switch':
-      return [lowerSwitchDirective(node, context)]
-    case 'b:loop':
-      return [lowerLoopDirective(node, context)]
-    case 'b:with':
-      return [lowerWithDirective(node, context)]
     case 'b:include':
       return [lowerIncludeDirective(node, context)]
     case 'b:eval': {
