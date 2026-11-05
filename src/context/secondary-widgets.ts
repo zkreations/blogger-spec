@@ -6,25 +6,25 @@ export function buildPopularPostsData(
   spec: SpecCatalog,
   locale = 'en',
   limit?: number,
+  postDisplayOverrides?: Record<string, boolean>,
 ): Record<string, any> {
   const canonicalLimit = (spec.getWidgetSettings('PopularPosts')?.canonical?.numItemsToShow?.default as number) ?? 10
   const effectiveLimit = limit ?? canonicalLimit
+  const effectivePostDisplay = {
+    showSnippet: true,
+    showTitle: true,
+    showAuthor: true,
+    showFeaturedImage: true,
+    ...postDisplayOverrides,
+  }
   const selectedPosts = posts.slice(0, effectiveLimit).map(p => ({
     ...p,
-    postDisplay: {
-      showSnippet: true,
-      showTitle: true,
-      showAuthor: true,
-    },
+    postDisplay: { ...effectivePostDisplay },
   }))
 
   return {
     title: spec.getWidgetDefaultTitle('PopularPosts', locale),
-    postDisplay: {
-      showSnippet: true,
-      showTitle: true,
-      showAuthor: true,
-    },
+    postDisplay: effectivePostDisplay,
     posts: selectedPosts,
   }
 }

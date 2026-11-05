@@ -109,6 +109,7 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(ctx.widgetData.BlogArchive1.data.length).toBeGreaterThan(0)
       expect(ctx.widgetData.PopularPosts1).toBeDefined()
       expect(ctx.widgetData.PopularPosts1.posts.length).toBeGreaterThan(0)
+      expect(ctx.widgetData.PopularPosts1.postDisplay.showFeaturedImage).toBe(true)
 
       // Canonical messages from mock must still be preserved
       expect(ctx.messages.archive).toBeDefined()

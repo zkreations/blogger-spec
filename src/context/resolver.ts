@@ -6,6 +6,7 @@ import type { UrlMapper } from './url-mapper.js'
 import { getMockContext, getSpecCatalog } from '../catalogs/index.js'
 import { buildArchiveHierarchy } from './archive-tree.js'
 import { BloggerFeedClient } from './client.js'
+import { bindWidgetSettingsToData } from './data-binder.js'
 import {
   extractId,
   normalizeBlogMetadata,
@@ -399,29 +400,7 @@ interface WidgetHydrationOptions {
 }
 
 function getWidgetCatalogDefaults(type: string, spec: SpecCatalog): Record<string, any> {
-  const widgetSpec = spec.getWidgetSettings(type)
-  const canonicalDefs = (widgetSpec?.canonical ?? {}) as Record<string, any>
-  const defaults: Record<string, any> = {}
-
-  for (const [key, def] of Object.entries(canonicalDefs)) {
-    if (key === 'shownum')
-      continue
-    if (def && typeof def === 'object' && 'default' in def && def.default !== undefined) {
-      let val = def.default
-      if (def.value_transform === 'lowercase' && typeof val === 'string') {
-        val = val.toLowerCase()
-      }
-      defaults[key] = val
-      if (typeof def.bound_runtime_data === 'string') {
-        const match = def.bound_runtime_data.match(/^data:(?:allBylineItems\.[^.]+\.)?([^.]+)$/)
-        if (match && match[1]) {
-          defaults[match[1]] = val
-        }
-      }
-    }
-  }
-
-  return defaults
+  return bindWidgetSettingsToData({}, type, spec)
 }
 
 function hydrateAllWidgets(options: WidgetHydrationOptions): void {
@@ -451,19 +430,21 @@ function hydrateAllWidgets(options: WidgetHydrationOptions): void {
     const instanceOverrides = config.overrides?.widgetData?.[widgetId]
     const existingData = context.widgetData[widgetId] || {}
 
-    let merged = deepMerge(catalogDefaults, existingData)
+    let rawMerged = deepMerge(catalogDefaults, existingData)
     if (genericTypeConfig) {
-      merged = deepMerge(merged, genericTypeConfig)
+      rawMerged = deepMerge(rawMerged, genericTypeConfig)
     }
     if (templateSettings) {
-      merged = deepMerge(merged, templateSettings)
+      rawMerged = deepMerge(rawMerged, templateSettings)
     }
     if (instanceConfig) {
-      merged = deepMerge(merged, instanceConfig)
+      rawMerged = deepMerge(rawMerged, instanceConfig)
     }
     if (instanceOverrides) {
-      merged = deepMerge(merged, instanceOverrides)
+      rawMerged = deepMerge(rawMerged, instanceOverrides)
     }
+
+    const merged = bindWidgetSettingsToData(rawMerged, type, spec)
 
     switch (type) {
       case 'PageList': {
@@ -644,7 +625,8 @@ function hydrateAllWidgets(options: WidgetHydrationOptions): void {
         if (normalizedPosts.length > 0 && !context.widgetData[widgetId]?.posts) {
           const canonicalLimit = (spec.getWidgetSettings('PopularPosts')?.canonical?.numItemsToShow?.default as number) ?? 10
           const limit = merged.numPosts ?? merged.numItemsToShow ?? canonicalLimit
-          context.widgetData[widgetId] = deepMerge(buildPopularPostsData(normalizedPosts, spec, blogLocale, limit), merged)
+          const popularData = buildPopularPostsData(normalizedPosts, spec, blogLocale, limit, merged.postDisplay)
+          context.widgetData[widgetId] = deepMerge(popularData, merged)
         }
         else {
           context.widgetData[widgetId] = merged
