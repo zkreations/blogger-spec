@@ -156,7 +156,7 @@ export function bindIncludeScope(
             const parentData = (parentCtx.data && typeof parentCtx.data === 'object' && !Array.isArray(parentCtx.data))
               ? (parentCtx.data as Record<string, any>)
               : {}
-            subCtx.data = { ...parentData, ...widgetBaseData, ...(val as Record<string, any>) }
+            subCtx.data = { ...widgetBaseData, ...parentData, ...(val as Record<string, any>) }
           }
           else if (Array.isArray(val)) {
             subCtx.data = val
@@ -183,7 +183,7 @@ export function bindIncludeScope(
         const parentData = (parentCtx.data && typeof parentCtx.data === 'object' && !Array.isArray(parentCtx.data))
           ? (parentCtx.data as Record<string, any>)
           : {}
-        subCtx.data = { ...parentData, ...widgetBaseData, ...(val as Record<string, any>) }
+        subCtx.data = { ...widgetBaseData, ...parentData, ...(val as Record<string, any>) }
       }
       else if (Array.isArray(val)) {
         subCtx.data = val

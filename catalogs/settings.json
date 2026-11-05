@@ -131,7 +131,7 @@
           "type": "number",
           "description": "Number of blog posts rendered between each inline AdSense ad unit.",
           "default": 3,
-          "bound_runtime_data": "data:post.includeAd"
+          "bound_runtime_data": null
         },
         "showAuthor": {
           "type": "boolean",
