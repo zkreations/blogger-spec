@@ -16,7 +16,10 @@ export function renderBirOutput(
     return renderEvalOutput(node, ctx)
   }
   if (node.source === 'message') {
-    return renderMessageOutput(node, ctx)
+    if (!ctx.messages && (!node.params || node.params.length === 0)) {
+      return ''
+    }
+    return renderMessageOutput(node, ctx, catalog)
   }
   return ''
 }

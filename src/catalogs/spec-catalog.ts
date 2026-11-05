@@ -1333,6 +1333,39 @@ export class SpecCatalog {
     return localeForms['5']?.replace(/\b5\b/, strCount) ?? `${count} ${entry.default}`
   }
 
+  formatParameterizedMessage(
+    key: string,
+    params: Array<{ name?: string, value: any }>,
+    locale = 'en',
+  ): string {
+    const cleanKey = key.replace(/^messages\./, '')
+    const msgMeta = this.messageMap.get(cleanKey)
+
+    if (cleanKey === 'numberOfComments' || msgMeta?.pattern?.includes('plural')) {
+      const numParam = params.find(p => p.name === 'numComments') ?? params[0]
+      const num = Number(numParam?.value ?? 0) || 0
+      return this.resolvePlural(cleanKey, num, locale) ?? `${num} comments`
+    }
+
+    let template = this.getLocalizedMessage(cleanKey, locale)
+      ?? msgMeta?.pattern
+      ?? msgMeta?.default_value
+      ?? ''
+
+    for (let i = 0; i < params.length; i++) {
+      const p = params[i]
+      const valStr = p?.value !== undefined && p?.value !== null ? String(p.value) : ''
+      const posToken1 = `%${i + 1}`
+      const posToken2 = `__ARG${i + 1}__`
+      template = template.split(posToken1).join(valStr).split(posToken2).join(valStr)
+      if (p?.name) {
+        template = template.split(`%${p.name}`).join(valStr).split(`{${p.name}}`).join(valStr)
+      }
+    }
+
+    return template
+  }
+
   isScope(name: string): boolean {
     return this.scopeMap.has(name)
   }
@@ -1946,6 +1979,15 @@ export function getLocalizedMessage(messageKey: string, locale = 'en', catalog: 
 
 export function resolvePlural(messageKey: string, count: number, locale = 'en', catalog: SpecCatalog = getSpecCatalog()): string | undefined {
   return catalog.resolvePlural(messageKey, count, locale)
+}
+
+export function formatParameterizedMessage(
+  key: string,
+  params: Array<{ name?: string, value: any }>,
+  locale = 'en',
+  catalog: SpecCatalog = getSpecCatalog(),
+): string {
+  return catalog.formatParameterizedMessage(key, params, locale)
 }
 
 export function getWidgetNavMessage(widgetType = 'Blog', locale = 'en', catalog: SpecCatalog = getSpecCatalog()): string {

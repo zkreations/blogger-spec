@@ -159,7 +159,10 @@ export function normalizePostEntry(
   const rawAuthor = entry.author?.[0]
   const defaultAuthor = getSpecCatalog().getLocalizedMessage('anonymous', locale) ?? 'Anonymous'
   const authorName = rawAuthor?.name?.$t || defaultAuthor
-  const authorProfile = rawAuthor?.uri?.$t || ''
+  let authorProfile = rawAuthor?.uri?.$t || ''
+  if (authorProfile.startsWith('http://www.blogger.com/')) {
+    authorProfile = authorProfile.replace(/^http:\/\/www\.blogger\.com\//, 'https://www.blogger.com/')
+  }
   let authorAvatar = rawAuthor?.gd$image?.src || 'https://lh3.googleusercontent.com/a/default-user=s80-c'
   if (authorAvatar.startsWith('//')) {
     authorAvatar = `https:${authorAvatar}`
@@ -313,7 +316,10 @@ export function normalizePageAsPostEntry(
   const rawAuthor = entry.author?.[0]
   const defaultAuthor = getSpecCatalog().getLocalizedMessage('anonymous', locale) ?? 'Anonymous'
   const authorName = rawAuthor?.name?.$t || defaultAuthor
-  const authorProfile = rawAuthor?.uri?.$t || ''
+  let authorProfile = rawAuthor?.uri?.$t || ''
+  if (authorProfile.startsWith('http://www.blogger.com/')) {
+    authorProfile = authorProfile.replace(/^http:\/\/www\.blogger\.com\//, 'https://www.blogger.com/')
+  }
   let authorAvatar = rawAuthor?.gd$image?.src || 'https://lh3.googleusercontent.com/a/default-user=s80-c'
   if (authorAvatar.startsWith('//')) {
     authorAvatar = `https:${authorAvatar}`
@@ -395,7 +401,10 @@ export function normalizeCommentEntry(
   if (authorAvatarSrc.startsWith('//')) {
     authorAvatarSrc = `https:${authorAvatarSrc}`
   }
-  const rawAuthorUri = rawAuthor?.uri?.$t || ''
+  let rawAuthorUri = rawAuthor?.uri?.$t || ''
+  if (rawAuthorUri.startsWith('http://www.blogger.com/')) {
+    rawAuthorUri = rawAuthorUri.replace(/^http:\/\/www\.blogger\.com\//, 'https://www.blogger.com/')
+  }
   const authorUrl = rawAuthorUri ? mapper.mapUrl(rawAuthorUri) : ''
 
   let authorUserType = 'ANONYMOUS'

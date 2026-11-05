@@ -235,6 +235,9 @@ export function applyModifier(target: any, modifier: string): any {
           return undefined
         }
         if (modifier === 'iso8601') {
+          if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})$/i.test(trimmed)) {
+            return trimmed.replace(/\.\d{3,}/, '')
+          }
           return rawDate.toISOString()
         }
         let calDate = rawDate

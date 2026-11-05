@@ -92,11 +92,18 @@ export interface BirInclude {
   readonly args: Readonly<Record<string, BirAttrValue>>
 }
 
+export interface BirMessageParam {
+  readonly name?: string
+  readonly expr: BloggerExpressionNode
+}
+
 export interface BirOutput {
   readonly kind: 'output'
   readonly source: 'data' | 'eval' | 'message'
   readonly expr: BloggerExpressionNode
   readonly tagName?: string
+  readonly messageKey?: string
+  readonly params?: readonly BirMessageParam[]
 }
 
 export interface BirSkinStyle {

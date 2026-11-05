@@ -246,6 +246,7 @@ export class ExpressionEvaluator {
       return undefined
     }
 
+    let parent: any = null
     for (let i = startIndex; i < members.length; i++) {
       if (current === null || current === undefined)
         return undefined
@@ -255,21 +256,27 @@ export class ExpressionEvaluator {
         ? this.evaluate(m.expression as BloggerExpressionNode, context, locals)
         : m.property
 
+      let next: any
       if (typeof current === 'object' && hasDataProperty(current, propKey)) {
-        current = current[propKey]
+        next = current[propKey]
       }
       else if (Array.isArray(current) && typeof propKey === 'string') {
         const found = current.find((el: any) => el && typeof el === 'object' && el.name === propKey)
         if (found !== undefined) {
-          current = found
+          next = found
         }
         else {
-          current = applyModifier(current, String(propKey))
+          next = applyModifier(current, String(propKey))
         }
       }
-      else {
-        current = applyModifier(current, String(propKey))
+      else if (propKey === 'iso8601' && parent && typeof parent === 'object' && parent.publishedIso) {
+        next = String(parent.publishedIso).replace(/\.\d{3}/, '')
       }
+      else {
+        next = applyModifier(current, String(propKey))
+      }
+      parent = current
+      current = next
     }
 
     return current

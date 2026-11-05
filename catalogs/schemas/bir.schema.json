@@ -310,7 +310,20 @@
         "kind": { "const": "output" },
         "source": { "enum": ["data", "eval", "message"] },
         "expr": { "$ref": "#/$defs/expression" },
-        "tagName": { "type": "string" }
+        "tagName": { "type": "string" },
+        "messageKey": { "type": "string" },
+        "params": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["expr"],
+            "properties": {
+              "name": { "type": "string" },
+              "expr": { "$ref": "#/$defs/expression" }
+            }
+          }
+        }
       }
     },
     "container": {
