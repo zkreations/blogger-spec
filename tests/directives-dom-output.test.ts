@@ -227,8 +227,16 @@ describe('dom and output directives suite', () => {
       const msgOut = renderMessageOutput(loweredMsg[0], { messages: { home: 'Inicio' } })
       expect(msgOut).toBe('Inicio')
 
-      const commentAst = {
+      const commentAstStripped = {
         attributes: [],
+        children: [{ type: 'Text', value: 'This is a stripped comment' }],
+        name: 'b:comment',
+        type: 'Directive',
+      } as any
+      expect(lowerCommentDirective(commentAstStripped)).toEqual([])
+
+      const commentAst = {
+        attributes: [{ name: 'render', value: 'true' }],
         children: [{ type: 'Text', value: 'This is a comment' }],
         name: 'b:comment',
         type: 'Directive',

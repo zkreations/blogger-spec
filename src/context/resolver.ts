@@ -751,7 +751,11 @@ export async function resolveBloggerContext(
     context.blog.canonicalUrl = context.blog.homepageUrl
 
     if (viewId === 'error_404') {
-      const navMsg = spec.getWidgetNavMessage('Blog', blogLocale)
+      const custom404 = config.overrides?.blog?.custom404Message
+        ?? (config.config?.blog as any)?.custom404Message
+        ?? (config.overrides?.widgetData?.Blog1 as any)?.navMessage
+        ?? (config.config?.widgets?.Blog1 as any)?.navMessage
+      const navMsg = custom404 ?? spec.getWidgetNavMessage('Blog', blogLocale)
       context.widgetData.Blog1 = context.widgetData.Blog1 || {}
       context.widgetData.Blog1.navMessage = navMsg
       context.widgetData.Blog1.posts = []
@@ -1082,7 +1086,11 @@ export async function resolveBloggerContext(
   }
   else if (viewId === 'error_404') {
     activePosts = []
-    const navMsg = spec.getWidgetNavMessage('Blog', blogLocale)
+    const custom404 = config.overrides?.blog?.custom404Message
+      ?? (config.config?.blog as any)?.custom404Message
+      ?? (config.overrides?.widgetData?.Blog1 as any)?.navMessage
+      ?? (config.config?.widgets?.Blog1 as any)?.navMessage
+    const navMsg = custom404 ?? spec.getWidgetNavMessage('Blog', blogLocale)
     blog1.navMessage = navMsg
   }
   else {

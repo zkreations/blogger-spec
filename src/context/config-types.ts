@@ -67,6 +67,7 @@ export interface BloggerBlogConfiguration {
     readonly postsPerPage?: number
     readonly commentLocation?: CommentLocation
     readonly commentFormMessage?: string
+    readonly custom404Message?: string
     readonly postDateFormat?: BloggerDateFormat | string
     readonly commentDateFormat?: BloggerCommentDateFormat | string
     readonly titleAndEnclosureLinks?: boolean

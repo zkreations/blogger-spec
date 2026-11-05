@@ -456,5 +456,42 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(ctx.view.archive.day).toBeUndefined()
       expect(ctx.widgetData.Blog1.posts.length).toBeGreaterThan(0)
     })
+
+    it('resolves custom404Message for error_404 views in both offline and online modes', async () => {
+      const mockFetch = createMockFetch()
+      const customHtml = '<div class="custom-404">Not Found</div>'
+
+      // Offline mode with blog.custom404Message
+      const offlineCtx = await resolveBloggerContext({
+        view: 'error_404',
+        offline: true,
+        config: {
+          blog: {
+            custom404Message: customHtml,
+          },
+        },
+      })
+      expect(offlineCtx.widgetData.Blog1.navMessage).toBe(customHtml)
+
+      // Online mode with blog.custom404Message
+      const onlineCtx = await resolveBloggerContext({
+        blogId,
+        fetch: mockFetch,
+        view: 'error_404',
+        config: {
+          blog: {
+            custom404Message: customHtml,
+          },
+        },
+      })
+      expect(onlineCtx.widgetData.Blog1.navMessage).toBe(customHtml)
+
+      // Default fallback when custom404Message is not provided
+      const defaultCtx = await resolveBloggerContext({
+        view: 'error_404',
+        offline: true,
+      })
+      expect(defaultCtx.widgetData.Blog1.navMessage).toBe('Sorry, the page you were looking for in this blog does not exist.')
+    })
   })
 })

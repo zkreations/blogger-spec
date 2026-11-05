@@ -44,6 +44,11 @@
           "maxLength": 4096,
           "description": "Custom prompt or message displayed above the comment form (data:widgets.Blog1.messages.blogComment)."
         },
+        "custom404Message": {
+          "type": "string",
+          "maxLength": 4096,
+          "description": "Custom message or markup displayed when a requested page is not found (emitted via data:Blog.navMessage in error_404 views)."
+        },
         "postDateFormat": {
           "type": "string",
           "description": "Date format for post and page headers/timestamps (Unicode ICU TR35 pattern or Blogger format preset)."

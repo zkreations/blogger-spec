@@ -4,6 +4,15 @@ import type { BirComment } from '../../types.js'
 export function lowerCommentDirective(
   node: BloggerDirectiveNode,
 ): BirComment[] {
+  const renderAttr = node.attributes?.find(a => a.name === 'render' || a.name === 'expr:render')
+  if (!renderAttr) {
+    return []
+  }
+  const val = String(renderAttr.value ?? '').trim().toLowerCase()
+  if (val !== 'true' && val !== 'yes') {
+    return []
+  }
+
   let commentText = ''
   for (const c of node.children) {
     if (c.type === 'Text') {
@@ -23,4 +32,3 @@ export const bCommentHandler = {
   render: renderCommentNode,
   tagName: 'b:comment',
 }
-
