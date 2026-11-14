@@ -78,11 +78,12 @@ Mutations pass through transparent control and subroutine boundaries without bar
 
 ### Whitespace Stripping
 
-Applied to void HTML elements (`<input>`, `<img>`, `<hr>`, `<br>`):
+Applied to void HTML elements (`<input>`, `<img>`, `<hr>`, `<br>`) and `<b:tag>` directives via `b:whitespace='remove'`:
 - Strips trailing whitespace inside the tag.
+- Removes whitespace-only text nodes between nested directive children inside `<b:tag>`.
 - Removes the `b:whitespace` attribute from the compiled output.
-- Enforces XML-style self-closing syntax: `<img alt="Hero" src="https://example.com/hero.jpg"/>`.
+- Enforces XML-style self-closing syntax for void tags: `<img alt="Hero" src="https://example.com/hero.jpg"/>`.
 
 {{< hint warning >}}
-**Section Nesting Constraints (`BX1035`):** `<b:section>` elements are strictly permitted only directly under `<body>`, `<b:tag>`, structural HTML containers, or conditional branches (`<b:if>`, `<b:switch>`). They are forbidden under `<head>`, inside widgets, within loops, or nested directly inside another section.
+**Section Nesting Constraints (`BX1035`):** `<b:section>` elements are strictly permitted only directly under `<body>`, `<b:tag>`, structural HTML containers (`html:*`), or flow containers (`<b:if>`, `<b:with>`, `<b:switch>`). They are forbidden under `<head>`, inside widgets, within loops, or nested directly inside another section.
 {{< /hint >}}
