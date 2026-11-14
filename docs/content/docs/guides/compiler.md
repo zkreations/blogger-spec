@@ -41,7 +41,7 @@ Register global `<b:defaultmarkup>` blocks and local widget `<b:includable>` sub
 import { indexIncludables, resolveIncludable } from 'blogger-spec'
 
 const registry = indexIncludables(doc)
-const resolved = resolveIncludable('post:card', 'Blog1', 'Blog', registry)
+const resolved = resolveIncludable({ targetId: 'post:card', widgetId: 'Blog1', widgetType: 'Blog' }, registry)
 ```
 
 ### Step 3: Compiling Styles and Extracting Variables
