@@ -10,9 +10,11 @@ Learn how to certify custom rendering engines, external compilers, or third-part
 
 Every test fixture in `fixtures/` adheres to a strict JSON schema:
 
+- **`id` & `title`:** Unique fixture identifier and descriptive title.
 - **`input`:** Input XML snippet or expression string and test context.
 - **`expected`:** Canonical expected outcome (HTML output, evaluated primitive, or diagnostic code).
-- **`verified_at`:** Empirical platform verification timestamp proven on Blogger's live server.
+- **`covers`:** Array of catalog capability tokens and feature codes certified by this test.
+- **`evidence` & `verified_at`:** Empirical platform verification provenance and timestamp proven on Blogger's live server.
 
 ## Running Conformance Tests
 
