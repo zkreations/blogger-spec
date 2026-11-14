@@ -78,6 +78,7 @@ describe('context normalizer suite with real Hamlet fixtures', () => {
       expect(post.numberOfComments).toBe(8)
       expect(post.author.name).toBe('Iveth')
       expect(post.author.authorPhoto.url).toBeDefined()
+      expect(post.author.authorPhoto.image).toBe(post.author.authorPhoto.url)
       expect(post.labels.length).toBe(3)
       expect(post.labels.map(l => l.name)).toEqual(['biodiversity', 'essay', 'nature'])
       expect(post.labels[0].url).toBe('/search/label/biodiversity')

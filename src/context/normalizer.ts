@@ -216,6 +216,7 @@ export function normalizePostEntry(
       aboutMe: '',
       authorPhoto: {
         url: authorAvatar,
+        image: authorAvatar,
         width: 80,
         height: 80,
         alt: authorName,
@@ -348,6 +349,7 @@ export function normalizePageAsPostEntry(
       aboutMe: '',
       authorPhoto: {
         url: authorAvatar,
+        image: authorAvatar,
         width: 80,
         height: 80,
         alt: authorName,

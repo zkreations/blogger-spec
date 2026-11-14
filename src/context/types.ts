@@ -119,6 +119,7 @@ export interface BloggerAuthorData {
   readonly aboutMe: string
   readonly authorPhoto: {
     readonly url: string
+    readonly image?: string
     readonly width: number
     readonly height: number
     readonly alt: string
