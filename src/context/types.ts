@@ -33,6 +33,8 @@ export interface BloggerContextConfig {
   readonly cookieChoices?: boolean
   /** Custom base URL for the comment form iframe (avoids CORS and SameSite blocks during local dev) */
   readonly commentFrameBaseUrl?: string
+  /** Custom URL pattern or endpoint for proxying external and YouTube post images (e.g. 'https://wsrv.nl/?url={url}') */
+  readonly imageProxyUrl?: string
   /** Theme or document XML for automatic widget discovery and <b:widget-settings> extraction */
   readonly templateXml?: string
   /** Pre-parsed AST (high-performance alternative to templateXml) */

@@ -9,17 +9,17 @@ export function resizeImage(url: any, size: any, ratio?: any): any {
   if (urlStr.startsWith('//')) {
     urlStr = `https:${urlStr}`
   }
-  const isGoogleHost = /googleusercontent\.com|blogspot\.com|ggpht\.com/i.test(urlStr)
-  if (!isGoogleHost) {
-    return urlStr
-  }
-
   if (Array.isArray(size)) {
     const sortedSizes = [...size].sort((a, b) => Number(a) - Number(b))
     return sortedSizes.map(s => ({
       url: resizeImage(url, s, ratio),
       size: s,
     }))
+  }
+
+  const isGoogleHost = /googleusercontent\.com|blogspot\.com|ggpht\.com/i.test(urlStr)
+  if (!isGoogleHost) {
+    return urlStr
   }
 
   const dim = Number(size)

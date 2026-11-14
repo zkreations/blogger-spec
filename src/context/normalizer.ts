@@ -22,6 +22,27 @@ export interface NormalizePostOptions {
   readonly dateFormat?: string
   readonly timeZone?: string
   readonly commentFrameBaseUrl?: string
+  readonly imageProxyUrl?: string
+}
+
+export function applyImageProxy(url: string, proxyPattern?: string): string {
+  if (!url || !proxyPattern) {
+    return url
+  }
+  const isGoogleHost = /googleusercontent\.com|blogspot\.com|ggpht\.com/i.test(url)
+  if (isGoogleHost) {
+    return url
+  }
+  if (proxyPattern.includes('{url}')) {
+    return proxyPattern.replace('{url}', encodeURIComponent(url))
+  }
+  if (proxyPattern.includes('{rawUrl}')) {
+    return proxyPattern.replace('{rawUrl}', url)
+  }
+  if (proxyPattern.endsWith('=') || proxyPattern.endsWith('/')) {
+    return `${proxyPattern}${encodeURIComponent(url)}`
+  }
+  return `${proxyPattern}${url}`
 }
 
 export function stripHtml(html: string): string {
@@ -154,6 +175,14 @@ export function normalizePostEntry(
     : extractFirstImage(body)
   if (featuredImage.startsWith('//')) {
     featuredImage = `https:${featuredImage}`
+  }
+  if (options.imageProxyUrl) {
+    if (thumbnail) {
+      thumbnail = applyImageProxy(thumbnail, options.imageProxyUrl)
+    }
+    if (featuredImage) {
+      featuredImage = applyImageProxy(featuredImage, options.imageProxyUrl)
+    }
   }
 
   const rawAuthor = entry.author?.[0]
@@ -312,6 +341,14 @@ export function normalizePageAsPostEntry(
     : extractFirstImage(body)
   if (featuredImage.startsWith('//')) {
     featuredImage = `https:${featuredImage}`
+  }
+  if (options.imageProxyUrl) {
+    if (thumbnail) {
+      thumbnail = applyImageProxy(thumbnail, options.imageProxyUrl)
+    }
+    if (featuredImage) {
+      featuredImage = applyImageProxy(featuredImage, options.imageProxyUrl)
+    }
   }
 
   const rawAuthor = entry.author?.[0]

@@ -69,6 +69,10 @@
         "commentFrameBaseUrl": {
           "type": "string",
           "description": "Custom base URL for the comment form iframe (data:post.commentFormIframeSrc), preventing CORS and frame restrictions in local dev environments."
+        },
+        "imageProxyUrl": {
+          "type": "string",
+          "description": "Custom URL pattern or endpoint for proxying external and YouTube post images (e.g. 'https://wsrv.nl/?url={url}') in local dev environments."
         }
       }
     },

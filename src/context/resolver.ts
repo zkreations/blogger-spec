@@ -953,12 +953,14 @@ export async function resolveBloggerContext(
   const postSaa = config.overrides?.view?.saa || config.overrides?.saa || (config.overrides?.blog as any)?.saa
   const rawPosts: readonly BloggerRawEntry[] = feed.entry || []
   const commentFrameBaseUrl = config.commentFrameBaseUrl || config.config?.blog?.commentFrameBaseUrl
+  const imageProxyUrl = config.imageProxyUrl || config.config?.blog?.imageProxyUrl
   const postOptions = {
     saa: postSaa,
     dateFormat: config.config?.blog?.postDateFormat,
     timeZone: blogTimeZone,
     titleAndEnclosureLinks: config.config?.blog?.titleAndEnclosureLinks,
     commentFrameBaseUrl,
+    imageProxyUrl,
   }
 
   const normalizedPosts = rawPosts.map((e) => {

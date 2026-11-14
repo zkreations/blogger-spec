@@ -39,3 +39,4 @@ Secondary widgets are discovered from the template AST or configured via `config
 - **Popular Posts:** `buildPopularPostsData` ranks posts based on metadata and visit counters.
 - **Byline Reactivity:** In `Blog1`, `allBylineItems` dynamically filters out items whose widget setting (`showAuthor`, `showTimestamp`, `showLabels`, etc.) is `false`.
 - **Feed Normalizer:** Converts Atom feed entries into normalized `BlogPost` objects with Title Links (`post.link`) cleanly distinguished from media enclosures.
+- **External Image Proxying & YouTube Resolution:** Normalizes YouTube thumbnails (`img.youtube.com`, `ytimg.com`) and supports optional proxying via `imageProxyUrl` in `blogger.config.json` (`blog.imageProxyUrl`) to emulate Blogger's internal `blogger_img_proxy` pipeline in local environments.

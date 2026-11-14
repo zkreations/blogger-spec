@@ -66,7 +66,7 @@ Blogger provides native operators for dynamic image resizing and HTML responsive
 
 ### `resizeImage`
 - **Scalar Resize:** Rewrites a Google CDN image URL to target dimension (e.g. `data:post.featuredImage resizeImage 400`). Returns an `image` descriptor that serializes to the resized URL in string contexts and exposes `.width` and `.height` modifiers.
-- **Responsive Array Resize:** When given an array of dimensions (e.g. `data:post.featuredImage resizeImage [320, 640, 1024]`), returns an `array[object]` of `image_variant` items with `.url` and `.size`.
+- **Responsive Array Resize:** When given an array of dimensions (e.g. `data:post.featuredImage resizeImage [320, 640, 1024]`), returns an `array[object]` of `image_variant` items with `.url` and `.size`. If the source image is non-Google/external, the array structure is preserved with original URLs for seamless template looping.
 - **3-Operand Infix Chaining:** Aspect ratio crops chain via a second infix operand:
   ```text
   data:post.featuredImage resizeImage 400 resizeImage "1:1"

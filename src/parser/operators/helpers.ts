@@ -110,7 +110,7 @@ export function isMemberOf(item: any, collection: any): boolean {
 }
 
 export function extractYouTubeVideoId(url: string): string | null {
-  const ytImg = /ytimg\.com\/vi(?:_webp)?\/([\w-]{6,})/i.exec(url)
+  const ytImg = /(?:img\.youtube\.com|ytimg\.com)\/vi(?:_webp)?\/([\w-]{6,})/i.exec(url)
   if (ytImg)
     return ytImg[1]!
   const ytEmbed = /youtube\.com\/(?:embed|v|shorts)\/([\w-]{6,})/i.exec(url)

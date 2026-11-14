@@ -94,6 +94,7 @@ async function resolveBloggerContext(
   - `templateAst` (`BloggerDocumentNode`): Pre-parsed AST as a high-performance alternative to `templateXml`.
   - `cookieChoices` (`boolean`): Injects the official cookie notice banner (`id="cookieChoiceInfo"`).
   - `commentFrameBaseUrl` (`string`): Custom origin for the comment iframe to avoid CORS issues.
+  - `imageProxyUrl` (`string`): Custom URL pattern or endpoint for proxying external and YouTube post images (e.g. `'https://wsrv.nl/?url={url}'`) in local dev environments.
   - `overrides` (`Record<string, any>`): Explicit top-precedence context property overrides.
   - `fetch` (`typeof fetch`): Custom fetch injection for hermetic environments and unit testing.
   - `cache` (`{ ttlMs?: number }`): In-memory cache TTL configuration.

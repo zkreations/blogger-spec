@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import {
+  applyImageProxy,
   createSnippets,
   extractId,
   normalizeBlogMetadata,
@@ -154,6 +155,40 @@ describe('context normalizer suite with real Hamlet fixtures', () => {
       expect(meta.blogId).toBe(blogId)
       expect(meta.homepageUrl).toBe('/')
       expect(meta.searchUrl).toBe('/search')
+    })
+  })
+
+  describe('applyImageProxy and imageProxyUrl', () => {
+    it('leaves Google-hosted images untouched regardless of proxy configuration', () => {
+      const googleImg = 'https://blogger.googleusercontent.com/img/a/AVvXsEi.jpg'
+      expect(applyImageProxy(googleImg, 'https://wsrv.nl/?url={url}')).toBe(googleImg)
+    })
+
+    it('proxies external images using {url} and raw templates', () => {
+      const extImg = 'https://img.youtube.com/vi/ppMXtTbNnCs/default.jpg'
+      expect(applyImageProxy(extImg, 'https://wsrv.nl/?url={url}')).toBe(
+        `https://wsrv.nl/?url=${encodeURIComponent(extImg)}`,
+      )
+      expect(applyImageProxy(extImg, 'https://images.weserv.nl/?url=')).toBe(
+        `https://images.weserv.nl/?url=${encodeURIComponent(extImg)}`,
+      )
+    })
+
+    it('applies imageProxyUrl option during normalizePostEntry for external thumbnails', () => {
+      const rawEntry = {
+        id: { $t: 'tag:blogger.com,1999:blog-123.post-456' },
+        published: { $t: '2024-01-01T00:00:00Z' },
+        updated: { $t: '2024-01-01T00:00:00Z' },
+        title: { $t: 'YouTube Entry' },
+        link: [{ rel: 'alternate', href: 'https://example.com/2024/01/post.html' }],
+        media$thumbnail: {
+          url: 'https://img.youtube.com/vi/ppMXtTbNnCs/default.jpg',
+        },
+      }
+      const post = normalizePostEntry(rawEntry as any, mapper, blogId, 'en', {
+        imageProxyUrl: 'https://wsrv.nl/?url={url}',
+      })
+      expect(post.featuredImage).toBe(`https://wsrv.nl/?url=${encodeURIComponent('https://img.youtube.com/vi/ppMXtTbNnCs/default.jpg')}`)
     })
   })
 })

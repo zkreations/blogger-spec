@@ -181,6 +181,7 @@ describe('runtime expression evaluator', () => {
   it('evaluates YouTube image modifiers (.isYouTube, .youtubeMaxResDefaultUrl)', () => {
     const ctx = {
       ytThumb: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg',
+      ytImgThumb: 'https://img.youtube.com/vi/ppMXtTbNnCs/default.jpg',
       ytWatch: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
       normalImg: 'https://blogger.googleusercontent.com/img/a/sample.png',
     }
@@ -188,11 +189,25 @@ describe('runtime expression evaluator', () => {
     expect(evaluateExpression('data:ytThumb.youtubeMaxResDefaultUrl', ctx)).toBe(
       'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
     )
+    expect(evaluateExpression('data:ytImgThumb.youtubeMaxResDefaultUrl', ctx)).toBe(
+      'https://i.ytimg.com/vi/ppMXtTbNnCs/maxresdefault.jpg',
+    )
     expect(evaluateExpression('data:ytWatch.youtubeMaxResDefaultUrl', ctx)).toBe(
       'https://i.ytimg.com/vi/dQw4w9WgXcQ/maxresdefault.jpg',
     )
     expect(evaluateExpression('data:normalImg.isYouTube', ctx)).toBe(false)
     expect(evaluateExpression('data:normalImg.youtubeMaxResDefaultUrl', ctx)).toBe(false)
+  })
+
+  it('preserves array of objects contract for resizeImage on external/non-Google URLs', () => {
+    const extUrl = 'https://i.ytimg.com/vi/ppMXtTbNnCs/maxresdefault.jpg'
+    const ctx = { img: extUrl }
+
+    const multi = evaluateExpression('resizeImage(data:img, [630, 400, 300], "16:9")', ctx) as any[]
+    expect(Array.isArray(multi)).toBe(true)
+    expect(multi).toHaveLength(3)
+    expect(multi.map(m => m.size)).toEqual([300, 400, 630])
+    expect(multi.map(m => m.url)).toEqual([extUrl, extUrl, extUrl])
   })
 
   it('enforces snippet length clamping [50, 1000], link preservation, linebreaks, and Unicode ellipsis', () => {
