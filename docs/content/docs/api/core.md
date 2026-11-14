@@ -15,15 +15,16 @@ Parses a raw Blogger XML template string into a strongly typed AST.
 ```typescript
 function parseTemplate(
   xml: string,
-  options?: ParseTemplateOptions
+  options?: BloggerParseTemplateOptions
 ): BloggerDocumentNode
 ```
 
 ### Parameters
 
 - `xml` (`string`): Raw template source text.
-- `options` (`ParseTemplateOptions`, optional):
-  - `tolerant` (`boolean`): Recover from non-fatal XML errors. Defaults to `false`.
+- `options` (`BloggerParseTemplateOptions`, optional):
+  - `catalog` (`SpecCatalog`): Spec catalog instance (defaults to canonical catalog).
+  - `tolerant` (`boolean`): Recover from non-fatal XML errors and record diagnostics. Defaults to `false`.
   - `parseExpressions` (`boolean`): Parse dynamic expression attributes into expression ASTs. Defaults to `true`.
 
 ---
@@ -37,35 +38,55 @@ Parses a dynamic expression string into an expression AST using Pratt precedence
 ```typescript
 function parseExpression(
   expression: string,
-  options?: ParseExpressionOptions
+  options?: BloggerParseExpressionOptions
 ): BloggerExpressionNode
 ```
+
+### Parameters
+
+- `expression` (`string`): Raw expression text.
+- `options` (`BloggerParseExpressionOptions`, optional):
+  - `catalog` (`SpecCatalog`): Spec catalog instance.
+  - `tolerant` (`boolean`): Tolerant mode for resilient error recovery. Defaults to `false`.
+  - `maxDepth` (`number`): Recursion depth limit. Defaults to `50`.
 
 ---
 
 ## evaluateExpression
 
-Evaluates an expression AST safely against a runtime data context with relaxed equality and null-safety.
+Evaluates an expression AST or raw expression string safely against a runtime data context with relaxed equality and null-safety.
 
-**Returns:** {{< type "BloggerPrimitiveValue" >}}
+**Returns:** {{< type "any" >}}
 
 ```typescript
 function evaluateExpression(
-  node: BloggerExpressionNode,
-  context: BloggerEvaluationContext
-): BloggerPrimitiveValue
+  exprOrNode: string | BloggerExpressionNode,
+  context?: Record<string, any>
+): any
 ```
 
 ---
 
 ## resolveBloggerContext
 
-Builds a canonical Blogger view context for one of the 12 canonical view types.
+Asynchronously builds a canonical Blogger view context for one of the 12 canonical view types.
 
-**Returns:** {{< type "BloggerContext" >}}
+**Returns:** {{< type "Promise<Record<string, any>>" >}}
 
 ```typescript
-function resolveBloggerContext(
-  options: ResolveBloggerContextOptions
-): BloggerContext
+async function resolveBloggerContext(
+  config?: BloggerContextConfig
+): Promise<Record<string, any>>
+```
+
+### Parameters
+
+- `config` (`BloggerContextConfig`, optional):
+  - `view` (`BloggerViewId`): Canonical view ID (e.g. `'homepage'`, `'post'`, `'static_page'`). Defaults to `'homepage'`.
+  - `blogId` (`string`): Target blog ID.
+  - `targetUrl` (`string`): Current URL route for context derivation.
+  - `locale` (`string`): BCP 47 language tag (e.g. `'es'`, `'en'`).
+  - `config` (`BloggerProjectConfig`): Local project configuration.
+  - `templateXml` (`string`): Template XML for dynamic widget discovery.
+  - `overrides` (`Record<string, any>`): Custom context overrides.
 ```

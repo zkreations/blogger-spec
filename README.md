@@ -28,7 +28,7 @@ flowchart LR
 
 | Subpath | Purpose |
 | :--- | :--- |
-| `blogger-spec/ast` | `parseTemplate` and `parseExpression` (Pratt parser, 10 precedence levels, `maxDepth: 50`). Supports infix and functional syntax, lambdas, and bracket indexing. |
+| `blogger-spec/ast` | `parseTemplate` and `parseExpression` (Pratt parser, 11 precedence levels, `maxDepth: 50`). Supports infix and functional syntax, lambdas, and bracket indexing. |
 | `blogger-spec/parser` | Tokenizer, `evaluateExpression` (modular operator evaluators in `operators/`), directive scanning, and modular validators (`validation/rules/`): `validateDirectiveNesting`, `validateTemplateStructure`, `validateTemplateExpressions`. |
 | `blogger-spec/quota` | Token counting against the compiler's 40-token limit (`BX1021`). |
 | `blogger-spec/type-system` | Assignability, modifiers, skin modifiers, operator compatibility, and type inference. |

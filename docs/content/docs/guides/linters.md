@@ -8,21 +8,22 @@ Learn how to build template linters, diagnostics analyzers, continuous integrati
 
 ## Validation Functions
 
-- **`validateTemplate(ast, options)`:** Checks directive nesting constraints, required attributes, root HTML layout attributes (`BX1061`), and forbidden widget hierarchies (`BX1035`).
-- **`validateTemplateExpressions(ast)`:** Scans dynamic expression attributes (`expr:*`, `cond`, `values`, `value`) for syntax errors, unknown variables, operator precedence issues, and token quota exhaustion (`BX1021`).
+- **`validateTemplateStructure(tokensOrXml, catalog?, options?)`:** Checks directive nesting constraints, required attributes, root HTML layout attributes (`BX1061`), and forbidden widget hierarchies (`BX1035`).
+- **`validateTemplateExpressions(tokensOrXml, catalog?, options?)`:** Scans dynamic expression attributes (`expr:*`, `cond`, `values`, `value`) for syntax errors, unknown variables, operator precedence issues, and token quota exhaustion (`BX1021`).
 
 ## Automated Fixes
 
 Diagnostics provide machine-readable automated fix recommendations whenever possible, facilitating quick fixes in IDEs:
 
 ```typescript
-import { parseTemplate, validateTemplate } from 'blogger-spec'
+import { validateTemplateExpressions, validateTemplateStructure } from 'blogger-spec'
 
-const doc = parseTemplate(xmlSource)
-const diagnostics = validateTemplate(doc)
+const structureDiags = validateTemplateStructure(xmlSource)
+const expressionDiags = validateTemplateExpressions(xmlSource)
+const diagnostics = [...structureDiags, ...expressionDiags]
 
 for (const diag of diagnostics) {
-  console.log(`[${diag.code}] ${diag.message} at line ${diag.location.start.line}`)
+  console.log(`[${diag.code}] ${diag.message} (offset: ${diag.tagStart ?? 0})`)
   if (diag.suggestedReplacement) {
     console.log(`  Suggested fix: ${diag.suggestedReplacement}`)
   }

@@ -14,7 +14,7 @@ Blogger template architecture is organized around Layout versioning standards (v
 
 ## Section Constraints
 
-- **Rendering:** Expands to `<div class='section' id='[id]'>` or a semantic tag when declared via `tag='header' | 'aside' | 'footer'`.
+- **Rendering:** Expands to `<div class='section' id='[id]'>` or a semantic tag when declared via `tag='div' | 'header' | 'nav' | 'main' | 'aside' | 'footer' | 'section' | 'article'`.
 - **Nesting Rules (`BX1035`):** Permitted only under `<body>`, `<b:tag>`, structural HTML containers, or conditional branches. Forbidden under `<head>`, inside widgets, within loops, or nested within another section.
 
 ## Widgets
@@ -40,7 +40,7 @@ Execution begins by resolving and evaluating the widget's `main` includable subr
 | **3** | `universal_widget` | `<b:defaultmarkup type='All'>` | Markup shared by all widgets. |
 | **4** | `shared_common` | `<b:defaultmarkup type='Common'>` | Cross-cutting subroutines (icons, macros, components). |
 | **5** | `platform_server` | Platform built-ins | Server macros (`all-head-content`) and platform subroutines. |
-| **6** | `unresolved` | Exhaustion | Resolution failure (`BX1056` / `BX1063`). |
+| **6** | `unresolved` | Exhaustion | Resolution failure (`BX1037`). |
 
 ### Collision Handling
 

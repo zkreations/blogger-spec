@@ -64,7 +64,7 @@ Set up the lexical environment using `ScopeEnvironment` and canonical context:
 ```typescript
 import { resolveBloggerContext, ScopeEnvironment } from 'blogger-spec'
 
-const context = resolveBloggerContext({ viewId: 'item' })
+const context = await resolveBloggerContext({ view: 'post' })
 const scope = new ScopeEnvironment()
 scope.pushScope('global', { symbols: context })
 ```
@@ -96,10 +96,10 @@ export class SimpleBloggerCompiler {
   private classStack: string[][] = []
   private attrStack: Array<Record<string, string>> = []
 
-  compile(xml: string, viewId = 'default'): string {
+  async compile(xml: string, view = 'homepage'): Promise<string> {
     const doc = parseTemplate(xml)
     const registry = indexIncludables(doc)
-    const context = resolveBloggerContext({ viewId })
+    const context = await resolveBloggerContext({ view })
 
     this.scope = new ScopeEnvironment()
     this.scope.pushScope('global', { symbols: context })

@@ -42,7 +42,7 @@ const xml = `
 `
 
 const doc = parseTemplate(xml)
-console.log(doc.rootNodes.length) // 1
+console.log(doc.children.length) // 1
 ```
 
 ## 3. Resolving Canonical Contexts
@@ -52,11 +52,11 @@ Synthesize canonical data structures for any of the 12 canonical Blogger views:
 ```typescript
 import { resolveBloggerContext } from 'blogger-spec'
 
-const context = resolveBloggerContext({
-  viewId: 'item',
+const context = await resolveBloggerContext({
+  view: 'post',
   blogId: '123456789'
 })
 
-console.log(context.view.isSingleItem) // true
+console.log(context.view.isPost) // true
 console.log(context.view.isHomepage) // false
 ```

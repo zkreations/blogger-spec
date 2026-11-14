@@ -20,8 +20,9 @@ The BloggerSpec diagnostics catalog (`BX1001` through `BX1062`) provides an exha
 | `BX1021` | `error` | Expression token budget / complexity quota exceeded. | Simplify expression or decompose into `<b:with>` scopes. |
 | `BX1023` | `error` | `<Variable>` or `<Group>` declared outside `<b:skin>` CDATA. | Relocate Theme Designer tags strictly inside `<b:skin>` CDATA. |
 | `BX1035` | `error` | `<b:section>` declared inside forbidden container (widget, loop, or nested section). | Move `<b:section>` directly under `<body>` or structural containers. |
+| `BX1037` | `error` | `<b:include>` references a subroutine that does not exist in Tiers 1–5 (`UNRESOLVED_INCLUDE_TARGET`). | Declare the missing `<b:includable>` or correct the subroutine name. |
 | `BX1047` | `error` | Widget `id` violates canonical pattern `^[Type][1-9][0-9]{0,2}$`. | Rename widget ID to match its type (e.g., `Blog1`, `PageList1`). |
-| `BX1056` | `error` | `<b:include>` references a subroutine that does not exist in Tiers 1–5. | Declare the missing `<b:includable>` or correct the subroutine name. |
+| `BX1056` | `error` | Widget contains an invalid or unknown setting (`INVALID_WIDGET_SETTING`). | Remove or correct the setting name against `settings.json`. |
 | `BX1061` | `warning` | Modern template missing required Layouts v3 root HTML attributes. | Add `b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'`. |
 | `BX1062` | `warning` | Legacy Layouts v1/v2 widget or deprecated table tags detected. | Upgrade widget markup to Layouts v3 clean structures. |
 

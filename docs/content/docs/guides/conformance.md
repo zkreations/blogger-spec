@@ -20,10 +20,15 @@ Use the conformance runner to certify compatibility:
 
 ```typescript
 import { runConformance } from 'blogger-spec'
+import { loadFixturesManifest } from 'blogger-spec/node'
 
-const results = await runConformance({
-  render: myCompilerRenderFunction
-})
+const fixtures = loadFixturesManifest()
+const report = runConformance(
+  {
+    renderTemplate: (template, context) => myCompilerRenderFunction(template, context),
+  },
+  { fixtures }
+)
 
-console.log(`Passed: ${results.passed}/${results.total}`)
+console.log(`Passed: ${report.passed}/${report.total}`)
 ```
