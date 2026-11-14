@@ -24,14 +24,14 @@ Theme variables expose sub-properties whose availability depends on the evaluati
 
 During CSS compilation, variables referenced via `$(variable.name)` or sub-property access expose full styling descriptors:
 - **Font variables (`skin:font`):** Expose `.family`, `.size`, `.weight`, and `.style`.
-- **Background variables (`skin:background`):** Expose `.color`, `.image`, `.repeat`, `.attachment`, and `.position`.
+- **Background variables (`skin:background`):** Expose composite color sub-properties (`$(variable.color)`, `$(variable.color.red)`, etc.).
 - **Color variables (`skin:color`):** Expose `.red`, `.green`, `.blue`, `.alpha`, `.transparent`, and `.inverse`.
 
 ### Outside `<b:skin>` in Template Expressions (`data:skin.vars.*`)
 
 When consumed in template expressions outside `<b:skin>`, Theme Designer tokens conform strictly to `catalogs/types.json` and isolate CSS-specific shorthand properties:
 - **Font variables:** Expose **only** `.family` and `.size`. (Properties `.weight` and `.style` are not accessible).
-- **Background variables:** Expose **only** `.color` and `.image`. (Properties `.repeat`, `.attachment`, and `.position` are not accessible).
+- **Background variables:** Expose **only** `.color` and `.image`. (Note: `.image` is available exclusively outside skin in `data:skin.vars.*`, not inside `$(...)` in `<b:skin>`).
 - **Color variables:** Expose `.red`, `.green`, `.blue`, `.alpha`, `.transparent`, and `.inverse`.
 - **Type Isolation:** All skin variables have `parent_type: null` and never inherit string modifiers (`.length`, `.escaped`).
 
