@@ -44,10 +44,12 @@ Modifiers are computed properties accessed via dot notation:
 | :--- | :--- | :--- | :--- |
 | `skin:font` | `.family`, `.size` | CSS & `data:skin.vars.*` | Font family stack and font size with unit. |
 | `skin:font` | `.style`, `.weight` | CSS only | Font style (`normal`, `italic`) and weight (`bold`, `700`). |
-| `skin:background` | `.color`, `.image` | CSS & `data:skin.vars.*` | Background color or background image URL. |
-| `skin:background` | `.repeat`, `.attachment`, `.position` | CSS only | CSS background shorthand tokens. |
+| `skin:background` | `.color` | CSS & `data:skin.vars.*` | Background color hex or rgb string. |
+| `skin:background` | `.image` | `data:skin.vars.*` only | Background image URL (available outside `<b:skin>` only). |
 | `skin:color` | `.red`, `.green`, `.blue` | CSS & `data:skin.vars.*` | Integer RGB channels (0 to 255). |
 | `skin:color` | `.alpha` | CSS & `data:skin.vars.*` | Alpha transparency channel (0.0 to 1.0). |
+| `skin:color` | `.transparent` | CSS & `data:skin.vars.*` | Fully transparent `rgba(0,0,0,0)` representation. |
+| `skin:color` | `.inverse` | CSS & `data:skin.vars.*` | Inverted complementary hex or rgba color value. |
 
 ## Data Traversal with resolveDataPath
 
