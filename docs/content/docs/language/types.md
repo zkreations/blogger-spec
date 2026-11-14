@@ -33,9 +33,10 @@ Modifiers are computed properties accessed via dot notation:
 | `image` | `.isYouTube` | {{< type "boolean" >}} | `true` if URL is a YouTube thumbnail. |
 | `image` | `.youtubeMaxResDefaultUrl` | {{< type "url" >}} | Max-resolution URL (`maxresdefault.jpg`) for YouTube thumbnails. |
 | `array` | `.length` / `.size` | {{< type "number" >}} | Number of elements in the collection. |
+| `array` | `.empty` | {{< type "boolean" >}} | `true` if the collection length is 0. |
+| `array` | `.notEmpty` | {{< type "boolean" >}} | `true` if the collection has 1 or more elements. |
 | `array` | `.first` | {{< type "element" >}} | First item of the array (or `undefined` if empty). |
 | `array` | `.last` | {{< type "element" >}} | Last item of the array. |
-| `array` | `.empty` | {{< type "boolean" >}} | `true` if the collection length is 0. |
 
 ### Skin Modifiers (Compound Properties)
 
@@ -55,8 +56,8 @@ The `resolveDataPath` function provides canonical member resolution across globa
 ```typescript
 import { resolveDataPath } from 'blogger-spec/data-path'
 
-// 1. Resolve typed global property
-const urlProp = resolveDataPath('data:blog.url.canonical')
+// 1. Resolve typed global property with modifier
+const urlProp = resolveDataPath('data:view.url.canonical')
 // { name: 'canonical', type: 'url', sourceCatalog: 'types' }
 
 // 2. Resolve widget property
@@ -75,6 +76,6 @@ Identifier resolution enforces 6-tier lexical precedence from innermost to outer
 | **1** | `lambda` | Iterator in collection expressions | Innermost; prohibits `data:` prefix (`BX1019`). |
 | **2** | `loop` | Loop variable `<b:loop var='item'>` | Bound per iteration; shadows outer scopes. |
 | **3** | `with` | Scoped alias `<b:with var='x'>` | Lexical shadowing for the duration of the container. |
-| **4** | `includable` | Subroutine parameters | Bound via `<b:include var='...'>`. |
-| **5** | `widget` | Active gadget properties | Exposes widget fields (`data:title`, `data:posts`). |
-| **6** | `global` | Universal platform objects | Always accessible (`data:blog`, `data:view`, `data:messages`). |
+| **4** | `includable` | Subroutine parameters | Declared on `<b:includable id='...' var='...'>`; bound via `<b:include name='...' data='...'>`. |
+| **5** | `widget` | Active gadget properties | Exposes widget fields (`data:title`, `data:posts`) and `data:widget` metadata. |
+| **6** | `global` | Universal platform objects | Always accessible (`data:blog`, `data:view`, `data:messages`, `data:skin`, `data:widgets`, `data:template`). |

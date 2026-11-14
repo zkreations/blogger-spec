@@ -12,16 +12,28 @@ Blogger templates manage dynamic styling and Theme Designer customizations throu
 - **`<Group>`:** Organizes variables into visual groups within the Blogger Theme Designer UI.
 
 {{< hint warning >}}
-**Strict CDATA Location (`BX1023`):** `<Variable>` and `<Group>` tags must reside strictly within `<b:skin>` CDATA blocks. They are forbidden in `<b:template-skin>`, generic CDATA sections, or the template `<body>`.
+**Strict CDATA Location & Double Quotes (`BX1023`):**
+`<Variable>` and `<Group>` tags must reside strictly within `<b:skin>` CDATA blocks. They are forbidden in `<b:template-skin>`, generic CDATA sections, or the template `<body>`. Furthermore, because they are evaluated by the Theme Designer preprocessor rather than the XML template engine, their attributes strictly require double quotes (`"..."`) (e.g. `<Variable name="accent" type="color" default="#14b8a6" value="#14b8a6"/>`).
 {{< /hint >}}
 
 ## Compound Properties
 
-Theme variables expose sub-properties when evaluated inside CSS or external expressions:
+Theme variables expose sub-properties whose availability depends on the evaluation scope:
 
-- **Font variables (`skin:font`):** Expose `.size`, `.family`, `.weight`, and `.style`.
+### Inside `<b:skin>` CSS CDATA
+
+During CSS compilation, variables referenced via `$(variable.name)` or sub-property access expose full styling descriptors:
+- **Font variables (`skin:font`):** Expose `.family`, `.size`, `.weight`, and `.style`.
 - **Background variables (`skin:background`):** Expose `.color`, `.image`, `.repeat`, `.attachment`, and `.position`.
-- **Color variables (`skin:color`):** Expose `.red`, `.green`, `.blue`, and `.alpha`.
+- **Color variables (`skin:color`):** Expose `.red`, `.green`, `.blue`, `.alpha`, `.transparent`, and `.inverse`.
+
+### Outside `<b:skin>` in Template Expressions (`data:skin.vars.*`)
+
+When consumed in template expressions outside `<b:skin>`, Theme Designer tokens conform strictly to `catalogs/types.json` and isolate CSS-specific shorthand properties:
+- **Font variables:** Expose **only** `.family` and `.size`. (Properties `.weight` and `.style` are not accessible).
+- **Background variables:** Expose **only** `.color` and `.image`. (Properties `.repeat`, `.attachment`, and `.position` are not accessible).
+- **Color variables:** Expose `.red`, `.green`, `.blue`, `.alpha`, `.transparent`, and `.inverse`.
+- **Type Isolation:** All skin variables have `parent_type: null` and never inherit string modifiers (`.length`, `.escaped`).
 
 ## Compilation Pipeline
 

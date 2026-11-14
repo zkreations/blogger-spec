@@ -11,7 +11,7 @@ The 11 Master JSON Catalogs in `catalogs/` constitute the immutable normative fo
 | Catalog | Responsibility |
 | :--- | :--- |
 | `directives.json` | Directives, allowed attributes, nesting policies, and Layout versions. |
-| `operators.json` | Expression operators, 10-tier Pratt precedence hierarchy, and aliases. |
+| `operators.json` | Expression operators, 11-tier Pratt precedence hierarchy, and aliases. |
 | `types.json` | Type system ontology, modifiers, and Theme Designer isolation. |
 | `widgets.json` | Official gadgets (`Blog`, `Header`, etc.), section placement, and schemas. |
 | `settings.json` | Allowed keys and value types for `<b:widget-settings>`. |

@@ -1,6 +1,6 @@
 ---
 title: Widgets
-description: Canonical definitions for official Blogger gadgets, section constraints, and widget-settings schemas.
+description: Canonical definitions for the 26 official Blogger gadgets, section constraints, and widget-settings schemas.
 weight: 3
 ---
 
@@ -8,17 +8,15 @@ Blogger templates organize layout containers and functional presentation units i
 
 ## Canonical Gadget Types
 
-- **`Blog`:** Core post feed, pagination, byline items, comments, and post body.
-- **`Header`:** Blog title, header description, and optional header image.
-- **`BlogArchive`:** Hierarchical archive navigation (flat, hierarchy, dropdown).
-- **`PopularPosts`:** Ranked posts based on visit metrics and timeframes.
-- **`FeaturedPost`:** Highlighted editorial post snippet.
-- **`PageList`:** Static pages navigation links.
-- **`Label`:** Tag cloud and category lists.
-- **`LinkList` & `TextList`:** Custom lists deserialized from settings.
-- **`HTML`:** Arbitrary user-defined HTML/JS snippets.
+`catalogs/widgets.json` formally specifies **26 official canonical gadget types**:
 
-## Canonical Widget ID Invariant
+- **Core & Article:** `Blog` (core post feed, pagination, bylines, comments), `FeaturedPost` (highlighted editorial post), `PopularPosts` (ranked posts by timeframe).
+- **Navigation & Categorization:** `Header` (blog title, description, header image), `PageList` (static pages), `Label` (tag cloud and lists), `BlogArchive` (hierarchical, flat, or dropdown date navigation), `BlogList` (curated blog roll).
+- **Custom Content & Lists:** `LinkList` (custom link lists), `TextList` (bulleted lists), `HTML` (arbitrary user markup), `Text` (formatted text), `Image` (standalone image).
+- **Social, Interaction & Feeds:** `ContactForm` (direct email messaging), `Subscribe` (subscription links), `Feed` (external Atom/RSS reader), `Followers` (Friend Connect community), `BloggerButton` (official platform badge).
+- **Discovery, Monetization & Utilities:** `BlogSearch` (in-blog search engine), `AdSense` (advertising units), `Attribution` (copyright and platform credits), `Profile` (author info), `Stats` (hit counters), `Translate` (Google Translate widget), `ReportAbuse` (platform compliance), `Wikipedia` (reference lookup).
+
+## Canonical Widget ID Invariant (`BX1047`)
 
 Every widget `id` must strictly match the regex pattern:
 

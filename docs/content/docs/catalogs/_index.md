@@ -17,7 +17,7 @@ All platform rules, data contracts, and domain knowledge for the Blogger XML lan
 
 | Group | Master Catalogs | Normative Scope |
 | :--- | :--- | :--- |
-| Syntax & Operators | `directives.json`, `operators.json`, `scopes.json` | Directives, 10-tier Pratt precedence, and lexical resolution. |
+| Syntax & Operators | `directives.json`, `operators.json`, `scopes.json` | Directives, 11-tier Pratt precedence, and lexical resolution. |
 | Type System | `types.json` | Platform subtypes, modifiers, and Theme Designer isolation. |
 | Widgets & Settings | `widgets.json`, `settings.json`, `inclusions.json` | Gadget schemas, setting coercions, and server subroutines. |
 | Environment & Locales | `globals.json`, `messages.json`, `locales.json` | Global objects, localized messages, and BCP 47 locale data. |

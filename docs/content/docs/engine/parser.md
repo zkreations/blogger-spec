@@ -4,7 +4,7 @@ description: XML template parser, Pratt expression parser, AST node types, and t
 weight: 1
 ---
 
-BloggerSpec houses two specialized, zero-runtime-dependency parsing engines: a template parser that converts raw Blogger XML into a typed `BloggerDocumentNode` tree, and a 10-tier Pratt expression parser that analyzes dynamic expressions into formal AST nodes with localized error recovery.
+BloggerSpec houses two specialized, zero-runtime-dependency parsing engines: a template parser that converts raw Blogger XML into a typed `BloggerDocumentNode` tree, and an 11-tier Pratt expression parser that analyzes dynamic expressions into formal AST nodes with localized error recovery.
 
 ## Template Parser
 
@@ -15,6 +15,6 @@ BloggerSpec houses two specialized, zero-runtime-dependency parsing engines: a t
 
 ## Expression Parser
 
-- **Algorithm:** 10-tier Pratt top-down operator precedence parser.
+- **Algorithm:** 11-tier Pratt top-down operator precedence parser.
 - **Recursion Guard:** Enforces `maxDepth: 50` ceiling preventing `RangeError` call stack exhaustion in both strict and tolerant modes.
 - **Tolerant Mode:** Supports parsing partial or syntactically invalid expressions, producing recovery AST nodes paired with diagnostic errors for IDE tooling.

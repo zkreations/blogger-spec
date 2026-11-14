@@ -26,7 +26,7 @@ Blogger templates operate under a three-layer execution model:
 | Topic | Primary Scope | Canonical Document |
 | :--- | :--- | :--- |
 | Directives & Mutations | Conditionals, iteration, subroutines, `<b:class>`, `<b:attr>`. | [Directives](/docs/language/directives) |
-| Expression Grammar | Dual syntax, 10-tier Pratt precedence, lambdas, quotas. | [Expressions](/docs/language/expressions) |
+| Expression Grammar | Dual syntax, 11-tier Pratt precedence, lambdas, quotas. | [Expressions](/docs/language/expressions) |
 | Type System & Scope | Primitives, subtypes, `skin:*` isolation, 6-tier lexical scope. | [Types](/docs/language/types) |
 | Structural Layouts | Sections, widgets, canonical IDs, 6-tier includable dispatch. | [Layouts](/docs/language/layouts) |
 | Stylesheet Theming | Theme Designer tags, compound fonts/backgrounds, `compileSkinCss`. | [Skins](/docs/language/skins) |
