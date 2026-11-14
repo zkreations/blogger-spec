@@ -32,6 +32,7 @@ describe('canonical Views Conformance (hamlet.xml & ReferenceRenderer)', () => {
     'search_query',
     'error_404',
     'preview',
+    'layout_mode',
   ] as const
 
   it('compiles homepage mock context without unresolved tags', () => {
@@ -97,7 +98,9 @@ describe('canonical Views Conformance (hamlet.xml & ReferenceRenderer)', () => {
     expect(output).toContain('id="header"')
     expect(output).toContain('id="content"')
     expect(output).toContain('id="sidebar"')
-    expect(output).toContain('id=\'page-skin-1\'')
+    if (viewId !== 'layout_mode') {
+      expect(output).toContain('id=\'page-skin-1\'')
+    }
     expect(output).toContain('Blog1')
     expect(output).toContain('Header1')
 

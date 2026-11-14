@@ -67,7 +67,7 @@ describe('hamlet e2e golden master conformance suite', () => {
     expect(widgets).toEqual(['PageList1', 'Label1', 'Header1', 'Blog1'])
   })
 
-  it('certifies 100% body class and structural section conformance across all 11 canonical views hermetically', () => {
+  it('certifies 100% body class and structural section conformance across all 12 canonical views hermetically', () => {
     const canonicalViews = [
       'homepage',
       'post',
@@ -80,6 +80,7 @@ describe('hamlet e2e golden master conformance suite', () => {
       'search_query',
       'error_404',
       'preview',
+      'layout_mode',
     ] as const
 
     const renderer = new BloggerReferenceRenderer({ emitWrappers: true })

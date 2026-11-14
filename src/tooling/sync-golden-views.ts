@@ -19,6 +19,7 @@ export const CANONICAL_VIEWS = [
   'search_query',
   'error_404',
   'preview',
+  'layout_mode',
 ] as const
 
 export async function syncGoldenViews(): Promise<boolean> {
