@@ -14,3 +14,8 @@ fixtures/index.json
 .DS_Store
 __pycache__/
 *.pyc
+
+# Documentation site build artifacts (Hugo)
+docs/public/
+docs/resources/
+docs/.hugo_build.lock

@@ -1,0 +1,86 @@
+title = 'BloggerSpec'
+baseURL = 'https://blogger-spec.hudocs.com'
+defaultContentLanguage = 'en'
+theme = 'github.com/zkreations/hudocs/v2'
+enableRobotsTXT = true
+enableInlineShortcodes = true
+enableGitInfo = true
+disableKinds = [
+  "taxonomy",
+  "term"
+]
+summaryLength = 20
+
+[outputFormats.llms]
+  mediaType = 'text/plain'
+  baseName = 'llms'
+  isPlainText = true
+  notAlternative = true
+
+[outputFormats.llmsfull]
+  mediaType = 'text/plain'
+  baseName = 'llms-full'
+  isPlainText = true
+  notAlternative = true
+
+[outputs]
+home = [
+  'HTML',
+  'RSS',
+  'llms',
+  'llmsfull'
+]
+
+[markup]
+
+[markup.highlight]
+noClasses = false
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[markup.tableOfContents]
+startLevel = 2
+endLevel = 3
+
+[params]
+description = 'Normative specification authority, canonical catalogs, and AST engine for Blogger XML templates.'
+
+# Branding
+brand_icon = 'book-open'
+
+# Documentation
+docs_section = 'docs'
+docs_versions = false
+docs_expand_tree = false
+docs_pagination = true
+docs_edit_url = 'https://github.com/zkreations/blogger-spec/tree/main/docs/content'
+docs_ai = false
+
+# Code blocks
+code_theme = 'duotone-dark'
+
+# Dates and footer
+posts_date_format = 'January 2, 2006'
+footer_date_format = 'January 2, 2006'
+footer_copyright = 'Created by [@zkreations](https://zkreations.com)'
+
+[menus]
+  [[menus.main]]
+    name = 'Docs'
+    pageRef = '/docs/start'
+    weight = 1
+
+  [[menus.main]]
+    name = 'GitHub'
+    url = 'https://github.com/zkreations/blogger-spec'
+    weight = 2
+    [menus.main.params]
+      icon = 'github'
+
+  [[menus.main]]
+    name = 'npm'
+    url = 'https://www.npmjs.com/package/blogger-spec'
+    weight = 3
+    [menus.main.params]
+      icon = 'npm'
