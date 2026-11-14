@@ -1,3 +1,5 @@
+import { getSpecCatalog } from '../../catalogs/index.js'
+
 function normalizeSnippetWhitespace(str: string, linebreaks: boolean): string {
   const normalizedBreaks = str.replace(/\r\n?/g, '\n')
   if (!linebreaks) {
@@ -7,8 +9,10 @@ function normalizeSnippetWhitespace(str: string, linebreaks: boolean): string {
 }
 
 export function snippet(text: any, options?: any): string {
-  const rawLen = options?.length !== undefined ? Number(options.length) : 1000
-  const len = Number.isFinite(rawLen) ? Math.min(1000, Math.max(50, Math.floor(rawLen))) : 1000
+  const snippetsConfig = getSpecCatalog().getBlogSnippets()
+  const maxLen = snippetsConfig?.longLengthMax ?? 1000
+  const rawLen = options?.length !== undefined ? Number(options.length) : maxLen
+  const len = Number.isFinite(rawLen) ? Math.min(maxLen, Math.max(50, Math.floor(rawLen))) : maxLen
   const links = options?.links !== undefined ? Boolean(options.links) : true
   const linebreaks = options?.linebreaks !== undefined ? Boolean(options.linebreaks) : true
   const ellipsis = options?.ellipsis !== undefined ? Boolean(options.ellipsis) : true

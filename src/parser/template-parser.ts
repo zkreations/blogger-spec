@@ -477,9 +477,10 @@ export function parseTemplate(
       appendChild(node)
       if (!effectiveSelfClosing) {
         const directiveDepth = elementStack.filter(n => n.type === 'Directive').length
-        if (directiveDepth >= 50) {
+        const maxNesting = catalog.getDirectiveNestingLimit()
+        if (directiveDepth >= maxNesting) {
           const pos = getPositionAt(cursor, lineOffsets)
-          const msg = 'Maximum directive nesting depth of 50 exceeded.'
+          const msg = `Maximum directive nesting depth of ${maxNesting} exceeded.`
           if (tolerant) {
             diagnostics.push({ message: msg, line: pos.line, column: pos.column, offset: pos.offset ?? 0 })
           }
