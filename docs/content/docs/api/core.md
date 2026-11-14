@@ -82,11 +82,19 @@ async function resolveBloggerContext(
 ### Parameters
 
 - `config` (`BloggerContextConfig`, optional):
-  - `view` (`BloggerViewId`): Canonical view ID (e.g. `'homepage'`, `'post'`, `'static_page'`). Defaults to `'homepage'`.
-  - `blogId` (`string`): Target blog ID.
-  - `targetUrl` (`string`): Current URL route for context derivation.
-  - `locale` (`string`): BCP 47 language tag (e.g. `'es'`, `'en'`).
-  - `config` (`BloggerProjectConfig`): Local project configuration.
-  - `templateXml` (`string`): Template XML for dynamic widget discovery.
-  - `overrides` (`Record<string, any>`): Custom context overrides.
+  - `blogId` (`string`): Target blog ID (required in online mode when not provided in `config.blog.id`).
+  - `view` (`BloggerViewId`): Canonical view ID (`'homepage'`, `'post'`, `'static_page'`, etc.). Defaults to `'homepage'`.
+  - `targetId` (`string`): Target post or page ID when resolving `'post'` or `'static_page'`.
+  - `targetUrl` (`string`): Current request URL path or full URI for routing context derivation.
+  - `config` (`BloggerBlogConfiguration`): Local project configuration (`blogger.config.json`).
+  - `urlMode` (`'remote' | 'local' | 'relative'`): Internal URL remapping strategy. Defaults to `'relative'`.
+  - `baseUrl` (`string`): Base origin for local development remapping.
+  - `offline` (`boolean`): Offline mode skipping external HTTP calls and falling back cleanly.
+  - `templateXml` (`string`): Template XML markup for dynamic widget discovery and `<b:widget-settings>` hydration.
+  - `templateAst` (`BloggerDocumentNode`): Pre-parsed AST as a high-performance alternative to `templateXml`.
+  - `cookieChoices` (`boolean`): Injects the official cookie notice banner (`id="cookieChoiceInfo"`).
+  - `commentFrameBaseUrl` (`string`): Custom origin for the comment iframe to avoid CORS issues.
+  - `overrides` (`Record<string, any>`): Explicit top-precedence context property overrides.
+  - `fetch` (`typeof fetch`): Custom fetch injection for hermetic environments and unit testing.
+  - `cache` (`{ ttlMs?: number }`): In-memory cache TTL configuration.
 ```
