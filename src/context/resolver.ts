@@ -468,7 +468,7 @@ function hydrateAllWidgets(options: WidgetHydrationOptions): void {
             links[0] = { ...links[0], title: String(explicitHomeTitle) }
           }
         }
-        const title = instanceOverrides?.title || instanceConfig?.title || widget.title || genericTypeConfig?.title || merged.title || spec.getWidgetDefaultTitle('PageList', blogLocale) || 'Pages'
+        const title = instanceOverrides?.title || instanceConfig?.title || widget.title || genericTypeConfig?.title || merged.title || spec.getWidgetDefaultTitle('PageList', blogLocale)
         context.widgetData[widgetId] = {
           ...merged,
           title,
@@ -484,7 +484,7 @@ function hydrateAllWidgets(options: WidgetHydrationOptions): void {
           labels = [...normalizedLabels].sort((a: any, b: any) => (b.count ?? 0) - (a.count ?? 0) || a.name.localeCompare(b.name))
         }
         const showFreqNumbers = merged.showFreqNumbers ?? (config.overrides?.widgetData?.[widgetId]?.showFreqNumbers ?? false)
-        const title = instanceOverrides?.title || instanceConfig?.title || widget.title || genericTypeConfig?.title || merged.title || spec.getWidgetDefaultTitle('Label', blogLocale) || 'Labels'
+        const title = instanceOverrides?.title || instanceConfig?.title || widget.title || genericTypeConfig?.title || merged.title || spec.getWidgetDefaultTitle('Label', blogLocale)
         context.widgetData[widgetId] = {
           ...merged,
           title,
@@ -509,7 +509,7 @@ function hydrateAllWidgets(options: WidgetHydrationOptions): void {
       }
 
       case 'Blog': {
-        const title = merged.title || widget.title || spec.getWidgetDefaultTitle('Blog', blogLocale) || 'Blog Posts'
+        const title = merged.title || widget.title || spec.getWidgetDefaultTitle('Blog', blogLocale)
         const baseBylineItems: Array<{ name: string, label: string }> = Array.isArray(merged.allBylineItems) && merged.allBylineItems.length > 0
           ? merged.allBylineItems
           : (Array.isArray(blog1.allBylineItems) && blog1.allBylineItems.length > 0
@@ -603,7 +603,7 @@ function hydrateAllWidgets(options: WidgetHydrationOptions): void {
       }
 
       case 'Attribution': {
-        const blogTitle = (context.blog as any)?.title || headerData?.title || 'Blog'
+        const blogTitle = (context.blog as any)?.title || headerData?.title || ''
         const attributionDefaults = buildAttributionData(blogTitle, spec, blogLocale, {
           posts: normalizedPosts,
         })
@@ -1294,7 +1294,8 @@ export async function resolveBloggerContext(
         }
       }
       else if (viewId === 'post_listing' || updatedMax || updatedMin) {
-        const pageSize = maxResults || 8
+        const defaultPageSize = spec.getBlogPagination()?.defaultPostsPerPage ?? 7
+        const pageSize = maxResults || defaultPageSize
         if (startIndex <= pageSize) {
           blog1.newerPageUrl = mapper.mapUrl(blogMeta.homepageUrl || (blogOrigin ? `${blogOrigin}/` : '/'))
         }
@@ -1345,7 +1346,7 @@ export async function resolveBloggerContext(
 
   blog1.posts = activePosts
   blog1.numPosts = activePosts.length
-  blog1.title = spec.getWidgetDefaultTitle('Blog', blogLocale) || 'Blog Posts'
+  blog1.title = spec.getWidgetDefaultTitle('Blog', blogLocale)
   context.widgetData.Blog1 = blog1
   context.widgetData.Blog = blog1
 

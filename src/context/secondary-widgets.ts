@@ -37,15 +37,15 @@ export function buildContactFormData(
   return {
     title: spec.getWidgetDefaultTitle('ContactForm', locale),
     submitUrl,
-    contactFormNameMsg: spec.getTranslation('widgets.ContactForm.contactFormNameMsg', locale) ?? 'Name',
-    contactFormEmailMsg: spec.getTranslation('widgets.ContactForm.contactFormEmailMsg', locale) ?? 'Email',
-    contactFormMessageMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageMsg', locale) ?? 'Message',
-    contactFormSendMsg: spec.getTranslation('widgets.ContactForm.contactFormSendMsg', locale) ?? 'Send',
-    contactFormMessageSendingMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageSendingMsg', locale) ?? 'Sending...',
-    contactFormMessageSentMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageSentMsg', locale) ?? 'Your message has been sent.',
-    contactFormMessageNotSentMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageNotSentMsg', locale) ?? 'Could not send message. Please try again later.',
-    contactFormEmptyMessageMsg: spec.getTranslation('widgets.ContactForm.contactFormEmptyMessageMsg', locale) ?? 'Message field cannot be empty.',
-    contactFormInvalidEmailMsg: spec.getTranslation('widgets.ContactForm.contactFormInvalidEmailMsg', locale) ?? 'A valid email is required.',
+    contactFormNameMsg: spec.getTranslation('widgets.ContactForm.contactFormNameMsg', locale) ?? '',
+    contactFormEmailMsg: spec.getTranslation('widgets.ContactForm.contactFormEmailMsg', locale) ?? '',
+    contactFormMessageMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageMsg', locale) ?? '',
+    contactFormSendMsg: spec.getTranslation('widgets.ContactForm.contactFormSendMsg', locale) ?? '',
+    contactFormMessageSendingMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageSendingMsg', locale) ?? '',
+    contactFormMessageSentMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageSentMsg', locale) ?? '',
+    contactFormMessageNotSentMsg: spec.getTranslation('widgets.ContactForm.contactFormMessageNotSentMsg', locale) ?? '',
+    contactFormEmptyMessageMsg: spec.getTranslation('widgets.ContactForm.contactFormEmptyMessageMsg', locale) ?? '',
+    contactFormInvalidEmailMsg: spec.getTranslation('widgets.ContactForm.contactFormInvalidEmailMsg', locale) ?? '',
   }
 }
 
@@ -74,10 +74,12 @@ export function buildAttributionData(
     }
   }
   const copyrightYear = resolvedYear ?? new Date().getFullYear()
-  const poweredBy = spec.getLocalizedMessage('poweredByBlogger', locale) ?? 'Powered by Blogger'
+  const poweredBy = spec.getLocalizedMessage('poweredByBlogger', locale) ?? ''
+  const blogPart = blogTitle ? ` ${blogTitle}.` : ''
+  const poweredPart = poweredBy ? ` ${poweredBy}.` : ''
   return {
     title: spec.getWidgetDefaultTitle('Attribution', locale),
-    copyright: `Copyright ${copyrightYear} ${blogTitle}. ${poweredBy}.`,
+    copyright: `Copyright ${copyrightYear}${blogPart}${poweredPart}`,
     bloggerUrl: 'https://www.blogger.com',
     imageAuthor: '',
   }

@@ -240,7 +240,8 @@ export function validateExpression(
       const replacement = tok.type === 'STRICT_EQ' ? '==' : '!='
       const start = baseStart + mapOffset(tok.start.offset)
       const end = baseStart + mapOffset(tok.end.offset)
-      pushDiagnostic(diagnostics, catalog, 'BX1018', fakeToken, {
+      const diagCode = catalog.getProhibitedSyntaxDiagnostic('js_equality_operators')
+      pushDiagnostic(diagnostics, catalog, diagCode, fakeToken, {
         attribute: context?.attributeName,
         end,
         fixes: [{
@@ -256,7 +257,8 @@ export function validateExpression(
 
     // BX1020: Prohibited Literal Null
     if (tok.type === 'NULL') {
-      pushDiagnostic(diagnostics, catalog, 'BX1020', fakeToken, {
+      const diagCode = catalog.getExpressionDiagnostic('prohibited_null_literal')
+      pushDiagnostic(diagnostics, catalog, diagCode, fakeToken, {
         attribute: context?.attributeName,
         end: baseStart + mapOffset(tok.end.offset),
         message: `Literal 'null' is not supported in Blogger expressions.`,
@@ -269,7 +271,8 @@ export function validateExpression(
       const next1 = tokens[i + 1]!
       const next2 = tokens[i + 2]!
       if (next1.type === 'IDENTIFIER' && next2.type === 'LPAREN') {
-        pushDiagnostic(diagnostics, catalog, 'BX1017', fakeToken, {
+        const diagCode = catalog.getProhibitedSyntaxDiagnostic('js_methods')
+        pushDiagnostic(diagnostics, catalog, diagCode, fakeToken, {
           attribute: context?.attributeName,
           end: baseStart + mapOffset(next2.end.offset),
           message: `JavaScript method call '.${next1.value}()' is prohibited in Blogger expressions. Use native operators and helpers.`,
@@ -460,7 +463,8 @@ export function validateExpression(
           const replacement = (val === 'true' || val === 'yes') ? 'true' : 'false'
           const start = baseStart + mapOffset(nextTok.start.offset)
           const end = baseStart + mapOffset(nextTok.end.offset)
-          pushDiagnostic(diagnostics, catalog, 'BX1038', fakeToken, {
+          const diagCode = catalog.getExpressionDiagnostic('string_boolean_in_expression')
+          pushDiagnostic(diagnostics, catalog, diagCode, fakeToken, {
             attribute: context?.attributeName,
             end,
             fixes: [{
@@ -514,10 +518,11 @@ export function validateExpression(
       if (node.type === 'CallExpression') {
         const callee = node.callee
         if (!catalog.isFunctionalOperator(callee)) {
-          const diagRule = catalog.getDiagnostic('BX1017')
+          const diagCode = catalog.getProhibitedSyntaxDiagnostic('js_methods')
+          const diagRule = catalog.getDiagnostic(diagCode)
           const startOffset = node.loc?.start.offset ?? 0
           const endOffset = node.loc?.end.offset ?? startOffset + callee.length
-          pushDiagnostic(diagnostics, catalog, 'BX1017', fakeToken, {
+          pushDiagnostic(diagnostics, catalog, diagCode, fakeToken, {
             attribute: context?.attributeName,
             end: baseStart + mapOffset(endOffset),
             message: diagRule?.message ?? `Standalone function call '${callee}()' is invalid in Blogger expressions. Blogger expressions only support canonical operators.`,

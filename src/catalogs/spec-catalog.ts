@@ -670,7 +670,7 @@ export class SpecCatalog {
         disallowedValues: [],
         violations: presentAttributes.map(attr => ({
           attribute: attr,
-          code: 'BX1025' as BloggerDiagnosticCode,
+          code: this.getStandardDiagnostic('unknown_directive'),
           message: `Unknown directive <${tagName}>.`,
           ...attributesRecord[attr],
         })),
@@ -732,7 +732,7 @@ export class SpecCatalog {
         })
         violations.push({
           attribute: attr,
-          code: 'BX1024' as BloggerDiagnosticCode,
+          code: this.getStandardDiagnostic('deprecated_attribute'),
           message: `Attribute '${attr}' on <${tagName}> is deprecated. ${depMeta.reason || ''}`.trim(),
           ...tokenInfo,
         })
@@ -743,7 +743,7 @@ export class SpecCatalog {
           invalidExpressions.push(attr)
           violations.push({
             attribute: attr,
-            code: 'BX1042' as BloggerDiagnosticCode,
+            code: this.getStandardDiagnostic('disallowed_expression_attribute'),
             message: `Attribute '${attr}' on <${tagName}> does not support expressions.`,
             ...tokenInfo,
           })
@@ -788,7 +788,7 @@ export class SpecCatalog {
         unknown.push(attr)
         violations.push({
           attribute: attr,
-          code: 'BX1025' as BloggerDiagnosticCode,
+          code: this.getStandardDiagnostic('unknown_directive'),
           message: `Unknown attribute '${attr}' on <${tagName}>.`,
           ...tokenInfo,
         })
@@ -820,7 +820,7 @@ export class SpecCatalog {
         missingRequired.push(attrName)
         violations.push({
           attribute: attrName,
-          code: 'BX1022' as BloggerDiagnosticCode,
+          code: this.getStandardDiagnostic('missing_required_attribute'),
           message: `Mandatory attribute '${attrName}' is missing on <${tagName}>.`,
         })
       }
@@ -1602,6 +1602,24 @@ export class SpecCatalog {
     const code = messagesData?.domain_metadata?.standard_diagnostics?.[key]
     if (!code) {
       throw new Error(`Message standard diagnostic '${key}' is not defined in messages catalog domain_metadata.standard_diagnostics`)
+    }
+    return code
+  }
+
+  getProhibitedSyntaxDiagnostic(key: 'js_methods' | 'js_equality_operators'): BloggerDiagnosticCode {
+    const operatorsData = this.store.getCatalog('operators') as any
+    const code = operatorsData?.domain_metadata?.prohibited_syntax?.[key]?.diagnostic
+    if (!code) {
+      throw new Error(`Prohibited syntax diagnostic '${key}' is not defined in operators catalog domain_metadata.prohibited_syntax`)
+    }
+    return code
+  }
+
+  getExpressionDiagnostic(key: 'prohibited_null_literal' | 'string_boolean_in_expression'): BloggerDiagnosticCode {
+    const typesData = this.store.getCatalog('types') as any
+    const code = typesData?.domain_metadata?.expression_diagnostics?.[key]
+    if (!code) {
+      throw new Error(`Expression diagnostic '${key}' is not defined in types catalog domain_metadata.expression_diagnostics`)
     }
     return code
   }

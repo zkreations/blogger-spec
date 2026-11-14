@@ -71,7 +71,7 @@ export function expandServerInclusion(
   const incDef = catalog.getInclusion(baseName)
 
   if (isSuper) {
-    const diagCode = 'BX1058'
+    const diagCode = catalog.getInclusionDiagnostic('super_inclusion_warning')
     const diagRule = catalog.getDiagnostic(diagCode)
     if (diagRule) {
       diagnostics.push({
@@ -86,7 +86,7 @@ export function expandServerInclusion(
   }
 
   if (!incDef && !isSuper) {
-    const diagCode = 'BX1037'
+    const diagCode = catalog.getInclusionDiagnostic('unresolved_inclusion')
     const diagRule = catalog.getDiagnostic(diagCode)
     if (diagRule) {
       diagnostics.push({
@@ -112,7 +112,7 @@ export function expandServerInclusion(
   const isPortable = safety === 'portable'
 
   if (safety === 'theme_bound') {
-    const diagCode = 'BX1059'
+    const diagCode = catalog.getInclusionDiagnostic('theme_bound_inclusion_warning')
     const diagRule = catalog.getDiagnostic(diagCode)
     if (diagRule) {
       const depMsg = incDef?.theme_dependency ? ` (${incDef.theme_dependency.failure_reason})` : ''
@@ -128,7 +128,7 @@ export function expandServerInclusion(
   }
 
   if (incDef?.deprecated || safety === 'deprecated') {
-    const diagCode = 'BX1024'
+    const diagCode = catalog.getStandardDiagnostic('deprecated_attribute')
     const diagRule = catalog.getDiagnostic(diagCode)
     if (diagRule) {
       diagnostics.push({
