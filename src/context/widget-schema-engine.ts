@@ -123,8 +123,8 @@ export function instantiateWidgetFromCatalog(options: WidgetInstantiationOptions
 
   // 1. Determine preliminary state for condition evaluation (e.g. team toggle)
   const preliminaryTeam = instanceOverrides?.team
-    ?? instanceConfig?.team
     ?? templateSettings?.team
+    ?? instanceConfig?.team
     ?? genericTypeConfig?.team
     ?? merged.team
     ?? false
@@ -143,19 +143,19 @@ export function instantiateWidgetFromCatalog(options: WidgetInstantiationOptions
       continue
     }
 
-    // Look up value across precedence layers (overrides > config > template settings > type config > merged)
+    // Look up value across precedence layers (overrides > template settings > instance config > type config > merged)
     const aliasKey = Object.keys(aliases).find(a => aliases[a] === propName)
 
     let val = instanceOverrides?.[propName]
-      ?? instanceConfig?.[propName]
       ?? templateSettings?.[propName]
+      ?? instanceConfig?.[propName]
       ?? genericTypeConfig?.[propName]
       ?? merged[propName]
 
     if (val === undefined && aliasKey) {
       val = instanceOverrides?.[aliasKey]
-        ?? instanceConfig?.[aliasKey]
         ?? templateSettings?.[aliasKey]
+        ?? instanceConfig?.[aliasKey]
         ?? genericTypeConfig?.[aliasKey]
         ?? merged[aliasKey]
     }
@@ -211,9 +211,9 @@ export function instantiateWidgetFromCatalog(options: WidgetInstantiationOptions
   const boundResult = bindWidgetSettingsToData(result, type, spec)
 
   const title = instanceOverrides?.title
-    || instanceConfig?.title
     || templateSettings?.title
     || widget.title
+    || instanceConfig?.title
     || genericTypeConfig?.title
     || boundResult.title
     || spec.getWidgetDefaultTitle(type, blogLocale)

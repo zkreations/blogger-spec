@@ -399,11 +399,11 @@ function hydrateAllWidgets(options: WidgetHydrationOptions): void {
     if (genericTypeConfig) {
       rawMerged = deepMerge(rawMerged, genericTypeConfig)
     }
-    if (templateSettings) {
-      rawMerged = deepMerge(rawMerged, templateSettings)
-    }
     if (instanceConfig) {
       rawMerged = deepMerge(rawMerged, instanceConfig)
+    }
+    if (templateSettings) {
+      rawMerged = deepMerge(rawMerged, templateSettings)
     }
     if (instanceOverrides) {
       rawMerged = deepMerge(rawMerged, instanceOverrides)

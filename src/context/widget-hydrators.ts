@@ -161,8 +161,8 @@ export function hydratePageListWidget(ctx: HydrateWidgetContext, baseWidget?: Re
   } = ctx
 
   const rawLinks = instanceOverrides?.links
-    || instanceConfig?.links
     || templateSettings?.links
+    || instanceConfig?.links
     || genericTypeConfig?.links
     || base.links
 
@@ -179,9 +179,10 @@ export function hydratePageListWidget(ctx: HydrateWidgetContext, baseWidget?: Re
     links = normalizedPages.slice()
   }
 
-  const explicitHomeTitle = instanceOverrides?.homeTitle || instanceConfig?.homeTitle || templateSettings?.homeTitle
-  const hasExplicitInstanceLinks = Array.isArray(instanceConfig?.links) || Array.isArray(instanceOverrides?.links)
-  if (explicitHomeTitle && links.length > 0 && links[0] && !hasExplicitInstanceLinks) {
+  const explicitHomeTitle = instanceOverrides?.homeTitle || templateSettings?.homeTitle || instanceConfig?.homeTitle
+  const hasOverridingLinks = Array.isArray(instanceOverrides?.links)
+    || (Array.isArray(templateSettings?.links) && !templateSettings?.homeTitle)
+  if (explicitHomeTitle && links.length > 0 && links[0] && !hasOverridingLinks) {
     if (links[0].href === '/' || links[0].href === mapper.mapUrl('/')) {
       links[0] = { ...links[0], title: String(explicitHomeTitle) }
     }
@@ -236,24 +237,24 @@ export function hydrateHeaderWidget(ctx: HydrateWidgetContext, baseWidget?: Reco
   const { instanceConfig, instanceOverrides, genericTypeConfig, headerData, widget } = ctx
 
   const title = instanceOverrides?.title
-    || instanceConfig?.title
     || (widget.settings as any)?.title
     || widget.title
+    || instanceConfig?.title
     || genericTypeConfig?.title
     || headerData.title
     || base.title
     || ctx.spec.getWidgetDefaultTitle('Header', ctx.blogLocale)
 
   const description = instanceOverrides?.description
-    || instanceConfig?.description
     || (widget.settings as any)?.description
+    || instanceConfig?.description
     || genericTypeConfig?.description
     || headerData.description
     || base.description
 
   const url = instanceOverrides?.url
-    || instanceConfig?.url
     || (widget.settings as any)?.url
+    || instanceConfig?.url
     || genericTypeConfig?.url
     || headerData.url
     || base.url
@@ -466,8 +467,8 @@ export function hydrateListWidget(ctx: HydrateWidgetContext, baseWidget?: Record
   })
 
   const rawLinks = ctx.instanceOverrides?.links
-    || ctx.instanceConfig?.links
     || ctx.templateSettings?.links
+    || ctx.instanceConfig?.links
     || ctx.genericTypeConfig?.links
     || base.links
     || []
@@ -483,7 +484,7 @@ export function hydrateListWidget(ctx: HydrateWidgetContext, baseWidget?: Record
     else if (base.sorting === 'reverse_alphabetical' || base.sorting === 'reverse-alpha') {
       links = [...links].sort((a, b) => b.name.localeCompare(a.name))
     }
-    const explicitShownum = ctx.instanceOverrides?.shownum ?? ctx.instanceConfig?.shownum ?? ctx.templateSettings?.shownum
+    const explicitShownum = ctx.instanceOverrides?.shownum ?? ctx.templateSettings?.shownum ?? ctx.instanceConfig?.shownum
     if (typeof explicitShownum === 'number' && explicitShownum > 0) {
       links = links.slice(0, explicitShownum)
     }
@@ -520,8 +521,8 @@ export function hydrateImageWidget(ctx: HydrateWidgetContext, baseWidget?: Recor
   })
 
   const alt = ctx.instanceOverrides?.alt
-    ?? ctx.instanceConfig?.alt
     ?? ctx.templateSettings?.alt
+    ?? ctx.instanceConfig?.alt
     ?? ctx.genericTypeConfig?.alt
     ?? base.alt
     ?? base.caption
