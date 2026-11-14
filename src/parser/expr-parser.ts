@@ -276,7 +276,7 @@ export class ExpressionParser {
 
       case 'BANG': {
         this.advance()
-        const notBp = this.catalog.getOperatorBindingPower('!') ?? this.catalog.getLevelBindingPower(6) ?? 50
+        const notBp = this.catalog.getOperatorBindingPower('!') ?? this.catalog.getLevelBindingPower(7) ?? 50
         const argument = this.parseExpression(notBp)
         const node: BloggerUnaryExpressionNode = {
           type: 'UnaryExpression',
@@ -297,7 +297,7 @@ export class ExpressionParser {
         const idLower = idToken.value.toLowerCase()
 
         if (idLower === 'not') {
-          const notBp = this.catalog.getOperatorBindingPower('not') ?? this.catalog.getLevelBindingPower(6) ?? 50
+          const notBp = this.catalog.getOperatorBindingPower('not') ?? this.catalog.getLevelBindingPower(7) ?? 50
           const argument = this.parseExpression(notBp)
           const node: BloggerUnaryExpressionNode = {
             type: 'UnaryExpression',
@@ -767,9 +767,9 @@ export class ExpressionParser {
     }
 
     if (token.type === 'QUESTION') {
-      const bp = this.catalog.getOperatorBindingPower('? :') ?? this.catalog.getLevelBindingPower(9) ?? 20
+      const bp = this.catalog.getOperatorBindingPower('? :') ?? this.catalog.getLevelBindingPower(10) ?? 20
       const isRightAssociative = this.catalog.isRightAssociativeOperator('? :')
-      return { name: '?', bindingPower: bp, catalogLevel: 9, isTernary: true, isRightAssociative }
+      return { name: '?', bindingPower: bp, catalogLevel: 10, isTernary: true, isRightAssociative }
     }
 
     const symbol = INFIX_TOKEN_SYMBOLS[token.type]
@@ -815,8 +815,8 @@ export class ExpressionParser {
       }
 
       if (this.catalog.getLambdaKeywords().has(lower)) {
-        const bp = this.catalog.getOperatorBindingPower(lower) ?? this.catalog.getLevelBindingPower(10) ?? 10
-        return { name: token.value, bindingPower: bp, catalogLevel: 10, isLambda: true }
+        const bp = this.catalog.getOperatorBindingPower(lower) ?? this.catalog.getLevelBindingPower(11) ?? 10
+        return { name: token.value, bindingPower: bp, catalogLevel: 11, isLambda: true }
       }
 
       const precLevel = this.catalog.getOperatorPrecedence(token.value) ?? this.catalog.getOperatorPrecedence(lower)
