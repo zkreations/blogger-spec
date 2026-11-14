@@ -9,6 +9,7 @@ import {
   buildPopularPostsData,
 } from './secondary-widgets.js'
 import { normalizeLinkItem } from './widget-extractor.js'
+import { instantiateWidgetFromCatalog } from './widget-schema-engine.js'
 
 export interface HydrateWidgetContext {
   readonly widgetId: string
@@ -83,134 +84,79 @@ export function getDefaultBylineItems(spec: SpecCatalog, locale: string): Array<
   ]
 }
 
-export function hydrateProfileWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const {
-    widget,
-    merged,
-    instanceConfig,
-    instanceOverrides,
-    genericTypeConfig,
-    spec,
-    blogLocale,
-    blogAuthor,
-  } = ctx
+export function hydrateProfileWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
 
-  const displayname = instanceOverrides?.displayname
-    ?? instanceConfig?.displayname
-    ?? genericTypeConfig?.displayname
-    ?? merged.displayname
-    ?? instanceOverrides?.author
-    ?? instanceConfig?.author
-    ?? genericTypeConfig?.author
-    ?? merged.author
-    ?? blogAuthor.displayname
+  const displayname = base.displayname || ctx.blogAuthor.displayname
+  const userUrl = base.userUrl || ctx.blogAuthor.userUrl
 
-  const aboutme = instanceOverrides?.aboutme
-    ?? instanceConfig?.aboutme
-    ?? genericTypeConfig?.aboutme
-    ?? merged.aboutme
-    ?? instanceOverrides?.snippet
-    ?? instanceConfig?.snippet
-    ?? genericTypeConfig?.snippet
-    ?? merged.snippet
-    ?? ''
-
-  const location = instanceOverrides?.location
-    ?? instanceConfig?.location
-    ?? genericTypeConfig?.location
-    ?? merged.location
-    ?? ''
-
-  const userUrl = instanceOverrides?.userUrl
-    ?? instanceConfig?.userUrl
-    ?? genericTypeConfig?.userUrl
-    ?? merged.userUrl
-    ?? instanceOverrides?.profileUrl
-    ?? instanceConfig?.profileUrl
-    ?? genericTypeConfig?.profileUrl
-    ?? merged.profileUrl
-    ?? blogAuthor.userUrl
-
-  // Resolve authorPhoto: handle object or string avatar alias
-  const rawPhoto = instanceOverrides?.authorPhoto
-    ?? instanceConfig?.authorPhoto
-    ?? genericTypeConfig?.authorPhoto
-    ?? merged.authorPhoto
-  const rawAvatarStr = instanceOverrides?.avatar
-    ?? instanceConfig?.avatar
-    ?? genericTypeConfig?.avatar
-    ?? merged.avatar
-
-  let authorPhoto: Record<string, any>
-  if (rawPhoto && typeof rawPhoto === 'object') {
-    const imgUrl = rawPhoto.image || rawPhoto.url || blogAuthor.authorPhoto.image
+  let authorPhoto = base.authorPhoto
+  if (!authorPhoto || typeof authorPhoto !== 'object' || !authorPhoto.image) {
+    authorPhoto = { ...ctx.blogAuthor.authorPhoto, alt: displayname }
+  }
+  else {
+    const imgUrl = authorPhoto.image || authorPhoto.url || ctx.blogAuthor.authorPhoto.image
     authorPhoto = {
       image: imgUrl,
       url: imgUrl,
-      alt: rawPhoto.alt || displayname,
-      width: rawPhoto.width || 80,
-      height: rawPhoto.height || 80,
+      alt: authorPhoto.alt || displayname,
+      width: authorPhoto.width || 80,
+      height: authorPhoto.height || 80,
     }
-  }
-  else if (typeof rawAvatarStr === 'string' && rawAvatarStr) {
-    authorPhoto = {
-      image: rawAvatarStr,
-      url: rawAvatarStr,
-      alt: displayname,
-      width: 80,
-      height: 80,
-    }
-  }
-  else {
-    authorPhoto = { ...blogAuthor.authorPhoto, alt: displayname }
   }
 
-  const team = Boolean(merged.team ?? false)
-  const showaboutme = merged.showaboutme !== false
-  const showlocation = merged.showlocation !== false
-  const hasgoogleprofile = merged.hasgoogleprofile
+  const aboutme = base.aboutme ?? ''
+  const location = base.location ?? ''
+  const showaboutme = base.showaboutme !== false
+  const showlocation = base.showlocation !== false
+  const team = Boolean(base.team ?? false)
+  const hasgoogleprofile = base.hasgoogleprofile
     ?? (userUrl.includes('blogger.com') || userUrl.includes('google.com'))
 
-  const title = instanceOverrides?.title
-    ?? instanceConfig?.title
-    ?? widget.title
-    ?? genericTypeConfig?.title
-    ?? merged.title
-    ?? spec.getWidgetDefaultTitle('Profile', blogLocale)
-
-  const viewProfileMsg = merged.viewProfileMsg
-    ?? spec.getTranslation('widgets.Profile.viewProfileMsg', blogLocale)
-    ?? spec.getLocalizedMessage('widgets.Profile.viewProfileMsg', blogLocale)
-    ?? 'View my complete profile'
-
   return {
-    ...merged,
-    title,
+    ...base,
     displayname,
-    aboutme,
-    location,
     userUrl,
     authorPhoto,
-    team,
+    aboutme,
+    location,
     showaboutme,
     showlocation,
+    team,
     hasgoogleprofile,
-    viewProfileMsg,
   }
 }
 
-export function hydratePageListWidget(ctx: HydrateWidgetContext): Record<string, any> {
+export function hydratePageListWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
+
   const {
-    widget,
-    merged,
     instanceConfig,
     instanceOverrides,
-    genericTypeConfig,
     templateSettings,
-    spec,
+    genericTypeConfig,
     mapper,
     currentPath,
-    blogLocale,
     normalizedPages,
   } = ctx
 
@@ -218,7 +164,7 @@ export function hydratePageListWidget(ctx: HydrateWidgetContext): Record<string,
     || instanceConfig?.links
     || templateSettings?.links
     || genericTypeConfig?.links
-    || merged.links
+    || base.links
 
   let links: any[]
   if (Array.isArray(rawLinks) && rawLinks.length > 0) {
@@ -241,126 +187,123 @@ export function hydratePageListWidget(ctx: HydrateWidgetContext): Record<string,
     }
   }
 
-  const title = instanceOverrides?.title
-    || instanceConfig?.title
-    || widget.title
-    || genericTypeConfig?.title
-    || merged.title
-    || spec.getWidgetDefaultTitle('PageList', blogLocale)
-
   return {
-    ...merged,
-    title,
+    ...base,
     links,
   }
 }
 
-export function hydrateLabelWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const {
-    widget,
-    merged,
-    instanceConfig,
-    instanceOverrides,
-    genericTypeConfig,
-    spec,
-    blogLocale,
-    normalizedLabels,
-  } = ctx
+export function hydrateLabelWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
 
-  const sorting = (merged.sorting || instanceOverrides?.sorting || 'ALPHA').toUpperCase()
-  let labels = normalizedLabels
+  const sorting = (base.sorting || ctx.instanceOverrides?.sorting || 'ALPHA').toUpperCase()
+  let labels = ctx.normalizedLabels
   if (sorting === 'FREQUENCY') {
-    labels = [...normalizedLabels].sort((a: any, b: any) => (b.count ?? 0) - (a.count ?? 0) || a.name.localeCompare(b.name))
+    labels = [...ctx.normalizedLabels].sort((a: any, b: any) => (b.count ?? 0) - (a.count ?? 0) || a.name.localeCompare(b.name))
   }
-  const showFreqNumbers = merged.showFreqNumbers ?? (instanceOverrides?.showFreqNumbers ?? false)
-  const title = instanceOverrides?.title
-    || instanceConfig?.title
-    || widget.title
-    || genericTypeConfig?.title
-    || merged.title
-    || spec.getWidgetDefaultTitle('Label', blogLocale)
+  const showFreqNumbers = base.showFreqNumbers ?? (ctx.instanceOverrides?.showFreqNumbers ?? false)
 
   return {
-    ...merged,
-    title,
+    ...base,
     labels,
     showFreqNumbers,
   }
 }
 
-export function hydrateHeaderWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const {
-    widget,
-    merged,
-    instanceConfig,
-    instanceOverrides,
-    genericTypeConfig,
-    spec,
-    blogLocale,
-    headerData,
-  } = ctx
+export function hydrateHeaderWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
+
+  const { instanceConfig, instanceOverrides, genericTypeConfig, headerData, widget } = ctx
 
   const title = instanceOverrides?.title
     || instanceConfig?.title
+    || (widget.settings as any)?.title
     || widget.title
     || genericTypeConfig?.title
     || headerData.title
-    || spec.getWidgetDefaultTitle('Header', blogLocale)
+    || base.title
+    || ctx.spec.getWidgetDefaultTitle('Header', ctx.blogLocale)
 
   const description = instanceOverrides?.description
     || instanceConfig?.description
     || (widget.settings as any)?.description
     || genericTypeConfig?.description
     || headerData.description
+    || base.description
 
   const url = instanceOverrides?.url
     || instanceConfig?.url
     || (widget.settings as any)?.url
     || genericTypeConfig?.url
     || headerData.url
+    || base.url
 
   return {
     ...headerData,
-    ...merged,
+    ...base,
     title,
     description,
     url,
   }
 }
 
-export function hydrateBlogWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const {
-    widget,
-    merged,
-    spec,
-    blogLocale,
-    activePosts,
-    blog1,
-  } = ctx
+export function hydrateBlogWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
 
-  const title = merged.title || widget.title || spec.getWidgetDefaultTitle('Blog', blogLocale)
-  const baseBylineItems: Array<{ name: string, label: string }> = Array.isArray(merged.allBylineItems) && merged.allBylineItems.length > 0
-    ? merged.allBylineItems
+  const { spec, blogLocale, activePosts, blog1 } = ctx
+
+  const baseBylineItems: Array<{ name: string, label: string }> = Array.isArray(base.allBylineItems) && base.allBylineItems.length > 0
+    ? base.allBylineItems
     : (Array.isArray(blog1.allBylineItems) && blog1.allBylineItems.length > 0
         ? blog1.allBylineItems
         : getDefaultBylineItems(spec, blogLocale))
 
   const settingMap: Record<string, boolean | undefined> = {
-    author: merged.showAuthor !== false,
-    timestamp: merged.showTimestamp !== false,
-    labels: merged.showLabels !== false,
-    location: merged.showLocation !== false,
-    comments: merged.showCommentLink !== false,
-    share: merged.showShareButtons !== false,
-    icons: merged.showAuthorProfile === true,
+    author: base.showAuthor !== false,
+    timestamp: base.showTimestamp !== false,
+    labels: base.showLabels !== false,
+    location: base.showLocation !== false,
+    comments: base.showCommentLink !== false,
+    share: base.showShareButtons !== false,
+    icons: base.showAuthorProfile === true,
   }
 
   const labelOverrides: Record<string, string | undefined> = {
-    author: merged.authorLabel,
-    comments: merged.commentLabel,
-    labels: merged.postLabelsLabel,
-    location: merged.postLocationLabel,
-    timestamp: merged.timestampLabel,
+    author: base.authorLabel,
+    comments: base.commentLabel,
+    labels: base.postLabelsLabel,
+    location: base.postLocationLabel,
+    timestamp: base.timestampLabel,
   }
 
   const activeBylineList: any[] & Record<string, any> = []
@@ -376,39 +319,59 @@ export function hydrateBlogWidget(ctx: HydrateWidgetContext): Record<string, any
     }
   }
 
-  const numPosts = merged.numPosts !== undefined
-    ? merged.numPosts
+  const numPosts = base.numPosts !== undefined
+    ? base.numPosts
     : (blog1.numPosts !== undefined ? blog1.numPosts : activePosts.length)
 
   return {
     ...blog1,
-    ...merged,
-    title,
+    ...base,
     posts: activePosts,
     numPosts,
     allBylineItems: activeBylineList,
   }
 }
 
-export function hydrateFeaturedPostWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const { merged, spec, blogLocale, normalizedPosts } = ctx
+export function hydrateFeaturedPostWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
 
-  if (normalizedPosts.length > 0) {
-    const featured = normalizedPosts[0]!
+  if (ctx.normalizedPosts.length > 0) {
+    const featured = ctx.normalizedPosts[0]!
     return deepMerge({
-      title: spec.getWidgetDefaultTitle('FeaturedPost', blogLocale),
+      title: ctx.spec.getWidgetDefaultTitle('FeaturedPost', ctx.blogLocale),
       postId: featured.id,
       postTitle: featured.title,
       snippet: featured.snippets.long,
       postUrl: featured.url,
-    }, merged)
+    }, base)
   }
-  return merged
+  return base
 }
 
-export function hydrateBlogArchiveWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const { widgetId, merged, spec, mapper, blogLocale, blogTimeZone, normalizedPosts, context } = ctx
+export function hydrateBlogArchiveWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
 
+  const { widgetId, spec, mapper, blogLocale, blogTimeZone, normalizedPosts, context } = ctx
   if (normalizedPosts.length > 0 && !context.widgetData[widgetId]?.data) {
     const archiveHierarchy = buildArchiveHierarchy(normalizedPosts, mapper, {
       locale: blogLocale,
@@ -419,67 +382,94 @@ export function hydrateBlogArchiveWidget(ctx: HydrateWidgetContext): Record<stri
       title: spec.getWidgetDefaultTitle('BlogArchive', blogLocale),
       style: 'HIERARCHY',
       data: archiveHierarchy,
-    }, merged)
+    }, base)
   }
-  return merged
+  return base
 }
 
-export function hydrateAttributionWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const { merged, spec, blogLocale, normalizedPosts, context, headerData } = ctx
+export function hydrateAttributionWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
+
+  const { spec, blogLocale, normalizedPosts, context, headerData } = ctx
   const blogTitle = (context.blog as any)?.title || headerData?.title || ''
   const attributionDefaults = buildAttributionData(blogTitle, spec, blogLocale, {
     posts: normalizedPosts,
   })
-  const cleanMerged = { ...merged }
-  if (cleanMerged.copyright === null || cleanMerged.copyright === undefined) {
-    delete cleanMerged.copyright
+  const cleanBase = { ...base }
+  if (cleanBase.copyright === null || cleanBase.copyright === undefined) {
+    delete cleanBase.copyright
   }
-  return deepMerge(attributionDefaults, cleanMerged)
+  return deepMerge(attributionDefaults, cleanBase)
 }
 
-export function hydrateContactFormWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const { merged, spec, blogLocale } = ctx
-  const contactDefaults = buildContactFormData(spec, blogLocale)
-  return deepMerge(contactDefaults, merged)
+export function hydrateContactFormWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
+
+  const contactDefaults = buildContactFormData(ctx.spec, ctx.blogLocale)
+  return deepMerge(contactDefaults, base)
 }
 
-export function hydratePopularPostsWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const { widgetId, merged, spec, blogLocale, normalizedPosts, context } = ctx
+export function hydratePopularPostsWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
+
+  const { widgetId, spec, blogLocale, normalizedPosts, context } = ctx
   if (normalizedPosts.length > 0 && !context.widgetData[widgetId]?.posts) {
     const canonicalLimit = (spec.getWidgetSettings('PopularPosts')?.canonical?.numItemsToShow?.default as number) ?? 10
-    const limit = merged.numPosts ?? merged.numItemsToShow ?? canonicalLimit
-    const popularData = buildPopularPostsData(normalizedPosts, spec, blogLocale, limit, merged.postDisplay)
-    return deepMerge(popularData, merged)
+    const limit = base.numPosts ?? base.numItemsToShow ?? canonicalLimit
+    const popularData = buildPopularPostsData(normalizedPosts, spec, blogLocale, limit, base.postDisplay)
+    return deepMerge(popularData, base)
   }
-  return merged
+  return base
 }
 
-export function hydrateListWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const {
-    widget,
-    type,
-    merged,
-    instanceConfig,
-    instanceOverrides,
-    genericTypeConfig,
-    templateSettings,
-    spec,
-    blogLocale,
-  } = ctx
+export function hydrateListWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
 
-  const title = instanceOverrides?.title
-    || instanceConfig?.title
-    || widget.title
-    || genericTypeConfig?.title
-    || merged.title
-    || spec.getWidgetDefaultTitle(type, blogLocale)
-    || type
-
-  const rawLinks = instanceOverrides?.links
-    || instanceConfig?.links
-    || templateSettings?.links
-    || genericTypeConfig?.links
-    || merged.links
+  const rawLinks = ctx.instanceOverrides?.links
+    || ctx.instanceConfig?.links
+    || ctx.templateSettings?.links
+    || ctx.genericTypeConfig?.links
+    || base.links
     || []
 
   if (Array.isArray(rawLinks)) {
@@ -487,160 +477,120 @@ export function hydrateListWidget(ctx: HydrateWidgetContext): Record<string, any
       .map((l: any) => normalizeLinkItem(l))
       .map((l: any) => ({ name: l.title, target: l.href, ...l }))
 
-    if (merged.sorting === 'alphabetical' || merged.sorting === 'alpha') {
+    if (base.sorting === 'alphabetical' || base.sorting === 'alpha') {
       links = [...links].sort((a, b) => a.name.localeCompare(b.name))
     }
-    else if (merged.sorting === 'reverse_alphabetical' || merged.sorting === 'reverse-alpha') {
+    else if (base.sorting === 'reverse_alphabetical' || base.sorting === 'reverse-alpha') {
       links = [...links].sort((a, b) => b.name.localeCompare(a.name))
     }
-    const explicitShownum = instanceOverrides?.shownum ?? instanceConfig?.shownum ?? templateSettings?.shownum
+    const explicitShownum = ctx.instanceOverrides?.shownum ?? ctx.instanceConfig?.shownum ?? ctx.templateSettings?.shownum
     if (typeof explicitShownum === 'number' && explicitShownum > 0) {
       links = links.slice(0, explicitShownum)
     }
-    return { ...merged, title, links }
+    return { ...base, links }
   }
-  return { ...merged, title, links: [] }
+  return { ...base, links: [] }
 }
 
-export function hydrateContentWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const {
-    widget,
-    type,
-    merged,
-    instanceConfig,
-    instanceOverrides,
-    genericTypeConfig,
-    templateSettings,
-    spec,
-    blogLocale,
-  } = ctx
-
-  const title = instanceOverrides?.title
-    || instanceConfig?.title
-    || widget.title
-    || genericTypeConfig?.title
-    || merged.title
-    || spec.getWidgetDefaultTitle(type, blogLocale)
-    || type
-
-  const content = instanceOverrides?.content
-    ?? instanceConfig?.content
-    ?? templateSettings?.content
-    ?? genericTypeConfig?.content
-    ?? merged.content
-    ?? ''
-
-  return {
-    ...merged,
-    title,
-    content,
-  }
+export function hydrateContentWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  return baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
 }
 
-export function hydrateImageWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const {
-    widget,
-    type,
-    merged,
-    instanceConfig,
-    instanceOverrides,
-    genericTypeConfig,
-    templateSettings,
-    spec,
-    blogLocale,
-  } = ctx
+export function hydrateImageWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  const base = baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
 
-  const title = instanceOverrides?.title
-    || instanceConfig?.title
-    || widget.title
-    || genericTypeConfig?.title
-    || merged.title
-    || spec.getWidgetDefaultTitle(type, blogLocale)
-    || type
-
-  const sourceUrl = instanceOverrides?.sourceUrl
-    ?? instanceConfig?.sourceUrl
-    ?? templateSettings?.sourceUrl
-    ?? genericTypeConfig?.sourceUrl
-    ?? merged.sourceUrl
-    ?? ''
-
-  const caption = instanceOverrides?.caption
-    ?? instanceConfig?.caption
-    ?? templateSettings?.caption
-    ?? genericTypeConfig?.caption
-    ?? merged.caption
-    ?? ''
-
-  const alt = instanceOverrides?.alt
-    ?? instanceConfig?.alt
-    ?? templateSettings?.alt
-    ?? genericTypeConfig?.alt
-    ?? merged.alt
-    ?? caption
-    ?? title
-
-  const linkUrl = instanceOverrides?.linkUrl
-    ?? instanceConfig?.linkUrl
-    ?? templateSettings?.linkUrl
-    ?? genericTypeConfig?.linkUrl
-    ?? merged.linkUrl
-    ?? ''
+  const alt = ctx.instanceOverrides?.alt
+    ?? ctx.instanceConfig?.alt
+    ?? ctx.templateSettings?.alt
+    ?? ctx.genericTypeConfig?.alt
+    ?? base.alt
+    ?? base.caption
+    ?? base.title
 
   return {
-    ...merged,
-    title,
-    sourceUrl,
-    caption,
+    ...base,
     alt,
-    linkUrl,
   }
 }
 
-export function hydrateGenericWidget(ctx: HydrateWidgetContext): Record<string, any> {
-  const {
-    widget,
-    type,
-    merged,
-    spec,
-    blogLocale,
-  } = ctx
-
-  const title = merged.title || widget.title || spec.getWidgetDefaultTitle(type, blogLocale) || type
-  return { ...merged, title }
+export function hydrateGenericWidget(ctx: HydrateWidgetContext, baseWidget?: Record<string, any>): Record<string, any> {
+  return baseWidget || instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
 }
 
 export function dispatchWidgetHydration(ctx: HydrateWidgetContext): Record<string, any> {
+  const base = instantiateWidgetFromCatalog({
+    widget: ctx.widget,
+    type: ctx.type,
+    merged: ctx.merged,
+    templateSettings: ctx.templateSettings,
+    instanceConfig: ctx.instanceConfig,
+    instanceOverrides: ctx.instanceOverrides,
+    genericTypeConfig: ctx.genericTypeConfig,
+    spec: ctx.spec,
+    blogLocale: ctx.blogLocale,
+  })
+
   switch (ctx.type) {
     case 'Profile':
-      return hydrateProfileWidget(ctx)
+      return hydrateProfileWidget(ctx, base)
     case 'PageList':
-      return hydratePageListWidget(ctx)
+      return hydratePageListWidget(ctx, base)
     case 'Label':
-      return hydrateLabelWidget(ctx)
+      return hydrateLabelWidget(ctx, base)
     case 'Header':
-      return hydrateHeaderWidget(ctx)
+      return hydrateHeaderWidget(ctx, base)
     case 'Blog':
-      return hydrateBlogWidget(ctx)
+      return hydrateBlogWidget(ctx, base)
     case 'FeaturedPost':
-      return hydrateFeaturedPostWidget(ctx)
+      return hydrateFeaturedPostWidget(ctx, base)
     case 'BlogArchive':
-      return hydrateBlogArchiveWidget(ctx)
+      return hydrateBlogArchiveWidget(ctx, base)
     case 'Attribution':
-      return hydrateAttributionWidget(ctx)
+      return hydrateAttributionWidget(ctx, base)
     case 'ContactForm':
-      return hydrateContactFormWidget(ctx)
+      return hydrateContactFormWidget(ctx, base)
     case 'PopularPosts':
-      return hydratePopularPostsWidget(ctx)
+      return hydratePopularPostsWidget(ctx, base)
     case 'LinkList':
     case 'TextList':
-      return hydrateListWidget(ctx)
+      return hydrateListWidget(ctx, base)
     case 'HTML':
     case 'Text':
-      return hydrateContentWidget(ctx)
+      return hydrateContentWidget(ctx, base)
     case 'Image':
-      return hydrateImageWidget(ctx)
+      return hydrateImageWidget(ctx, base)
     default:
-      return hydrateGenericWidget(ctx)
+      // Remaining 16 widget types (Stats, Followers, BlogSearch, Translate, etc.) are pure schema!
+      return base
   }
 }

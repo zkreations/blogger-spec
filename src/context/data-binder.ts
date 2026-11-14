@@ -82,7 +82,13 @@ export function bindWidgetSettingsToData(
       continue
     }
 
-    const userVal = rawSettings[key]
+    const boundPath = def?.bound_runtime_data
+    const boundKey = typeof boundPath === 'string' ? parseDataPathSegments(boundPath)[0] : undefined
+
+    const userVal = rawSettings[key] !== undefined
+      ? rawSettings[key]
+      : (boundKey && rawSettings[boundKey] !== undefined ? rawSettings[boundKey] : undefined)
+
     let effectiveVal = userVal !== undefined ? userVal : def?.default
 
     if (def?.value_transform === 'lowercase' && typeof effectiveVal === 'string') {
