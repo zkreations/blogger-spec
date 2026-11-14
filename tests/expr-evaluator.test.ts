@@ -235,4 +235,17 @@ describe('runtime expression evaluator', () => {
     expect(evaluateExpression('data:archiveUrl.canonical', ctx)).toBe('https://example.com/2023/09/')
     expect(evaluateExpression('data:pageUrl.canonical', ctx)).toBe('https://example.com/2023/09/post.html')
   })
+
+  it('evaluates any and where lambda expressions on canonical data:widgets collection', () => {
+    const widgets = [
+      { id: 'Header1', sectionId: 'header', type: 'Header' },
+      { id: 'Profile1', sectionId: 'footer-column-1', type: 'Profile' },
+      { id: 'PopularPosts1', sectionId: 'footer-column-2', type: 'PopularPosts' },
+    ]
+    const ctx = { widgets }
+
+    expect(evaluateExpression('data:widgets any (w => w.sectionId contains "footer-column-")', ctx)).toBe(true)
+    expect(evaluateExpression('data:widgets any (w => w.sectionId contains "nonexistent-")', ctx)).toBe(false)
+    expect(evaluateExpression('data:widgets count (w => w.sectionId contains "footer-column-")', ctx)).toBe(2)
+  })
 })

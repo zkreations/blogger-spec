@@ -58,8 +58,16 @@ export function extractTemplateWidgets(
 
   const widgets: DiscoveredWidget[] = []
 
-  function walk(nodes: readonly BloggerTemplateNode[]): void {
+  function walk(nodes: readonly BloggerTemplateNode[], currentSectionId?: string): void {
     for (const node of nodes) {
+      let nextSectionId = currentSectionId
+      if (node.type === 'Directive' && node.name === 'b:section') {
+        const sectionIdAttr = node.attributes.find(a => a.name === 'id')
+        if (sectionIdAttr?.value) {
+          nextSectionId = String(sectionIdAttr.value).trim()
+        }
+      }
+
       if (node.type === 'Directive' && node.name === 'b:widget') {
         const idAttr = node.attributes.find(a => a.name === 'id')
         const typeAttr = node.attributes.find(a => a.name === 'type')
@@ -78,12 +86,13 @@ export function extractTemplateWidgets(
             type,
             title,
             version,
+            ...(currentSectionId ? { sectionId: currentSectionId } : {}),
             ...(settings ? { settings } : {}),
           })
         }
       }
       if ('children' in node && Array.isArray(node.children)) {
-        walk(node.children)
+        walk(node.children, nextSectionId)
       }
     }
   }

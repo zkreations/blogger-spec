@@ -127,6 +127,21 @@ describe('widget-extractor', () => {
       const blog1 = widgets.find(w => w.id === 'Blog1')
       expect(blog1).toBeDefined()
       expect(blog1?.type).toBe('Blog')
+      expect(blog1?.sectionId).toBe('header')
+    })
+
+    it('captures parent sectionId across multiple sections', () => {
+      const xml = `
+        <b:section id='header-sec'>
+          <b:widget id='Header1' type='Header'/>
+        </b:section>
+        <b:section id='footer-column-1'>
+          <b:widget id='Profile1' type='Profile'/>
+        </b:section>
+      `
+      const widgets = extractTemplateWidgets(xml)
+      expect(widgets.find(w => w.id === 'Header1')?.sectionId).toBe('header-sec')
+      expect(widgets.find(w => w.id === 'Profile1')?.sectionId).toBe('footer-column-1')
     })
   })
 })

@@ -84,10 +84,10 @@ export function bindWidgetScope(
   version = 2,
   settings?: Record<string, unknown>,
 ): { widgetCtx: Record<string, unknown>, wrapperTarget: MutationTarget } {
-  const rawWidgetData = (parentCtx.widgets as any)?.[widgetId]
-    ?? (parentCtx.widgetData as any)?.[widgetId]
+  const rawWidgetData = (parentCtx.widgetData as any)?.[widgetId]
     ?? (parentCtx.widgetData as any)?.[`${widgetType}1`]
     ?? (parentCtx.widgetData as any)?.[widgetType]
+    ?? (parentCtx.widgets as any)?.[widgetId]
     ?? {}
 
   const widgetData: Record<string, any> = {

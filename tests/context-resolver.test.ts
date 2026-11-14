@@ -493,5 +493,46 @@ describe('context resolver suite with 3-tier precedence', () => {
       })
       expect(defaultCtx.widgetData.Blog1.navMessage).toBe('Sorry, the page you were looking for in this blog does not exist.')
     })
+
+    it('builds canonical Layouts v3 data:widgets collection with sectionId and dual indexing', async () => {
+      const templateXml = `
+        <b:section id='header'>
+          <b:widget id='Header1' type='Header' title='My Header' version='2'/>
+        </b:section>
+        <b:section id='footer-column-1'>
+          <b:widget id='Profile1' type='Profile' title='About Me' version='2'/>
+        </b:section>
+        <b:section id='footer-column-2'>
+          <b:widget id='PopularPosts1' type='PopularPosts' title='Popular Posts' version='2'/>
+        </b:section>
+      `
+      const ctx = await resolveBloggerContext({
+        view: 'homepage',
+        offline: true,
+        templateXml,
+      })
+
+      expect(Array.isArray(ctx.widgets)).toBe(true)
+      expect(ctx.widgets.length).toBeGreaterThanOrEqual(3)
+
+      const profile = ctx.widgets.find((w: any) => w.id === 'Profile1')
+      expect(profile).toBeDefined()
+      expect(profile.sectionId).toBe('footer-column-1')
+      expect(profile.type).toBe('Profile')
+      expect(profile.title).toBe('About Me')
+
+      // Direct instance access: data:widgets.Profile1
+      expect(ctx.widgets.Profile1).toBeDefined()
+      expect(ctx.widgets.Profile1.sectionId).toBe('footer-column-1')
+
+      // Type-filtered sub-array: data:widgets.Profile
+      expect(Array.isArray(ctx.widgets.Profile)).toBe(true)
+      expect(ctx.widgets.Profile[0].id).toBe('Profile1')
+      expect(ctx.widgets.Profile.first.id).toBe('Profile1')
+
+      // Collection modifiers
+      expect(ctx.widgets.first).toBeDefined()
+      expect(ctx.widgets.last).toBeDefined()
+    })
   })
 })
