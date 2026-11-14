@@ -12,6 +12,7 @@ BloggerSpec houses two specialized, zero-runtime-dependency parsing engines: a t
 - **Output:** Strongly typed `BloggerDocumentNode` AST.
 - **Invariants:** Strictly enforces XML well-formedness, character entity references, and attribute expression parsing without third-party dependencies.
 - **Directive Scanner:** Tokenizer (`directive-scanner.ts`) maintains exact byte offsets by whitespace-masking comments and non-variable CDATA blocks in a unified single pass without heap string cloning.
+- **Nesting Guard:** Enforces `max_directive_nesting_depth: 50` (from `catalogs/directives.json` `compiler_limits`), preventing call stack overflow on deeply nested control directives.
 
 ## Expression Parser
 
