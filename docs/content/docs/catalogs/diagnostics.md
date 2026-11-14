@@ -23,8 +23,8 @@ The BloggerSpec diagnostics catalog (`BX1001` through `BX1062`) provides an exha
 | `BX1037` | `error` | `<b:include>` references a subroutine that does not exist in Tiers 1–5 (`UNRESOLVED_INCLUDE_TARGET`). | Declare the missing `<b:includable>` or correct the subroutine name. |
 | `BX1047` | `error` | Widget `id` violates canonical pattern `^[Type][1-9][0-9]{0,2}$`. | Rename widget ID to match its type (e.g., `Blog1`, `PageList1`). |
 | `BX1056` | `error` | Widget contains an invalid or unknown setting (`INVALID_WIDGET_SETTING`). | Remove or correct the setting name against `settings.json`. |
-| `BX1061` | `warning` | Modern template missing required Layouts v3 root HTML attributes. | Add `b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'`. |
-| `BX1062` | `warning` | Legacy Layouts v1/v2 widget or deprecated table tags detected. | Upgrade widget markup to Layouts v3 clean structures. |
+| `BX1061` | `warning` | Modern template missing recommended Layouts v3 root HTML attributes. | Add `b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'`. |
+| `BX1062` | `warning` | Non-recommended value for root attribute on `<html>`. | Set recommended attributes: `b:css='false'`, `b:js='false'`, `b:defaultwidgetversion='2'`, `b:layoutsVersion='3'`. |
 
 ## Automated Mitigations
 
