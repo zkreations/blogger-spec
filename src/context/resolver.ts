@@ -3,8 +3,8 @@ import type { BloggerViewId } from '../generated/types.generated.js'
 import type { BloggerBlogConfiguration } from './config-types.js'
 import type { BloggerContextConfig, BloggerRawEntry, DiscoveredWidget } from './types.js'
 import type { UrlMapper } from './url-mapper.js'
+import type { BloggerExtractedAuthor } from './widget-author.js'
 import { getMockContext, getSpecCatalog } from '../catalogs/index.js'
-import { buildArchiveHierarchy } from './archive-tree.js'
 import { BloggerFeedClient } from './client.js'
 import { bindWidgetSettingsToData } from './data-binder.js'
 import {
@@ -18,17 +18,13 @@ import {
   normalizePostEntry,
 } from './normalizer.js'
 import { resolveBloggerRoute } from './routing.js'
-import {
-  buildAttributionData,
-  buildContactFormData,
-  buildPopularPostsData,
-} from './secondary-widgets.js'
 import { createUrlMapper } from './url-mapper.js'
+import { extractBlogAuthor } from './widget-author.js'
 import {
   extractTemplateWidgets,
-  normalizeLinkItem,
   parseCanonicalWidgetId,
 } from './widget-extractor.js'
+import { dispatchWidgetHydration } from './widget-hydrators.js'
 
 const BLOGGER_FEED_DEFAULT_MAX_RESULTS = 25
 
@@ -118,39 +114,6 @@ function createCleanBaseContext(
     widgetData,
     widgets: [],
   }
-}
-
-function getDefaultBylineItems(spec: SpecCatalog, locale: string): Array<{ name: string, label: string }> {
-  return [
-    {
-      name: 'share',
-      label: spec.getLocalizedMessage('share', locale) || 'Share',
-    },
-    {
-      name: 'author',
-      label: spec.getTranslation('widgets.Blog.byline.author.label', locale) || spec.getLocalizedMessage('by', locale) || 'By',
-    },
-    {
-      name: 'timestamp',
-      label: spec.getTranslation('widgets.Blog.byline.timestamp.label', locale) || spec.getLocalizedMessage('at', locale) || 'at',
-    },
-    {
-      name: 'comments',
-      label: spec.getTranslation('widgets.Blog.byline.comments.label', locale) || spec.getLocalizedMessage('comments', locale) || 'Comments',
-    },
-    {
-      name: 'icons',
-      label: spec.getLocalizedMessage('icons', locale) || 'Icons',
-    },
-    {
-      name: 'labels',
-      label: spec.getTranslation('widgets.Blog.byline.labels.label', locale) || spec.getLocalizedMessage('labels', locale) || 'Labels',
-    },
-    {
-      name: 'location',
-      label: spec.getTranslation('widgets.Blog.byline.location.label', locale) || spec.getLocalizedMessage('location', locale) || 'Location',
-    },
-  ]
 }
 
 function applyBlogConfiguration(
@@ -397,6 +360,7 @@ interface WidgetHydrationOptions {
   headerData: any
   blog1: Record<string, any>
   discoveredWidgets: Map<string, DiscoveredWidget>
+  blogAuthor: BloggerExtractedAuthor
 }
 
 function getWidgetCatalogDefaults(type: string, spec: SpecCatalog): Record<string, any> {
@@ -419,6 +383,7 @@ function hydrateAllWidgets(options: WidgetHydrationOptions): void {
     headerData,
     blog1,
     discoveredWidgets,
+    blogAuthor,
   } = options
 
   for (const [widgetId, widget] of discoveredWidgets) {
@@ -446,231 +411,34 @@ function hydrateAllWidgets(options: WidgetHydrationOptions): void {
 
     const merged = bindWidgetSettingsToData(rawMerged, type, spec)
 
-    switch (type) {
-      case 'PageList': {
-        const rawLinks = instanceOverrides?.links || instanceConfig?.links || templateSettings?.links || genericTypeConfig?.links || merged.links
-        let links: any[]
-        if (Array.isArray(rawLinks) && rawLinks.length > 0) {
-          links = rawLinks
-            .map((l: any) => normalizeLinkItem(l))
-            .map((l: any) => ({
-              ...l,
-              isCurrentPage: l.isCurrentPage ?? Boolean(currentPath && (l.href === currentPath || mapper.mapUrl(l.href) === currentPath)),
-            }))
-        }
-        else {
-          links = normalizedPages.slice()
-        }
-        const explicitHomeTitle = instanceOverrides?.homeTitle || instanceConfig?.homeTitle || templateSettings?.homeTitle
-        const hasExplicitInstanceLinks = Array.isArray(instanceConfig?.links) || Array.isArray(instanceOverrides?.links)
-        if (explicitHomeTitle && links.length > 0 && links[0] && !hasExplicitInstanceLinks) {
-          if (links[0].href === '/' || links[0].href === mapper.mapUrl('/')) {
-            links[0] = { ...links[0], title: String(explicitHomeTitle) }
-          }
-        }
-        const title = instanceOverrides?.title || instanceConfig?.title || widget.title || genericTypeConfig?.title || merged.title || spec.getWidgetDefaultTitle('PageList', blogLocale)
-        context.widgetData[widgetId] = {
-          ...merged,
-          title,
-          links,
-        }
-        break
-      }
+    const widgetData = dispatchWidgetHydration({
+      widgetId,
+      widget,
+      type,
+      merged,
+      catalogDefaults,
+      templateSettings,
+      instanceConfig,
+      instanceOverrides,
+      genericTypeConfig,
+      context,
+      spec,
+      mapper,
+      blogLocale,
+      blogTimeZone: blogTimeZone || '',
+      currentPath,
+      normalizedPages,
+      normalizedLabels,
+      normalizedPosts,
+      activePosts,
+      headerData,
+      blog1,
+      blogAuthor,
+    })
 
-      case 'Label': {
-        const sorting = (merged.sorting || config.overrides?.widgetData?.[widgetId]?.sorting || config.overrides?.widgetData?.Label1?.sorting || 'ALPHA').toUpperCase()
-        let labels = normalizedLabels
-        if (sorting === 'FREQUENCY') {
-          labels = [...normalizedLabels].sort((a: any, b: any) => (b.count ?? 0) - (a.count ?? 0) || a.name.localeCompare(b.name))
-        }
-        const showFreqNumbers = merged.showFreqNumbers ?? (config.overrides?.widgetData?.[widgetId]?.showFreqNumbers ?? false)
-        const title = instanceOverrides?.title || instanceConfig?.title || widget.title || genericTypeConfig?.title || merged.title || spec.getWidgetDefaultTitle('Label', blogLocale)
-        context.widgetData[widgetId] = {
-          ...merged,
-          title,
-          labels,
-          showFreqNumbers,
-        }
-        break
-      }
-
-      case 'Header': {
-        const title = instanceOverrides?.title || instanceConfig?.title || widget.title || genericTypeConfig?.title || headerData.title || spec.getWidgetDefaultTitle('Header', blogLocale)
-        const description = instanceOverrides?.description || instanceConfig?.description || (widget.settings as any)?.description || genericTypeConfig?.description || headerData.description
-        const url = instanceOverrides?.url || instanceConfig?.url || (widget.settings as any)?.url || genericTypeConfig?.url || headerData.url
-        context.widgetData[widgetId] = {
-          ...headerData,
-          ...merged,
-          title,
-          description,
-          url,
-        }
-        break
-      }
-
-      case 'Blog': {
-        const title = merged.title || widget.title || spec.getWidgetDefaultTitle('Blog', blogLocale)
-        const baseBylineItems: Array<{ name: string, label: string }> = Array.isArray(merged.allBylineItems) && merged.allBylineItems.length > 0
-          ? merged.allBylineItems
-          : (Array.isArray(blog1.allBylineItems) && blog1.allBylineItems.length > 0
-              ? blog1.allBylineItems
-              : getDefaultBylineItems(spec, blogLocale))
-
-        const settingMap: Record<string, boolean | undefined> = {
-          author: merged.showAuthor !== false,
-          timestamp: merged.showTimestamp !== false,
-          labels: merged.showLabels !== false,
-          location: merged.showLocation !== false,
-          comments: merged.showCommentLink !== false,
-          share: merged.showShareButtons !== false,
-          icons: merged.showAuthorProfile === true,
-        }
-
-        const labelOverrides: Record<string, string | undefined> = {
-          author: merged.authorLabel,
-          comments: merged.commentLabel,
-          labels: merged.postLabelsLabel,
-          location: merged.postLocationLabel,
-          timestamp: merged.timestampLabel,
-        }
-
-        const activeBylineList: any[] & Record<string, any> = []
-        for (const item of baseBylineItems) {
-          if (!item || typeof item !== 'object')
-            continue
-          const isVisible = settingMap[item.name] ?? true
-          if (isVisible) {
-            const label = labelOverrides[item.name] || item.label || ''
-            const activeItem = { ...item, label }
-            activeBylineList.push(activeItem)
-            activeBylineList[item.name] = activeItem
-          }
-        }
-
-        const numPosts = merged.numPosts !== undefined
-          ? merged.numPosts
-          : (blog1.numPosts !== undefined ? blog1.numPosts : activePosts.length)
-
-        const blogData = {
-          ...blog1,
-          ...merged,
-          title,
-          posts: activePosts,
-          numPosts,
-          allBylineItems: activeBylineList,
-        }
-        context.widgetData[widgetId] = blogData
-        if (context.widgets) {
-          context.widgets[widgetId] = blogData
-        }
-        break
-      }
-
-      case 'FeaturedPost': {
-        if (normalizedPosts.length > 0) {
-          const featured = normalizedPosts[0]!
-          context.widgetData[widgetId] = deepMerge({
-            title: spec.getWidgetDefaultTitle('FeaturedPost', blogLocale),
-            postId: featured.id,
-            postTitle: featured.title,
-            snippet: featured.snippets.long,
-            postUrl: featured.url,
-          }, merged)
-        }
-        else {
-          context.widgetData[widgetId] = merged
-        }
-        break
-      }
-
-      case 'BlogArchive': {
-        if (normalizedPosts.length > 0 && !context.widgetData[widgetId]?.data) {
-          const archiveHierarchy = buildArchiveHierarchy(normalizedPosts, mapper, {
-            locale: blogLocale,
-            timeZone: blogTimeZone,
-            widgetId,
-          })
-          context.widgetData[widgetId] = deepMerge({
-            title: spec.getWidgetDefaultTitle('BlogArchive', blogLocale),
-            style: 'HIERARCHY',
-            data: archiveHierarchy,
-          }, merged)
-        }
-        else {
-          context.widgetData[widgetId] = merged
-        }
-        break
-      }
-
-      case 'Attribution': {
-        const blogTitle = (context.blog as any)?.title || headerData?.title || ''
-        const attributionDefaults = buildAttributionData(blogTitle, spec, blogLocale, {
-          posts: normalizedPosts,
-        })
-        const cleanMerged = { ...merged }
-        if (cleanMerged.copyright === null || cleanMerged.copyright === undefined) {
-          delete cleanMerged.copyright
-        }
-        context.widgetData[widgetId] = deepMerge(attributionDefaults, cleanMerged)
-        break
-      }
-
-      case 'ContactForm': {
-        const contactDefaults = buildContactFormData(spec, blogLocale)
-        context.widgetData[widgetId] = deepMerge(contactDefaults, merged)
-        break
-      }
-
-      case 'PopularPosts': {
-        if (normalizedPosts.length > 0 && !context.widgetData[widgetId]?.posts) {
-          const canonicalLimit = (spec.getWidgetSettings('PopularPosts')?.canonical?.numItemsToShow?.default as number) ?? 10
-          const limit = merged.numPosts ?? merged.numItemsToShow ?? canonicalLimit
-          const popularData = buildPopularPostsData(normalizedPosts, spec, blogLocale, limit, merged.postDisplay)
-          context.widgetData[widgetId] = deepMerge(popularData, merged)
-        }
-        else {
-          context.widgetData[widgetId] = merged
-        }
-        break
-      }
-
-      case 'LinkList':
-      case 'TextList': {
-        const title = instanceOverrides?.title || instanceConfig?.title || widget.title || genericTypeConfig?.title || merged.title || spec.getWidgetDefaultTitle(type, blogLocale) || type
-        const rawLinks = instanceOverrides?.links
-          || instanceConfig?.links
-          || templateSettings?.links
-          || genericTypeConfig?.links
-          || merged.links
-          || []
-
-        if (Array.isArray(rawLinks)) {
-          let links = rawLinks
-            .map((l: any) => normalizeLinkItem(l))
-            .map((l: any) => ({ name: l.title, target: l.href, ...l }))
-          if (merged.sorting === 'alphabetical' || merged.sorting === 'alpha') {
-            links = [...links].sort((a, b) => a.name.localeCompare(b.name))
-          }
-          else if (merged.sorting === 'reverse_alphabetical' || merged.sorting === 'reverse-alpha') {
-            links = [...links].sort((a, b) => b.name.localeCompare(a.name))
-          }
-          const explicitShownum = instanceOverrides?.shownum ?? instanceConfig?.shownum ?? templateSettings?.shownum
-          if (typeof explicitShownum === 'number' && explicitShownum > 0) {
-            links = links.slice(0, explicitShownum)
-          }
-          context.widgetData[widgetId] = { ...merged, title, links }
-        }
-        else {
-          context.widgetData[widgetId] = { ...merged, title, links: [] }
-        }
-        break
-      }
-
-      default: {
-        const title = merged.title || widget.title || spec.getWidgetDefaultTitle(type, blogLocale) || type
-        context.widgetData[widgetId] = { ...merged, title }
-        break
-      }
+    context.widgetData[widgetId] = widgetData
+    if (type === 'Blog' && context.widgets) {
+      context.widgets[widgetId] = widgetData
     }
   }
 
@@ -918,6 +686,12 @@ export async function resolveBloggerContext(
       blog1.numPosts = blog1.numPosts !== undefined ? blog1.numPosts : activePosts.length
     }
 
+    const blogAuthor = extractBlogAuthor({
+      rawPosts: [],
+      normalizedPosts: activePosts,
+      defaultName: spec.getLocalizedMessage('anonymous', blogLocale) || 'Anonymous',
+    })
+
     hydrateAllWidgets({
       context,
       config,
@@ -939,6 +713,7 @@ export async function resolveBloggerContext(
       },
       blog1,
       discoveredWidgets,
+      blogAuthor,
     })
 
     if (commentFrameBaseUrl) {
@@ -1447,6 +1222,13 @@ export async function resolveBloggerContext(
     },
   })
 
+  const blogAuthor = extractBlogAuthor({
+    feed,
+    rawPosts,
+    normalizedPosts,
+    defaultName: spec.getLocalizedMessage('anonymous', blogLocale) || 'Anonymous',
+  })
+
   hydrateAllWidgets({
     context,
     config,
@@ -1464,6 +1246,7 @@ export async function resolveBloggerContext(
     headerData,
     blog1,
     discoveredWidgets,
+    blogAuthor,
   })
 
   const cookieChoices = config.cookieChoices ?? config.config?.blog?.cookieChoices ?? false

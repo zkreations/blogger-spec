@@ -112,6 +112,30 @@
           "description": "Custom post title link (data:posts[].link) configured in the Blogger entry editor, overriding default post URL."
         }
       }
+    },
+    "profileWidgetConfiguration": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "title": { "type": "string", "description": "Widget title (e.g. 'About Me')." },
+        "displayname": { "type": "string", "description": "Author display name." },
+        "aboutme": { "type": "string", "description": "Author biographical text." },
+        "location": { "type": "string", "description": "Author geographical location." },
+        "userUrl": { "type": "string", "description": "Author public profile URL." },
+        "authorPhoto": {
+          "type": "object",
+          "additionalProperties": true,
+          "properties": {
+            "image": { "type": "string", "description": "Avatar image URL." },
+            "alt": { "type": "string", "description": "Avatar accessible text." },
+            "width": { "type": "number", "description": "Avatar image width in pixels." },
+            "height": { "type": "number", "description": "Avatar image height in pixels." }
+          }
+        },
+        "showaboutme": { "type": "boolean", "description": "Toggle displaying biographical snippet." },
+        "showlocation": { "type": "boolean", "description": "Toggle displaying geographic location." },
+        "team": { "type": "boolean", "description": "Team multi-author mode toggle." }
+      }
     }
   }
 }
