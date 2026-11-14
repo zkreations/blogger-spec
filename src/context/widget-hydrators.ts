@@ -347,14 +347,41 @@ export function hydrateFeaturedPostWidget(ctx: HydrateWidgetContext, baseWidget?
   })
 
   if (ctx.normalizedPosts.length > 0) {
-    const featured = ctx.normalizedPosts[0]!
-    return deepMerge({
-      title: ctx.spec.getWidgetDefaultTitle('FeaturedPost', ctx.blogLocale),
+    const targetPostId = ctx.instanceOverrides?.postId
+      ?? ctx.templateSettings?.postId
+      ?? ctx.instanceConfig?.postId
+      ?? ctx.genericTypeConfig?.postId
+      ?? base.postId
+
+    const found = targetPostId && targetPostId !== 0 && targetPostId !== '0'
+      ? ctx.normalizedPosts.find(p => String(p.id) === String(targetPostId))
+      : undefined
+
+    const featured = found || ctx.normalizedPosts[0]!
+
+    const effectivePostDisplay = {
+      showSnippet: true,
+      showTitle: true,
+      showAuthor: true,
+      showDate: true,
+      showFeaturedImage: true,
+      ...base.postDisplay,
+    }
+
+    const featuredPostModel = {
+      ...featured,
+      postDisplay: { ...effectivePostDisplay },
+    }
+
+    return deepMerge(base, {
+      title: base.title || ctx.spec.getWidgetDefaultTitle('FeaturedPost', ctx.blogLocale),
       postId: featured.id,
       postTitle: featured.title,
       snippet: featured.snippets.long,
       postUrl: featured.url,
-    }, base)
+      postDisplay: effectivePostDisplay,
+      posts: [featuredPostModel],
+    })
   }
   return base
 }

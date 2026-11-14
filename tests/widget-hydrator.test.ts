@@ -6,6 +6,7 @@ import { extractBlogAuthor } from '../src/context/widget-author.js'
 import {
   dispatchWidgetHydration,
   hydrateContentWidget,
+  hydrateFeaturedPostWidget,
   hydrateImageWidget,
   hydrateProfileWidget,
 } from '../src/context/widget-hydrators.js'
@@ -227,6 +228,46 @@ describe('widget-hydrators', () => {
     expect(res.sourceUrl).toBe('https://example.com/banner.png')
     expect(res.caption).toBe('Header Banner')
     expect(res.alt).toBe('Header Banner')
+  })
+
+  it('hydrates FeaturedPost widget with canonical v2 posts array and resolves by postId', () => {
+    const samplePosts = [
+      { id: '101', title: 'First Post', url: '/post-1.html', snippets: { short: 'Short 1', long: 'Long 1' } },
+      { id: '202', title: 'Target Featured Post', url: '/post-2.html', snippets: { short: 'Short 2', long: 'Long 2' } },
+    ] as any[]
+
+    const res = hydrateFeaturedPostWidget({
+      widgetId: 'FeaturedPost1',
+      widget: { id: 'FeaturedPost1', type: 'FeaturedPost' } as any,
+      type: 'FeaturedPost',
+      merged: {},
+      catalogDefaults: {},
+      instanceConfig: {
+        postId: '202',
+        showSnippet: true,
+        showFirstImage: true,
+      },
+      context: { widgetData: {} } as any,
+      spec,
+      mapper,
+      blogLocale: 'en',
+      blogTimeZone: 'UTC',
+      normalizedPages: [],
+      normalizedLabels: [],
+      normalizedPosts: samplePosts,
+      activePosts: samplePosts,
+      headerData: {},
+      blog1: {},
+      blogAuthor: baseAuthor,
+    })
+
+    expect(res.posts).toHaveLength(1)
+    expect(res.posts[0].id).toBe('202')
+    expect(res.posts[0].title).toBe('Target Featured Post')
+    expect(res.postDisplay.showSnippet).toBe(true)
+    expect(res.postDisplay.showFeaturedImage).toBe(true)
+    expect(res.postId).toBe('202')
+    expect(res.postTitle).toBe('Target Featured Post')
   })
 
   it('dispatches widget hydration cleanly for all supported types', () => {

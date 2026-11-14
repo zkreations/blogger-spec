@@ -97,7 +97,7 @@ export function bindWidgetSettingsToData(
 
     if (effectiveVal !== undefined) {
       result[key] = effectiveVal
-      if (typeof def?.bound_runtime_data === 'string') {
+      if (typeof def?.bound_runtime_data === 'string' && !(widgetType === 'FeaturedPost' && key === 'postId')) {
         setDeepDataProperty(result, def.bound_runtime_data, effectiveVal)
       }
     }
@@ -129,6 +129,12 @@ export function bindWidgetSettingsToData(
       showFeaturedImage: rawSettings.showFirstImage !== undefined
         ? Boolean(rawSettings.showFirstImage)
         : (rawPostDisplay.showFeaturedImage ?? result.postDisplay?.showFeaturedImage ?? true),
+      showAuthor: rawSettings.showAuthor !== undefined
+        ? Boolean(rawSettings.showAuthor)
+        : (rawPostDisplay.showAuthor ?? result.postDisplay?.showAuthor ?? true),
+      showDate: rawSettings.showDate !== undefined
+        ? Boolean(rawSettings.showDate)
+        : (rawPostDisplay.showDate ?? result.postDisplay?.showDate ?? true),
       ...result.postDisplay,
     }
   }
