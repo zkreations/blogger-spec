@@ -63,6 +63,6 @@ Filter and map operations on arrays use lambda expressions (infix syntax only):
 ## Compiler Quotas & Safety Limits
 
 To guarantee deterministic evaluation and prevent denial of service:
-- **Complexity Quota (`BX1021`):** Every expression attribute enforces a hard platform ceiling of **40 tokens**. Exceeding 40 tokens aborts compilation with a fatal `Invalid expression` platform error. Each grouping pair `(...)` consumes 1 token. Complex expressions must be decomposed into `<b:with>` scopes.
+- **Complexity Quota (`BX1021`, `BX1045`):** Every expression attribute enforces a hard platform ceiling of **40 tokens** (`BX1021`). Exceeding 40 tokens aborts compilation with a fatal `Invalid expression` platform error. Approaching the ceiling (≥ **34 tokens**) triggers a compiler warning (`BX1045`). Each grouping pair `(...)` consumes 1 token. Complex expressions must be decomposed into `<b:with>` scopes.
 - **Multiline Flattening:** Line breaks inside expressions consume 0 tokens; multiline expressions flatten cleanly on save with exact token parity.
 - **Recursion Guard (`maxDepth: 50`):** The Pratt expression parser enforces a maximum depth of 50 frames, preventing `RangeError` call stack exhaustion in strict and tolerant modes.
