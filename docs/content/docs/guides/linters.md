@@ -9,7 +9,7 @@ Learn how to build template linters, diagnostics analyzers, continuous integrati
 ## Validation Functions
 
 - **`validateTemplateStructure(tokensOrXml, catalog?, options?)`:** Checks directive nesting constraints, required attributes, root HTML layout attributes (`BX1061`), and forbidden widget hierarchies (`BX1035`).
-- **`validateTemplateExpressions(tokensOrXml, catalog?, options?)`:** Scans dynamic expression attributes (`expr:*`, `cond`, `values`, `value`) for syntax errors, unknown variables, operator precedence issues, and token quota exhaustion (`BX1021`).
+- **`validateTemplateExpressions(tokensOrXml, catalog?, skinVariables?)`:** Scans dynamic expression attributes (`expr:*`, `cond`, `values`, `value`) for syntax errors, unknown variables, operator precedence issues, and token quota exhaustion (`BX1021`, `BX1045`).
 
 ## Automated Fixes
 
