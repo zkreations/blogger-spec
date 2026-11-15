@@ -108,7 +108,9 @@ describe('modular operators suite', () => {
   describe('collection and membership', () => {
     it('evaluates collection operations', () => {
       expect(evaluateBinaryCollection('take', [1, 2, 3, 4], 2)).toEqual([1, 2])
+      expect(evaluateBinaryCollection('limit', [1, 2, 3, 4], 2)).toEqual([1, 2])
       expect(evaluateBinaryCollection('skip', [1, 2, 3, 4], 2)).toEqual([3, 4])
+      expect(evaluateBinaryCollection('offset', [1, 2, 3, 4], 2)).toEqual([3, 4])
       expect(evaluateBinaryCollection('to', 1, 4)).toEqual([1, 2, 3, 4])
       expect(evaluateBinaryCollection('to', 4, 1)).toEqual([4, 3, 2, 1])
 

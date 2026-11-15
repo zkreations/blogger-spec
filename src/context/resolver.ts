@@ -8,6 +8,7 @@ import { getMockContext, getSpecCatalog } from '../catalogs/index.js'
 import { BloggerFeedClient } from './client.js'
 import { bindWidgetSettingsToData } from './data-binder.js'
 import {
+  extractFirstImage,
   extractId,
   normalizeBlogMetadata,
   normalizeCommentEntry,
@@ -55,6 +56,23 @@ function deepMerge(target: any, source: any): any {
   }
 
   return result
+}
+
+function isSameUrlOrPath(candidate: string | undefined, target: string | undefined): boolean {
+  if (!candidate || !target) {
+    return false
+  }
+  if (candidate === target) {
+    return true
+  }
+  try {
+    const c = new URL(candidate, 'https://blogger.com')
+    const t = new URL(target, 'https://blogger.com')
+    return c.pathname === t.pathname
+  }
+  catch {
+    return false
+  }
 }
 
 interface BuildBlogNavMessageOptions {
@@ -532,6 +550,9 @@ export function buildWidgetsCollection(
 
   for (const w of discoveredWidgets.values()) {
     const fullData = widgetData[w.id] || {}
+    if (w.visible === false || fullData.visible === false) {
+      continue
+    }
     const descriptor: Record<string, any> = {
       id: w.id,
       sectionId: w.sectionId || '',
@@ -683,9 +704,9 @@ export async function resolveBloggerContext(
         const targetPost = (config.targetId
           ? activePosts.find((p: any) => String(p.id) === String(config.targetId))
           : (config.targetUrl
-              ? activePosts.find((p: any) => p.url === config.targetUrl || p.absoluteUrl === config.targetUrl)
+              ? activePosts.find((p: any) => isSameUrlOrPath(p.url, config.targetUrl) || isSameUrlOrPath(p.absoluteUrl, config.targetUrl))
               : (config.overrides?.view?.url
-                  ? activePosts.find((p: any) => p.url === config.overrides?.view?.url || p.absoluteUrl === config.overrides?.view?.url)
+                  ? activePosts.find((p: any) => isSameUrlOrPath(p.url, config.overrides?.view?.url) || isSameUrlOrPath(p.absoluteUrl, config.overrides?.view?.url))
                   : activePosts[0]))) || activePosts[0]
 
         if (targetPost) {
@@ -694,6 +715,12 @@ export async function resolveBloggerContext(
           context.view.title = targetPost.title
           context.view.url = targetPost.url
           context.view.description = targetPost.snippets?.short || ''
+          const firstImg = extractFirstImage(targetPost.body || '')
+          const primaryImg = firstImg || targetPost.featuredImage || ''
+          if (primaryImg) {
+            context.blog.postImageUrl = primaryImg
+            context.blog.postImageThumbnailUrl = (targetPost as any).thumbnail || primaryImg
+          }
         }
       }
       else if (viewId === 'static_page') {
@@ -986,9 +1013,9 @@ export async function resolveBloggerContext(
       const targetPost = (config.targetId
         ? normalizedPosts.find(p => p.id === config.targetId)
         : (config.targetUrl
-            ? normalizedPosts.find(p => p.url === config.targetUrl || p.absoluteUrl === config.targetUrl)
+            ? normalizedPosts.find(p => isSameUrlOrPath(p.url, config.targetUrl) || isSameUrlOrPath(p.absoluteUrl, config.targetUrl))
             : (config.overrides?.view?.url
-                ? normalizedPosts.find(p => p.url === config.overrides?.view?.url || p.absoluteUrl === config.overrides?.view?.url)
+                ? normalizedPosts.find(p => isSameUrlOrPath(p.url, config.overrides?.view?.url) || isSameUrlOrPath(p.absoluteUrl, config.overrides?.view?.url))
                 : normalizedPosts[0]))) || normalizedPosts[0]
 
       if (targetPost) {
@@ -997,6 +1024,12 @@ export async function resolveBloggerContext(
         context.view.title = targetPost.title
         context.view.url = targetPost.url
         context.view.description = targetPost.snippets.short
+        const firstImg = extractFirstImage(targetPost.body)
+        const primaryImg = firstImg || targetPost.featuredImage || ''
+        if (primaryImg) {
+          context.blog.postImageUrl = primaryImg
+          context.blog.postImageThumbnailUrl = (targetPost as any).thumbnail || primaryImg
+        }
         if (targetPost.featuredImage) {
           context.view.featuredImage = targetPost.featuredImage
         }
@@ -1017,9 +1050,9 @@ export async function resolveBloggerContext(
       const targetPage = (config.targetId
         ? normalizedPagePosts.find(p => p.id === config.targetId)
         : (config.targetUrl
-            ? normalizedPagePosts.find(p => p.url === config.targetUrl || p.absoluteUrl === config.targetUrl)
+            ? normalizedPagePosts.find(p => isSameUrlOrPath(p.url, config.targetUrl) || isSameUrlOrPath(p.absoluteUrl, config.targetUrl))
             : (config.overrides?.view?.url
-                ? normalizedPagePosts.find(p => p.url === config.overrides?.view?.url || p.absoluteUrl === config.overrides?.view?.url)
+                ? normalizedPagePosts.find(p => isSameUrlOrPath(p.url, config.overrides?.view?.url) || isSameUrlOrPath(p.absoluteUrl, config.overrides?.view?.url))
                 : normalizedPagePosts[0]))) || normalizedPagePosts[0]
 
       if (targetPage) {

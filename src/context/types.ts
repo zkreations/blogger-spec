@@ -46,6 +46,7 @@ export interface DiscoveredWidget {
   readonly type: string
   readonly title?: string
   readonly version?: number
+  readonly visible?: boolean
   readonly sectionId?: string
   readonly settings?: Record<string, unknown>
 }

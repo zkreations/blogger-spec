@@ -242,13 +242,12 @@ describe('bloggerReferenceRenderer', () => {
     expect(html).toContain('<span>Inner</span>')
   })
 
-  it('enforces section/widget cond, visible="false", and Layouts v3 maxwidgets/showaddelement suppression', () => {
+  it('enforces section/widget cond, empty section no-items, and visible="false"', () => {
     const xml = `<!DOCTYPE html><html b:css='false' b:js='false' b:defaultwidgetversion='2' b:layoutsVersion='3'><body>
       <b:section id='hidden-sec' cond='false'>
         <b:widget id='HTML1' type='HTML'><b:includable id='main'>Hidden Section</b:includable></b:widget>
       </b:section>
-      <b:section id='suppressed-sec' showaddelement='false'>
-        <b:widget id='HTML2' type='HTML'><b:includable id='main'>Suppressed Widget</b:includable></b:widget>
+      <b:section id='empty-sec'>
       </b:section>
       <b:section id='active-sec' name='Main Area' tag='aside'>
         <b:widget id='HTML3' type='HTML' visible='false'><b:includable id='main'>Invisible</b:includable></b:widget>
@@ -258,8 +257,7 @@ describe('bloggerReferenceRenderer', () => {
 
     const html = renderer.render(xml, { allowWidget: true })
     expect(html).not.toContain('hidden-sec')
-    expect(html).toContain('<div class="no-items section" id="suppressed-sec"></div>')
-    expect(html).not.toContain('Suppressed Widget')
+    expect(html).toContain('<div class="no-items section" id="empty-sec"></div>')
     expect(html).not.toContain('Invisible')
     expect(html).toContain('<aside class="section" id="active-sec" name="Main Area">')
     expect(html).toContain('data-version="1"')
@@ -316,5 +314,25 @@ describe('bloggerReferenceRenderer', () => {
     })
     expect(layoutHtml).toContain('id=\'template-skin-1\'')
     expect(layoutHtml).toContain('#layout { padding: 8px; }')
+  })
+
+  it('evaluates dynamic object literal expressions in b:with expr:value and flattens composite skin variables', () => {
+    const xml = `<b:skin><![CDATA[
+      /*<Variable name="font.primary" type="font" default="normal normal 16px Roboto" value="normal normal 16px Roboto"/>*/
+    ]]></b:skin>
+    <b:with expr:value='data:rawStr' var='option'>
+      <span class='opt-title'><b:eval expr='data:option.title'/></span>
+      <span class='opt-content'><b:eval expr='data:option.content'/></span>
+    </b:with>
+    <span class='font-family'><b:eval expr='data:skin.vars.font_primary_family'/></span>
+    <span class='font-size'><b:eval expr='data:skin.vars.font_primary_size'/></span>`
+
+    const html = renderer.compileFragment(xml, {
+      rawStr: '{ title: "Tops", content: "hybrid" }',
+    })
+    expect(html).toContain('<span class="opt-title">Tops</span>')
+    expect(html).toContain('<span class="opt-content">hybrid</span>')
+    expect(html).toContain('<span class="font-family">Roboto</span>')
+    expect(html).toContain('<span class="font-size">16px</span>')
   })
 })

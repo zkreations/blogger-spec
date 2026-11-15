@@ -7,6 +7,16 @@ import { deserializeWidgetSettings } from '../widget-settings.js'
 
 export { normalizeLinkItem, parsePageListJson } from '../widget-settings.js'
 
+function isTruthyAttr(val: unknown): boolean {
+  if (typeof val === 'boolean')
+    return val
+  if (typeof val === 'string') {
+    const lower = val.trim().toLowerCase()
+    return lower === 'true' || lower === 'yes'
+  }
+  return Boolean(val)
+}
+
 /**
  * Strict canonical widget ID pattern in Blogger (BX1047).
  * Format: declared widget type followed by an integer from 1 to 999.
@@ -73,11 +83,13 @@ export function extractTemplateWidgets(
         const typeAttr = node.attributes.find(a => a.name === 'type')
         const titleAttr = node.attributes.find(a => a.name === 'title')
         const versionAttr = node.attributes.find(a => a.name === 'version')
+        const visibleAttr = node.attributes.find(a => a.name === 'visible')
 
         const id = idAttr?.value ? String(idAttr.value).trim() : ''
         const type = typeAttr?.value ? String(typeAttr.value).trim() : ''
         const title = titleAttr?.value ? String(titleAttr.value) : undefined
         const version = versionAttr?.value ? Number(versionAttr.value) : undefined
+        const visible = visibleAttr !== undefined ? isTruthyAttr(visibleAttr.value) : undefined
 
         if (id && type) {
           const settings = extractWidgetSettingsFromNode(node.children, type, catalog)
@@ -86,6 +98,7 @@ export function extractTemplateWidgets(
             type,
             title,
             version,
+            ...(visible !== undefined ? { visible } : {}),
             ...(currentSectionId ? { sectionId: currentSectionId } : {}),
             ...(settings ? { settings } : {}),
           })

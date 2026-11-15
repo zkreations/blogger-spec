@@ -24,6 +24,14 @@ export function injectSkinVariables(
           : (rawOverrides[normName] !== undefined ? String(rawOverrides[normName]) : (v.value ?? v.default ?? ''))
         skinVars[normName] = createSkinRuntimeValue(v.type, normRaw, { includeBackgroundImage: true })
       }
+      const runtimeVal = skinVars[normName] ?? skinVars[v.name]
+      if (runtimeVal && typeof runtimeVal === 'object') {
+        for (const [subKey, subVal] of Object.entries(runtimeVal)) {
+          skinVars[`${v.name}.${subKey}`] = subVal
+          skinVars[`${normName}_${subKey}`] = subVal
+          skinVars[`${normName}.${subKey}`] = subVal
+        }
+      }
     }
     effectiveContext.skin = {
       ...(effectiveContext.skin as any || {}),

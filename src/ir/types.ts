@@ -124,7 +124,6 @@ export interface BirContainer {
   readonly version?: number
   readonly cond?: BloggerExpressionNode
   readonly visible?: boolean
-  readonly suppressedInV3?: boolean
   readonly settings?: Readonly<Record<string, unknown>>
   readonly children: readonly BirNode[]
 }

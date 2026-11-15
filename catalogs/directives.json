@@ -378,7 +378,7 @@
           "phase": 3,
           "name": "synthetic_containers",
           "title": "Synthetic Section & Widget Wrappers",
-          "description": "Generates synthetic layout wrappers for <b:section> and <b:widget>. Enforces Layouts v3 section deprecation (omitting widgets when maxwidgets or showaddelement are present) and respects widget runtime_rendering_policy.",
+          "description": "Generates synthetic layout wrappers for <b:section> and <b:widget>, tracking section emptiness and respecting widget runtime_rendering_policy.",
           "operations": [
             "emit_section_container",
             "validate_section_layout_v3_attributes",
@@ -616,13 +616,13 @@
         },
         "maxwidgets": {
           "type": "number",
-          "description": "Maximum allowed widgets. Deprecated in Layouts v3. Its presence causes the section to suppress widget rendering and emit <div class='no-items section'>.",
+          "description": "Maximum allowed widgets. Deprecated in Layouts v3. In Layouts v3 (b:layoutsVersion='3'), its presence is ignored by the compiler. Remove this attribute.",
           "attribute_kind": "static_literal",
           "expr": false
         },
         "showaddelement": {
           "type": "boolean",
-          "description": "Shows the 'Add a Gadget' button in legacy Layout UI. Deprecated in Layouts v3. Its presence causes the section to suppress widget rendering and emit <div class='no-items section'>.",
+          "description": "Shows the 'Add a Gadget' button in legacy Layout UI. Deprecated in Layouts v3. In Layouts v3 (b:layoutsVersion='3'), its presence is ignored by the compiler. Remove this attribute.",
           "attribute_kind": "static_literal",
           "expr": false,
           "allowed_values": [
@@ -689,14 +689,14 @@
           "action": "remove",
           "type": "number",
           "replacement": null,
-          "reason": "Deprecated in Layouts v3. In Layouts v3 (b:layoutsVersion='3'), its presence suppresses section rendering into <div class='no-items section'>. Remove this attribute."
+          "reason": "Deprecated in Layouts v3. In Layouts v3 (b:layoutsVersion='3'), this attribute is ignored by the compiler and Layout UI. Remove this attribute."
         },
         "showaddelement": {
           "status": "deprecated_in_layout_v3",
           "action": "remove",
           "type": "boolean",
           "replacement": null,
-          "reason": "Deprecated in Layouts v3. In Layouts v3 (b:layoutsVersion='3'), its presence suppresses section rendering into <div class='no-items section'>. Remove this attribute."
+          "reason": "Deprecated in Layouts v3. In Layouts v3 (b:layoutsVersion='3'), this attribute is ignored by the compiler and Layout UI. Remove this attribute."
         },
         "growth": {
           "status": "deprecated_in_layout_v3",

@@ -1,10 +1,10 @@
 export function evaluateBinaryCollection(op: string, leftVal: any, rightVal: any): any {
-  if (op === 'take') {
+  if (op === 'take' || op === 'limit') {
     const count = Number(rightVal)
     return Array.isArray(leftVal) ? leftVal.slice(0, count) : []
   }
 
-  if (op === 'skip') {
+  if (op === 'skip' || op === 'offset') {
     const count = Number(rightVal)
     return Array.isArray(leftVal) ? leftVal.slice(count) : []
   }

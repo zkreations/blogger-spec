@@ -177,7 +177,7 @@ describe('directives modularization: subroutines and containers', () => {
   })
 
   describe('b:section container', () => {
-    it('lowers section container and tags suppressed attributes in v3', () => {
+    it('lowers section container in v3 preserving children', () => {
       const doc = parseTemplate('<b:section id="main" class="main-sec" maxwidgets="1"><span>Hello</span></b:section>', { catalog })
       const node = doc.children[0] as any
       const ctx = createMockLowerContext({ layoutVersion: 3 })
@@ -187,7 +187,7 @@ describe('directives modularization: subroutines and containers', () => {
       expect(bir.role).toBe('section')
       expect(bir.id).toBe('main')
       expect(bir.className).toBe('main-sec')
-      expect(bir.suppressedInV3).toBe(true)
+      expect(bir.children.length).toBeGreaterThan(0)
     })
 
     it('renders section wrapper with default div and class handling', () => {

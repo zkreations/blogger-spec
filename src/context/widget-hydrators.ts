@@ -234,16 +234,21 @@ export function hydrateHeaderWidget(ctx: HydrateWidgetContext, baseWidget?: Reco
     blogLocale: ctx.blogLocale,
   })
 
-  const { instanceConfig, instanceOverrides, genericTypeConfig, headerData, widget } = ctx
+  const { instanceConfig, instanceOverrides, genericTypeConfig, headerData, widget, context } = ctx
 
-  const title = instanceOverrides?.title
+  const rawTitle = instanceOverrides?.title
     || (widget.settings as any)?.title
     || widget.title
     || instanceConfig?.title
     || genericTypeConfig?.title
-    || headerData.title
+    || headerData?.title
+    || (context?.blog as any)?.title
     || base.title
     || ctx.spec.getWidgetDefaultTitle('Header', ctx.blogLocale)
+
+  const title = typeof rawTitle === 'string'
+    ? rawTitle.replace(/\s*\((?:Header|Cabecera|En-tête|Kopfzeile|Cabeçalho)\)$/i, '').trim()
+    : rawTitle
 
   const description = instanceOverrides?.description
     || (widget.settings as any)?.description

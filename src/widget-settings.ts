@@ -107,7 +107,12 @@ export function hydrateWidgetSettings(
       coerced = lower === 'true' || lower === 'yes'
     }
     else if (def?.type === 'number' || (!def && settingName !== 'content' && /^-?\d+(?:\.\d+)?$/.test(trimmed))) {
-      coerced = Number(trimmed)
+      if (settingName === 'postId' || (!trimmed.includes('.') && Math.abs(Number(trimmed)) > Number.MAX_SAFE_INTEGER)) {
+        coerced = trimmed
+      }
+      else {
+        coerced = Number(trimmed)
+      }
     }
     else if (def?.value_transform === 'lowercase') {
       coerced = trimmed.toLowerCase()

@@ -1,5 +1,6 @@
 import type { BirAttrValue, BirIncludable, BirWithBinding } from '../types.js'
 import type { MutationTarget } from './dom-mutation-pipeline.js'
+import { parseExpression } from '../../ast.js'
 import { evaluateExpression } from '../../parser/index.js'
 
 export function bindLoopScope(
@@ -38,35 +39,49 @@ export function bindWithScope(
   const withData = { ...parentData }
   for (const b of bindings) {
     let val = evaluateExpression(b.value, withCtx as Record<string, any>)
-    if (b.isDynamicDereference && typeof val === 'string' && val.startsWith('data:')) {
-      const cleanPath = val.slice(5)
-      const segments = cleanPath.split('.').map(s => s.trim()).filter(Boolean)
-      let resolved: any
-      if (segments.length > 0) {
-        if (segments[0]! in withData) {
-          let curr: any = withData
-          for (const seg of segments) {
-            if (curr === null || curr === undefined) {
-              curr = undefined
-              break
+    if (b.isDynamicDereference && typeof val === 'string') {
+      if (val.startsWith('data:')) {
+        const cleanPath = val.slice(5)
+        const segments = cleanPath.split('.').map(s => s.trim()).filter(Boolean)
+        let resolved: any
+        if (segments.length > 0) {
+          if (segments[0]! in withData) {
+            let curr: any = withData
+            for (const seg of segments) {
+              if (curr === null || curr === undefined) {
+                curr = undefined
+                break
+              }
+              curr = curr[seg]
             }
-            curr = curr[seg]
+            resolved = curr
           }
-          resolved = curr
+          else if (segments[0]! in withCtx) {
+            let curr: any = withCtx
+            for (const seg of segments) {
+              if (curr === null || curr === undefined) {
+                curr = undefined
+                break
+              }
+              curr = curr[seg]
+            }
+            resolved = curr
+          }
         }
-        else if (segments[0]! in withCtx) {
-          let curr: any = withCtx
-          for (const seg of segments) {
-            if (curr === null || curr === undefined) {
-              curr = undefined
-              break
-            }
-            curr = curr[seg]
+        val = resolved
+      }
+      else {
+        const trimmed = val.trim()
+        if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+          try {
+            const parsed = parseExpression(trimmed)
+            val = evaluateExpression(parsed, withCtx as Record<string, any>)
           }
-          resolved = curr
+          catch {
+            // Keep original string if not a valid Blogger object expression
+          }
         }
       }
-      val = resolved
     }
     withCtx[b.var] = val
     withData[b.var] = val
@@ -95,7 +110,9 @@ export function bindWidgetScope(
     ...rawWidgetData,
   }
   if (title !== undefined) {
-    widgetData.title = title
+    widgetData.title = typeof title === 'string'
+      ? title.replace(/\s*\((?:Header|Cabecera|En-tête|Kopfzeile|Cabeçalho)\)$/i, '').trim()
+      : title
   }
 
   const widgetCtx: Record<string, unknown> = {

@@ -136,6 +136,14 @@ describe('widget-settings module', () => {
       const items = hydrated!.items as string[]
       expect(items).toEqual(['Gamma', 'Beta', 'Alfa'])
     })
+    it('preserves 64-bit integer IDs (postId) without IEEE-754 precision loss', () => {
+      const raw = {
+        postId: '8953814832668566668',
+      }
+      const hydrated = hydrateWidgetSettings(raw, 'FeaturedPost')
+      expect(hydrated).toBeDefined()
+      expect(hydrated!.postId).toBe('8953814832668566668')
+    })
   })
 
   describe('deserializeWidgetSettings from AST', () => {

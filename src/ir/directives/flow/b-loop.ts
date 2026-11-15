@@ -39,10 +39,11 @@ export function renderLoopDirective(
   ctx: Record<string, any>,
   renderCtx: DirectiveRenderContext,
 ): string {
-  const list = evaluateExpression(node.values, ctx)
-  if (!Array.isArray(list)) {
+  const evaluated = evaluateExpression(node.values, ctx)
+  if (evaluated === null || evaluated === undefined || evaluated === false || evaluated === '') {
     return ''
   }
+  const list = Array.isArray(evaluated) ? evaluated : [evaluated]
   const items = node.reverse ? [...list].reverse() : list
   let out = ''
   items.forEach((item, index) => {

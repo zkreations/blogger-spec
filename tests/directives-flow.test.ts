@@ -192,7 +192,7 @@ describe('flow directives suite', () => {
       expect(out).toBe('C:0;B:1;A:2;')
     })
 
-    it('returns empty string when values is not an array', () => {
+    it('returns empty string when values is null or falsy', () => {
       const node = {
         children: [{ kind: 'text', value: 'content' }],
         kind: 'loop',
@@ -201,6 +201,20 @@ describe('flow directives suite', () => {
       } as any
 
       expect(bLoopHandler.render(node, {}, dummyRenderCtx)).toBe('')
+    })
+
+    it('coerces single non-array object into singleton collection', () => {
+      const node = {
+        children: [{ kind: 'text', value: 'content' }],
+        kind: 'loop',
+        values: { type: 'Literal', value: { id: 'post1', title: 'Single Post' } },
+        var: 'post',
+      } as any
+
+      const renderedCtx = {
+        renderNodes: (nodes: readonly any[], ctx: Record<string, any>) => `${ctx.post.title};`,
+      }
+      expect(bLoopHandler.render(node, {}, renderedCtx as any)).toBe('Single Post;')
     })
   })
 

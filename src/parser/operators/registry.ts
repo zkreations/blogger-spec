@@ -65,7 +65,7 @@ export function dispatchBinary(node: BloggerBinaryExpressionNode, ctx: OperatorC
     return evaluateBinaryMembership(op, leftVal, rightVal)
   }
 
-  if (op === 'take' || op === 'skip' || op === 'to') {
+  if (op === 'take' || op === 'skip' || op === 'limit' || op === 'offset' || op === 'to') {
     const leftVal = ctx.evaluate(node.left, ctx.locals)
     const rightVal = ctx.evaluate(node.right, ctx.locals)
     return evaluateBinaryCollection(op, leftVal, rightVal)
