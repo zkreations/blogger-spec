@@ -142,10 +142,18 @@ export function hydrateWidgetSettings(
         let curr: any = result
         for (let i = 0; i < parts.length - 1; i++) {
           const part = parts[i]!
-          curr[part] = curr[part] || {}
+          if (!curr[part] || typeof curr[part] !== 'object') {
+            curr[part] = {}
+          }
           curr = curr[part]
         }
-        curr[parts[parts.length - 1]!] = coerced
+        const lastPart = parts[parts.length - 1]!
+        if (typeof curr[lastPart] === 'object' && curr[lastPart] !== null && typeof coerced === 'boolean') {
+          curr[lastPart]._visible = coerced
+        }
+        else {
+          curr[lastPart] = coerced
+        }
       }
     }
   }
