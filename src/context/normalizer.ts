@@ -5,6 +5,7 @@ import type {
   BloggerLabelData,
   BloggerPageLink,
   BloggerPostData,
+  BloggerPostEnclosure,
   BloggerPostLabel,
   BloggerRawEntry,
   BloggerRawFeed,
@@ -225,6 +226,11 @@ export function normalizePostEntry(
       }))
     : undefined
 
+  const enclosures: readonly BloggerPostEnclosure[] = (entry.link?.filter(l => l.rel === 'enclosure') || []).map(l => ({
+    url: mapper.mapUrl(l.href),
+    mimeType: l.type || '',
+  }))
+
   return {
     id,
     title,
@@ -232,6 +238,7 @@ export function normalizePostEntry(
     absoluteUrl: alternateLink,
     ...(titleLink !== undefined ? { link: titleLink } : {}),
     ...(feedLinks !== undefined ? { feedLinks } : {}),
+    enclosures,
     body,
     date: published.date,
     timestamp: published.timestamp,
@@ -373,6 +380,7 @@ export function normalizePageAsPostEntry(
     url,
     absoluteUrl: alternateLink,
     ...(titleLink !== undefined ? { link: titleLink } : {}),
+    enclosures: [],
     body,
     date: published.date,
     timestamp: published.timestamp,

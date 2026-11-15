@@ -160,6 +160,11 @@ export interface BloggerFeedLink {
   readonly mimeType: string
 }
 
+export interface BloggerPostEnclosure {
+  readonly url: string
+  readonly mimeType: string
+}
+
 export interface BloggerPostData {
   readonly id: string
   readonly title: string
@@ -167,6 +172,7 @@ export interface BloggerPostData {
   readonly absoluteUrl: string
   readonly link?: string
   readonly feedLinks?: readonly BloggerFeedLink[]
+  readonly enclosures?: readonly BloggerPostEnclosure[]
   readonly body: string
   readonly date: string
   readonly timestamp?: number

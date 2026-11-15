@@ -190,5 +190,30 @@ describe('context normalizer suite with real Hamlet fixtures', () => {
       })
       expect(post.featuredImage).toBe(`https://wsrv.nl/?url=${encodeURIComponent('https://img.youtube.com/vi/ppMXtTbNnCs/default.jpg')}`)
     })
+
+    it('extracts enclosures from link elements with rel="enclosure"', () => {
+      const rawEntryWithEnclosures = {
+        id: { $t: 'tag:blogger.com,1999:blog-123.post-789' },
+        published: { $t: '2024-01-01T00:00:00Z' },
+        updated: { $t: '2024-01-01T00:00:00Z' },
+        title: { $t: 'Product with purchase options' },
+        link: [
+          { rel: 'alternate', href: 'https://example.com/2024/01/product.html' },
+          { rel: 'enclosure', href: 'https://gumroad.com', type: 'application/octet-stream', title: 'Gumroad' },
+          { rel: 'enclosure', href: 'https://paypal.com', type: '', title: 'PayPal' },
+        ],
+      }
+      const post = normalizePostEntry(rawEntryWithEnclosures as any, mapper, blogId)
+      expect(post.enclosures).toBeDefined()
+      expect(post.enclosures).toHaveLength(2)
+      expect(post.enclosures?.[0]).toEqual({
+        url: 'https://gumroad.com',
+        mimeType: 'application/octet-stream',
+      })
+      expect(post.enclosures?.[1]).toEqual({
+        url: 'https://paypal.com',
+        mimeType: '',
+      })
+    })
   })
 })
