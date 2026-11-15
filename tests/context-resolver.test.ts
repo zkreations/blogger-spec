@@ -494,6 +494,46 @@ describe('context resolver suite with 3-tier precedence', () => {
       expect(defaultCtx.widgetData.Blog1.navMessage).toBe('Sorry, the page you were looking for in this blog does not exist.')
     })
 
+    it('resolves canonical navMessage dynamically across search, label, archive and error views', async () => {
+      // 1. Search Query (relevance default)
+      const searchCtx = await resolveBloggerContext({
+        targetUrl: 'https://laertes.zkreations.com/search?q=Woman',
+        offline: true,
+        templateXml: `<b:section id='main'><b:widget id='Blog1' type='Blog'/></b:section>`,
+      })
+      expect(searchCtx.widgetData.Blog1.navMessage).toBe(
+        'Showing posts sorted by relevance for query <b>Woman</b>. <a href="https://laertes.zkreations.com/search?q=Woman&amp;max-results=20&amp;by-date=true">Sort by date</a> <a href="https://laertes.zkreations.com/">Show all posts</a>',
+      )
+
+      // 2. Search Query with by-date=true
+      const searchDateCtx = await resolveBloggerContext({
+        targetUrl: 'https://laertes.zkreations.com/search?q=Woman&by-date=true',
+        offline: true,
+        templateXml: `<b:section id='main'><b:widget id='Blog1' type='Blog'/></b:section>`,
+      })
+      expect(searchDateCtx.widgetData.Blog1.navMessage).toBe(
+        'Showing posts sorted by date for query <b>Woman</b>. <a href="https://laertes.zkreations.com/search?q=Woman&amp;max-results=20">Sort by relevance</a> <a href="https://laertes.zkreations.com/">Show all posts</a>',
+      )
+
+      // 3. Label Search
+      const labelCtx = await resolveBloggerContext({
+        targetUrl: 'https://laertes.zkreations.com/search/label/travel',
+        offline: true,
+        templateXml: `<b:section id='main'><b:widget id='Blog1' type='Blog'/></b:section>`,
+      })
+      expect(labelCtx.widgetData.Blog1.navMessage).toBe(
+        'Showing posts with label <b>travel</b>. <a href="https://laertes.zkreations.com/">Show all posts</a>',
+      )
+
+      // 4. Homepage (navMessage must not leak 404)
+      const homeCtx = await resolveBloggerContext({
+        targetUrl: 'https://laertes.zkreations.com/',
+        offline: true,
+        templateXml: `<b:section id='main'><b:widget id='Blog1' type='Blog'/></b:section>`,
+      })
+      expect(homeCtx.widgetData.Blog1.navMessage).toBeUndefined()
+    })
+
     it('builds canonical Layouts v3 data:widgets collection with sectionId and dual indexing', async () => {
       const templateXml = `
         <b:section id='header'>

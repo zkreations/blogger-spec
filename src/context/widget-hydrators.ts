@@ -325,8 +325,8 @@ export function hydrateBlogWidget(ctx: HydrateWidgetContext, baseWidget?: Record
     : (blog1.numPosts !== undefined ? blog1.numPosts : activePosts.length)
 
   return {
-    ...blog1,
     ...base,
+    ...blog1,
     posts: activePosts,
     numPosts,
     allBylineItems: activeBylineList,

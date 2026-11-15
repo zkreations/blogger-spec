@@ -57,6 +57,64 @@ function deepMerge(target: any, source: any): any {
   return result
 }
 
+interface BuildBlogNavMessageOptions {
+  type: 'query' | 'label' | 'archive'
+  query?: string
+  label?: string
+  archiveMessage?: string
+  byDate?: boolean
+  maxResults?: number | string
+  homepageUrl: string
+  searchUrl: string
+  locale?: string
+}
+
+function buildBlogNavMessage(options: BuildBlogNavMessageOptions): string {
+  const isEs = options.locale?.toLowerCase().startsWith('es')
+  const homepage = options.homepageUrl.endsWith('/') ? options.homepageUrl : `${options.homepageUrl}/`
+  const showAllText = isEs ? 'Mostrar todas las entradas' : 'Show all posts'
+  const showAllLink = `<a href="${homepage}">${showAllText}</a>`
+
+  if (options.type === 'query' && options.query) {
+    const qEnc = encodeURIComponent(options.query)
+    const maxResults = options.maxResults || 20
+    const byDate = Boolean(options.byDate)
+    const searchBase = options.searchUrl
+
+    if (!byDate) {
+      const text = isEs
+        ? `Mostrando entradas ordenadas por relevancia para la consulta <b>${options.query}</b>. `
+        : `Showing posts sorted by relevance for query <b>${options.query}</b>. `
+      const sortUrl = `${searchBase}?q=${qEnc}&amp;max-results=${maxResults}&amp;by-date=true`
+      const sortText = isEs ? 'Ordenar por fecha' : 'Sort by date'
+      const sortLink = `<a href="${sortUrl}">${sortText}</a>`
+      return `${text}${sortLink} ${showAllLink}`
+    }
+    else {
+      const text = isEs
+        ? `Mostrando entradas ordenadas por fecha para la consulta <b>${options.query}</b>. `
+        : `Showing posts sorted by date for query <b>${options.query}</b>. `
+      const sortUrl = `${searchBase}?q=${qEnc}&amp;max-results=${maxResults}`
+      const sortText = isEs ? 'Ordenar por relevancia' : 'Sort by relevance'
+      const sortLink = `<a href="${sortUrl}">${sortText}</a>`
+      return `${text}${sortLink} ${showAllLink}`
+    }
+  }
+
+  if (options.type === 'label' && options.label) {
+    const text = isEs
+      ? `Mostrando las entradas con la etiqueta <b>${options.label}</b>. `
+      : `Showing posts with label <b>${options.label}</b>. `
+    return `${text}${showAllLink}`
+  }
+
+  if (options.type === 'archive' && options.archiveMessage) {
+    return `${options.archiveMessage}. ${showAllLink}`
+  }
+
+  return ''
+}
+
 function createCleanBaseContext(
   viewId: BloggerViewId,
   locale: string,
@@ -547,7 +605,9 @@ export function buildWidgetsCollection(
 export async function resolveBloggerContext(
   config: BloggerContextConfig = {},
 ): Promise<Record<string, any>> {
-  const viewId: BloggerViewId = config.view || 'homepage'
+  const activeUrl = config.overrides?.view?.url || config.targetUrl || ''
+  const resolvedTargetRoute = activeUrl ? resolveBloggerRoute(activeUrl) : undefined
+  const viewId: BloggerViewId = config.view || (resolvedTargetRoute?.viewId as BloggerViewId) || 'homepage'
 
   // Pure mock fallback: offline: true without any blogId, config, template, entries, commentFrameBaseUrl, or overrides
   const isPureMockFallback = Boolean(
@@ -582,14 +642,17 @@ export async function resolveBloggerContext(
   // Offline resolution with custom configuration or template
   if (config.offline) {
     const mockFallback = getMockContext(viewId)
-    const derivedHost = baseUrl ? new URL(baseUrl, 'https://example.blogspot.com').host : 'example.blogspot.com'
-    const mapper = createUrlMapper({ urlMode, baseUrl, blogHost: derivedHost })
+    const parsedActiveHost = activeUrl.startsWith('http') ? new URL(activeUrl).host : undefined
+    const derivedHost = baseUrl ? new URL(baseUrl, 'https://example.blogspot.com').host : (parsedActiveHost || 'example.blogspot.com')
+    const effectiveUrlMode = config.urlMode || (parsedActiveHost ? 'remote' : urlMode)
+    const mapper = createUrlMapper({ urlMode: effectiveUrlMode, baseUrl, blogHost: derivedHost })
 
+    const derivedOrigin = derivedHost && derivedHost !== 'example.blogspot.com' ? `https://${derivedHost}` : ''
     const context = createCleanBaseContext(viewId, blogLocale, spec)
     context.blog.blogId = effectiveBlogId
     context.blog.title = config.overrides?.blog?.title || (config.config?.blog as any)?.title || mockFallback.blog?.title || ''
     context.blog.description = config.overrides?.blog?.description || (config.config?.blog as any)?.description || mockFallback.blog?.description || ''
-    context.blog.homepageUrl = mapper.mapUrl('/')
+    context.blog.homepageUrl = config.overrides?.blog?.homepageUrl || (derivedOrigin ? `${derivedOrigin}/` : mapper.mapUrl('/'))
     context.blog.url = context.blog.homepageUrl
     context.blog.canonicalUrl = context.blog.homepageUrl
 
@@ -684,6 +747,39 @@ export async function resolveBloggerContext(
     else {
       blog1.posts = activePosts
       blog1.numPosts = blog1.numPosts !== undefined ? blog1.numPosts : activePosts.length
+    }
+
+    const searchParams = resolvedTargetRoute?.searchParams
+    if (viewId === 'search_query' && !blog1.navMessage) {
+      const q = searchParams?.get('q') || (config.overrides?.view?.search as any)?.query || (mockFallback.view?.search as any)?.query || 'Search'
+      context.view.search = context.view.search || {}
+      context.view.search.query = q
+      context.view.searchQuery = q
+      const byDate = searchParams?.get('by-date') === 'true'
+      const searchUrl = mapper.mapUrl(`${context.blog.homepageUrl.replace(/\/$/, '')}/search`)
+      blog1.navMessage = buildBlogNavMessage({
+        type: 'query',
+        query: q,
+        byDate,
+        maxResults: searchParams?.get('max-results') || 20,
+        homepageUrl: context.blog.homepageUrl,
+        searchUrl,
+        locale: blogLocale,
+      })
+    }
+    else if (viewId === 'label_search' && !blog1.navMessage) {
+      const pathLabel = resolvedTargetRoute?.params?.label
+      const lbl = pathLabel || searchParams?.get('label') || (config.overrides?.view?.search as any)?.label || (mockFallback.view?.search as any)?.label || 'Label'
+      context.view.search = context.view.search || {}
+      context.view.search.label = lbl
+      context.view.searchLabel = lbl
+      blog1.navMessage = buildBlogNavMessage({
+        type: 'label',
+        label: lbl,
+        homepageUrl: context.blog.homepageUrl,
+        searchUrl: mapper.mapUrl(`${context.blog.homepageUrl.replace(/\/$/, '')}/search`),
+        locale: blogLocale,
+      })
     }
 
     const blogAuthor = extractBlogAuthor({
@@ -847,8 +943,8 @@ export async function resolveBloggerContext(
     }
   }
 
-  const activeUrl = config.overrides?.view?.url || config.targetUrl || context.view?.url || ''
-  const resolvedRoute = resolveBloggerRoute(activeUrl)
+  const onlineActiveUrl = config.overrides?.view?.url || config.targetUrl || context.view?.url || ''
+  const resolvedRoute = resolveBloggerRoute(onlineActiveUrl)
   const isArchiveDailyWeekly = resolvedRoute.viewId === 'archive_weekly_daily' || viewId === 'archive_weekly_daily'
 
   if (viewId !== 'post' && viewId !== 'static_page') {
@@ -863,7 +959,7 @@ export async function resolveBloggerContext(
       context.blog.canonicalUrl = blogMeta.homepageUrl
     }
     else {
-      let resolvedUrl = activeUrl || blogMeta.homepageUrl
+      let resolvedUrl = onlineActiveUrl || blogMeta.homepageUrl
       if (isArchiveDailyWeekly) {
         resolvedUrl = resolvedUrl.replace(/\/(\d{4})_(\d{2})_(\d{2})_archive\.html(?=[?#]|$)/, '/$1/$2/')
       }
@@ -951,8 +1047,25 @@ export async function resolveBloggerContext(
       context.view.search = context.view.search || {}
       context.view.search.query = effectiveQ
       context.view.searchQuery = effectiveQ
-      context.view.search.resultsMessage = spec.getFormattedGlobalMessage('view.search.resultsMessage', blogLocale, { LABEL: effectiveQ })
-      context.view.search.resultsMessageHtml = spec.getFormattedGlobalMessage('view.search.resultsMessageHtml', blogLocale, { LABEL: effectiveQ })
+      const isEs = blogLocale.toLowerCase().startsWith('es')
+      context.view.search.resultsMessage = isEs
+        ? `Mostrando entradas que coinciden con la búsqueda de ${effectiveQ}`
+        : `Showing posts matching the search for ${effectiveQ}`
+      context.view.search.resultsMessageHtml = isEs
+        ? `Mostrando entradas que coinciden con la búsqueda de <b>${effectiveQ}</b>`
+        : `Showing posts matching the search for <b>${effectiveQ}</b>`
+
+      const byDate = searchParams?.get('by-date') === 'true'
+      const searchUrl = mapper.mapUrl(`${context.blog.homepageUrl.replace(/\/$/, '')}/search`)
+      blog1.navMessage = buildBlogNavMessage({
+        type: 'query',
+        query: effectiveQ,
+        byDate,
+        maxResults: searchParams?.get('max-results') || 20,
+        homepageUrl: context.blog.homepageUrl,
+        searchUrl,
+        locale: blogLocale,
+      })
     }
 
     if (!effectiveQ && !pathLabel && !searchParams?.get('label') && searchParams?.get('updated-max')) {
@@ -982,6 +1095,16 @@ export async function resolveBloggerContext(
         { LABEL: effectiveLabel },
       )
 
+      if (!blog1.navMessage) {
+        blog1.navMessage = buildBlogNavMessage({
+          type: 'label',
+          label: effectiveLabel,
+          homepageUrl: context.blog.homepageUrl,
+          searchUrl: mapper.mapUrl(`${context.blog.homepageUrl.replace(/\/$/, '')}/search`),
+          locale: blogLocale,
+        })
+      }
+
       const normLabel = effectiveLabel.trim().toLowerCase()
       activePosts = activePosts.filter(p =>
         p.labels?.some(l => l.name?.trim().toLowerCase() === normLabel),
@@ -1008,6 +1131,16 @@ export async function resolveBloggerContext(
         context.view.archive.day = effectiveArchiveDay
       }
       context.view.archive.rangeMessage = spec.getArchiveRangeMessage(effectiveArchiveYear, effectiveArchiveMonth, blogLocale)
+
+      if (!blog1.navMessage) {
+        blog1.navMessage = buildBlogNavMessage({
+          type: 'archive',
+          archiveMessage: context.view.archive.rangeMessage,
+          homepageUrl: context.blog.homepageUrl,
+          searchUrl: mapper.mapUrl(`${context.blog.homepageUrl.replace(/\/$/, '')}/search`),
+          locale: blogLocale,
+        })
+      }
 
       activePosts = activePosts.filter((p) => {
         const m = p.publishedIso?.match(/^(\d{4})-(\d{2})-(\d{2})/)

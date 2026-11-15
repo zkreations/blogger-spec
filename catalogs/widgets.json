@@ -280,10 +280,8 @@
         },
         "navMessage": {
           "type": "string",
-          "description": "Status banner message displayed on search/archive views.",
-          "translatable": true,
-          "localization_key": "widgets.Blog.navMessage",
-          "default_value": "Sorry, the page you were looking for in this blog does not exist."
+          "unconfigured_state": "missing",
+          "description": "Status banner message displayed on search/archive views."
         },
         "newerPageUrl": {
           "type": "url",
