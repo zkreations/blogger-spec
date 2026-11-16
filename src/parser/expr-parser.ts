@@ -208,6 +208,7 @@ export class ExpressionParser {
         this.advance()
         const inner = this.parseExpression(0)
         this.consume('RPAREN', 'Expected \')\' to close parenthesized expression')
+        ;(inner as any).parenthesized = true
         return inner
       }
 

@@ -1,4 +1,4 @@
-import type { BloggerBinaryExpressionNode, BloggerLiteralNode } from '../../ast.js'
+import type { BloggerBinaryExpressionNode, BloggerExpressionNode, BloggerLiteralNode } from '../../ast.js'
 import type { OperatorContext } from './types.js'
 import { BloggerDivisionByZeroError, isStringLike } from './helpers.js'
 
@@ -10,6 +10,14 @@ export function evaluateUnaryArithmetic(op: string, arg: any): number | undefine
   return undefined
 }
 
+function collectAddLeaves(node: BloggerExpressionNode): BloggerExpressionNode[] {
+  if (node.type === 'BinaryExpression' && (node as BloggerBinaryExpressionNode).operator === '+' && !(node as any).parenthesized) {
+    const bin = node as BloggerBinaryExpressionNode
+    return [...collectAddLeaves(bin.left), ...collectAddLeaves(bin.right)]
+  }
+  return [node]
+}
+
 export function evaluateBinaryArithmetic(
   node: BloggerBinaryExpressionNode,
   ctx: OperatorContext,
@@ -17,6 +25,16 @@ export function evaluateBinaryArithmetic(
   const op = node.operator
 
   if (op === '+') {
+    const leaves = collectAddLeaves(node)
+    if (leaves.length > 2) {
+      const evaluated = leaves.map(leaf => ctx.evaluate(leaf))
+      const hasString = evaluated.some(v => typeof v === 'string' || Object.prototype.toString.call(v) === '[object String]')
+      if (hasString) {
+        return evaluated.map(v => String(v ?? '')).join('')
+      }
+      return evaluated.reduce((acc, curr) => Number(acc) + Number(curr), 0)
+    }
+
     const isLeftLiteralString = node.left.type === 'Literal' && typeof (node.left as BloggerLiteralNode).value === 'string'
     const isRightLiteralString = node.right.type === 'Literal' && typeof (node.right as BloggerLiteralNode).value === 'string'
 

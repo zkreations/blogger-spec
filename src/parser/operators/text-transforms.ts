@@ -11,30 +11,29 @@ function normalizeSnippetWhitespace(str: string, linebreaks: boolean): string {
 export function snippet(text: any, options?: any): string {
   const snippetsConfig = getSpecCatalog().getBlogSnippets()
   const maxLen = snippetsConfig?.longLengthMax ?? 1000
-  const rawLen = options?.length !== undefined ? Number(options.length) : maxLen
-  const len = Number.isFinite(rawLen) ? Math.min(maxLen, Math.max(50, Math.floor(rawLen))) : maxLen
+  const hasExplicitLen = options?.length !== undefined
+  const rawLen = hasExplicitLen ? Number(options.length) : Infinity
+  const len = Number.isFinite(rawLen) ? Math.min(maxLen, Math.max(50, Math.floor(rawLen))) : Infinity
   const links = options?.links !== undefined ? Boolean(options.links) : true
   const linebreaks = options?.linebreaks !== undefined ? Boolean(options.linebreaks) : true
   const ellipsis = options?.ellipsis !== undefined ? Boolean(options.ellipsis) : true
 
   const source = String(text ?? '').replace(/<br\s*\/?>/gi, '\n')
 
-  if (!links || !/<a\b/i.test(source)) {
+  if (!links) {
     const clean = normalizeSnippetWhitespace(source.replace(/<[^>]+>/g, ''), linebreaks).trim()
     if (clean.length > len) {
-      if (ellipsis) {
-        const cut = clean.slice(0, Math.max(0, len - 1))
-        return `${cut}\u2026`
-      }
-      return clean.slice(0, len)
+      return ellipsis ? `${clean.slice(0, Math.max(0, len - 1))}\u2026` : clean.slice(0, len)
     }
     return clean
   }
 
-  // Preserve <a ...>...</a> markup while counting and truncating strictly by visible characters
-  const strippedOtherTags = source.replace(/<(?!\/?a\b)[^>]+>/gi, '')
+  const stripRegex = /<(?!(\/)?(strong|em|[abiu])\b)[^>]+>/gi
+  const tokenRegex = /(<(\/)?(strong|em|[abiu])\b[^>]*>)/gi
+
+  const strippedOtherTags = source.replace(stripRegex, '')
   const trimmed = normalizeSnippetWhitespace(strippedOtherTags, linebreaks).trim()
-  const tokenRegex = /(<\/?a\b[^>]*>)/gi
+
   const segments: Array<{ isTag: boolean, value: string }> = []
   let lastIndex = 0
   let totalVisible = 0
@@ -60,20 +59,25 @@ export function snippet(text: any, options?: any): string {
   }
 
   let remaining = ellipsis ? Math.max(0, len - 1) : len
-  let openAnchors = 0
+  const openTags: string[] = []
   let out = ''
   for (const seg of segments) {
     if (seg.isTag) {
-      const isClosing = /^<\/a\b/i.test(seg.value)
-      if (isClosing) {
-        if (openAnchors > 0) {
-          out += seg.value
-          openAnchors--
+      const tagMatch = /^<(\/)?([a-z0-9]+)/i.exec(seg.value)
+      if (tagMatch) {
+        const isClosing = Boolean(tagMatch[1])
+        const tagName = tagMatch[2]!.toLowerCase()
+        if (isClosing) {
+          const idx = openTags.lastIndexOf(tagName)
+          if (idx !== -1) {
+            out += seg.value
+            openTags.splice(idx, 1)
+          }
         }
-      }
-      else if (remaining > 0) {
-        out += seg.value
-        openAnchors++
+        else if (remaining > 0) {
+          out += seg.value
+          openTags.push(tagName)
+        }
       }
     }
     else if (remaining > 0) {
@@ -82,9 +86,9 @@ export function snippet(text: any, options?: any): string {
       remaining -= slice.length
     }
   }
-  while (openAnchors > 0) {
-    out += '</a>'
-    openAnchors--
+  while (openTags.length > 0) {
+    const tag = openTags.pop()
+    out += `</${tag}>`
   }
   return ellipsis ? `${out}\u2026` : out
 }

@@ -169,7 +169,7 @@ export class TypeCatalogService {
       return true
     }
     if (Array.isArray(value)) {
-      return value.length > 0
+      return true
     }
     if (typeof value === 'object') {
       return Object.keys(value).length > 0

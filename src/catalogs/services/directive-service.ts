@@ -575,6 +575,14 @@ export class DirectiveCatalogService {
     return limit
   }
 
+  getScopeDictionaryLimit(): number {
+    const limit = this.getCompilerLimits()?.max_scope_dictionary_depth
+    if (limit === undefined) {
+      throw new Error('Missing compiler_limits.max_scope_dictionary_depth in directives catalog')
+    }
+    return limit
+  }
+
   getHallucinatedDirectives(): ReadonlyMap<string, BloggerDiagnosticCode> {
     return this.hallucinatedDirectives
   }

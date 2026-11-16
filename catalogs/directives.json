@@ -6,7 +6,8 @@
   "domain_metadata": {
     "compiler_limits": {
       "max_directive_nesting_depth": 50,
-      "max_include_recursion_depth": 43
+      "max_include_recursion_depth": 43,
+      "max_scope_dictionary_depth": 43
     },
     "hallucinated_directives": {
       "b:for": "BX1001",
@@ -744,7 +745,7 @@
       "attributes": {
         "id": {
           "type": "string",
-          "description": "Unique widget identifier consisting of the widget type followed by an integer from 1 to 999.",
+          "description": "Unique widget identifier consisting of the declared widget type followed by an integer. Canonical layout instances use 1 to 1000; the underlying Blogger runtime parses signed 32-bit integers in the range [-2147483648, 1000].",
           "required": true,
           "attribute_kind": "static_literal",
           "expr": false,

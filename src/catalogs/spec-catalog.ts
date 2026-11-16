@@ -192,6 +192,10 @@ export class SpecCatalog {
     return this.directives.getIncludeRecursionLimit()
   }
 
+  getScopeDictionaryLimit(): number {
+    return this.directives.getScopeDictionaryLimit()
+  }
+
   getHallucinatedDirectives(): ReadonlyMap<string, BloggerDiagnosticCode> {
     return this.directives.getHallucinatedDirectives()
   }

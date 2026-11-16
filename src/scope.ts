@@ -73,6 +73,14 @@ export class ScopeEnvironment {
     return this.frames
   }
 
+  getScopeDictionaryLimit(): number {
+    return this.catalog.getScopeDictionaryLimit()
+  }
+
+  isDictionaryLimitExceeded(): boolean {
+    return this.frames.length > this.getScopeDictionaryLimit()
+  }
+
   getActiveWidgetType(): string | undefined {
     for (let i = this.frames.length - 1; i >= 0; i--) {
       const frame = this.frames[i]!

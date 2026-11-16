@@ -349,7 +349,7 @@
   "operators": {
     "+": {
       "family": "arithmetic",
-      "description": "Performs numeric addition on numbers or string concatenation when at least one operand is text (ad-hoc polymorphism).",
+      "description": "Performs numeric addition on numbers or string concatenation when at least one operand is text (ad-hoc polymorphism). Chains of addition without parentheses evaluate left-to-right variadically as string concatenation if any operand is text.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2394,7 +2394,7 @@
     },
     "resizeImage": {
       "family": "image",
-      "description": "Rewrites Google CDN image URLs for resizing (w<size>), aspect ratio cropping (w<width>-h<height>-p-k-no-nu), or responsive variant collections. Scalar resize returns an image descriptor that serializes to the resized URL in scalar output contexts and populates .width and .height modifiers. Array resize returns array[object] of image_variant items with .url and .size. When evaluated against non-Google CDN URLs, safely returns the original URL unmodified without compiler diagnostics.",
+      "description": "Rewrites Google CDN image URLs for resizing (w<size>), aspect ratio cropping (w<width>-h<height>-p-k-no-nu), or responsive variant collections. Vertical aspect ratios (H > W, e.g. '9:16') ignore crop parameters and produce solely w<size>. Negative width parameters remove the sizing path segment from the URL completely, returning the clean original asset. Scalar resize returns an image descriptor that serializes to the resized URL in scalar output contexts and populates .width and .height modifiers. Array resize returns array[object] of image_variant items with .url and .size. When evaluated against non-Google CDN URLs, safely returns the original URL unmodified without compiler diagnostics.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
@@ -2574,7 +2574,7 @@
     },
     "snippet": {
       "family": "snippet",
-      "description": "Extracts a truncated plain-text snippet from markup or text, stripping HTML tags and appending a horizontal ellipsis character ('…') when truncated (unless ellipsis: false is specified in options).",
+      "description": "Extracts a formatted plain-text or HTML snippet from markup or text, stripping disallowed HTML tags and appending an ellipsis character ('…') when truncated (unless ellipsis: false is specified in options). If length is omitted, text is not truncated and basic formatting tags (<b>, <a>, <i>) are preserved. If length is provided, a minimum floor of 50 characters is enforced.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,

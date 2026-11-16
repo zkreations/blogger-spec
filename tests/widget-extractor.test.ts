@@ -10,10 +10,11 @@ import {
 
 describe('widget-extractor', () => {
   describe('canonical widget ID validation (BX1047)', () => {
-    it('accepts valid canonical widget IDs from 1 to 999', () => {
+    it('accepts valid canonical widget IDs from 1 to 1000', () => {
       expect(CANONICAL_WIDGET_ID_REGEX.test('PageList1')).toBe(true)
       expect(CANONICAL_WIDGET_ID_REGEX.test('PageList2')).toBe(true)
       expect(CANONICAL_WIDGET_ID_REGEX.test('PageList999')).toBe(true)
+      expect(CANONICAL_WIDGET_ID_REGEX.test('PageList1000')).toBe(true)
       expect(CANONICAL_WIDGET_ID_REGEX.test('Blog1')).toBe(true)
       expect(CANONICAL_WIDGET_ID_REGEX.test('Header1')).toBe(true)
       expect(CANONICAL_WIDGET_ID_REGEX.test('HTML5')).toBe(true)
@@ -22,7 +23,7 @@ describe('widget-extractor', () => {
 
     it('rejects invalid widget IDs violating BX1047', () => {
       expect(CANONICAL_WIDGET_ID_REGEX.test('PageList0')).toBe(false)
-      expect(CANONICAL_WIDGET_ID_REGEX.test('PageList1000')).toBe(false)
+      expect(CANONICAL_WIDGET_ID_REGEX.test('PageList1001')).toBe(false)
       expect(CANONICAL_WIDGET_ID_REGEX.test('page_list_1')).toBe(false)
       expect(CANONICAL_WIDGET_ID_REGEX.test('MenuPrincipal')).toBe(false)
       expect(CANONICAL_WIDGET_ID_REGEX.test('custom1')).toBe(false)
@@ -38,8 +39,9 @@ describe('widget-extractor', () => {
     it('validates widget ID matches its declared type', () => {
       expect(isValidWidgetIdForType('PageList1', 'PageList')).toBe(true)
       expect(isValidWidgetIdForType('PageList2', 'PageList')).toBe(true)
+      expect(isValidWidgetIdForType('PageList0', 'PageList')).toBe(true)
       expect(isValidWidgetIdForType('Header1', 'PageList')).toBe(false)
-      expect(isValidWidgetIdForType('PageList0', 'PageList')).toBe(false)
+      expect(isValidWidgetIdForType('PageList1001', 'PageList')).toBe(false)
     })
   })
 

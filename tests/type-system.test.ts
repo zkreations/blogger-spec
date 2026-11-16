@@ -373,6 +373,7 @@ describe('canonical type system & coercion engine', () => {
       expect(isTruthy(1)).toBe(true)
       expect(isTruthy(-5)).toBe(true)
       expect(isTruthy([1])).toBe(true)
+      expect(isTruthy([])).toBe(true)
       expect(isTruthy({ key: 'val' })).toBe(true)
 
       expect(isTruthy(false)).toBe(false)
@@ -385,7 +386,6 @@ describe('canonical type system & coercion engine', () => {
       expect(isTruthy('')).toBe(false)
       expect(isTruthy('   ')).toBe(false)
       expect(isTruthy(Number.NaN)).toBe(false)
-      expect(isTruthy([])).toBe(false)
       expect(isTruthy({})).toBe(false)
       expect(isTruthy(null)).toBe(false)
       expect(isTruthy(undefined)).toBe(false)

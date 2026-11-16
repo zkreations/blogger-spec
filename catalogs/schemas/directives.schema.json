@@ -47,6 +47,10 @@
             "max_include_recursion_depth": {
               "type": "integer",
               "minimum": 1
+            },
+            "max_scope_dictionary_depth": {
+              "type": "integer",
+              "minimum": 1
             }
           },
           "additionalProperties": false

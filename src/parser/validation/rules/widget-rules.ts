@@ -18,14 +18,20 @@ export function validateWidgetElement(
     const id = idAttr.value.trim()
     if (type && id) {
       const escapedType = type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-      const pattern = new RegExp(`^${escapedType}[1-9][0-9]{0,2}$`)
-      if (!pattern.test(id)) {
-        const idDiagCode = catalog.getDirective('b:widget')?.attributes?.id?.diagnostic ?? 'BX1047'
-        pushDiagnostic(diagnostics, catalog, idDiagCode, token, {
-          end: idAttr.end,
-          message: `Widget id '${id}' is invalid for type '${type}'. Expected '${type}' followed by a number between 1 and 999 (e.g. '${type}1').`,
-          start: idAttr.start,
-        })
+      const canonicalPattern = new RegExp(`^${escapedType}(?:[1-9][0-9]{0,2}|1000)$`)
+      if (!canonicalPattern.test(id)) {
+        const suffixMatch = new RegExp(`^${escapedType}([+-]?[0-9]+)$`).exec(id)
+        const num = suffixMatch ? Number.parseInt(suffixMatch[1]!, 10) : Number.NaN
+        const isExtendedValid = !Number.isNaN(num) && num >= -2147483648 && num <= 1000
+
+        if (!isExtendedValid) {
+          const idDiagCode = catalog.getDirective('b:widget')?.attributes?.id?.diagnostic ?? 'BX1047'
+          pushDiagnostic(diagnostics, catalog, idDiagCode, token, {
+            end: idAttr.end,
+            message: `Widget id '${id}' is invalid for type '${type}'. Expected '${type}' followed by a number between 1 and 1000 (e.g. '${type}1').`,
+            start: idAttr.start,
+          })
+        }
       }
 
       const widgetDef = catalog.getWidget(type)

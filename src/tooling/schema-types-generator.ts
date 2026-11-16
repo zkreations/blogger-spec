@@ -337,6 +337,7 @@ export function generateCanonicalSchemaTypes(): string {
   lines.push('export interface BloggerCompilerLimits {')
   lines.push('  max_directive_nesting_depth: number;')
   lines.push('  max_include_recursion_depth: number;')
+  lines.push('  max_scope_dictionary_depth: number;')
   lines.push('}')
   lines.push('')
   lines.push('export interface BloggerHallucinatedDirectiveConfig {')

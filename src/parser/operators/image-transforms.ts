@@ -22,7 +22,32 @@ export function resizeImage(url: any, size: any, ratio?: any): any {
     return urlStr
   }
 
-  const dim = Number(size)
+  let rawDim: number
+  try {
+    const str = String(size).trim()
+    const b = BigInt(str.includes('.') ? str.split('.')[0]! : str)
+    rawDim = Number(BigInt.asIntN(32, b))
+  }
+  catch {
+    rawDim = (Number(size) | 0)
+  }
+  const dim = rawDim
+
+  if (dim < 0) {
+    let resultUrl = urlStr
+    if (/=[^/]+$/.test(urlStr)) {
+      resultUrl = urlStr.replace(/=[^/]+$/, '')
+    }
+    else if (/\/s\d[^/]*\//.test(urlStr)) {
+      resultUrl = urlStr.replace(/\/s\d[^/]*\//, '/')
+    }
+    else if (/\/w\d[^/]*\//.test(urlStr)) {
+      resultUrl = urlStr.replace(/\/w\d[^/]*\//, '/')
+    }
+    // eslint-disable-next-line no-new-wrappers, unicorn/new-for-builtins
+    return new String(resultUrl) as any
+  }
+
   let param: string
   const targetWidth = dim
   let targetHeight = dim
@@ -30,10 +55,15 @@ export function resizeImage(url: any, size: any, ratio?: any): any {
   const ratioStr = ratio != null ? String(ratio) : ''
   if (ratioStr) {
     const parts = ratioStr.split(':').map(Number)
-    const rw = parts[0]
-    const rh = parts[1]
-    targetHeight = rw && rh ? Math.floor((dim * rh) / rw) : dim
-    param = `w${targetWidth}-h${targetHeight}-p-k-no-nu`
+    const rw = parts[0] ?? 0
+    const rh = parts[1] ?? 0
+    if (rh > rw) {
+      param = `w${dim}`
+    }
+    else {
+      targetHeight = rw && rh ? Math.floor((dim * rh) / rw) : dim
+      param = `w${targetWidth}-h${targetHeight}-p-k-no-nu`
+    }
   }
   else {
     param = `w${dim}`

@@ -448,9 +448,9 @@
       "name": "INVALID_WIDGET_ID_SCHEMA",
       "category": "structure",
       "severity": "error",
-      "message": "Widget identifier does not conform to the required pattern. Blogger requires <b:widget> 'id' to start with its declared 'type' followed by an integer from 1 to 999 (e.g. 'Blog1', 'Header1').",
+      "message": "Widget identifier does not conform to the required pattern. Blogger requires <b:widget> 'id' to start with its declared 'type' followed by an integer from 1 to 1000 (e.g. 'Blog1', 'Header1').",
       "evidence": "official",
-      "verified_at": "2026-10-19"
+      "verified_at": "2026-11-16"
     },
     "BX1048": {
       "code": "BX1048",

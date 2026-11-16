@@ -11,10 +11,10 @@ export { normalizeLinkItem, parsePageListJson } from '../widget-settings.js'
 
 /**
  * Strict canonical widget ID pattern in Blogger (BX1047).
- * Format: declared widget type followed by an integer from 1 to 999.
- * e.g., 'PageList1', 'Blog1', 'Header1', 'HTML999'.
+ * Format: declared widget type followed by an integer from 1 to 1000.
+ * e.g., 'PageList1', 'Blog1', 'Header1', 'HTML1000'.
  */
-export const CANONICAL_WIDGET_ID_REGEX = /^([A-Z][a-zA-Z0-9]*?)([1-9]\d{0,2})$/
+export const CANONICAL_WIDGET_ID_REGEX = /^([A-Z][a-zA-Z]*)([1-9]\d{0,2}|1000)$/
 
 export function parseCanonicalWidgetId(id: string): { type: string, index: number } | undefined {
   const match = CANONICAL_WIDGET_ID_REGEX.exec(id)
@@ -32,8 +32,16 @@ export function isValidWidgetIdForType(id: string, type: string): boolean {
     return false
   }
   const escaped = type.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  const pattern = new RegExp(`^${escaped}[1-9]\\d{0,2}$`)
-  return pattern.test(id)
+  const canonicalPattern = new RegExp(`^${escaped}(?:[1-9]\\d{0,2}|1000)$`)
+  if (canonicalPattern.test(id)) {
+    return true
+  }
+  const suffixMatch = new RegExp(`^${escaped}([+-]?[0-9]+)$`).exec(id)
+  if (suffixMatch) {
+    const num = Number.parseInt(suffixMatch[1]!, 10)
+    return !Number.isNaN(num) && num >= -2147483648 && num <= 1000
+  }
+  return false
 }
 
 /**
