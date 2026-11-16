@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { getWorkspacePaths } from '../paths.js'
+import { getWorkspacePaths } from '../node/paths.js'
 
 export interface SchemaCompatibilityResult {
   valid: boolean

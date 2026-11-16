@@ -4,7 +4,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync
 import { join } from 'node:path'
 import ts from 'typescript'
 import { CATALOG_NAMES } from '../catalogs/constants.js'
-import { getWorkspacePaths } from '../paths.js'
+import { getWorkspacePaths } from '../node/paths.js'
 import { generateCanonicalSchemaTypes } from './schema-types-generator.js'
 
 export interface BloggerVerificationFreshnessItem {

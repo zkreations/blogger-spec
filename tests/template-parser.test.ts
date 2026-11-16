@@ -5,7 +5,7 @@ import {
   BloggerTemplateSyntaxError,
   parseTemplate,
 } from '../src/index.js'
-import { getWorkspacePaths } from '../src/paths.js'
+import { getWorkspacePaths } from '../src/node.js'
 
 describe('parseTemplate AST parser', () => {
   it('parses minimal Blogger template into BloggerDocumentNode with doctype and declarations', () => {

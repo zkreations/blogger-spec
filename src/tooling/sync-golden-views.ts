@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import process from 'node:process'
 import { resolveHamletContext } from '../../tests/helpers/hamlet-provider.js'
 import { BloggerReferenceRenderer } from '../ir/reference-renderer.js'
-import { getWorkspacePaths } from '../paths.js'
+import { getWorkspacePaths } from '../node/paths.js'
 import { normalizeHtmlString } from '../runner.js'
 
 export const CANONICAL_VIEWS = [

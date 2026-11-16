@@ -3,7 +3,7 @@ import { join } from 'node:path'
 import { describe, expect, it, vi } from 'vitest'
 import { BloggerFeedClient } from '../src/context/client.js'
 import { resolveBloggerContext } from '../src/context/resolver.js'
-import { getWorkspacePaths } from '../src/paths.js'
+import { getWorkspacePaths } from '../src/node.js'
 
 describe('context resolver suite with 3-tier precedence', () => {
   const postsFeedJson = JSON.parse(

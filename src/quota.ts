@@ -1,4 +1,3 @@
-/* eslint-disable import/no-mutable-exports */
 import type { BloggerExpressionNode } from './ast.js'
 import type { SpecCatalog } from './catalogs/index.js'
 import type {
@@ -7,28 +6,28 @@ import type {
   BloggerExpressionToken,
   BloggerExpressionTokenInfo,
 } from './types.js'
-import { getSpecCatalog, registerCacheResetListener } from './catalogs/index.js'
+import { getSpecCatalog } from './catalogs/index.js'
 import {
   flattenMultilineExpression,
   Lexer,
   unescapeXmlEntities,
 } from './parser/lexer.js'
 
-export let COMPILER_QUOTA_LIMIT = getSpecCatalog().getExpressionQuotaLimit()
-export let COMPILER_QUOTA_WARNING = getSpecCatalog().getExpressionQuotaWarning()
-export let COMPILER_NESTING_LIMIT = getSpecCatalog().getDirectiveNestingLimit()
+export function getCompilerQuotaLimit(catalog: SpecCatalog = getSpecCatalog()): number {
+  return catalog.getExpressionQuotaLimit()
+}
 
-registerCacheResetListener(() => {
-  try {
-    const spec = getSpecCatalog()
-    COMPILER_QUOTA_LIMIT = spec.getExpressionQuotaLimit()
-    COMPILER_QUOTA_WARNING = spec.getExpressionQuotaWarning()
-    COMPILER_NESTING_LIMIT = spec.getDirectiveNestingLimit()
-  }
-  catch {
-    // Retain defaults if the active store does not have operators/directives
-  }
-})
+export function getCompilerQuotaWarning(catalog: SpecCatalog = getSpecCatalog()): number {
+  return catalog.getExpressionQuotaWarning()
+}
+
+export function getCompilerNestingLimit(catalog: SpecCatalog = getSpecCatalog()): number {
+  return catalog.getDirectiveNestingLimit()
+}
+
+export const COMPILER_QUOTA_LIMIT = 40
+export const COMPILER_QUOTA_WARNING = 34
+export const COMPILER_NESTING_LIMIT = 50
 
 export {
   flattenMultilineExpression,

@@ -1,6 +1,6 @@
 import type { BloggerFixturesManifest } from './types.js'
 import { existsSync, readFileSync } from 'node:fs'
-import { getWorkspacePaths } from './paths.js'
+import { getWorkspacePaths } from './node/paths.js'
 
 export {
   FsCatalogStore,
@@ -13,7 +13,7 @@ export {
   getWorkspacePaths,
   resolveWorkspaceRoot,
   setCustomWorkspaceRoot,
-} from './paths.js'
+} from './node/paths.js'
 
 export function loadFixturesManifest(overrideRoot?: string): BloggerFixturesManifest {
   const paths = getWorkspacePaths(overrideRoot)

@@ -5,7 +5,7 @@ import {
   BloggerReferenceRenderer,
   normalizeHtmlString,
 } from '../src/index.js'
-import { getWorkspacePaths } from '../src/paths.js'
+import { getWorkspacePaths } from '../src/node.js'
 
 describe('bloggerReferenceRenderer', () => {
   const renderer = new BloggerReferenceRenderer()

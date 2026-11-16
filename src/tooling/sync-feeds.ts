@@ -2,7 +2,7 @@
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import process from 'node:process'
-import { getWorkspacePaths } from '../paths.js'
+import { getWorkspacePaths } from '../node/paths.js'
 
 const BASE_URL = 'https://hamlet.zkreations.com'
 

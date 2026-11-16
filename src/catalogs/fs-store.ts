@@ -5,7 +5,7 @@ import type {
 import type { CatalogStore } from './store.js'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { getWorkspacePaths } from '../paths.js'
+import { getWorkspacePaths } from '../node/paths.js'
 
 export function getCatalogsDirectory(): string {
   return getWorkspacePaths().catalogs

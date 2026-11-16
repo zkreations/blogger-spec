@@ -6,7 +6,7 @@ import addFormats from 'ajv-formats'
 import Ajv2020 from 'ajv/dist/2020.js'
 import { FsCatalogStore } from '../catalogs/fs-store.js'
 import { CATALOG_NAMES } from '../catalogs/store.js'
-import { getWorkspacePaths } from '../paths.js'
+import { getWorkspacePaths } from '../node/paths.js'
 import { verifyArtifactsFreshness } from './compiler.js'
 import { verifySchemasBackwardCompatibility } from './schema-compatibility.js'
 

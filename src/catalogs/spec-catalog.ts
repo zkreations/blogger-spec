@@ -3,80 +3,78 @@ import type {
   BloggerCompilerQuotas,
   BloggerDiagnosticCode,
   BloggerDiagnosticRule,
-  BloggerDiagnosticsCatalog,
   BloggerDirectiveAttribute,
   BloggerDirectiveAttributesValidationResult,
   BloggerDirectiveAttributeToken,
-  BloggerDirectiveAttributeViolation,
   BloggerDirectiveDefinition,
   BloggerDirectiveName,
-  BloggerDirectiveNestingAction,
   BloggerDirectiveNestingViolation,
-  BloggerDirectivesCatalog,
-  BloggerDirectiveToken,
   BloggerDomMutationPipelineCatalog,
   BloggerGlobalObjectDefinition,
-  BloggerGlobalsCatalog,
   BloggerHallucinatedDirectiveConfig,
   BloggerIncludableResolutionHierarchy,
   BloggerInclusionDefinition,
   BloggerInclusionDiagnosticKey,
-  BloggerInclusionsCatalog,
   BloggerLayoutVersionsCatalog,
   BloggerLocaleRecord,
-  BloggerLocalesCatalog,
   BloggerMessageDefinition,
   BloggerMessageDiagnosticKey,
-  BloggerMessagesCatalog,
   BloggerOperatorDefinition,
   BloggerOperatorName,
-  BloggerOperatorsCatalog,
   BloggerPrecedenceHierarchyLevel,
-  BloggerPropertyTranslationEntry,
   BloggerRenderPipelineCatalog,
   BloggerRootAttributesCatalog,
   BloggerRuntimeEvaluationState,
   BloggerScopeDefinition,
-  BloggerScopesCatalog,
-  BloggerSettingsCatalog,
-  BloggerSharingPlatformTranslationEntry,
   BloggerSkinCompilationCatalog,
   BloggerStandardDiagnosticKey,
   BloggerStandardDiagnostics,
   BloggerSuperDelegationRule,
   BloggerTypeDefinition,
-  BloggerTypesCatalog,
   BloggerVariableAttributesValidationResult,
   BloggerViewId,
   BloggerViewMatrixEntry,
   BloggerWidgetDefinition,
-  BloggerWidgetsCatalog,
   BloggerWidgetSettingsDefinition,
   BloggerWidgetType,
 } from '../types.js'
+import type {
+  BuildBlogNavMessageOptions,
+  DirectiveAttributesValidationTarget,
+  DirectiveSnippetOptions,
+  OperatorSnippetOptions,
+} from './services/index.js'
 import type { CatalogStore } from './store.js'
 import {
   BLOGGER_BOOLEAN_VALUES,
   isBloggerBoolean,
 } from '../types.js'
 import {
+  DiagnosticCatalogService,
+  DirectiveCatalogService,
+  LocaleCatalogService,
+  OperatorCatalogService,
+  TypeCatalogService,
+  WidgetCatalogService,
+} from './services/index.js'
+import {
   embeddedContexts,
   getDefaultCatalogStore,
   registerCacheResetListener,
 } from './store.js'
 
-export type DirectiveAttributesValidationTarget
-  = | BloggerDirectiveToken
-    | { tagName: string, attributes: Record<string, BloggerDirectiveAttributeToken | { value?: string }> | string[] }
-
-export interface DirectiveSnippetOptions {
-  readonly selfClosing?: boolean
-  readonly indent?: string
-  readonly quote?: '\'' | '"'
+export type {
+  BloggerDirectiveAttributesValidationResult,
+  BloggerVariableAttributesValidationResult,
+  BuildBlogNavMessageOptions,
+  DirectiveAttributesValidationTarget,
+  DirectiveSnippetOptions,
+  OperatorSnippetOptions,
 }
 
-export interface OperatorSnippetOptions {
-  readonly syntax?: 'functional' | 'infix'
+export {
+  BLOGGER_BOOLEAN_VALUES,
+  isBloggerBoolean,
 }
 
 let defaultSpecCatalogInstance: SpecCatalog | null = null
@@ -95,1349 +93,513 @@ export function getSpecCatalog(store?: CatalogStore): SpecCatalog {
   return defaultSpecCatalogInstance
 }
 
-export function getOperatorPrecedence(op: string, catalog: SpecCatalog = getSpecCatalog()): number | undefined {
-  return catalog.getOperatorPrecedence(op)
-}
-
-export function validateVariableAttributes(
-  variableType: string,
-  presentAttributes: string[],
-  catalog: SpecCatalog = getSpecCatalog(),
-): BloggerVariableAttributesValidationResult {
-  return catalog.validateVariableAttributes(variableType, presentAttributes)
-}
-
-export function validateDirectiveAttributes(
-  target: string | DirectiveAttributesValidationTarget,
-  attributesOrCatalog?: string[] | Record<string, BloggerDirectiveAttributeToken | { value?: string }> | SpecCatalog,
-  catalog: SpecCatalog = getSpecCatalog(),
-): BloggerDirectiveAttributesValidationResult {
-  if (typeof target !== 'string') {
-    const spec = (attributesOrCatalog && typeof attributesOrCatalog === 'object' && 'validateDirectiveAttributes' in attributesOrCatalog)
-      ? (attributesOrCatalog as SpecCatalog)
-      : catalog
-    return spec.validateDirectiveAttributes(target)
-  }
-  return catalog.validateDirectiveAttributes(target, attributesOrCatalog as any)
-}
-
-export function getThemeDesignerDescriptions(catalog: SpecCatalog = getSpecCatalog()): readonly string[] {
-  return catalog.getThemeDesignerDescriptions()
-}
-
-export function getVariableTypeAttributes(type?: undefined, catalog?: SpecCatalog): Record<string, { allowed: string[], required?: string[] }> | undefined
-export function getVariableTypeAttributes(type: string, catalog?: SpecCatalog): { allowed: string[], required?: string[] } | undefined
-export function getVariableTypeAttributes(
-  type?: string,
-  catalog: SpecCatalog = getSpecCatalog(),
-): { allowed: string[], required?: string[] } | Record<string, { allowed: string[], required?: string[] }> | undefined {
-  return type !== undefined ? catalog.getVariableTypeAttributes(type) : catalog.getVariableTypeAttributes()
-}
-
-export type {
-  BloggerDirectiveAttributesValidationResult,
-  BloggerVariableAttributesValidationResult,
-} from '../types.js'
-export {
-  BLOGGER_BOOLEAN_VALUES,
-  isBloggerBoolean,
-}
-
 export class SpecCatalog {
-  private readonly store: CatalogStore
-  private readonly directiveMap = new Map<string, BloggerDirectiveDefinition>()
-  private readonly operatorMap = new Map<string, BloggerOperatorDefinition>()
-  private readonly grammarOperatorMap = new Map<string, BloggerOperatorDefinition>()
-  private readonly docAliasMap = new Map<string, BloggerOperatorDefinition>()
-  private precedenceHierarchy: BloggerPrecedenceHierarchyLevel[] = []
-  private readonly levelBindingPowerMap = new Map<number, number>()
-  private readonly operatorBindingPowerMap = new Map<string, number>()
-  private readonly operatorAssociativityMap = new Map<string, 'left-to-right' | 'right-to-left' | 'inner-to-outer' | 'non-associative'>()
-  private readonly diagnosticMap = new Map<string, BloggerDiagnosticRule>()
-  private readonly diagnosticByNameMap = new Map<string, { code: BloggerDiagnosticCode, rule: BloggerDiagnosticRule }>()
-  private readonly grammarGroupMap = new Map<string, string[]>()
-  private readonly expandedValidChildrenMap = new Map<string, Set<string>>()
-  private readonly expandedValidParentsMap = new Map<string, Set<string>>()
-  private readonly widgetMap = new Map<string, BloggerWidgetDefinition>()
-  private readonly settingMap = new Map<string, BloggerWidgetSettingsDefinition>()
-  private readonly globalMap = new Map<string, BloggerGlobalObjectDefinition>()
-  private readonly messageMap = new Map<string, BloggerMessageDefinition>()
-  private readonly scopeMap = new Map<string, BloggerScopeDefinition>()
-  private readonly scopeOrder: string[] = []
-  private readonly typeMap = new Map<string, BloggerTypeDefinition>()
-  private readonly coercionRules: Record<string, any> = {}
-  private readonly inclusionMap = new Map<string, BloggerInclusionDefinition>()
-  private readonly widgetDefaultInclusions = new Map<string, string[]>()
-  private readonly hallucinatedDirectives = new Map<string, BloggerDiagnosticCode>()
-  private readonly hallucinatedDirectiveTransforms = new Map<string, BloggerHallucinatedDirectiveConfig>()
-  private readonly invertedAttributeMaps = new Map<string, string>()
-  private readonly standardDiagnostics = new Map<BloggerStandardDiagnosticKey, BloggerDiagnosticCode>()
-  private readonly scalarTypes: string[] = []
-  private readonly falsyStringLiterals = new Set<string>()
-  private readonly truthyStringLiterals = new Set<string>()
-  private readonly htmlVoidElements = new Set<string>()
-  private readonly localeMap = new Map<string, BloggerLocaleRecord>()
-  private localesCatalog?: BloggerLocalesCatalog
-  private superPrefix = 'super.'
+  readonly store: CatalogStore
+  readonly diagnostics: DiagnosticCatalogService
+  readonly directives: DirectiveCatalogService
+  readonly operators: OperatorCatalogService
+  readonly widgets: WidgetCatalogService
+  readonly types: TypeCatalogService
+  readonly locales: LocaleCatalogService
 
   constructor(store: CatalogStore = getDefaultCatalogStore()) {
     this.store = store
-    this.indexDirectives()
-    this.indexOperators()
-    this.indexDiagnostics()
-    this.indexWidgets()
-    this.indexSettings()
-    this.indexGlobals()
-    this.indexMessages()
-    this.indexScopes()
-    this.indexTypes()
-    this.indexInclusions()
-    this.indexLocales()
+    this.diagnostics = new DiagnosticCatalogService(this.store)
+    this.directives = new DirectiveCatalogService(this.store, this.diagnostics)
+    this.operators = new OperatorCatalogService(this.store)
+    this.widgets = new WidgetCatalogService(this.store)
+    this.types = new TypeCatalogService(this.store, this.directives)
+    this.locales = new LocaleCatalogService(this.store, this.widgets)
   }
 
-  private indexDirectives(): void {
-    const dirCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
-    const directives = dirCatalog.directives || {}
-    const groups = (dirCatalog.domain_metadata?.grammar_groups as Record<string, string[]>) || {}
-    for (const [groupName, members] of Object.entries(groups)) {
-      if (Array.isArray(members)) {
-        this.grammarGroupMap.set(groupName, members)
-      }
-    }
-
-    const hallucinated = dirCatalog.domain_metadata?.hallucinated_directives || {}
-    for (const [tag, code] of Object.entries(hallucinated)) {
-      this.hallucinatedDirectives.set(tag.toLowerCase(), code as BloggerDiagnosticCode)
-    }
-
-    const transforms = dirCatalog.domain_metadata?.hallucinated_directive_transforms || {}
-    for (const [code, config] of Object.entries(transforms)) {
-      this.hallucinatedDirectiveTransforms.set(code, config)
-    }
-
-    const inverted = dirCatalog.domain_metadata?.inverted_attribute_maps || {}
-    for (const [code, attr] of Object.entries(inverted)) {
-      this.invertedAttributeMaps.set(code, attr)
-    }
-
-    const stdDiags = (dirCatalog.domain_metadata?.standard_diagnostics as Record<string, string>) || {}
-    for (const [key, code] of Object.entries(stdDiags)) {
-      this.standardDiagnostics.set(key as BloggerStandardDiagnosticKey, code as BloggerDiagnosticCode)
-    }
-
-    const voidElements = (dirCatalog.domain_metadata?.html_void_elements as string[]) || []
-    for (const el of voidElements) {
-      this.htmlVoidElements.add(el.toLowerCase())
-    }
-
-    for (const [name, def] of Object.entries(directives)) {
-      this.directiveMap.set(name, def)
-    }
-
-    for (const [name, def] of Object.entries(directives)) {
-      if (def.grammar?.valid_children) {
-        this.expandedValidChildrenMap.set(name, this.expandGroupTokens(def.grammar.valid_children))
-      }
-      if (def.grammar?.valid_parents) {
-        this.expandedValidParentsMap.set(name, this.expandGroupTokens(def.grammar.valid_parents))
-      }
-    }
-  }
-
-  private expandGroupTokens(tokens: readonly string[]): Set<string> {
-    const result = new Set<string>()
-    const visited = new Set<string>()
-
-    const walk = (token: string) => {
-      if (visited.has(token)) {
-        return
-      }
-      visited.add(token)
-
-      if (token.startsWith('@')) {
-        const members = this.grammarGroupMap.get(token) || []
-        for (const member of members) {
-          walk(member)
-        }
-      }
-      else {
-        result.add(token)
-      }
-    }
-
-    for (const token of tokens) {
-      walk(token)
-    }
-
-    return result
-  }
-
-  private isTagAllowedInSet(tag: string, allowedSet: Set<string>): boolean {
-    if (allowedSet.has(tag)) {
-      return true
-    }
-    if (tag.startsWith('data:') && allowedSet.has('data:*')) {
-      return true
-    }
-    const lower = tag.toLowerCase()
-    if (allowedSet.has(lower)) {
-      return true
-    }
-    if (!this.isDirective(tag) && lower !== 'head' && lower !== 'html' && lower !== 'body' && allowedSet.has('html:*')) {
-      return true
-    }
-    return false
-  }
-
-  private indexOperators(): void {
-    const operatorsCatalog = this.store.getCatalog('operators') as BloggerOperatorsCatalog
-    const hierarchy = operatorsCatalog.domain_metadata?.precedence_hierarchy || []
-    this.precedenceHierarchy = hierarchy
-
-    const maxLevel = hierarchy.length > 0 ? Math.max(...hierarchy.map((h: BloggerPrecedenceHierarchyLevel) => h.level)) : 10
-
-    for (const item of hierarchy) {
-      const bp = (maxLevel + 1 - item.level) * 10
-      this.levelBindingPowerMap.set(item.level, bp)
-
-      if (Array.isArray(item.operators)) {
-        for (const op of item.operators) {
-          if (item.associativity) {
-            this.operatorAssociativityMap.set(op, item.associativity)
-            this.operatorAssociativityMap.set(op.toLowerCase(), item.associativity)
-          }
-        }
-      }
-    }
-
-    const operators = operatorsCatalog.operators || {}
-    for (const [op, def] of Object.entries(operators)) {
-      this.operatorMap.set(op, def)
-      this.grammarOperatorMap.set(op, def)
-      this.grammarOperatorMap.set(op.toLowerCase(), def)
-
-      const level = def.precedence_level
-      if (level !== undefined) {
-        const bp = this.levelBindingPowerMap.get(level) ?? (maxLevel + 1 - level) * 10
-        this.operatorBindingPowerMap.set(op, bp)
-        this.operatorBindingPowerMap.set(op.toLowerCase(), bp)
-
-        if (op === '? :') {
-          this.operatorBindingPowerMap.set('?', bp)
-        }
-      }
-
-      if (Array.isArray(def.grammar_aliases)) {
-        for (const alias of def.grammar_aliases) {
-          this.grammarOperatorMap.set(alias, def)
-          this.grammarOperatorMap.set(alias.toLowerCase(), def)
-
-          const bp = this.operatorBindingPowerMap.get(op)
-          if (bp !== undefined) {
-            this.operatorBindingPowerMap.set(alias, bp)
-            this.operatorBindingPowerMap.set(alias.toLowerCase(), bp)
-          }
-
-          const assoc = this.operatorAssociativityMap.get(op)
-          if (assoc) {
-            this.operatorAssociativityMap.set(alias, assoc)
-            this.operatorAssociativityMap.set(alias.toLowerCase(), assoc)
-          }
-        }
-      }
-
-      if (Array.isArray(def.doc_aliases)) {
-        for (const alias of def.doc_aliases) {
-          this.docAliasMap.set(alias, def)
-          this.docAliasMap.set(alias.toLowerCase(), def)
-        }
-      }
-    }
-  }
-
-  private indexDiagnostics(): void {
-    const rules = (this.store.getCatalog('diagnostics') as BloggerDiagnosticsCatalog).rules || {}
-    for (const [code, rule] of Object.entries(rules)) {
-      const entry = { ...rule, code: (rule.code ?? code) as BloggerDiagnosticCode }
-      this.diagnosticMap.set(code, entry)
-      if (rule.name) {
-        this.diagnosticByNameMap.set(rule.name, { code: entry.code, rule: entry })
-      }
-    }
-  }
-
-  private indexWidgets(): void {
-    const widgets = (this.store.getCatalog('widgets') as BloggerWidgetsCatalog).widgets || {}
-    for (const [name, def] of Object.entries(widgets)) {
-      this.widgetMap.set(name, def)
-    }
-  }
-
-  private indexSettings(): void {
-    const settingsCatalog = this.store.getCatalog('settings') as BloggerSettingsCatalog
-    const settings = settingsCatalog?.widgets || {}
-    for (const [name, def] of Object.entries(settings)) {
-      this.settingMap.set(name, def)
-    }
-  }
-
-  private indexGlobals(): void {
-    const objects = (this.store.getCatalog('globals') as BloggerGlobalsCatalog).objects || {}
-    for (const [name, def] of Object.entries(objects)) {
-      this.globalMap.set(name, def)
-      if (name.startsWith('data:')) {
-        this.globalMap.set(name.slice(5), def)
-      }
-    }
-  }
-
-  private indexMessages(): void {
-    const messages = (this.store.getCatalog('messages') as BloggerMessagesCatalog).messages || {}
-    for (const [key, def] of Object.entries(messages)) {
-      this.messageMap.set(key, { ...def, type: def.type ?? 'message' })
-    }
-  }
-
-  private indexScopes(): void {
-    const scopesData = this.store.getCatalog('scopes') as BloggerScopesCatalog
-    const precedence = scopesData.domain_metadata?.resolution_precedence
-    if (Array.isArray(precedence)) {
-      this.scopeOrder.push(...precedence)
-    }
-    const scopes = scopesData.scopes || {}
-    for (const [name, def] of Object.entries(scopes)) {
-      this.scopeMap.set(name, def)
-    }
-  }
-
-  private indexTypes(): void {
-    const typesData = this.store.getCatalog('types') as BloggerTypesCatalog
-    const meta = typesData.domain_metadata
-    if (meta?.coercion_rules) {
-      Object.assign(this.coercionRules, meta.coercion_rules)
-    }
-    if (Array.isArray(meta?.scalar_types)) {
-      this.scalarTypes.push(...meta.scalar_types)
-    }
-    if (meta?.truthiness_matrix?.falsy_string_literals) {
-      for (const s of meta.truthiness_matrix.falsy_string_literals) {
-        this.falsyStringLiterals.add(s.toLowerCase())
-      }
-    }
-    if (meta?.truthiness_matrix?.truthy_string_literals) {
-      for (const s of meta.truthiness_matrix.truthy_string_literals) {
-        this.truthyStringLiterals.add(s.toLowerCase())
-      }
-    }
-    const types = typesData.types || {}
-    for (const [name, def] of Object.entries(types)) {
-      this.typeMap.set(name, def)
-    }
-  }
-
-  private indexInclusions(): void {
-    const inclusionsData = this.store.getCatalog('inclusions') as BloggerInclusionsCatalog
-    const prefix = inclusionsData.domain_metadata?.super_prefix_rule?.prefix
-    if (!prefix) {
-      throw new Error('Missing domain_metadata.super_prefix_rule.prefix in inclusions catalog')
-    }
-    this.superPrefix = prefix
-    for (const [name, def] of Object.entries(inclusionsData.inclusions || {})) {
-      this.inclusionMap.set(name, { ...def, name: def.name ?? name })
-    }
-    this.widgetDefaultInclusions.clear()
-    for (const [wType, list] of Object.entries(inclusionsData.domain_metadata?.widget_default_inclusions || {})) {
-      this.widgetDefaultInclusions.set(wType, list)
-    }
-  }
-
-  private indexLocales(): void {
-    try {
-      const catalog = this.store.getCatalog('locales') as BloggerLocalesCatalog
-      this.localesCatalog = catalog
-      if (catalog?.locales) {
-        for (const [code, rec] of Object.entries(catalog.locales)) {
-          this.localeMap.set(code.toLowerCase(), rec)
-          if (rec.underscore_code) {
-            this.localeMap.set(rec.underscore_code.toLowerCase(), rec)
-          }
-          if (rec.bcp47) {
-            this.localeMap.set(rec.bcp47.toLowerCase(), rec)
-          }
-        }
-      }
-    }
-    catch {
-      // Store might not contain locales catalog in minimal or custom store instances
-    }
-  }
-
+  // --- Directives Domain ---
   isDirective(tagName: string): tagName is BloggerDirectiveName {
-    return this.directiveMap.has(tagName) || tagName.startsWith('data:')
+    return this.directives.isDirective(tagName)
   }
 
   getDirective(tagName: string): BloggerDirectiveDefinition | undefined {
-    if (this.directiveMap.has(tagName)) {
-      return this.directiveMap.get(tagName)
-    }
-    if (tagName.startsWith('data:')) {
-      return this.directiveMap.get('data:*')
-    }
-    return undefined
+    return this.directives.getDirective(tagName)
   }
 
   getAllDirectives(): Record<string, BloggerDirectiveDefinition> {
-    const result: Record<string, BloggerDirectiveDefinition> = {}
-    for (const [k, v] of this.directiveMap.entries()) {
-      result[k] = v
-    }
-    return result
+    return this.directives.getAllDirectives()
   }
 
   isSelfClosingDirective(tagName: string): boolean {
-    const def = this.getDirective(tagName)
-    return Boolean(def?.closure_mode === 'self_closing')
+    return this.directives.isSelfClosingDirective(tagName)
   }
 
   canNest(parentTag: string, childTag: string): boolean {
-    const parentDef = this.getDirective(parentTag)
-    const childDef = this.getDirective(childTag)
-
-    if (parentDef) {
-      if (this.isSelfClosingDirective(parentTag)) {
-        return false
-      }
-      const canonicalParent = parentTag.startsWith('data:') ? 'data:*' : parentTag
-      const allowedChildren = this.expandedValidChildrenMap.get(canonicalParent)
-      if (allowedChildren) {
-        if (!this.isTagAllowedInSet(childTag, allowedChildren)) {
-          return false
-        }
-      }
-    }
-
-    if (childDef) {
-      const canonicalChild = childTag.startsWith('data:') ? 'data:*' : childTag
-      const allowedParents = this.expandedValidParentsMap.get(canonicalChild)
-      if (allowedParents) {
-        if (!this.isTagAllowedInSet(parentTag, allowedParents)) {
-          return false
-        }
-      }
-    }
-
-    return true
+    return this.directives.canNest(parentTag, childTag)
   }
 
   validateDirectiveNesting(parentTag: string, childTag: string): BloggerDirectiveNestingViolation | null {
-    if (this.canNest(parentTag, childTag)) {
-      return null
-    }
-
-    const parentDef = this.getDirective(parentTag)
-    const childDef = this.getDirective(childTag)
-
-    const defaultProhibitedCode = this.getStandardDiagnostic('prohibited_nesting')
-    let diagCode = defaultProhibitedCode
-    let action: BloggerDirectiveNestingAction = 'reject'
-
-    const parentPolicy = parentDef?.grammar?.invalid_nesting_policy?.on_invalid_child
-    if (parentPolicy) {
-      const exception = parentPolicy.exceptions?.[childTag]
-      if (exception) {
-        diagCode = exception.diagnostic
-        action = exception.action
-      }
-      else {
-        diagCode = parentPolicy.diagnostic
-        action = parentPolicy.action
-      }
-    }
-    else {
-      const childPolicy = childDef?.grammar?.invalid_nesting_policy?.on_invalid_parent
-      if (childPolicy) {
-        diagCode = childPolicy.diagnostic
-        action = childPolicy.action
-      }
-    }
-
-    const rule = this.getDiagnostic(diagCode)
-      ?? this.getDiagnostic(defaultProhibitedCode)
-      ?? {
-        code: diagCode,
-        name: `Nesting Diagnostic ${diagCode}`,
-        category: 'syntax',
-        severity: 'error',
-        message: `Tag <${childTag}> is not permitted inside <${parentTag}>.`,
-        evidence: 'unknown',
-        verified_at: '2026-01-01',
-      }
-
-    let message = rule.message
-    if (rule.code === defaultProhibitedCode) {
-      message = `Tag <${childTag}> is not permitted inside <${parentTag}>.`
-    }
-
-    return {
-      code: (rule.code ?? diagCode) as BloggerDiagnosticCode,
-      rule,
-      action,
-      message,
-    }
+    return this.directives.validateDirectiveNesting(parentTag, childTag)
   }
 
   canBeAtRoot(tagName: string): boolean {
-    const def = this.getDirective(tagName)
-    if (!def) {
-      return true
-    }
-    const validParents = def.grammar?.valid_parents
-    if (!validParents) {
-      return true
-    }
-    return validParents.some(p => p.startsWith('@') || p === 'body' || p === 'head' || p === 'html:*')
+    return this.directives.canBeAtRoot(tagName)
   }
 
   getDirectiveAttributes(tagName: string): Record<string, BloggerDirectiveAttribute> | undefined {
-    return this.getDirective(tagName)?.attributes
+    return this.directives.getDirectiveAttributes(tagName)
   }
 
   validateDirectiveAttributes(
     target: string | DirectiveAttributesValidationTarget,
-    attributesOrCatalog?: string[] | Record<string, BloggerDirectiveAttributeToken | { value?: string }> | SpecCatalog,
+    attributesOrCatalog?: string[] | Record<string, BloggerDirectiveAttributeToken | { value?: string }> | any,
   ): BloggerDirectiveAttributesValidationResult {
-    let tagName: string
-    let attributesRecord: Record<string, { value?: string, start?: number, end?: number, valueStart?: number, valueEnd?: number }> = {}
-    let presentAttributes: string[] = []
-
-    if (typeof target === 'string') {
-      tagName = target
-      if (Array.isArray(attributesOrCatalog)) {
-        presentAttributes = []
-        for (const attr of attributesOrCatalog) {
-          const eqIdx = attr.indexOf('=')
-          if (eqIdx !== -1) {
-            const attrName = attr.slice(0, eqIdx).trim()
-            const val = attr.slice(eqIdx + 1).replace(/^["']|["']$/g, '').trim()
-            attributesRecord[attrName] = { value: val }
-            presentAttributes.push(attrName)
-          }
-          else {
-            attributesRecord[attr] = {}
-            presentAttributes.push(attr)
-          }
-        }
-      }
-      else if (attributesOrCatalog && typeof attributesOrCatalog === 'object' && !('getAllDirectives' in attributesOrCatalog)) {
-        attributesRecord = attributesOrCatalog as any
-        presentAttributes = Object.keys(attributesRecord)
-      }
-    }
-    else {
-      tagName = target.tagName
-      if (Array.isArray(target.attributes)) {
-        presentAttributes = []
-        for (const attr of target.attributes) {
-          const eqIdx = attr.indexOf('=')
-          if (eqIdx !== -1) {
-            const attrName = attr.slice(0, eqIdx).trim()
-            const val = attr.slice(eqIdx + 1).replace(/^["']|["']$/g, '').trim()
-            attributesRecord[attrName] = { value: val }
-            presentAttributes.push(attrName)
-          }
-          else {
-            attributesRecord[attr] = {}
-            presentAttributes.push(attr)
-          }
-        }
-      }
-      else if (target.attributes && typeof target.attributes === 'object') {
-        attributesRecord = target.attributes as any
-        presentAttributes = Object.keys(attributesRecord)
-      }
-    }
-
-    for (const [k, v] of Object.entries(attributesRecord as Record<string, any>)) {
-      if (typeof v === 'string') {
-        attributesRecord[k] = { value: v }
-      }
-    }
-
-    const directive = this.getDirective(tagName)
-    if (!directive) {
-      return {
-        valid: false,
-        missingRequired: [],
-        unknown: presentAttributes,
-        deprecated: [],
-        invalidExpressions: [],
-        inverted: [],
-        disallowedValues: [],
-        violations: presentAttributes.map(attr => ({
-          attribute: attr,
-          code: this.getStandardDiagnostic('unknown_directive'),
-          message: `Unknown directive <${tagName}>.`,
-          ...attributesRecord[attr],
-        })),
-      }
-    }
-
-    const allowedAttrs = directive.attributes || {}
-    const deprecatedMap = directive.deprecated_attributes || {}
-    const allowsArbitrary = Boolean(directive.grammar?.arbitrary_attributes)
-
-    const unknown: string[] = []
-    const deprecated: BloggerDirectiveAttributesValidationResult['deprecated'] = []
-    const invalidExpressions: string[] = []
-    const inverted: BloggerDirectiveAttributesValidationResult['inverted'] = []
-    const disallowedValues: BloggerDirectiveAttributesValidationResult['disallowedValues'] = []
-    const violations: BloggerDirectiveAttributeViolation[] = []
-
-    const inversions = directive.attribute_inversions || {}
-    for (const [invAttr, invDef] of Object.entries(inversions)) {
-      const expectedAttr = invDef.expected
-      const hasInv = presentAttributes.includes(invAttr)
-      const hasExpected = presentAttributes.includes(expectedAttr) || presentAttributes.includes(`expr:${expectedAttr}`)
-      if (hasInv && !hasExpected) {
-        const tokenInfo = attributesRecord[invAttr]
-        const invCode = invDef.diagnostic as BloggerDiagnosticCode
-        inverted.push({
-          code: invCode,
-          attribute: invAttr,
-          expected: expectedAttr,
-          start: tokenInfo?.start,
-          end: tokenInfo?.end,
-          valueStart: tokenInfo?.valueStart,
-          valueEnd: tokenInfo?.valueEnd,
-        })
-        violations.push({
-          attribute: invAttr,
-          code: invCode,
-          message: `Attribute '${invAttr}' is inverted; expected '${expectedAttr}' on <${tagName}>.`,
-          ...tokenInfo,
-        })
-      }
-    }
-
-    for (const attr of presentAttributes) {
-      const hasExpr = attr.startsWith('expr:')
-      const canonicalAttr = hasExpr ? attr.slice(5) : attr
-      const tokenInfo = attributesRecord[attr]
-
-      if (deprecatedMap[canonicalAttr]) {
-        const depMeta = deprecatedMap[canonicalAttr]!
-        deprecated.push({
-          name: attr,
-          reason: depMeta.reason,
-          replacement: depMeta.replacement,
-          start: tokenInfo?.start,
-          end: tokenInfo?.end,
-          valueStart: tokenInfo?.valueStart,
-          valueEnd: tokenInfo?.valueEnd,
-        })
-        violations.push({
-          attribute: attr,
-          code: this.getStandardDiagnostic('deprecated_attribute'),
-          message: `Attribute '${attr}' on <${tagName}> is deprecated. ${depMeta.reason || ''}`.trim(),
-          ...tokenInfo,
-        })
-      }
-      else if (allowedAttrs[canonicalAttr]) {
-        const meta = allowedAttrs[canonicalAttr]!
-        if (hasExpr && (meta.expr === false || meta.attribute_kind === 'static_literal')) {
-          invalidExpressions.push(attr)
-          violations.push({
-            attribute: attr,
-            code: this.getStandardDiagnostic('disallowed_expression_attribute'),
-            message: `Attribute '${attr}' on <${tagName}> does not support expressions.`,
-            ...tokenInfo,
-          })
-        }
-        else if (!hasExpr && meta.attribute_kind !== 'native_expression') {
-          const isBooleanAttr = meta.type === 'boolean'
-          const allowedValues = meta.allowed_values ?? (isBooleanAttr ? BLOGGER_BOOLEAN_VALUES : undefined)
-
-          if (allowedValues && Array.isArray(allowedValues)) {
-            const val = tokenInfo?.value
-            if (val !== undefined && val !== '') {
-              const isAllowed = isBooleanAttr
-                ? allowedValues.some(a => a.toLowerCase() === val.toLowerCase())
-                : allowedValues.includes(val)
-
-              if (!isAllowed) {
-                disallowedValues.push({
-                  attribute: attr,
-                  value: val,
-                  allowed: allowedValues,
-                  start: tokenInfo?.start,
-                  end: tokenInfo?.end,
-                  valueStart: tokenInfo?.valueStart,
-                  valueEnd: tokenInfo?.valueEnd,
-                })
-                const disallowedCode = (this.standardDiagnostics.get('disallowed_attribute_value') ?? 'BX1043') as BloggerDiagnosticCode
-                violations.push({
-                  attribute: attr,
-                  code: disallowedCode,
-                  message: `Value '${val}' is not allowed for attribute '${attr}' on <${tagName}>. Allowed values: ${allowedValues.join(', ')}.`,
-                  ...tokenInfo,
-                })
-              }
-            }
-          }
-        }
-      }
-      else if (inverted.some(inv => inv.attribute === canonicalAttr)) {
-        // Handled as specific inverted diagnostic
-      }
-      else if (!allowsArbitrary) {
-        unknown.push(attr)
-        violations.push({
-          attribute: attr,
-          code: this.getStandardDiagnostic('unknown_directive'),
-          message: `Unknown attribute '${attr}' on <${tagName}>.`,
-          ...tokenInfo,
-        })
-      }
-    }
-
-    const rawTypeVal = attributesRecord.type?.value
-    const subTypeValue = typeof rawTypeVal === 'string' ? rawTypeVal.trim().toLowerCase() : undefined
-    const subtypeMeta = (directive.type_attributes && subTypeValue)
-      ? directive.type_attributes[subTypeValue]
-      : undefined
-
-    const missingRequired: string[] = []
-    const requiredAttrsToCheck = subtypeMeta?.required
-      ? subtypeMeta.required
-      : Object.entries(allowedAttrs).filter(([_, meta]) => meta.required).map(([name]) => name)
-
-    for (const attrName of requiredAttrsToCheck) {
-      if (inverted.some(inv => inv.expected === attrName)) {
-        continue
-      }
-
-      const meta = allowedAttrs[attrName]
-      const hasLiteral = presentAttributes.includes(attrName)
-      const allowsExpr = meta ? (meta.expr !== false && meta.attribute_kind !== 'static_literal') : false
-      const hasExpr = allowsExpr && presentAttributes.includes(`expr:${attrName}`)
-
-      if (!hasLiteral && !hasExpr) {
-        missingRequired.push(attrName)
-        violations.push({
-          attribute: attrName,
-          code: this.getStandardDiagnostic('missing_required_attribute'),
-          message: `Mandatory attribute '${attrName}' is missing on <${tagName}>.`,
-        })
-      }
-    }
-
-    return {
-      valid: missingRequired.length === 0
-        && unknown.length === 0
-        && invalidExpressions.length === 0
-        && inverted.length === 0
-        && disallowedValues.length === 0,
-      missingRequired,
-      unknown,
-      deprecated,
-      invalidExpressions,
-      inverted,
-      disallowedValues,
-      violations,
-    }
-  }
-
-  getThemeDesignerDescriptions(): readonly string[] {
-    const typesCatalog = this.store.getCatalog('types') as BloggerTypesCatalog
-    return (typesCatalog.domain_metadata?.theme_designer_descriptions as string[]) ?? []
+    return this.directives.validateDirectiveAttributes(target, attributesOrCatalog)
   }
 
   getLayoutVersions(): BloggerLayoutVersionsCatalog | undefined {
-    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
-    return directivesCatalog.domain_metadata?.layout_versions
+    return this.directives.getLayoutVersions()
   }
 
   getRootAttributes(): BloggerRootAttributesCatalog | undefined {
-    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
-    return directivesCatalog.domain_metadata?.root_attributes
+    return this.directives.getRootAttributes()
   }
 
   getIncludableResolutionHierarchy(): BloggerIncludableResolutionHierarchy | undefined {
-    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
-    return directivesCatalog.domain_metadata?.includable_resolution_hierarchy
+    return this.directives.getIncludableResolutionHierarchy()
   }
 
   getDomMutationPipeline(): BloggerDomMutationPipelineCatalog | undefined {
-    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
-    return directivesCatalog.domain_metadata?.dom_mutation_pipeline
+    return this.directives.getDomMutationPipeline()
   }
 
   getSkinCompilation(): BloggerSkinCompilationCatalog | undefined {
-    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
-    return directivesCatalog.domain_metadata?.skin_compilation
+    return this.directives.getSkinCompilation()
   }
 
   getRenderPipeline(): BloggerRenderPipelineCatalog | undefined {
-    const directivesCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
-    return directivesCatalog.domain_metadata?.render_pipeline
+    return this.directives.getRenderPipeline()
   }
 
   getHtmlVoidElements(): ReadonlySet<string> {
-    return this.htmlVoidElements
+    return this.directives.getHtmlVoidElements()
+  }
+
+  getCompilerLimits(): BloggerCompilerLimits | undefined {
+    return this.directives.getCompilerLimits()
+  }
+
+  getDirectiveNestingLimit(): number {
+    return this.directives.getDirectiveNestingLimit()
+  }
+
+  getIncludeRecursionLimit(): number {
+    return this.directives.getIncludeRecursionLimit()
+  }
+
+  getHallucinatedDirectives(): ReadonlyMap<string, BloggerDiagnosticCode> {
+    return this.directives.getHallucinatedDirectives()
+  }
+
+  isHallucinatedDirective(tagName: string): boolean {
+    return this.directives.isHallucinatedDirective(tagName)
+  }
+
+  getHallucinatedDirectiveDiagnostic(tagName: string): BloggerDiagnosticCode | undefined {
+    return this.directives.getHallucinatedDirectiveDiagnostic(tagName)
+  }
+
+  getHallucinatedDirectiveTransform(code: string): BloggerHallucinatedDirectiveConfig | undefined {
+    return this.directives.getHallucinatedDirectiveTransform(code)
+  }
+
+  getInvertedAttribute(code: string): string | undefined {
+    return this.directives.getInvertedAttribute(code)
+  }
+
+  isDirectiveExpressionAttribute(tagName: string, attrName: string): boolean {
+    return this.directives.isDirectiveExpressionAttribute(tagName, attrName)
+  }
+
+  getDirectiveSnippet(tagName: string, options?: DirectiveSnippetOptions): string {
+    return this.directives.getDirectiveSnippet(tagName, options)
+  }
+
+  // --- Operators Domain ---
+  isOperator(op: string): op is BloggerOperatorName {
+    return this.operators.isOperator(op)
+  }
+
+  isGrammarOperator(op: string): boolean {
+    return this.operators.isGrammarOperator(op)
+  }
+
+  isDocAlias(alias: string): boolean {
+    return this.operators.isDocAlias(alias)
+  }
+
+  getOperator(op: string): BloggerOperatorDefinition | undefined {
+    return this.operators.getOperator(op)
+  }
+
+  isFunctionalOperator(op: string): boolean {
+    return this.operators.isFunctionalOperator(op)
+  }
+
+  getAllOperators(): Record<string, BloggerOperatorDefinition> {
+    return this.operators.getAllOperators()
+  }
+
+  getGrammarOperators(): Record<string, BloggerOperatorDefinition> {
+    return this.operators.getGrammarOperators()
+  }
+
+  getOperatorPrecedence(op: string): number | undefined {
+    return this.operators.getOperatorPrecedence(op)
+  }
+
+  getPrecedenceHierarchy(): readonly BloggerPrecedenceHierarchyLevel[] {
+    return this.operators.getPrecedenceHierarchy()
+  }
+
+  getLevelBindingPower(level: number): number | undefined {
+    return this.operators.getLevelBindingPower(level)
+  }
+
+  getOperatorBindingPower(op: string): number | undefined {
+    return this.operators.getOperatorBindingPower(op)
+  }
+
+  isLogicalOperator(op: string): boolean {
+    return this.operators.isLogicalOperator(op)
+  }
+
+  isRightAssociativeOperator(op: string): boolean {
+    return this.operators.isRightAssociativeOperator(op)
+  }
+
+  getCompilerQuotas(): BloggerCompilerQuotas | undefined {
+    return this.operators.getCompilerQuotas()
+  }
+
+  getExpressionQuotaLimit(): number {
+    return this.operators.getExpressionQuotaLimit()
+  }
+
+  getExpressionQuotaWarning(): number {
+    return this.operators.getExpressionQuotaWarning()
+  }
+
+  getExpressionQuotaDiagnostic(): BloggerDiagnosticCode | undefined {
+    return this.operators.getExpressionQuotaDiagnostic()
+  }
+
+  getExpressionQuotaWarningDiagnostic(): BloggerDiagnosticCode | undefined {
+    return this.operators.getExpressionQuotaWarningDiagnostic()
+  }
+
+  getLambdaKeywords(): ReadonlySet<string> {
+    return this.operators.getLambdaKeywords()
+  }
+
+  getProhibitedSyntaxDiagnostic(key: 'js_methods' | 'js_equality_operators'): BloggerDiagnosticCode {
+    return this.operators.getProhibitedSyntaxDiagnostic(key)
+  }
+
+  getOperatorSnippet(operatorName: string, options?: OperatorSnippetOptions): string {
+    return this.operators.getOperatorSnippet(operatorName, options)
+  }
+
+  // --- Widgets & Settings & Globals Domain ---
+  isWidget(name: string): name is BloggerWidgetType {
+    return this.widgets.isWidget(name)
+  }
+
+  getWidget(name: string): BloggerWidgetDefinition | undefined {
+    return this.widgets.getWidget(name)
+  }
+
+  getWidgetData(name: string): BloggerWidgetDefinition['canonical'] | undefined {
+    return this.widgets.getWidgetData(name)
+  }
+
+  getCommonWidget(): BloggerWidgetDefinition | undefined {
+    return this.widgets.getCommonWidget()
+  }
+
+  getAllWidgets(): Record<string, BloggerWidgetDefinition> {
+    return this.widgets.getAllWidgets()
+  }
+
+  getWidgetSettings(widgetName: string): BloggerWidgetSettingsDefinition | undefined {
+    return this.widgets.getWidgetSettings(widgetName)
+  }
+
+  getBlogPagination(): BloggerWidgetSettingsDefinition['pagination'] {
+    return this.widgets.getBlogPagination()
+  }
+
+  getBlogSnippets(): BloggerWidgetSettingsDefinition['snippets'] {
+    return this.widgets.getBlogSnippets()
+  }
+
+  getAllWidgetSettings(): Record<string, BloggerWidgetSettingsDefinition> {
+    return this.widgets.getAllWidgetSettings()
+  }
+
+  isGlobal(name: string): boolean {
+    return this.widgets.isGlobal(name)
+  }
+
+  getGlobal(name: string): BloggerGlobalObjectDefinition | undefined {
+    return this.widgets.getGlobal(name)
+  }
+
+  getAllGlobals(): Record<string, BloggerGlobalObjectDefinition> {
+    return this.widgets.getAllGlobals()
+  }
+
+  getViewsMatrix(): Readonly<Record<BloggerViewId, BloggerViewMatrixEntry>> {
+    return this.widgets.getViewsMatrix()
+  }
+
+  getViewMatrixEntry(viewId: BloggerViewId): BloggerViewMatrixEntry | undefined {
+    return this.widgets.getViewMatrixEntry(viewId)
+  }
+
+  getRuntimeEvaluationStates(): Readonly<Record<string, BloggerRuntimeEvaluationState>> {
+    return this.widgets.getRuntimeEvaluationStates()
+  }
+
+  isServerInclusion(name: string): boolean {
+    return this.widgets.isServerInclusion(name)
+  }
+
+  getSuperPrefix(): string {
+    return this.widgets.getSuperPrefix()
+  }
+
+  getInclusion(name: string): BloggerInclusionDefinition | undefined {
+    return this.widgets.getInclusion(name)
+  }
+
+  getAllInclusions(): Record<string, BloggerInclusionDefinition> {
+    return this.widgets.getAllInclusions()
+  }
+
+  isUniversalInclusion(name: string): boolean {
+    return this.widgets.isUniversalInclusion(name)
+  }
+
+  isPortableInclusion(name: string): boolean {
+    return this.widgets.isPortableInclusion(name)
+  }
+
+  isThemeBoundInclusion(name: string): boolean {
+    return this.widgets.isThemeBoundInclusion(name)
+  }
+
+  getInclusionMarkup(name: string): string | undefined {
+    return this.widgets.getInclusionMarkup(name)
+  }
+
+  getSuperDelegationRule(): BloggerSuperDelegationRule | undefined {
+    return this.widgets.getSuperDelegationRule()
+  }
+
+  getWidgetDefaultInclusions(widgetType: string): readonly string[] {
+    return this.widgets.getWidgetDefaultInclusions(widgetType)
+  }
+
+  isValidSuperInclusion(widgetType: string, subroutineName: string): boolean {
+    return this.widgets.isValidSuperInclusion(widgetType, subroutineName)
+  }
+
+  getAllWidgetDefaultInclusions(): Record<string, string[]> {
+    return this.widgets.getAllWidgetDefaultInclusions()
+  }
+
+  getInclusionDiagnostic(key: BloggerInclusionDiagnosticKey): BloggerDiagnosticCode {
+    return this.widgets.getInclusionDiagnostic(key)
+  }
+
+  // --- Diagnostics Domain ---
+  isDiagnosticCode(code: string): code is BloggerDiagnosticCode {
+    return this.diagnostics.isDiagnosticCode(code)
+  }
+
+  getDiagnostic(code: string): BloggerDiagnosticRule | undefined {
+    return this.diagnostics.getDiagnostic(code)
+  }
+
+  getAllDiagnostics(): Record<string, BloggerDiagnosticRule> {
+    return this.diagnostics.getAllDiagnostics()
+  }
+
+  getDiagnosticByName(name: string): { code: BloggerDiagnosticCode, rule: BloggerDiagnosticRule } | undefined {
+    return this.diagnostics.getDiagnosticByName(name)
+  }
+
+  getDiagnosticCodeByName(name: string): BloggerDiagnosticCode {
+    return this.diagnostics.getDiagnosticCodeByName(name)
+  }
+
+  getStandardDiagnostics(): Readonly<BloggerStandardDiagnostics> {
+    return this.diagnostics.getStandardDiagnostics()
+  }
+
+  getStandardDiagnostic(key: BloggerStandardDiagnosticKey): BloggerDiagnosticCode {
+    return this.diagnostics.getStandardDiagnostic(key)
+  }
+
+  // --- Types & Scopes Domain ---
+  isScope(name: string): boolean {
+    return this.types.isScope(name)
+  }
+
+  getScope(name: string): BloggerScopeDefinition | undefined {
+    return this.types.getScope(name)
+  }
+
+  getAllScopes(): Record<string, BloggerScopeDefinition> {
+    return this.types.getAllScopes()
+  }
+
+  getScopePrecedence(): string[] {
+    return this.types.getScopePrecedence()
+  }
+
+  isType(name: string): boolean {
+    return this.types.isType(name)
+  }
+
+  getType(name: string): BloggerTypeDefinition | undefined {
+    return this.types.getType(name)
+  }
+
+  getAllTypes(): Record<string, BloggerTypeDefinition> {
+    return this.types.getAllTypes()
+  }
+
+  getCoercionRules(): Record<string, any> {
+    return this.types.getCoercionRules()
+  }
+
+  getScalarTypes(): readonly string[] {
+    return this.types.getScalarTypes()
+  }
+
+  getFalsyStringLiterals(): ReadonlySet<string> {
+    return this.types.getFalsyStringLiterals()
+  }
+
+  getTruthyStringLiterals(): ReadonlySet<string> {
+    return this.types.getTruthyStringLiterals()
+  }
+
+  isTruthy(value: any): boolean {
+    return this.types.isTruthy(value)
+  }
+
+  getExpressionDiagnostic(key: 'prohibited_null_literal' | 'string_boolean_in_expression'): BloggerDiagnosticCode {
+    return this.types.getExpressionDiagnostic(key)
+  }
+
+  getThemeDesignerDescriptions(): readonly string[] {
+    return this.types.getThemeDesignerDescriptions()
   }
 
   getCdataDirectives(): readonly string[] {
-    const skinDef = this.getDirective('b:skin')
-    const cdataChildren = skinDef?.grammar?.valid_children?.filter(c => c !== 'CDATA') ?? []
-    return cdataChildren.length > 0 ? cdataChildren : ['Variable', 'Group']
+    return this.types.getCdataDirectives()
   }
 
   getVariableTypeAttributes(): Record<string, { allowed: string[], required?: string[] }> | undefined
   getVariableTypeAttributes(type: string): { allowed: string[], required?: string[] } | undefined
   getVariableTypeAttributes(type?: string): { allowed: string[], required?: string[] } | Record<string, { allowed: string[], required?: string[] }> | undefined {
-    const varDef = this.getDirective('Variable')
-    const typeAttrs = varDef?.type_attributes
-    if (!typeAttrs) {
-      return undefined
-    }
-    if (type) {
-      return typeAttrs[type.toLowerCase()]
-    }
-    return typeAttrs
+    return type !== undefined ? this.types.getVariableTypeAttributes(type) : this.types.getVariableTypeAttributes()
   }
 
   validateVariableAttributes(
     variableType: string,
     presentAttributes: string[],
   ): BloggerVariableAttributesValidationResult {
-    const meta = this.getVariableTypeAttributes(variableType)
-    if (!meta) {
-      return {
-        valid: false,
-        invalidAttributes: presentAttributes,
-        missingAttributes: [],
-      }
-    }
-
-    const allowedSet = new Set(meta.allowed)
-    const presentSet = new Set(presentAttributes)
-
-    const invalidAttributes = presentAttributes.filter(attr => !allowedSet.has(attr))
-    const missingAttributes = (meta.required || []).filter(attr => !presentSet.has(attr))
-
-    return {
-      valid: invalidAttributes.length === 0 && missingAttributes.length === 0,
-      invalidAttributes,
-      missingAttributes,
-    }
+    return this.types.validateVariableAttributes(variableType, presentAttributes)
   }
 
-  isOperator(op: string): op is BloggerOperatorName {
-    return this.grammarOperatorMap.has(op) || this.grammarOperatorMap.has(op.toLowerCase())
-  }
-
-  isGrammarOperator(op: string): boolean {
-    return this.isOperator(op)
-  }
-
-  isDocAlias(alias: string): boolean {
-    return this.docAliasMap.has(alias) || this.docAliasMap.has(alias.toLowerCase())
-  }
-
-  getOperator(op: string): BloggerOperatorDefinition | undefined {
-    return this.grammarOperatorMap.get(op)
-      ?? this.grammarOperatorMap.get(op.toLowerCase())
-      ?? this.docAliasMap.get(op)
-      ?? this.docAliasMap.get(op.toLowerCase())
-  }
-
-  isFunctionalOperator(op: string): boolean {
-    const def = this.getOperator(op)
-    return Boolean(def?.syntax?.supports_functional)
-  }
-
-  getAllOperators(): Record<string, BloggerOperatorDefinition> {
-    const result: Record<string, BloggerOperatorDefinition> = {}
-    for (const [k, v] of this.operatorMap.entries()) {
-      result[k] = v
-    }
-    return result
-  }
-
-  getGrammarOperators(): Record<string, BloggerOperatorDefinition> {
-    const result: Record<string, BloggerOperatorDefinition> = {}
-    for (const [k, v] of this.grammarOperatorMap.entries()) {
-      result[k] = v
-    }
-    return result
-  }
-
-  getOperatorPrecedence(op: string): number | undefined {
-    // Precedence strictly applies to valid grammar operators in Blogger
-    const grammarDef = this.grammarOperatorMap.get(op) ?? this.grammarOperatorMap.get(op.toLowerCase())
-    return grammarDef?.precedence_level
-  }
-
-  getPrecedenceHierarchy(): readonly BloggerPrecedenceHierarchyLevel[] {
-    return this.precedenceHierarchy
-  }
-
-  getLevelBindingPower(level: number): number | undefined {
-    return this.levelBindingPowerMap.get(level)
-  }
-
-  getOperatorBindingPower(op: string): number | undefined {
-    return this.operatorBindingPowerMap.get(op) ?? this.operatorBindingPowerMap.get(op.toLowerCase())
-  }
-
-  isLogicalOperator(op: string): boolean {
-    const def = this.getOperator(op)
-    return def?.family === 'logical'
-  }
-
-  isRightAssociativeOperator(op: string): boolean {
-    const assoc = this.operatorAssociativityMap.get(op) ?? this.operatorAssociativityMap.get(op.toLowerCase())
-    if (assoc) {
-      return assoc === 'right-to-left'
-    }
-    const def = this.getOperator(op)
-    if (def?.precedence_level !== undefined) {
-      const levelItem = this.precedenceHierarchy.find(h => h.level === def.precedence_level)
-      return levelItem?.associativity === 'right-to-left'
-    }
-    return false
-  }
-
-  isDiagnosticCode(code: string): code is BloggerDiagnosticCode {
-    return this.diagnosticMap.has(code)
-  }
-
-  getDiagnostic(code: string): BloggerDiagnosticRule | undefined {
-    return this.diagnosticMap.get(code)
-  }
-
-  getAllDiagnostics(): Record<string, BloggerDiagnosticRule> {
-    const result: Record<string, BloggerDiagnosticRule> = {}
-    for (const [k, v] of this.diagnosticMap.entries()) {
-      result[k] = v
-    }
-    return result
-  }
-
-  getDiagnosticByName(name: string): { code: BloggerDiagnosticCode, rule: BloggerDiagnosticRule } | undefined {
-    return this.diagnosticByNameMap.get(name)
-  }
-
-  getDiagnosticCodeByName(name: string): BloggerDiagnosticCode {
-    const entry = this.diagnosticByNameMap.get(name)
-    if (!entry) {
-      throw new Error(`Diagnostic rule with name '${name}' not found in diagnostics catalog`)
-    }
-    return entry.code
-  }
-
-  isWidget(name: string): name is BloggerWidgetType {
-    return this.widgetMap.has(name)
-  }
-
-  getWidget(name: string): BloggerWidgetDefinition | undefined {
-    return this.widgetMap.get(name)
-  }
-
-  getWidgetData(name: string): BloggerWidgetDefinition['canonical'] | undefined {
-    return this.widgetMap.get(name)?.canonical
-  }
-
-  getCommonWidget(): BloggerWidgetDefinition | undefined {
-    return (this.store.getCatalog('widgets') as BloggerWidgetsCatalog)?.common
-  }
-
-  getAllWidgets(): Record<string, BloggerWidgetDefinition> {
-    const result: Record<string, BloggerWidgetDefinition> = {}
-    for (const [k, v] of this.widgetMap.entries()) {
-      result[k] = v
-    }
-    return result
-  }
-
-  getWidgetSettings(widgetName: string): BloggerWidgetSettingsDefinition | undefined {
-    return this.settingMap.get(widgetName)
-  }
-
-  getBlogPagination(): BloggerWidgetSettingsDefinition['pagination'] {
-    return this.settingMap.get('Blog')?.pagination
-  }
-
-  getBlogSnippets(): BloggerWidgetSettingsDefinition['snippets'] {
-    return this.settingMap.get('Blog')?.snippets
-  }
-
-  getAllWidgetSettings(): Record<string, BloggerWidgetSettingsDefinition> {
-    const result: Record<string, BloggerWidgetSettingsDefinition> = {}
-    for (const [k, v] of this.settingMap.entries()) {
-      result[k] = v
-    }
-    return result
-  }
-
-  isGlobal(name: string): boolean {
-    return this.globalMap.has(name)
-  }
-
-  getGlobal(name: string): BloggerGlobalObjectDefinition | undefined {
-    return this.globalMap.get(name)
-  }
-
-  getAllGlobals(): Record<string, BloggerGlobalObjectDefinition> {
-    const result: Record<string, BloggerGlobalObjectDefinition> = {}
-    for (const [k, v] of this.globalMap.entries()) {
-      result[k] = v
-    }
-    return result
-  }
-
-  getViewsMatrix(): Readonly<Record<BloggerViewId, BloggerViewMatrixEntry>> {
-    const globalsCatalog = this.store.getCatalog('globals') as BloggerGlobalsCatalog
-    return (globalsCatalog.domain_metadata?.views ?? {}) as Readonly<Record<BloggerViewId, BloggerViewMatrixEntry>>
-  }
-
-  getViewMatrixEntry(viewId: BloggerViewId): BloggerViewMatrixEntry | undefined {
-    return this.getViewsMatrix()[viewId]
-  }
-
-  getRuntimeEvaluationStates(): Readonly<Record<string, BloggerRuntimeEvaluationState>> {
-    const globalsCatalog = this.store.getCatalog('globals') as BloggerGlobalsCatalog
-    return globalsCatalog.domain_metadata?.runtime_evaluation_states ?? {}
-  }
-
+  // --- Locales & Messages Domain ---
   isMessage(key: string): boolean {
-    return this.messageMap.has(key)
+    return this.locales.isMessage(key)
   }
 
   getMessage(key: string): BloggerMessageDefinition | undefined {
-    return this.messageMap.get(key)
+    return this.locales.getMessage(key)
   }
 
   getAllMessages(): Record<string, BloggerMessageDefinition> {
-    const result: Record<string, BloggerMessageDefinition> = {}
-    for (const [k, v] of this.messageMap.entries()) {
-      result[k] = v
-    }
-    return result
+    return this.locales.getAllMessages()
+  }
+
+  getMessageDiagnostic(key: BloggerMessageDiagnosticKey): BloggerDiagnosticCode {
+    return this.locales.getMessageDiagnostic(key)
   }
 
   getLocale(code: string): BloggerLocaleRecord | undefined {
-    const clean = code.trim().toLowerCase()
-    if (!clean) {
-      return undefined
-    }
-    const underscore = clean.replace(/-/g, '_')
-    const legacyAliases: Readonly<Record<string, string>> = {
-      iw: 'he',
-      in: 'id',
-      ji: 'yi',
-      tl: 'fil',
-      nb: 'no',
-      nn: 'no',
-    }
-    return this.localeMap.get(clean)
-      ?? this.localeMap.get(underscore)
-      ?? (legacyAliases[clean] ? this.localeMap.get(legacyAliases[clean]!) : undefined)
+    return this.locales.getLocale(code)
   }
 
   resolveBcp47Locale(locale = 'en'): string {
-    const clean = locale.trim()
-    if (!clean) {
-      return 'en'
-    }
-    const record = this.getLocale(clean)
-    if (record?.bcp47) {
-      return record.bcp47
-    }
-    const legacyAliases: Readonly<Record<string, string>> = {
-      iw: 'he',
-      in: 'id',
-      ji: 'yi',
-      tl: 'fil',
-      nb: 'no',
-      nn: 'no',
-    }
-    const parts = clean.split(/[-_]/)
-    const mappedBase = legacyAliases[parts[0]?.toLowerCase() || '']
-    if (mappedBase) {
-      parts[0] = mappedBase
-      return parts.join('-')
-    }
-    return clean.replace(/_/g, '-')
+    return this.locales.resolveBcp47Locale(locale)
   }
 
   getAllLocales(): Record<string, BloggerLocaleRecord> {
-    return this.localesCatalog?.locales || {}
+    return this.locales.getAllLocales()
+  }
+
+  getDefaultLocale(): string {
+    return this.locales.getDefaultLocale()
   }
 
   isRTL(locale: string): boolean {
-    const rec = this.getLocale(locale)
-    return rec ? rec.language_direction === 'rtl' : false
-  }
-
-  private lookupLocaleValue<T>(values: Readonly<Record<string, T>> | undefined, locale: string): T | undefined {
-    if (!values) {
-      return undefined
-    }
-    const trimmed = locale.trim()
-    const clean = trimmed.toLowerCase()
-    const underscore = trimmed.replace(/-/g, '_')
-    const cleanUnderscore = clean.replace(/-/g, '_')
-    const rec = this.getLocale(trimmed)
-    return values[trimmed]
-      ?? values[underscore]
-      ?? values[clean]
-      ?? values[cleanUnderscore]
-      ?? (rec ? (values[rec.underscore_code] ?? values[rec.language]) : undefined)
+    return this.locales.isRTL(locale)
   }
 
   getTranslation(key: string, locale = 'en'): string | undefined {
-    if (!this.localesCatalog?.translations) {
-      return undefined
-    }
-
-    if (key.startsWith('messages.')) {
-      const msgKey = key.slice(9)
-      return this.getLocalizedMessage(msgKey, locale)
-    }
-
-    if (key.startsWith('globals.')) {
-      const globKey = key.slice(8)
-      if (globKey.startsWith('blog.sharing.platforms.')) {
-        const parts = globKey.split('.')
-        const field = parts[parts.length - 1]
-        const platKey = parts.length === 5 ? parts[3] : 'facebook'
-        const platforms = this.localesCatalog.translations.globals['blog.sharing.platforms'] as Record<string, BloggerSharingPlatformTranslationEntry> | undefined
-        const platform = platforms?.[platKey]
-        if (platform) {
-          const entry = field === 'shareMessage' ? platform.share_message : platform.name
-          return (this.lookupLocaleValue<string>(entry?.values, locale) ?? entry?.default) ?? undefined
-        }
-        return undefined
-      }
-      const entry = this.localesCatalog.translations.globals[globKey] as BloggerPropertyTranslationEntry | undefined
-      if (entry) {
-        return (this.lookupLocaleValue<string>(entry.values, locale) ?? entry.default) ?? undefined
-      }
-      return undefined
-    }
-
-    if (key.startsWith('widgets.')) {
-      const parts = key.slice(8).split('.')
-      const widgetType = parts[0]
-      const propPath = parts.slice(1).join('.')
-      const widgetTranslations = this.localesCatalog.translations.widgets?.[widgetType]
-      const entry = widgetTranslations?.[propPath]
-      if (entry) {
-        return this.lookupLocaleValue<string>(entry.values, locale) ?? entry.default ?? undefined
-      }
-      return undefined
-    }
-
-    return this.getLocalizedMessage(key, locale)
+    return this.locales.getTranslation(key, locale)
   }
 
   getLocalizedMessage(messageKey: string, locale = 'en'): string | undefined {
-    const entry = this.localesCatalog?.translations?.messages?.[messageKey]
-    if (!entry) {
-      return undefined
-    }
-    return this.lookupLocaleValue<string>(entry.values, locale) ?? entry.default
+    return this.locales.getLocalizedMessage(messageKey, locale)
   }
 
   getAllLocalizedMessages(locale = 'en'): Record<string, string> {
-    const result: Record<string, string> = {}
-    const messagesMap = this.localesCatalog?.translations?.messages ?? {}
-    for (const key of Object.keys(messagesMap)) {
-      const val = this.getLocalizedMessage(key, locale)
-      if (val !== undefined) {
-        result[key] = val
-      }
-    }
-    return result
+    return this.locales.getAllLocalizedMessages(locale)
   }
 
   getWidgetNavMessage(widgetType = 'Blog', locale = 'en'): string {
-    const entry = this.localesCatalog?.translations?.widgets?.[widgetType]?.navMessage
-    return this.lookupLocaleValue<string>(entry?.values, locale)
-      ?? entry?.default
-      ?? 'Sorry, the page you were looking for in this blog does not exist.'
+    return this.locales.getWidgetNavMessage(widgetType, locale)
   }
 
   getWidgetDefaultTitle(widgetType: string, locale = 'en'): string {
-    const entry = this.localesCatalog?.translations?.widgets?.[widgetType]?.defaultTitle
-      ?? this.localesCatalog?.translations?.widgets?.[widgetType]?.name
-    return this.lookupLocaleValue<string>(entry?.values, locale) ?? entry?.default ?? widgetType
+    return this.locales.getWidgetDefaultTitle(widgetType, locale)
   }
 
   stripDefaultWidgetTypeSuffix(title: string, widgetType: string): string {
-    if (!title || typeof title !== 'string') {
-      return title
-    }
-    const entry = this.localesCatalog?.translations?.widgets?.[widgetType]?.defaultTitle
-      ?? this.localesCatalog?.translations?.widgets?.[widgetType]?.name
-    const suffixes = new Set<string>()
-    if (entry?.default) {
-      suffixes.add(entry.default)
-    }
-    if (entry?.values) {
-      for (const val of Object.values(entry.values)) {
-        if (typeof val === 'string' && val.trim()) {
-          suffixes.add(val.trim())
-        }
-      }
-    }
-    if (widgetType === 'Header') {
-      suffixes.add('Header')
-      suffixes.add('Cabecera')
-      suffixes.add('En-tête')
-      suffixes.add('Kopfzeile')
-      suffixes.add('Cabeçalho')
-    }
-    else if (suffixes.size === 0) {
-      suffixes.add(widgetType)
-    }
-    const pattern = Array.from(suffixes)
-      .map(s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-      .join('|')
-    const regex = new RegExp(`\\s*\\((?:${pattern})\\)$`, 'i')
-    return title.replace(regex, '').trim()
+    return this.locales.stripDefaultWidgetTypeSuffix(title, widgetType)
   }
 
   buildBlogNavMessage(options: BuildBlogNavMessageOptions, locale?: string): string {
-    const loc = locale ?? options.locale ?? this.getDefaultLocale()
-    const isEs = loc.toLowerCase().startsWith('es')
-    const homepage = options.homepageUrl.endsWith('/') ? options.homepageUrl : `${options.homepageUrl}/`
-    const showAllText = isEs ? 'Mostrar todas las entradas' : 'Show all posts'
-    const showAllLink = `<a href="${homepage}">${showAllText}</a>`
-    const defaultPageSize = this.getBlogPagination()?.searchPageSize ?? 20
-
-    if (options.type === 'query' && options.query) {
-      const qEnc = encodeURIComponent(options.query)
-      const maxResults = options.maxResults || defaultPageSize
-      const byDate = Boolean(options.byDate)
-      const searchBase = options.searchUrl
-
-      if (!byDate) {
-        const text = isEs
-          ? `Mostrando entradas ordenadas por relevancia para la consulta <b>${options.query}</b>. `
-          : `Showing posts sorted by relevance for query <b>${options.query}</b>. `
-        const sortUrl = `${searchBase}?q=${qEnc}&amp;max-results=${maxResults}&amp;by-date=true`
-        const sortText = isEs ? 'Ordenar por fecha' : 'Sort by date'
-        const sortLink = `<a href="${sortUrl}">${sortText}</a>`
-        return `${text}${sortLink} ${showAllLink}`
-      }
-      else {
-        const text = isEs
-          ? `Mostrando entradas ordenadas por fecha para la consulta <b>${options.query}</b>. `
-          : `Showing posts sorted by date for query <b>${options.query}</b>. `
-        const sortUrl = `${searchBase}?q=${qEnc}&amp;max-results=${maxResults}`
-        const sortText = isEs ? 'Ordenar por relevancia' : 'Sort by relevance'
-        const sortLink = `<a href="${sortUrl}">${sortText}</a>`
-        return `${text}${sortLink} ${showAllLink}`
-      }
-    }
-
-    if (options.type === 'label' && options.label) {
-      const text = isEs
-        ? `Mostrando las entradas con la etiqueta <b>${options.label}</b>. `
-        : `Showing posts with label <b>${options.label}</b>. `
-      return `${text}${showAllLink}`
-    }
-
-    if (options.type === 'archive' && options.archiveMessage) {
-      return `${options.archiveMessage}. ${showAllLink}`
-    }
-
-    return ''
+    return this.locales.buildBlogNavMessage(options, locale)
   }
 
   getSearchQueryResultsMessage(query: string, locale = 'en', isHtml = false): string {
-    const isEs = locale.toLowerCase().startsWith('es')
-    const q = isHtml ? `<b>${query}</b>` : query
-    return isEs
-      ? `Mostrando entradas que coinciden con la búsqueda de ${q}`
-      : `Showing posts matching the search for ${q}`
+    return this.locales.getSearchQueryResultsMessage(query, locale, isHtml)
   }
 
   getFormattedGlobalMessage(key: string, locale = 'en', params: Record<string, string> = {}): string {
-    const entry = this.localesCatalog?.translations?.globals?.[key] as BloggerPropertyTranslationEntry | undefined
-    let msg: string = this.lookupLocaleValue<string>(entry?.values, locale) ?? entry?.default ?? ''
-    for (const [k, v] of Object.entries(params)) {
-      msg = msg.split(k).join(v)
-    }
-    return msg
+    return this.locales.getFormattedGlobalMessage(key, locale, params)
   }
 
   getArchiveRangeMessage(year: number, month?: number, locale = 'en'): string {
-    const entry = this.localesCatalog?.translations?.globals?.['view.archive.rangeMessage'] as BloggerPropertyTranslationEntry | undefined
-    const template: string = this.lookupLocaleValue<string>(entry?.values, locale)
-      ?? entry?.default
-      ?? 'Showing posts from August, 2026'
-
-    let periodText = String(year)
-    if (month && month >= 1 && month <= 12) {
-      try {
-        const intlLocale = this.resolveBcp47Locale(locale)
-        const date = new Date(Date.UTC(year, month - 1, 1))
-        const monthName = new Intl.DateTimeFormat(intlLocale, { month: 'long', timeZone: 'UTC' }).format(date)
-        periodText = `${monthName}, ${year}`
-      }
-      catch {
-        periodText = `${month}/${year}`
-      }
-    }
-    return template.replace(/[\p{L}\p{M}&#;\d]+(?:\s*,\s*|\s+)\p{N}{4}/u, periodText)
+    return this.locales.getArchiveRangeMessage(year, month, locale)
   }
 
   resolvePlural(messageKey: string, count: number, locale = 'en'): string | undefined {
-    const entry = this.localesCatalog?.translations?.messages?.[messageKey]
-    if (!entry?.plural_forms) {
-      return this.getLocalizedMessage(messageKey, locale)
-    }
-    const localeForms = this.lookupLocaleValue(entry.plural_forms, locale) ?? entry.plural_forms.en
-    if (!localeForms) {
-      return entry.default
-    }
-    const strCount = String(count)
-    if (localeForms[strCount]) {
-      return localeForms[strCount]
-    }
-    try {
-      const pr = new Intl.PluralRules(this.resolveBcp47Locale(locale))
-      const category = pr.select(count)
-      let rep = '5'
-      if (category === 'zero') {
-        rep = '0'
-      }
-      else if (category === 'one') {
-        rep = '1'
-      }
-      else if (category === 'two') {
-        rep = '2'
-      }
-      else if (category === 'few') {
-        rep = '2'
-      }
-      else if (category === 'many') {
-        rep = '5'
-      }
-      else {
-        rep = '100'
-      }
-
-      const templateStr = localeForms[rep] ?? localeForms['5'] ?? localeForms['1']
-      if (templateStr) {
-        return templateStr.replace(new RegExp(`\\b${rep}\\b`), strCount)
-      }
-    }
-    catch {}
-    return localeForms['5']?.replace(/\b5\b/, strCount) ?? `${count} ${entry.default}`
+    return this.locales.resolvePlural(messageKey, count, locale)
   }
 
   formatParameterizedMessage(
@@ -1445,456 +607,7 @@ export class SpecCatalog {
     params: Array<{ name?: string, value: any }>,
     locale = 'en',
   ): string {
-    const cleanKey = key.replace(/^messages\./, '')
-    const msgMeta = this.messageMap.get(cleanKey)
-
-    if (cleanKey === 'numberOfComments' || msgMeta?.pattern?.includes('plural')) {
-      const numParam = params.find(p => p.name === 'numComments') ?? params[0]
-      const num = Number(numParam?.value ?? 0) || 0
-      return this.resolvePlural(cleanKey, num, locale) ?? `${num} comments`
-    }
-
-    let template = this.getLocalizedMessage(cleanKey, locale)
-      ?? msgMeta?.pattern
-      ?? msgMeta?.default_value
-      ?? ''
-
-    for (let i = 0; i < params.length; i++) {
-      const p = params[i]
-      const valStr = p?.value !== undefined && p?.value !== null ? String(p.value) : ''
-      const posToken1 = `%${i + 1}`
-      const posToken2 = `__ARG${i + 1}__`
-      template = template.split(posToken1).join(valStr).split(posToken2).join(valStr)
-      if (p?.name) {
-        template = template.split(`%${p.name}`).join(valStr).split(`{${p.name}}`).join(valStr)
-      }
-    }
-
-    return template
-  }
-
-  isScope(name: string): boolean {
-    return this.scopeMap.has(name)
-  }
-
-  getScope(name: string): BloggerScopeDefinition | undefined {
-    return this.scopeMap.get(name)
-  }
-
-  getAllScopes(): Record<string, BloggerScopeDefinition> {
-    const result: Record<string, BloggerScopeDefinition> = {}
-    for (const [k, v] of this.scopeMap.entries()) {
-      result[k] = v
-    }
-    return result
-  }
-
-  getScopePrecedence(): string[] {
-    return [...this.scopeOrder]
-  }
-
-  isType(name: string): boolean {
-    if (this.typeMap.has(name)) {
-      return true
-    }
-    if (name.startsWith('array[') && name.endsWith(']')) {
-      return this.isType(name.slice(6, -1))
-    }
-    return false
-  }
-
-  getType(name: string): BloggerTypeDefinition | undefined {
-    const direct = this.typeMap.get(name)
-    if (direct) {
-      return direct
-    }
-    if (name.startsWith('array[') && name.endsWith(']')) {
-      const itemType = name.slice(6, -1)
-      if (this.isType(itemType)) {
-        return {
-          category: 'collection',
-          description: `Ordered collection composed of ${itemType} values.`,
-          item_type: itemType,
-          parent_type: 'array',
-          user_constructible: true,
-          ts_type: `${itemType}[]`,
-          modifiers: {},
-          evidence: 'official',
-          verified_at: '2026-10-10',
-        }
-      }
-    }
-    return undefined
-  }
-
-  getAllTypes(): Record<string, BloggerTypeDefinition> {
-    const result: Record<string, BloggerTypeDefinition> = {}
-    for (const [k, v] of this.typeMap.entries()) {
-      result[k] = v
-    }
-    return result
-  }
-
-  getCoercionRules(): Record<string, any> {
-    return { ...this.coercionRules }
-  }
-
-  isServerInclusion(name: string): boolean {
-    if (!name) {
-      return false
-    }
-    if (name.startsWith(this.superPrefix)) {
-      return true
-    }
-    return this.inclusionMap.has(name)
-  }
-
-  getSuperPrefix(): string {
-    return this.superPrefix
-  }
-
-  getCompilerLimits(): BloggerCompilerLimits | undefined {
-    const dirCatalog = this.store.getCatalog('directives') as BloggerDirectivesCatalog
-    return dirCatalog.domain_metadata?.compiler_limits
-  }
-
-  getDirectiveNestingLimit(): number {
-    const limit = this.getCompilerLimits()?.max_directive_nesting_depth
-    if (limit === undefined) {
-      throw new Error('Missing compiler_limits.max_directive_nesting_depth in directives catalog')
-    }
-    return limit
-  }
-
-  getIncludeRecursionLimit(): number {
-    const limit = this.getCompilerLimits()?.max_include_recursion_depth
-    if (limit === undefined) {
-      throw new Error('Missing compiler_limits.max_include_recursion_depth in directives catalog')
-    }
-    return limit
-  }
-
-  getDefaultLocale(): string {
-    return this.localesCatalog?.domain_metadata?.default_locale ?? 'en'
-  }
-
-  getCompilerQuotas(): BloggerCompilerQuotas | undefined {
-    const opCatalog = this.store.getCatalog('operators') as BloggerOperatorsCatalog
-    return opCatalog.domain_metadata?.evaluation_contexts?.compiler_quotas
-  }
-
-  getExpressionQuotaLimit(): number {
-    const limit = this.getCompilerQuotas()?.max_expression_tokens
-    if (limit === undefined) {
-      throw new Error('Missing compiler_quotas.max_expression_tokens in operators catalog')
-    }
-    return limit
-  }
-
-  getExpressionQuotaWarning(): number {
-    const warning = this.getCompilerQuotas()?.warning_expression_tokens
-    if (warning === undefined) {
-      throw new Error('Missing compiler_quotas.warning_expression_tokens in operators catalog')
-    }
-    return warning
-  }
-
-  getExpressionQuotaDiagnostic(): BloggerDiagnosticCode | undefined {
-    return this.getCompilerQuotas()?.diagnostic
-  }
-
-  getExpressionQuotaWarningDiagnostic(): BloggerDiagnosticCode | undefined {
-    return this.getCompilerQuotas()?.warning_diagnostic
-  }
-
-  getLambdaKeywords(): ReadonlySet<string> {
-    const result = new Set<string>()
-    for (const [opKey, opDef] of this.operatorMap.entries()) {
-      if (opDef.family === 'lambda') {
-        result.add(opKey)
-        for (const alias of opDef.grammar_aliases || []) {
-          result.add(alias)
-        }
-      }
-    }
-    return result
-  }
-
-  getHallucinatedDirectives(): ReadonlyMap<string, BloggerDiagnosticCode> {
-    return this.hallucinatedDirectives
-  }
-
-  isHallucinatedDirective(tagName: string): boolean {
-    return this.hallucinatedDirectives.has(tagName.toLowerCase())
-  }
-
-  getHallucinatedDirectiveDiagnostic(tagName: string): BloggerDiagnosticCode | undefined {
-    return this.hallucinatedDirectives.get(tagName.toLowerCase())
-  }
-
-  getHallucinatedDirectiveTransform(code: string): BloggerHallucinatedDirectiveConfig | undefined {
-    return this.hallucinatedDirectiveTransforms.get(code)
-  }
-
-  getInvertedAttribute(code: string): string | undefined {
-    return this.invertedAttributeMaps.get(code)
-  }
-
-  getInclusion(name: string): BloggerInclusionDefinition | undefined {
-    return this.inclusionMap.get(name)
-  }
-
-  getAllInclusions(): Record<string, BloggerInclusionDefinition> {
-    const result: Record<string, BloggerInclusionDefinition> = {}
-    for (const [k, v] of this.inclusionMap.entries()) {
-      result[k] = v
-    }
-    return result
-  }
-
-  isUniversalInclusion(name: string): boolean {
-    const inc = this.inclusionMap.get(name)
-    return inc?.category === 'universal'
-  }
-
-  isPortableInclusion(name: string): boolean {
-    const inc = this.inclusionMap.get(name)
-    return inc?.safety === 'portable'
-  }
-
-  isThemeBoundInclusion(name: string): boolean {
-    const inc = this.inclusionMap.get(name)
-    return inc?.safety === 'theme_bound'
-  }
-
-  getInclusionMarkup(name: string): string | undefined {
-    return this.inclusionMap.get(name)?.server_markup
-  }
-
-  getSuperDelegationRule(): BloggerSuperDelegationRule | undefined {
-    const inclusionsData = this.store.getCatalog('inclusions') as BloggerInclusionsCatalog
-    return inclusionsData.domain_metadata?.super_delegation
-  }
-
-  getWidgetDefaultInclusions(widgetType: string): readonly string[] {
-    const specific = this.widgetDefaultInclusions.get(widgetType) || []
-    const universal = this.widgetDefaultInclusions.get('All') || []
-    return Array.from(new Set([...specific, ...universal]))
-  }
-
-  isValidSuperInclusion(widgetType: string, subroutineName: string): boolean {
-    const list = this.getWidgetDefaultInclusions(widgetType)
-    return list.includes(subroutineName)
-  }
-
-  getAllWidgetDefaultInclusions(): Record<string, string[]> {
-    const result: Record<string, string[]> = {}
-    for (const [k, v] of this.widgetDefaultInclusions.entries()) {
-      result[k] = [...v]
-    }
-    return result
-  }
-
-  getInclusionDiagnostic(key: BloggerInclusionDiagnosticKey): BloggerDiagnosticCode {
-    const inclusionsData = this.store.getCatalog('inclusions') as BloggerInclusionsCatalog
-    const code = inclusionsData?.domain_metadata?.standard_diagnostics?.[key]
-    if (!code) {
-      throw new Error(`Inclusion standard diagnostic '${key}' is not defined in inclusions catalog domain_metadata.standard_diagnostics`)
-    }
-    return code
-  }
-
-  getMessageDiagnostic(key: BloggerMessageDiagnosticKey): BloggerDiagnosticCode {
-    const messagesData = this.store.getCatalog('messages') as BloggerMessagesCatalog
-    const code = messagesData?.domain_metadata?.standard_diagnostics?.[key]
-    if (!code) {
-      throw new Error(`Message standard diagnostic '${key}' is not defined in messages catalog domain_metadata.standard_diagnostics`)
-    }
-    return code
-  }
-
-  getProhibitedSyntaxDiagnostic(key: 'js_methods' | 'js_equality_operators'): BloggerDiagnosticCode {
-    const operatorsData = this.store.getCatalog('operators') as any
-    const code = operatorsData?.domain_metadata?.prohibited_syntax?.[key]?.diagnostic
-    if (!code) {
-      throw new Error(`Prohibited syntax diagnostic '${key}' is not defined in operators catalog domain_metadata.prohibited_syntax`)
-    }
-    return code
-  }
-
-  getExpressionDiagnostic(key: 'prohibited_null_literal' | 'string_boolean_in_expression'): BloggerDiagnosticCode {
-    const typesData = this.store.getCatalog('types') as any
-    const code = typesData?.domain_metadata?.expression_diagnostics?.[key]
-    if (!code) {
-      throw new Error(`Expression diagnostic '${key}' is not defined in types catalog domain_metadata.expression_diagnostics`)
-    }
-    return code
-  }
-
-  getScalarTypes(): readonly string[] {
-    if (this.scalarTypes.length === 0) {
-      throw new Error('Missing scalar_types in types catalog')
-    }
-    return this.scalarTypes
-  }
-
-  getFalsyStringLiterals(): ReadonlySet<string> {
-    return this.falsyStringLiterals
-  }
-
-  getTruthyStringLiterals(): ReadonlySet<string> {
-    return this.truthyStringLiterals
-  }
-
-  isTruthy(value: any): boolean {
-    if (value === null || value === undefined) {
-      return false
-    }
-    if (Object.prototype.toString.call(value) === '[object String]' || (typeof value === 'object' && value !== null && Boolean((value as any)[Symbol.for('blogger-spec.skin-value')]))) {
-      value = String(value)
-    }
-    if (typeof value === 'boolean') {
-      return value
-    }
-    if (typeof value === 'number') {
-      return !Number.isNaN(value)
-    }
-    if (typeof value === 'string') {
-      const trimmed = value.trim().toLowerCase()
-      if (this.falsyStringLiterals.has(trimmed)) {
-        return false
-      }
-      if (this.truthyStringLiterals.has(trimmed)) {
-        return true
-      }
-      return true
-    }
-    if (Array.isArray(value)) {
-      return value.length > 0
-    }
-    if (typeof value === 'object') {
-      return Object.keys(value).length > 0
-    }
-    return Boolean(value)
-  }
-
-  getStandardDiagnostics(): Readonly<BloggerStandardDiagnostics> {
-    const result: any = {}
-    for (const [k, v] of this.standardDiagnostics.entries()) {
-      result[k] = v
-    }
-    return result
-  }
-
-  getStandardDiagnostic(key: BloggerStandardDiagnosticKey): BloggerDiagnosticCode {
-    const code = this.standardDiagnostics.get(key)
-    if (!code) {
-      throw new Error(`Standard diagnostic '${key}' is not defined in directives catalog domain_metadata.standard_diagnostics`)
-    }
-    return code
-  }
-
-  isDirectiveExpressionAttribute(tagName: string, attrName: string): boolean {
-    if (attrName.startsWith('expr:')) {
-      return true
-    }
-    const def = this.getDirective(tagName)
-    const attrDef = def?.attributes?.[attrName]
-    return Boolean(attrDef?.attribute_kind === 'native_expression' || attrDef?.type === 'expression')
-  }
-
-  getDirectiveSnippet(tagName: string, options?: DirectiveSnippetOptions): string {
-    const def = this.getDirective(tagName)
-    if (!def) {
-      return `<${tagName}>$0</${tagName}>`
-    }
-
-    const attrs = def.attributes || {}
-    const requiredAttrNames = Object.keys(attrs).filter(attrName => attrs[attrName]?.required)
-
-    let tabstopIndex = 1
-    const attrSnippets: string[] = []
-
-    const isThemeDesignerVar = tagName === 'Variable' || tagName === 'Group'
-    const quote = options?.quote ?? (isThemeDesignerVar ? '"' : '\'')
-
-    for (const attrName of requiredAttrNames) {
-      let placeholder = attrName
-      if (attrName === 'values') {
-        placeholder = 'data:items'
-      }
-      else if (attrName === 'var') {
-        placeholder = tagName === 'b:switch' ? 'data:view.type' : 'item'
-      }
-      else if (attrName === 'cond') {
-        placeholder = 'data:condition'
-      }
-      else if (attrName === 'expr') {
-        placeholder = 'data:expression'
-      }
-      else if (attrName === 'value') {
-        placeholder = tagName === 'b:case' ? 'item' : 'value'
-      }
-      else if (attrName === 'name') {
-        placeholder = 'name'
-      }
-      else if (attrName === 'id') {
-        placeholder = 'id'
-      }
-      else if (attrName === 'type') {
-        placeholder = 'type'
-      }
-
-      attrSnippets.push(`${attrName}=${quote}\${${tabstopIndex++}:${placeholder}}${quote}`)
-    }
-
-    const attrsString = attrSnippets.length > 0 ? ` ${attrSnippets.join(' ')}` : ''
-    const isSelfClosing = options?.selfClosing ?? (def.closure_mode === 'self_closing')
-    const indent = options?.indent ?? '  '
-
-    if (isSelfClosing) {
-      return `<${tagName}${attrsString}/>$0`
-    }
-
-    return `<${tagName}${attrsString}>\n${indent}$0\n</${tagName}>`
-  }
-
-  getOperatorSnippet(operatorName: string, options?: OperatorSnippetOptions): string {
-    const op = this.getOperator(operatorName)
-    if (!op) {
-      return `${operatorName}($0)`
-    }
-
-    const isSymbolic = !/^[a-z_]/i.test(operatorName)
-    const preferredSyntax = options?.syntax
-      ?? (op.operands?.length === 1
-        ? 'prefix'
-        : (op.syntax?.supports_functional && !isSymbolic ? 'functional' : (op.syntax?.supports_infix ? 'infix' : 'functional')))
-
-    if (preferredSyntax === 'functional' && op.syntax?.supports_functional) {
-      const fnName = op.syntax.functional_identifier ?? operatorName
-      const operands = op.operands || []
-      let tabstopIndex = 1
-      const args = operands.map(o => `\${${tabstopIndex++}:${o.name}}`)
-      return `${fnName}(${args.join(', ')})$0`
-    }
-
-    if (op.family === 'lambda') {
-      const collectionName = op.operands?.[0]?.name ?? 'items'
-      const varName = 'item'
-      const condition = 'condition'
-      return `\${1:${collectionName}} ${operatorName} (\${2:${varName}} => \${3:${condition}})$0`
-    }
-
-    if (op.operands && op.operands.length === 1) {
-      const operandName = op.operands[0]?.name ?? 'expression'
-      const sep = /^[a-z]/i.test(operatorName) ? ' ' : ''
-      return `${operatorName}${sep}\${1:${operandName}}$0`
-    }
-
-    const left = op.operands?.[0]?.name ?? 'left'
-    const right = op.operands?.[1]?.name ?? 'right'
-    return `\${1:${left}} ${operatorName} \${2:${right}}$0`
+    return this.locales.formatParameterizedMessage(key, params, locale)
   }
 
   getMockContext(viewId: BloggerViewId, overrides?: Record<string, any>): Record<string, any> {
@@ -1902,6 +615,7 @@ export class SpecCatalog {
   }
 }
 
+// Module-level functions delegating to SpecCatalog instance
 export function isDirective(tagName: string, catalog: SpecCatalog = getSpecCatalog()): tagName is BloggerDirectiveName {
   return catalog.isDirective(tagName)
 }
@@ -1932,6 +646,20 @@ export function canBeAtRoot(tagName: string, catalog: SpecCatalog = getSpecCatal
 
 export function getDirectiveAttributes(tagName: string, catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerDirectiveAttribute> | undefined {
   return catalog.getDirectiveAttributes(tagName)
+}
+
+export function validateDirectiveAttributes(
+  target: string | DirectiveAttributesValidationTarget,
+  attributesOrCatalog?: string[] | Record<string, BloggerDirectiveAttributeToken | { value?: string }> | SpecCatalog,
+  catalog: SpecCatalog = getSpecCatalog(),
+): BloggerDirectiveAttributesValidationResult {
+  if (typeof target !== 'string') {
+    const spec = (attributesOrCatalog && typeof attributesOrCatalog === 'object' && 'validateDirectiveAttributes' in attributesOrCatalog)
+      ? (attributesOrCatalog as SpecCatalog)
+      : catalog
+    return spec.validateDirectiveAttributes(target)
+  }
+  return catalog.validateDirectiveAttributes(target, attributesOrCatalog as any)
 }
 
 export function getLayoutVersions(catalog: SpecCatalog = getSpecCatalog()): BloggerLayoutVersionsCatalog | undefined {
@@ -1982,6 +710,10 @@ export function getGrammarOperators(catalog: SpecCatalog = getSpecCatalog()): Re
   return catalog.getGrammarOperators()
 }
 
+export function getOperatorPrecedence(op: string, catalog: SpecCatalog = getSpecCatalog()): number | undefined {
+  return catalog.getOperatorPrecedence(op)
+}
+
 export function getPrecedenceHierarchy(catalog: SpecCatalog = getSpecCatalog()): readonly BloggerPrecedenceHierarchyLevel[] {
   return catalog.getPrecedenceHierarchy()
 }
@@ -2012,6 +744,14 @@ export function getDiagnostic(code: string, catalog: SpecCatalog = getSpecCatalo
 
 export function getAllDiagnostics(catalog: SpecCatalog = getSpecCatalog()): Record<string, BloggerDiagnosticRule> {
   return catalog.getAllDiagnostics()
+}
+
+export function getDiagnosticByName(name: string, catalog: SpecCatalog = getSpecCatalog()): { code: BloggerDiagnosticCode, rule: BloggerDiagnosticRule } | undefined {
+  return catalog.getDiagnosticByName(name)
+}
+
+export function getDiagnosticCodeByName(name: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticCode {
+  return catalog.getDiagnosticCodeByName(name)
 }
 
 export function isWidget(name: string, catalog: SpecCatalog = getSpecCatalog()): name is BloggerWidgetType {
@@ -2102,6 +842,10 @@ export function getLocalizedMessage(messageKey: string, locale = 'en', catalog: 
   return catalog.getLocalizedMessage(messageKey, locale)
 }
 
+export function getAllLocalizedMessages(locale = 'en', catalog: SpecCatalog = getSpecCatalog()): Record<string, string> {
+  return catalog.getAllLocalizedMessages(locale)
+}
+
 export function resolvePlural(messageKey: string, count: number, locale = 'en', catalog: SpecCatalog = getSpecCatalog()): string | undefined {
   return catalog.resolvePlural(messageKey, count, locale)
 }
@@ -2121,6 +865,18 @@ export function getWidgetNavMessage(widgetType = 'Blog', locale = 'en', catalog:
 
 export function getWidgetDefaultTitle(widgetType: string, locale = 'en', catalog: SpecCatalog = getSpecCatalog()): string {
   return catalog.getWidgetDefaultTitle(widgetType, locale)
+}
+
+export function stripDefaultWidgetTypeSuffix(title: string, widgetType: string, catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.stripDefaultWidgetTypeSuffix(title, widgetType)
+}
+
+export function buildBlogNavMessage(options: BuildBlogNavMessageOptions, locale?: string, catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.buildBlogNavMessage(options, locale)
+}
+
+export function getSearchQueryResultsMessage(query: string, locale = 'en', isHtml = false, catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.getSearchQueryResultsMessage(query, locale, isHtml)
 }
 
 export function getFormattedGlobalMessage(key: string, locale = 'en', params: Record<string, string> = {}, catalog: SpecCatalog = getSpecCatalog()): string {
@@ -2333,6 +1089,27 @@ export function getOperatorSnippet(
   return catalog.getOperatorSnippet(operatorName, options)
 }
 
+export function getThemeDesignerDescriptions(catalog: SpecCatalog = getSpecCatalog()): readonly string[] {
+  return catalog.getThemeDesignerDescriptions()
+}
+
+export function getVariableTypeAttributes(type?: undefined, catalog?: SpecCatalog): Record<string, { allowed: string[], required?: string[] }> | undefined
+export function getVariableTypeAttributes(type: string, catalog?: SpecCatalog): { allowed: string[], required?: string[] } | undefined
+export function getVariableTypeAttributes(
+  type?: string,
+  catalog: SpecCatalog = getSpecCatalog(),
+): { allowed: string[], required?: string[] } | Record<string, { allowed: string[], required?: string[] }> | undefined {
+  return type !== undefined ? catalog.getVariableTypeAttributes(type) : catalog.getVariableTypeAttributes()
+}
+
+export function validateVariableAttributes(
+  variableType: string,
+  presentAttributes: string[],
+  catalog: SpecCatalog = getSpecCatalog(),
+): BloggerVariableAttributesValidationResult {
+  return catalog.validateVariableAttributes(variableType, presentAttributes)
+}
+
 function deepCloneAndMerge<T>(base: T, overrides?: Record<string, any>): T {
   if (base === null || typeof base !== 'object') {
     return base
@@ -2395,36 +1172,4 @@ export function getMockContext(
   }
 
   return cloned
-}
-
-export interface BuildBlogNavMessageOptions {
-  type: 'query' | 'label' | 'archive'
-  query?: string
-  label?: string
-  archiveMessage?: string
-  byDate?: boolean
-  maxResults?: number | string
-  homepageUrl: string
-  searchUrl: string
-  locale?: string
-}
-
-export function getDiagnosticByName(name: string, catalog: SpecCatalog = getSpecCatalog()): { code: BloggerDiagnosticCode, rule: BloggerDiagnosticRule } | undefined {
-  return catalog.getDiagnosticByName(name)
-}
-
-export function getDiagnosticCodeByName(name: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticCode {
-  return catalog.getDiagnosticCodeByName(name)
-}
-
-export function stripDefaultWidgetTypeSuffix(title: string, widgetType: string, catalog: SpecCatalog = getSpecCatalog()): string {
-  return catalog.stripDefaultWidgetTypeSuffix(title, widgetType)
-}
-
-export function buildBlogNavMessage(options: BuildBlogNavMessageOptions, locale?: string, catalog: SpecCatalog = getSpecCatalog()): string {
-  return catalog.buildBlogNavMessage(options, locale)
-}
-
-export function getSearchQueryResultsMessage(query: string, locale = 'en', isHtml = false, catalog: SpecCatalog = getSpecCatalog()): string {
-  return catalog.getSearchQueryResultsMessage(query, locale, isHtml)
 }

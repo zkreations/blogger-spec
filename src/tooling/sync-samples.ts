@@ -2,8 +2,8 @@
 import { writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import process from 'node:process'
+import { getWorkspacePaths } from '../node/paths.js'
 import { parseTemplate } from '../parser/template-parser.js'
-import { getWorkspacePaths } from '../paths.js'
 
 const HAMLET_RAW_URL = 'https://raw.githubusercontent.com/zkreations/hamlet/refs/heads/main/dist/hamlet.xml'
 

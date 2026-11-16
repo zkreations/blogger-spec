@@ -1,4 +1,3 @@
-/* eslint-disable import/no-mutable-exports */
 import type { BloggerAttributeNode, BloggerDirectiveNode } from '../ast.js'
 import type { SpecCatalog } from '../catalogs/index.js'
 import type {
@@ -8,13 +7,15 @@ import type {
   BloggerScanDirectiveOptions,
 } from '../types.js'
 
-import { getSpecCatalog, registerCacheResetListener } from '../catalogs/index.js'
+import { getHtmlVoidElements, getSpecCatalog } from '../catalogs/index.js'
 
 export type {
   BloggerDirectiveAttributeToken,
   BloggerDirectiveToken,
   BloggerScanDirectiveOptions,
 }
+
+export { getHtmlVoidElements }
 
 function getCanonicalSelfClosingTags(catalog: SpecCatalog = getSpecCatalog()): Set<string> {
   const result = new Set<string>()
@@ -29,24 +30,46 @@ function getCanonicalSelfClosingTags(catalog: SpecCatalog = getSpecCatalog()): S
   return result
 }
 
-function getCanonicalHtmlVoidElements(catalog: SpecCatalog = getSpecCatalog()): ReadonlySet<string> {
-  return catalog.getHtmlVoidElements()
+class DynamicDelegatedSet extends Set<string> {
+  constructor(private readonly getDelegate: () => ReadonlySet<string>) {
+    super()
+  }
+
+  override has(value: string): boolean {
+    return this.getDelegate().has(value)
+  }
+
+  override get size(): number {
+    return this.getDelegate().size
+  }
+
+  override forEach(callbackfn: (value: string, value2: string, set: Set<string>) => void, thisArg?: any): void {
+    this.getDelegate().forEach((v, v2) => callbackfn.call(thisArg, v, v2, this))
+  }
+
+  override [Symbol.iterator](): SetIterator<string> {
+    return (this.getDelegate() as Set<string>)[Symbol.iterator]()
+  }
+
+  override entries(): SetIterator<[string, string]> {
+    return (this.getDelegate() as Set<string>).entries()
+  }
+
+  override keys(): SetIterator<string> {
+    return (this.getDelegate() as Set<string>).keys()
+  }
+
+  override values(): SetIterator<string> {
+    return (this.getDelegate() as Set<string>).values()
+  }
 }
 
-export let BLOGGER_STRICTLY_SELF_CLOSING_TAGS: ReadonlySet<string> = getCanonicalSelfClosingTags()
+export function getBloggerSelfClosingTags(catalog: SpecCatalog = getSpecCatalog()): ReadonlySet<string> {
+  return getCanonicalSelfClosingTags(catalog)
+}
 
-export let HTML_VOID_ELEMENTS: ReadonlySet<string> = getCanonicalHtmlVoidElements()
-
-registerCacheResetListener(() => {
-  try {
-    const spec = getSpecCatalog()
-    BLOGGER_STRICTLY_SELF_CLOSING_TAGS = getCanonicalSelfClosingTags(spec)
-    HTML_VOID_ELEMENTS = getCanonicalHtmlVoidElements(spec)
-  }
-  catch {
-    // Retain defaults if the active store does not have directives
-  }
-})
+export const BLOGGER_STRICTLY_SELF_CLOSING_TAGS: ReadonlySet<string> = new DynamicDelegatedSet(() => getBloggerSelfClosingTags())
+export const HTML_VOID_ELEMENTS: ReadonlySet<string> = new DynamicDelegatedSet(() => getHtmlVoidElements())
 
 export function isStrictlySelfClosingTag(tagName: string, catalog: SpecCatalog = getSpecCatalog()): boolean {
   const lower = tagName.toLowerCase()

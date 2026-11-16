@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { resolveBloggerContext } from '../../src/context/resolver.js'
 import { createStaticFeedFetch } from '../../src/context/static-feed-fetch.js'
-import { getWorkspacePaths } from '../../src/paths.js'
+import { getWorkspacePaths } from '../../src/node.js'
 
 export const HAMLET_BLOG_ID = '5408826600056783247'
 export const HAMLET_BASE_URL = 'https://hamlet.zkreations.com'

@@ -8,7 +8,7 @@ import {
   parseTemplate,
   runConformance,
 } from '../src/index.js'
-import { getWorkspacePaths } from '../src/paths.js'
+import { getWorkspacePaths } from '../src/node.js'
 
 describe('full templates conformance suite', () => {
   const fullTemplatesPath = join(getWorkspacePaths().fixtures, 'templates', 'full_templates.json')

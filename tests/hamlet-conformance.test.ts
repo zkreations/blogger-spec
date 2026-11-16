@@ -8,7 +8,7 @@ import {
   validateTemplateExpressions,
   validateTemplateStructure,
 } from '../src/index.js'
-import { getWorkspacePaths } from '../src/paths.js'
+import { getWorkspacePaths } from '../src/node.js'
 
 describe('hamlet e2e golden master conformance suite', () => {
   const hamletXmlPath = join(getWorkspacePaths().fixtures, 'templates/samples/hamlet.xml')

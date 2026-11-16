@@ -28,17 +28,24 @@ export function resolveWorkspaceRoot(): string {
     return customRootDir
   }
 
-  const candidate1 = join(__dirname, '..')
-  if (existsSync(join(candidate1, 'catalogs'))) {
-    return candidate1
+  // When executed from src/node or dist/node, root is two levels up
+  const candidateTwoLevelsUp = join(__dirname, '../..')
+  if (existsSync(join(candidateTwoLevelsUp, 'catalogs'))) {
+    return candidateTwoLevelsUp
   }
 
-  const candidate2 = process.cwd()
-  if (existsSync(join(candidate2, 'catalogs'))) {
-    return candidate2
+  // Fallback for one level up
+  const candidateOneLevelUp = join(__dirname, '..')
+  if (existsSync(join(candidateOneLevelUp, 'catalogs'))) {
+    return candidateOneLevelUp
   }
 
-  return candidate1
+  const candidateCwd = process.cwd()
+  if (existsSync(join(candidateCwd, 'catalogs'))) {
+    return candidateCwd
+  }
+
+  return candidateTwoLevelsUp
 }
 
 export function getWorkspacePaths(overrideRoot?: string): BloggerWorkspacePaths {

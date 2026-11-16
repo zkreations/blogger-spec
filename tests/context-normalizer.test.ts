@@ -14,7 +14,7 @@ import {
   stripHtml,
 } from '../src/context/normalizer.js'
 import { createUrlMapper } from '../src/context/url-mapper.js'
-import { getWorkspacePaths } from '../src/paths.js'
+import { getWorkspacePaths } from '../src/node.js'
 
 describe('context normalizer suite with real Hamlet fixtures', () => {
   const postsFeedJson = JSON.parse(

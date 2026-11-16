@@ -1101,9 +1101,9 @@ describe('catalogs and store formal verification suite', () => {
         try {
           setDefaultCatalogStore(customStore)
 
-          // Module-level quota and limit constants update dynamically
-          expect(RootExports.COMPILER_QUOTA_LIMIT).toBe(99)
-          expect(RootExports.COMPILER_NESTING_LIMIT).toBe(88)
+          // Module-level quota and limit queries update dynamically
+          expect(RootExports.getCompilerQuotaLimit()).toBe(99)
+          expect(RootExports.getCompilerNestingLimit()).toBe(88)
 
           // Module-level sets update dynamically
           expect(RootExports.HTML_VOID_ELEMENTS.has('custom-void')).toBe(true)
@@ -1118,8 +1118,8 @@ describe('catalogs and store formal verification suite', () => {
           setDefaultCatalogStore(originalStore)
         }
 
-        expect(RootExports.COMPILER_QUOTA_LIMIT).toBe(40)
-        expect(RootExports.COMPILER_NESTING_LIMIT).toBe(50)
+        expect(RootExports.getCompilerQuotaLimit()).toBe(40)
+        expect(RootExports.getCompilerNestingLimit()).toBe(50)
         expect(RootExports.HTML_VOID_ELEMENTS.has('custom-void')).toBe(false)
         expect(RootExports.BLOGGER_STRICTLY_SELF_CLOSING_TAGS.has('b:custom-self')).toBe(false)
         expect(RootExports.catalogs.operators.domain_metadata?.evaluation_contexts?.compiler_quotas?.max_expression_tokens).toBe(40)

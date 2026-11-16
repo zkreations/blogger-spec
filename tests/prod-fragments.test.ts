@@ -9,7 +9,7 @@ import {
   parseTemplate,
   validateTemplateExpressions,
 } from '../src/index.js'
-import { getWorkspacePaths } from '../src/paths.js'
+import { getWorkspacePaths } from '../src/node.js'
 import { runConformance } from '../src/runner.js'
 
 describe('production template fragments suite', () => {

@@ -6,7 +6,7 @@ import process from 'node:process'
 import addFormats from 'ajv-formats'
 import Ajv2020 from 'ajv/dist/2020.js'
 import { resolveHamletContext } from '../../tests/helpers/hamlet-provider.js'
-import { getWorkspacePaths } from '../paths.js'
+import { getWorkspacePaths } from '../node/paths.js'
 
 const CANONICAL_VIEWS: readonly BloggerViewId[] = [
   'homepage',

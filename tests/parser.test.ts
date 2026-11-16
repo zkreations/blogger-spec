@@ -15,10 +15,10 @@ import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import * as RootExports from '../src/index.js'
+import { getWorkspacePaths } from '../src/node.js'
 import { ExpressionParser, parseExpression, tokenize } from '../src/parser/index.js'
 import * as ParserExports from '../src/parser/index.js'
 import { unescapeXmlEntities } from '../src/parser/lexer.js'
-import { getWorkspacePaths } from '../src/paths.js'
 
 describe('canonical pratt expression parser (blogger-spec/ast)', () => {
   it('exposes parseExpression, tokenize and classes from ast, parser and root', () => {
