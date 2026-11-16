@@ -9,15 +9,12 @@ import { getSpecCatalog } from '../catalogs/index.js'
 import { expandServerInclusion } from '../inclusion-expander.js'
 import { compileToIR } from './compiler.js'
 import {
+  DirectiveRegistry,
   findIncludableInSymbolTable,
-  getFlowRenderer,
-  renderAttrMutation,
   renderBirOutput,
-  renderClassMutation,
   renderCommentNode,
   renderIncludeDirective,
   renderSectionContainer,
-  renderTagDirective,
   renderWidgetContainer,
 } from './directives/index.js'
 import { lowerTemplate } from './lowering.js'
@@ -65,7 +62,6 @@ export class BloggerReferenceRenderer {
   private currentCatalog: SpecCatalog = getSpecCatalog()
   private readonly pipeline = new DomMutationPipeline()
   private readonly serverSubroutineCache = new Map<string, BirIncludable>()
-  private includeDepth = 0
 
   constructor(private readonly defaultOptions: BloggerReferenceRendererOptions = {}) {
     this.currentCatalog = defaultOptions.catalog ?? getSpecCatalog()
@@ -85,7 +81,6 @@ export class BloggerReferenceRenderer {
     const ir = typeof input === 'string' ? compileToIR(input, mergedOptions) : input
     this.currentIr = ir
     this.currentOptions = mergedOptions
-    this.includeDepth = 0
     this.pipeline.clear()
     this.serverSubroutineCache.clear()
 
@@ -117,15 +112,23 @@ export class BloggerReferenceRenderer {
     return this.compile(input, context, { emitWrappers: false, ...options })
   }
 
-  private renderNodes(nodes: readonly BirNode[], ctx: Record<string, unknown>): string {
+  private renderNodes(
+    nodes: readonly BirNode[],
+    ctx: Record<string, unknown>,
+    renderCtxOverride?: any,
+  ): string {
     let out = ''
     for (const node of nodes) {
-      out += this.renderNode(node, ctx)
+      out += this.renderNode(node, ctx, renderCtxOverride)
     }
     return out
   }
 
-  private renderNode(node: BirNode, ctx: Record<string, unknown>): string {
+  private renderNode(
+    node: BirNode,
+    ctx: Record<string, unknown>,
+    renderCtxOverride?: any,
+  ): string {
     const normalizeUrls = this.currentOptions?.normalizeProtocolRelativeUrls ?? false
 
     switch (node.kind) {
@@ -151,7 +154,7 @@ export class BloggerReferenceRenderer {
         const target = this.pipeline.createTarget(filteredAttrs, node.classes, ctx, normalizeUrls)
         this.pipeline.pushTarget(target)
 
-        const childrenHtml = this.renderNodes(node.children, ctx)
+        const childrenHtml = this.renderNodes(node.children, ctx, renderCtxOverride)
 
         this.pipeline.popTarget()
         const attrStr = this.pipeline.serializeAttributes(target, normalizeUrls)
@@ -166,49 +169,46 @@ export class BloggerReferenceRenderer {
       }
 
       case 'tag':
-        return renderTagDirective(node, ctx as Record<string, any>, {
-          normalizeUrls,
-          pipeline: this.pipeline,
-          renderNodes: (nodes, c) => this.renderNodes(nodes, c),
-          selfClosingVoid: this.currentOptions?.selfClosingVoid !== false,
-        })
-
       case 'if':
       case 'loop':
       case 'with':
-      case 'switch': {
-        const handler = getFlowRenderer(node.kind)
-        if (handler) {
-          return handler.render(node as any, ctx as Record<string, any>, {
-            renderNodes: (nodes, c) => this.renderNodes(nodes, c),
-          })
+      case 'switch':
+      case 'attrMutation':
+      case 'classMutation': {
+        const renderer = DirectiveRegistry.getRenderer(node.kind)
+        if (renderer) {
+          const directiveCtx = {
+            catalog: this.currentOptions?.catalog ?? getSpecCatalog(),
+            findIncludable: (targetId: string, widgetId?: string, widgetType?: string) => this.findIncludable(targetId, widgetId, widgetType),
+            includeDepth: renderCtxOverride?.includeDepth ?? 0,
+            maxIncludeDepth: this.currentOptions?.maxIncludeDepth,
+            normalizeUrls,
+            pipeline: this.pipeline,
+            renderNodes: (nodes: readonly BirNode[], c: Record<string, any>, nextCtx?: any) => {
+              return this.renderNodes(nodes, c, nextCtx ?? renderCtxOverride)
+            },
+            selfClosingVoid: this.currentOptions?.selfClosingVoid !== false,
+          }
+          return renderer(node, ctx as Record<string, any>, directiveCtx)
         }
         return ''
       }
 
       case 'include': {
-        const prevDepth = this.includeDepth
+        const currentDepth = renderCtxOverride?.includeDepth ?? 0
         const renderCtx = {
           catalog: this.currentOptions?.catalog ?? getSpecCatalog(),
           findIncludable: (targetId: string, widgetId?: string, widgetType?: string) => this.findIncludable(targetId, widgetId, widgetType),
-          includeDepth: this.includeDepth,
+          includeDepth: currentDepth,
           maxIncludeDepth: this.currentOptions?.maxIncludeDepth,
-          renderNodes: (nodes: readonly BirNode[], c: Record<string, any>) => {
-            this.includeDepth = renderCtx.includeDepth
-            try {
-              return this.renderNodes(nodes, c)
-            }
-            finally {
-              this.includeDepth = prevDepth
-            }
+          normalizeUrls,
+          pipeline: this.pipeline,
+          renderNodes: (nodes: readonly BirNode[], c: Record<string, any>, nextCtx?: any) => {
+            return this.renderNodes(nodes, c, nextCtx ?? renderCtx)
           },
+          selfClosingVoid: this.currentOptions?.selfClosingVoid !== false,
         }
-        try {
-          return renderIncludeDirective(node, ctx as Record<string, any>, renderCtx)
-        }
-        finally {
-          this.includeDepth = prevDepth
-        }
+        return renderIncludeDirective(node, ctx as Record<string, any>, renderCtx)
       }
 
       case 'container': {
@@ -217,7 +217,9 @@ export class BloggerReferenceRenderer {
           findIncludable: (targetId: string, widgetId?: string, widgetType?: string) => this.findIncludable(targetId, widgetId, widgetType),
           normalizeUrls,
           pipeline: this.pipeline,
-          renderNodes: (nodes: readonly BirNode[], c: Record<string, any>) => this.renderNodes(nodes, c),
+          renderNodes: (nodes: readonly BirNode[], c: Record<string, any>, nextCtx?: any) => {
+            return this.renderNodes(nodes, c, nextCtx ?? renderCtxOverride)
+          },
         }
         if (node.role === 'section') {
           return renderSectionContainer(node, ctx as Record<string, any>, containerCtx)
@@ -225,22 +227,8 @@ export class BloggerReferenceRenderer {
         if (node.role === 'widget') {
           return renderWidgetContainer(node, ctx as Record<string, any>, containerCtx)
         }
-        return this.renderNodes(node.children, ctx)
+        return this.renderNodes(node.children, ctx, renderCtxOverride)
       }
-
-      case 'attrMutation':
-        return renderAttrMutation(node, ctx as Record<string, any>, {
-          normalizeUrls,
-          pipeline: this.pipeline,
-          renderNodes: (nodes, c) => this.renderNodes(nodes, c),
-        })
-
-      case 'classMutation':
-        return renderClassMutation(node, ctx as Record<string, any>, {
-          normalizeUrls,
-          pipeline: this.pipeline,
-          renderNodes: (nodes, c) => this.renderNodes(nodes, c),
-        })
 
       default:
         return ''

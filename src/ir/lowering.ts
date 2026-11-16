@@ -33,20 +33,12 @@ import { parseTemplate } from '../parser/template-parser.js'
 import { parseSkinSource } from '../skin-compiler.js'
 import { detectTemplateVersion } from '../version.js'
 import {
-  getFlowDirectiveHandler,
-  isFlowDirective,
-  lowerAttrDirective,
-  lowerClassDirective,
-  lowerCommentDirective,
+  DirectiveRegistry,
   lowerDataOutput,
   lowerDefaultMarkup,
   lowerDefaultMarkups,
-  lowerEvalDirective,
   lowerIncludableDirective,
-  lowerIncludeDirective,
-  lowerMessageDirective,
   lowerSectionDirective,
-  lowerTagDirective,
   lowerWidgetDirective,
 } from './directives/index.js'
 
@@ -309,20 +301,13 @@ function lowerElement(node: BloggerElementNode, context: LoweringContext): BirEl
 }
 
 function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): BirNode[] {
-  if (isFlowDirective(node.name)) {
-    const handler = getFlowDirectiveHandler(node.name)!
-    return [handler.lower(node, context)]
+  const lowerer = DirectiveRegistry.getLowerer(node.name)
+  if (lowerer) {
+    const lowered = lowerer(node, context)
+    return Array.isArray(lowered) ? lowered : [lowered]
   }
 
   switch (node.name as string) {
-    case 'b:tag':
-      return [lowerTagDirective(node, context)]
-    case 'b:include':
-      return [lowerIncludeDirective(node, context)]
-    case 'b:eval':
-      return lowerEvalDirective(node, context)
-    case 'b:message':
-      return lowerMessageDirective(node, context)
     case 'b:section':
       return [lowerSectionDirective(node, context)]
     case 'b:widget':
@@ -336,10 +321,6 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
     case 'b:defaultmarkup':
       lowerDefaultMarkup(node, context)
       return []
-    case 'b:attr':
-      return lowerAttrDirective(node, context)
-    case 'b:class':
-      return lowerClassDirective(node, context)
     case 'b:includable':
       lowerIncludableDirective(node, context)
       return []
@@ -349,8 +330,6 @@ function lowerDirective(node: BloggerDirectiveNode, context: LoweringContext): B
       return [{ kind: 'skin', role: 'template-skin' }]
     case 'b:whitespace':
       return []
-    case 'b:comment':
-      return lowerCommentDirective(node)
     default: {
       if (node.name.startsWith('data:')) {
         return lowerDataOutput(node, context)

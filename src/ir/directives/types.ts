@@ -49,9 +49,16 @@ export interface DirectiveRenderContext {
   readonly selfClosingVoid?: boolean
   readonly emitWrappers?: boolean
   readonly maxIncludeDepth?: number
-  includeDepth?: number
-  readonly renderNodes: (nodes: readonly BirNode[], ctx: Record<string, any>) => string
+  readonly includeDepth?: number
+  readonly renderNodes: (nodes: readonly BirNode[], ctx: Record<string, any>, renderCtxOverride?: DirectiveRenderContext) => string
   readonly findIncludable?: (targetId: string, widgetId?: string, widgetType?: string) => BirIncludable | undefined
+}
+
+export interface BirDirectiveHandler<TNode = any, TBir = any> {
+  readonly tagName: string
+  readonly kind: string
+  readonly lower: (node: TNode, ctx: DirectiveLowerContext) => TBir | TBir[]
+  readonly render: (node: TBir, ctx: Record<string, any>, renderCtx: DirectiveRenderContext) => string
 }
 
 export type FlowBirNode = BirIf | BirSwitch | BirLoop | BirWith

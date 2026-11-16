@@ -135,12 +135,17 @@ export function renderIncludeDirective(
     return node.resolution?.failureComment ?? formatGadgetAbortComment(widgetId || 'Widget')
   }
 
-  renderCtx.includeDepth = currentDepth + 1
-  try {
-    const subCtx = bindIncludeScope(subroutine, node.args, ctx)
-    return renderCtx.renderNodes(subroutine.body, subCtx)
+  const subCtx = bindIncludeScope(subroutine, node.args, ctx)
+  const nextRenderCtx: DirectiveRenderContext = {
+    ...renderCtx,
+    includeDepth: currentDepth + 1,
   }
-  finally {
-    renderCtx.includeDepth = currentDepth
-  }
+  return renderCtx.renderNodes(subroutine.body, subCtx, nextRenderCtx)
+}
+
+export const bIncludeHandler = {
+  kind: 'include' as const,
+  lower: lowerIncludeDirective,
+  render: renderIncludeDirective,
+  tagName: 'b:include',
 }

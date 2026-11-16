@@ -4,8 +4,7 @@ import { getSpecCatalog } from '../../catalogs/spec-catalog.js'
 import { parseExpression } from '../../parser/expr-parser.js'
 import { evaluateExpression } from '../../parser/index.js'
 import { unescapeXmlEntities } from '../../parser/lexer.js'
-
-const ANONYMOUS_PAYLOAD_SYMBOL = Symbol.for('blogger.anonymousPayload')
+import { RuntimeLexicalScope } from './lexical-scope.js'
 
 export function bindLoopScope(
   item: unknown,
@@ -29,9 +28,7 @@ export function bindLoopScope(
   if (nodeIndex) {
     loopCtx[nodeIndex] = index
   }
-  if ((parentCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL]) {
-    (loopCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL] = (parentCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL]
-  }
+  RuntimeLexicalScope.propagate(loopCtx as Record<string, any>, parentCtx as Record<string, any>)
   return loopCtx
 }
 
@@ -40,9 +37,6 @@ export function bindWithScope(
   parentCtx: Record<string, unknown>,
 ): Record<string, unknown> {
   const withCtx: Record<string, unknown> = { ...parentCtx }
-  if ((parentCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL]) {
-    (withCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL] = (parentCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL]
-  }
   const parentData = (parentCtx.data && typeof parentCtx.data === 'object')
     ? (parentCtx.data as Record<string, any>)
     : {}
@@ -97,6 +91,7 @@ export function bindWithScope(
     withData[b.var] = val
   }
   withCtx.data = withData
+  RuntimeLexicalScope.propagate(withCtx as Record<string, any>, parentCtx as Record<string, any>)
   return withCtx
 }
 
@@ -157,29 +152,13 @@ export function bindIncludeScope(
   parentCtx: Record<string, unknown>,
   forceDefaultParamsToThis = false,
 ): Record<string, unknown> {
-  const subCtx: Record<string, unknown> = { ...parentCtx }
+  const hasIncomingData = Boolean(args.data || args.var)
+  const subCtx = RuntimeLexicalScope.cloneContext(parentCtx as Record<string, any>, hasIncomingData)
   const widgetBaseData = (parentCtx.this && typeof parentCtx.this === 'object')
     ? (parentCtx.this as Record<string, any>)
     : {}
 
-  const hasIncomingData = Boolean(args.data || args.var)
-  const prevAnonymousPayload = (parentCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL] as Set<string> | undefined
-  const shouldPurgeAnonymous = hasIncomingData && prevAnonymousPayload && prevAnonymousPayload.size > 0
-
-  if (shouldPurgeAnonymous) {
-    for (const key of prevAnonymousPayload) {
-      delete subCtx[key]
-    }
-  }
-
-  const cleanParentData = (parentCtx.data && typeof parentCtx.data === 'object' && !Array.isArray(parentCtx.data))
-    ? { ...(parentCtx.data as Record<string, any>) }
-    : {}
-  if (shouldPurgeAnonymous) {
-    for (const key of prevAnonymousPayload) {
-      delete cleanParentData[key]
-    }
-  }
+  const cleanParentData = RuntimeLexicalScope.cloneData(parentCtx.data, hasIncomingData, parentCtx as Record<string, any>)
 
   const currentAnonymousPayload = new Set<string>()
   let hasExplicitPayload = false
@@ -262,10 +241,10 @@ export function bindIncludeScope(
   }
 
   if (currentAnonymousPayload.size > 0) {
-    (subCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL] = currentAnonymousPayload
+    RuntimeLexicalScope.attachAnonymousKeys(subCtx, currentAnonymousPayload)
   }
-  else if (hasIncomingData) {
-    delete (subCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL]
+  else if (!hasIncomingData) {
+    RuntimeLexicalScope.propagate(subCtx as Record<string, any>, parentCtx as Record<string, any>)
   }
 
   return subCtx

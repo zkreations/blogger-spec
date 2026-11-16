@@ -1,6 +1,6 @@
 import type { BloggerDirectiveNode, BloggerExpressionNode } from '../../../ast.js'
 import type { BirMessageParam, BirOutput } from '../../types.js'
-import type { DirectiveLowerContext } from '../types.js'
+import type { DirectiveLowerContext, DirectiveRenderContext } from '../types.js'
 import type { SpecCatalog } from '../../../catalogs/index.js'
 import { parseExpression } from '../../../parser/expr-parser.js'
 import { getSpecCatalog } from '../../../catalogs/index.js'
@@ -61,9 +61,11 @@ export function lowerMessageDirective(
 export function renderMessageOutput(
   node: BirOutput,
   ctx: Record<string, any>,
-  catalog?: SpecCatalog,
+  catalogOrRenderCtx?: SpecCatalog | DirectiveRenderContext,
 ): string {
-  const cat = catalog ?? getSpecCatalog()
+  const cat = (catalogOrRenderCtx && 'getLocalizedMessage' in catalogOrRenderCtx)
+    ? (catalogOrRenderCtx as SpecCatalog)
+    : ((catalogOrRenderCtx as DirectiveRenderContext)?.catalog ?? getSpecCatalog())
   const locale = ctx.blog?.locale || 'en'
 
   if (node.params && node.params.length > 0) {
