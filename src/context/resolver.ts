@@ -27,8 +27,6 @@ import {
 } from './widget-extractor.js'
 import { dispatchWidgetHydration } from './widget-hydrators.js'
 
-const BLOGGER_FEED_DEFAULT_MAX_RESULTS = 25
-
 function deepMerge(target: any, source: any): any {
   if (!source || typeof source !== 'object') {
     return target
@@ -889,9 +887,11 @@ export async function resolveBloggerContext(
   let postsResponse: any
   let pagesResponse: any
 
+  const feedMaxResults = spec.getBlogPagination()?.maxResultsCeiling ?? 500
+
   try {
     const [fetchedPosts, fetchedPages] = await Promise.all([
-      client.fetchPosts(effectiveBlogId, { maxResults: BLOGGER_FEED_DEFAULT_MAX_RESULTS }),
+      client.fetchPosts(effectiveBlogId, { maxResults: feedMaxResults }),
       client.fetchPages(effectiveBlogId),
     ])
     postsResponse = fetchedPosts
@@ -1283,10 +1283,15 @@ export async function resolveBloggerContext(
         }
         else {
           blog1.newerPageUrl = ''
-          if (activePosts.length > 0) {
-            const lastPost = activePosts[activePosts.length - 1]
+          const hasMore = (maxResults && maxResults > 0)
+            ? hasMoreOlder
+            : activePosts.length > pageSize
+
+          if (hasMore) {
+            const lastPost = activePosts[pageSize - 1] || activePosts[activePosts.length - 1]
             const nextDate = lastPost?.publishedIso?.replace(/\.\d{3}/, '') || ''
-            blog1.olderPageUrl = mapper.mapUrl(`${blogOrigin}/search/label/${encodedLabel}?updated-max=${nextDate}&max-results=${defaultLabelPageSize}&start=${defaultLabelPageSize}&by-date=false`)
+            blog1.olderPageUrl = mapper.mapUrl(`${blogOrigin}/search/label/${encodedLabel}?updated-max=${nextDate}&max-results=${pageSize}&start=${pageSize}&by-date=false`)
+            activePosts = activePosts.slice(0, pageSize)
           }
           else {
             blog1.olderPageUrl = ''

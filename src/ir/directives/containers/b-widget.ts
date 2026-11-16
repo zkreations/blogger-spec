@@ -3,6 +3,7 @@ import type { BirContainer } from '../../types.js'
 import type { DirectiveLowerContext, DirectiveRenderContext } from '../types.js'
 import { indexIncludables } from '../../../includable-resolver.js'
 import { evaluateExpression } from '../../../parser/index.js'
+import { unescapeXmlEntities } from '../../../parser/lexer.js'
 import { isTruthy } from '../../../type-system.js'
 import { deserializeWidgetSettings } from '../../../widget-settings.js'
 import { bindIncludeScope, bindWidgetScope } from '../../renderer/scope-binder.js'
@@ -66,7 +67,7 @@ export function lowerWidgetDirective(
     ...(widgetId ? { id: widgetId } : {}),
     ...(widgetType ? { widgetType } : {}),
     ...(context.currentSectionId ? { sectionId: context.currentSectionId } : {}),
-    ...(titleAttr !== undefined ? { title: String(titleAttr.value) } : {}),
+    ...(titleAttr !== undefined ? { title: unescapeXmlEntities(String(titleAttr.value)) } : {}),
     version,
     ...(condAttr ? { cond: context.ensureExpression(condAttr.value) } : {}),
     ...(visible !== undefined ? { visible } : {}),

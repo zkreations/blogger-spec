@@ -2,6 +2,7 @@ import type { BirAttrValue, BirIncludable, BirWithBinding } from '../types.js'
 import type { MutationTarget } from './dom-mutation-pipeline.js'
 import { parseExpression } from '../../ast.js'
 import { evaluateExpression } from '../../parser/index.js'
+import { unescapeXmlEntities } from '../../parser/lexer.js'
 
 export function bindLoopScope(
   item: unknown,
@@ -71,7 +72,7 @@ export function bindWithScope(
         val = resolved
       }
       else {
-        const trimmed = val.trim()
+        const trimmed = unescapeXmlEntities(val.trim())
         if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
           try {
             const parsed = parseExpression(trimmed)

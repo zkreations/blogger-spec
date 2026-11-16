@@ -2,6 +2,7 @@ import type { BloggerDocumentNode, BloggerTemplateNode } from '../ast.js'
 import type { SpecCatalog } from '../catalogs/index.js'
 import type { DiscoveredWidget } from './types.js'
 import { getSpecCatalog } from '../catalogs/index.js'
+import { unescapeXmlEntities } from '../parser/lexer.js'
 import { parseTemplate } from '../parser/template-parser.js'
 import { deserializeWidgetSettings } from '../widget-settings.js'
 
@@ -87,7 +88,7 @@ export function extractTemplateWidgets(
 
         const id = idAttr?.value ? String(idAttr.value).trim() : ''
         const type = typeAttr?.value ? String(typeAttr.value).trim() : ''
-        const title = titleAttr?.value ? String(titleAttr.value) : undefined
+        const title = titleAttr?.value ? unescapeXmlEntities(String(titleAttr.value)) : undefined
         const version = versionAttr?.value ? Number(versionAttr.value) : undefined
         const visible = visibleAttr !== undefined ? isTruthyAttr(visibleAttr.value) : undefined
 
