@@ -1,4 +1,4 @@
-import { formatIcuDate } from '../../context/date-formatter.js'
+import { formatIcuDate } from '../../core/date-formatter.js'
 
 export function format(dateVal: any, pattern: string, locale = 'en', timeZone?: string): string {
   if (dateVal === null || dateVal === undefined)

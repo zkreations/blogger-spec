@@ -24,9 +24,10 @@ import type {
   BirSkin,
   BloggerIRDocument,
 } from './types.js'
-import { parseExpression } from '../ast.js'
 import { getSpecCatalog } from '../catalogs/index.js'
+import { isBloggerTruthy } from '../core/common.js'
 import { collectDefaultMarkups } from '../includable-resolver.js'
+import { parseExpression } from '../parser/expr-parser.js'
 import { unescapeXmlEntities } from '../parser/lexer.js'
 import { parseTemplate } from '../parser/template-parser.js'
 import { parseSkinSource } from '../skin-compiler.js'
@@ -66,16 +67,7 @@ function filterContainerChildren(nodes: readonly BloggerTemplateNode[]): Blogger
   return nodes.filter(n => !isWhitespaceOnly(n))
 }
 
-export function isTruthyValue(val: unknown): boolean {
-  if (val === true || val === 'true' || val === 'yes') {
-    return true
-  }
-  if (typeof val === 'object' && val !== null && 'value' in val) {
-    const inner = (val as any).value
-    return inner === true || inner === 'true' || inner === 'yes'
-  }
-  return false
-}
+export const isTruthyValue = isBloggerTruthy
 
 export function ensureExpression(
   val: string | BloggerExpressionNode | undefined,

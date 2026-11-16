@@ -1,19 +1,9 @@
 import type { BloggerDirectiveNode } from '../../../ast.js'
 import type { BirLoop } from '../../types.js'
 import type { DirectiveLowerContext, DirectiveRenderContext, FlowDirectiveHandler } from '../types.js'
+import { isBloggerTruthy as isTruthyValue } from '../../../core/common.js'
 import { evaluateExpression } from '../../../parser/index.js'
 import { bindLoopScope } from '../../renderer/scope-binder.js'
-
-function isTruthyValue(val: unknown): boolean {
-  if (val === true || val === 'true' || val === 'yes') {
-    return true
-  }
-  if (typeof val === 'object' && val !== null && 'value' in val) {
-    const inner = (val as any).value
-    return inner === true || inner === 'true' || inner === 'yes'
-  }
-  return false
-}
 
 export function lowerLoopDirective(
   node: BloggerDirectiveNode,

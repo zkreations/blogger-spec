@@ -1,68 +1,27 @@
 import type { SpecCatalog } from '../catalogs/index.js'
+import {
+  getDeepProperty,
+  parseBloggerDataPath,
+  setDeepProperty,
+} from '../core/common.js'
 
 /**
- * Normalizes a Blogger data path into individual dot-separated property segments,
- * stripping the leading 'data:' namespace prefix and converting bracket indexers (e.g. `links[0].title` -> `['links', '0', 'title']`).
+ * Normalizes a Blogger data path into individual dot-separated property segments.
+ * Delegates to canonical core utility `parseBloggerDataPath`.
  */
-export function parseDataPathSegments(path: string): string[] {
-  const clean = path.startsWith('data:') ? path.slice(5) : path
-  const normalized = clean.replace(/\[['"]?([^'"\]]+)['"]?\]/g, '.$1')
-  return normalized.split('.').map(s => s.trim()).filter(Boolean)
-}
+export const parseDataPathSegments = parseBloggerDataPath
 
 /**
- * Traverses a nested target object or array and sets a deep property value,
- * automatically instantiating intermediate objects or arrays as needed.
+ * Traverses a nested target object or array and sets a deep property value.
+ * Delegates to canonical core utility `setDeepProperty`.
  */
-export function setDeepDataProperty(target: Record<string, any>, path: string, value: any): void {
-  const segments = parseDataPathSegments(path)
-  if (segments.length === 0) {
-    return
-  }
-
-  let current = target
-  for (let i = 0; i < segments.length - 1; i++) {
-    const seg = segments[i]!
-    const nextSeg = segments[i + 1]!
-    const isNextNumeric = /^\d+$/.test(nextSeg)
-
-    if (current[seg] === null || current[seg] === undefined || typeof current[seg] !== 'object') {
-      current[seg] = isNextNumeric ? [] : {}
-    }
-    current = current[seg]
-  }
-
-  const leafSeg = segments[segments.length - 1]!
-  if (Array.isArray(current)) {
-    const idx = Number(leafSeg)
-    if (!Number.isNaN(idx)) {
-      current[idx] = value
-    }
-  }
-  else {
-    current[leafSeg] = value
-  }
-}
+export const setDeepDataProperty = setDeepProperty
 
 /**
  * Safely reads a value from a nested data structure using a Blogger data path.
+ * Delegates to canonical core utility `getDeepProperty`.
  */
-export function getDeepDataProperty(target: Record<string, any>, path: string): any {
-  const segments = parseDataPathSegments(path)
-  if (segments.length === 0) {
-    return undefined
-  }
-
-  let current: any = target
-  for (const seg of segments) {
-    if (current === null || current === undefined || typeof current !== 'object') {
-      return undefined
-    }
-    current = current[seg]
-  }
-
-  return current
-}
+export const getDeepDataProperty = getDeepProperty
 
 /**
  * Binds widget configuration settings into the canonical Blogger runtime data model

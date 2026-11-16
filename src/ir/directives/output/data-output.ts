@@ -2,7 +2,7 @@ import type { BloggerDirectiveNode } from '../../../ast.js'
 import type { SpecCatalog } from '../../../catalogs/index.js'
 import type { BirOutput } from '../../types.js'
 import type { DirectiveLowerContext } from '../types.js'
-import { parseExpression } from '../../../ast.js'
+import { parseExpression } from '../../../parser/expr-parser.js'
 import { evaluateExpression } from '../../../parser/index.js'
 import { isSkinValue } from '../../../skin-compiler.js'
 

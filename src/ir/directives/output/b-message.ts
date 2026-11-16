@@ -2,7 +2,7 @@ import type { BloggerDirectiveNode, BloggerExpressionNode } from '../../../ast.j
 import type { BirMessageParam, BirOutput } from '../../types.js'
 import type { DirectiveLowerContext } from '../types.js'
 import type { SpecCatalog } from '../../../catalogs/index.js'
-import { parseExpression } from '../../../ast.js'
+import { parseExpression } from '../../../parser/expr-parser.js'
 import { getSpecCatalog } from '../../../catalogs/index.js'
 import { evaluateExpression } from '../../../parser/index.js'
 

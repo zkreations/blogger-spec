@@ -5,6 +5,7 @@ import type { BloggerContextConfig, BloggerRawEntry, DiscoveredWidget } from './
 import type { UrlMapper } from './url-mapper.js'
 import type { BloggerExtractedAuthor } from './widget-author.js'
 import { getMockContext, getSpecCatalog } from '../catalogs/index.js'
+import { pureDeepMerge as deepMerge } from '../core/common.js'
 import { BloggerFeedClient } from './client.js'
 import { bindWidgetSettingsToData } from './data-binder.js'
 import {
@@ -26,35 +27,6 @@ import {
   parseCanonicalWidgetId,
 } from './widget-extractor.js'
 import { dispatchWidgetHydration } from './widget-hydrators.js'
-
-function deepMerge(target: any, source: any): any {
-  if (!source || typeof source !== 'object') {
-    return target
-  }
-  if (!target || typeof target !== 'object') {
-    return Array.isArray(source) ? source.slice() : { ...source }
-  }
-
-  const result = Array.isArray(target) ? target.slice() : { ...target }
-
-  for (const key of Object.keys(source)) {
-    const val = source[key]
-    if (val === undefined)
-      continue
-
-    if (Array.isArray(val)) {
-      result[key] = val.slice()
-    }
-    else if (val && typeof val === 'object') {
-      result[key] = deepMerge(result[key] || {}, val)
-    }
-    else {
-      result[key] = val
-    }
-  }
-
-  return result
-}
 
 function isSameUrlOrPath(candidate: string | undefined, target: string | undefined): boolean {
   if (!candidate || !target) {

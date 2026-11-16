@@ -2,21 +2,12 @@ import type { BloggerDocumentNode, BloggerTemplateNode } from '../ast.js'
 import type { SpecCatalog } from '../catalogs/index.js'
 import type { DiscoveredWidget } from './types.js'
 import { getSpecCatalog } from '../catalogs/index.js'
+import { isBloggerTruthy as isTruthyAttr } from '../core/common.js'
 import { unescapeXmlEntities } from '../parser/lexer.js'
 import { parseTemplate } from '../parser/template-parser.js'
 import { deserializeWidgetSettings } from '../widget-settings.js'
 
 export { normalizeLinkItem, parsePageListJson } from '../widget-settings.js'
-
-function isTruthyAttr(val: unknown): boolean {
-  if (typeof val === 'boolean')
-    return val
-  if (typeof val === 'string') {
-    const lower = val.trim().toLowerCase()
-    return lower === 'true' || lower === 'yes'
-  }
-  return Boolean(val)
-}
 
 /**
  * Strict canonical widget ID pattern in Blogger (BX1047).

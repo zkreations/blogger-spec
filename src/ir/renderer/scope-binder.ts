@@ -1,6 +1,6 @@
 import type { BirAttrValue, BirIncludable, BirWithBinding } from '../types.js'
 import type { MutationTarget } from './dom-mutation-pipeline.js'
-import { parseExpression } from '../../ast.js'
+import { parseExpression } from '../../parser/expr-parser.js'
 import { evaluateExpression } from '../../parser/index.js'
 import { unescapeXmlEntities } from '../../parser/lexer.js'
 

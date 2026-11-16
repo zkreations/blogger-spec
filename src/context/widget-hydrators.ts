@@ -2,6 +2,7 @@ import type { SpecCatalog } from '../catalogs/spec-catalog.js'
 import type { DiscoveredWidget } from './types.js'
 import type { UrlMapper } from './url-mapper.js'
 import type { BloggerExtractedAuthor } from './widget-author.js'
+import { pureDeepMerge as deepMerge } from '../core/common.js'
 import { buildArchiveHierarchy } from './archive-tree.js'
 import {
   buildAttributionData,
@@ -34,21 +35,6 @@ export interface HydrateWidgetContext {
   readonly headerData: any
   readonly blog1: any
   readonly blogAuthor: BloggerExtractedAuthor
-}
-
-function deepMerge<T extends Record<string, any>>(target: T, source: Partial<T>): T {
-  const result = { ...target }
-  for (const key of Object.keys(source)) {
-    const sVal = (source as any)[key]
-    const tVal = (result as any)[key]
-    if (sVal && typeof sVal === 'object' && !Array.isArray(sVal) && tVal && typeof tVal === 'object' && !Array.isArray(tVal)) {
-      (result as any)[key] = deepMerge(tVal, sVal)
-    }
-    else if (sVal !== undefined) {
-      (result as any)[key] = sVal
-    }
-  }
-  return result
 }
 
 export function getDefaultBylineItems(spec: SpecCatalog, locale: string): Array<{ name: string, label: string }> {

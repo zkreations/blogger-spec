@@ -1,6 +1,7 @@
 import type { BloggerDirectiveNode, BloggerTemplateNode } from '../../../ast.js'
 import type { BirContainer } from '../../types.js'
 import type { DirectiveLowerContext, DirectiveRenderContext } from '../types.js'
+import { isBloggerTruthy as isTruthyAttr } from '../../../core/common.js'
 import { indexIncludables } from '../../../includable-resolver.js'
 import { evaluateExpression } from '../../../parser/index.js'
 import { unescapeXmlEntities } from '../../../parser/lexer.js'
@@ -8,17 +9,6 @@ import { isTruthy } from '../../../type-system.js'
 import { deserializeWidgetSettings } from '../../../widget-settings.js'
 import { bindIncludeScope, bindWidgetScope } from '../../renderer/scope-binder.js'
 import { lowerIncludableDirective } from '../subroutines/b-includable.js'
-
-function isTruthyAttr(val: unknown): boolean {
-  if (val === true || val === 'true' || val === 'yes') {
-    return true
-  }
-  if (typeof val === 'object' && val !== null && 'value' in val) {
-    const inner = (val as any).value
-    return inner === true || inner === 'true' || inner === 'yes'
-  }
-  return false
-}
 
 export function lowerWidgetDirective(
   node: BloggerDirectiveNode,
