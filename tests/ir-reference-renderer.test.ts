@@ -335,4 +335,29 @@ describe('bloggerReferenceRenderer', () => {
     expect(html).toContain('<span class="font-family">Roboto</span>')
     expect(html).toContain('<span class="font-size">16px</span>')
   })
+
+  it('isolates transient subroutine data arguments between nested b:include calls', () => {
+    const xml = `<b:section id='main'>
+  <b:widget id='Blog1' type='Blog'>
+    <b:includable id='main'>
+      <b:include data='{ class: "carousel-cell", title: "Parent" }' name='subA'/>
+    </b:includable>
+    <b:includable id='subA'>
+      <div class='box'>
+        <b:class cond='data:class' expr:name='data:class'/>
+        <b:include data='{ icon: "clock" }' name='subB'/>
+      </div>
+    </b:includable>
+    <b:includable id='subB'>
+      <svg expr:class='"i i-" + data:icon'>
+        <b:class cond='data:class' expr:name='data:class'/>
+      </svg>
+    </b:includable>
+  </b:widget>
+</b:section>`
+
+    const html = renderer.render(xml, {})
+    expect(html).toContain('<div class="box carousel-cell"><svg class="i i-clock"></svg></div>')
+    expect(html).not.toContain('<svg class="i i-clock carousel-cell">')
+  })
 })

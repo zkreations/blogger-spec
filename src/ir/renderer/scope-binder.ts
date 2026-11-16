@@ -4,6 +4,8 @@ import { parseExpression } from '../../ast.js'
 import { evaluateExpression } from '../../parser/index.js'
 import { unescapeXmlEntities } from '../../parser/lexer.js'
 
+const ANONYMOUS_PAYLOAD_SYMBOL = Symbol.for('blogger.anonymousPayload')
+
 export function bindLoopScope(
   item: unknown,
   index: number,
@@ -26,6 +28,9 @@ export function bindLoopScope(
   if (nodeIndex) {
     loopCtx[nodeIndex] = index
   }
+  if ((parentCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL]) {
+    (loopCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL] = (parentCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL]
+  }
   return loopCtx
 }
 
@@ -34,6 +39,9 @@ export function bindWithScope(
   parentCtx: Record<string, unknown>,
 ): Record<string, unknown> {
   const withCtx: Record<string, unknown> = { ...parentCtx }
+  if ((parentCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL]) {
+    (withCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL] = (parentCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL]
+  }
   const parentData = (parentCtx.data && typeof parentCtx.data === 'object')
     ? (parentCtx.data as Record<string, any>)
     : {}
@@ -152,6 +160,27 @@ export function bindIncludeScope(
   const widgetBaseData = (parentCtx.this && typeof parentCtx.this === 'object')
     ? (parentCtx.this as Record<string, any>)
     : {}
+
+  const hasIncomingData = Boolean(args.data || args.var)
+  const prevAnonymousPayload = (parentCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL] as Set<string> | undefined
+  const shouldPurgeAnonymous = hasIncomingData && prevAnonymousPayload && prevAnonymousPayload.size > 0
+
+  if (shouldPurgeAnonymous) {
+    for (const key of prevAnonymousPayload) {
+      delete subCtx[key]
+    }
+  }
+
+  const cleanParentData = (parentCtx.data && typeof parentCtx.data === 'object' && !Array.isArray(parentCtx.data))
+    ? { ...(parentCtx.data as Record<string, any>) }
+    : {}
+  if (shouldPurgeAnonymous) {
+    for (const key of prevAnonymousPayload) {
+      delete cleanParentData[key]
+    }
+  }
+
+  const currentAnonymousPayload = new Set<string>()
   let hasExplicitPayload = false
 
   for (const [argName, argVal] of Object.entries(args)) {
@@ -171,10 +200,7 @@ export function bindIncludeScope(
         if (p === 'data') {
           if (val && typeof val === 'object' && !Array.isArray(val)) {
             Object.assign(subCtx, val)
-            const parentData = (parentCtx.data && typeof parentCtx.data === 'object' && !Array.isArray(parentCtx.data))
-              ? (parentCtx.data as Record<string, any>)
-              : {}
-            subCtx.data = { ...widgetBaseData, ...parentData, ...(val as Record<string, any>) }
+            subCtx.data = { ...widgetBaseData, ...cleanParentData, ...(val as Record<string, any>) }
           }
           else if (Array.isArray(val)) {
             subCtx.data = val
@@ -188,9 +214,7 @@ export function bindIncludeScope(
           subCtx[p] = val
           const parentData = (subCtx.data && typeof subCtx.data === 'object' && !Array.isArray(subCtx.data))
             ? (subCtx.data as Record<string, any>)
-            : ((parentCtx.data && typeof parentCtx.data === 'object' && !Array.isArray(parentCtx.data))
-                ? (parentCtx.data as Record<string, any>)
-                : {})
+            : cleanParentData
           subCtx.data = { ...parentData, [p]: val }
         }
       }
@@ -198,10 +222,10 @@ export function bindIncludeScope(
     else if (argName === 'data' && (!subroutine.params || subroutine.params.length === 0)) {
       if (val && typeof val === 'object' && !Array.isArray(val)) {
         Object.assign(subCtx, val)
-        const parentData = (parentCtx.data && typeof parentCtx.data === 'object' && !Array.isArray(parentCtx.data))
-          ? (parentCtx.data as Record<string, any>)
-          : {}
-        subCtx.data = { ...widgetBaseData, ...parentData, ...(val as Record<string, any>) }
+        for (const k of Object.keys(val)) {
+          currentAnonymousPayload.add(k)
+        }
+        subCtx.data = { ...widgetBaseData, ...cleanParentData, ...(val as Record<string, any>) }
       }
       else if (Array.isArray(val)) {
         subCtx.data = val
@@ -230,10 +254,17 @@ export function bindIncludeScope(
         subCtx[p] = defaultTarget
         const baseData = (subCtx.data && typeof subCtx.data === 'object' && !Array.isArray(subCtx.data))
           ? (subCtx.data as Record<string, any>)
-          : {}
+          : cleanParentData
         subCtx.data = { ...baseData, [p]: defaultTarget }
       }
     }
+  }
+
+  if (currentAnonymousPayload.size > 0) {
+    (subCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL] = currentAnonymousPayload
+  }
+  else if (hasIncomingData) {
+    delete (subCtx as any)[ANONYMOUS_PAYLOAD_SYMBOL]
   }
 
   return subCtx
