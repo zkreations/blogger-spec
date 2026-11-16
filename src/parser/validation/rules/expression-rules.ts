@@ -177,7 +177,7 @@ export function validateExpression(
   // 1. Compiler token quota budget check (BX1021 / BX1045)
   const budget = evaluateExpressionBudget(unescaped, catalog)
   if (budget.status === 'EXCEEDED') {
-    const diagCode = catalog.getExpressionQuotaDiagnostic() ?? 'BX1021'
+    const diagCode = catalog.getExpressionQuotaDiagnostic()!
     pushDiagnostic(diagnostics, catalog, diagCode, fakeToken, {
       attribute: context?.attributeName,
       end: baseEnd,
@@ -186,7 +186,7 @@ export function validateExpression(
     })
   }
   else if (budget.status === 'WARNING') {
-    const warnDiagCode = catalog.getExpressionQuotaWarningDiagnostic() ?? 'BX1045'
+    const warnDiagCode = catalog.getExpressionQuotaWarningDiagnostic()!
     pushDiagnostic(diagnostics, catalog, warnDiagCode, fakeToken, {
       attribute: context?.attributeName,
       end: baseEnd,
@@ -220,7 +220,8 @@ export function validateExpression(
       const start = baseStart + rawStart
       const end = baseStart + rawEnd
 
-      pushDiagnostic(diagnostics, catalog, 'BX1055', fakeToken, {
+      const diag = catalog.getDiagnosticByName('PROHIBITED_LOGICAL_AND_OPERATOR')!
+      pushDiagnostic(diagnostics, catalog, diag.code, fakeToken, {
         attribute: context?.attributeName,
         end,
         fixes: [{
@@ -288,7 +289,8 @@ export function validateExpression(
         if (tokens[j]!.type === 'DATA_PREFIX' && j + 1 < tokens.length) {
           const nextTok = tokens[j + 1]!
           if (nextTok.type === 'IDENTIFIER' && nextTok.value === paramName) {
-            pushDiagnostic(diagnostics, catalog, 'BX1019', fakeToken, {
+            const diag = catalog.getDiagnosticByName('PROHIBITED_LAMBDA_DATA_PREFIX')!
+            pushDiagnostic(diagnostics, catalog, diag.code, fakeToken, {
               attribute: context?.attributeName,
               end: baseStart + mapOffset(nextTok.end.offset),
               message: `Using 'data:' prefix on lambda iterator property 'data:${paramName}' is redundant. Access properties directly (${paramName}.prop).`,
@@ -363,7 +365,8 @@ export function validateExpression(
           if (!hasRootComma) {
             // BX1044: Empty call -() causes an unhandled backend crash (HTTP 500)
             if (tok.type === 'MINUS' && innerTokens.length === 0) {
-              pushDiagnostic(diagnostics, catalog, 'BX1044', fakeToken, {
+              const diag = catalog.getDiagnosticByName('FATAL_OPERATOR_ARITY')!
+              pushDiagnostic(diagnostics, catalog, diag.code, fakeToken, {
                 attribute: context?.attributeName,
                 end: baseStart + mapOffset(tokens[closeParenIndex]!.end.offset),
                 message: `Invoking '-()' with 0 arguments triggers an unhandled backend crash (HTTP 500) on Blogger template engine.`,
@@ -392,7 +395,8 @@ export function validateExpression(
               }
 
               if (isCompound) {
-                pushDiagnostic(diagnostics, catalog, 'BX1030', fakeToken, {
+                const diag = catalog.getDiagnosticByName('PROHIBITED_UNARY_EXPRESSION_NEGATION')!
+                pushDiagnostic(diagnostics, catalog, diag.code, fakeToken, {
                   attribute: context?.attributeName,
                   end: baseStart + mapOffset(tokens[closeParenIndex]!.end.offset),
                   message: `Unary prefix operator '-' cannot be applied to parenthesized compound expressions; evaluate operands separately or use native operators.`,
@@ -444,7 +448,8 @@ export function validateExpression(
         }
 
         if (!hasRootComma) {
-          pushDiagnostic(diagnostics, catalog, 'BX1044', fakeToken, {
+          const diag = catalog.getDiagnosticByName('FATAL_OPERATOR_ARITY')!
+          pushDiagnostic(diagnostics, catalog, diag.code, fakeToken, {
             attribute: context?.attributeName,
             end: baseStart + mapOffset(tokens[closeParenIndex]!.end.offset),
             message: `Invoking equality operator 'eq()' with fewer than 2 arguments triggers an unhandled backend crash (HTTP 500) on Blogger template engine.`,
@@ -489,13 +494,13 @@ export function validateExpression(
         const relOps = new Set(['<', '<=', '>', '>=', 'lt', 'lte', 'gt', 'gte'])
         if (relOps.has(node.operator)) {
           if (isDateExpressionNode(node.left, catalog) || isDateExpressionNode(node.right, catalog)) {
-            const diagRule = catalog.getDiagnostic('BX1026')
+            const diag = catalog.getDiagnosticByName('PROHIBITED_DATE_RELATIONAL_COMPARISON')!
             const startOffset = node.loc?.start.offset ?? 0
             const endOffset = node.loc?.end.offset ?? startOffset + 1
-            pushDiagnostic(diagnostics, catalog, 'BX1026', fakeToken, {
+            pushDiagnostic(diagnostics, catalog, diag.code, fakeToken, {
               attribute: context?.attributeName,
               end: baseStart + mapOffset(endOffset),
-              message: diagRule?.message ?? 'Direct relational comparison (<, <=, >, >=) on date objects is prohibited in Blogger expressions. Compare numeric timestamp or formatted string modifiers instead.',
+              message: diag.rule.message,
               start: baseStart + mapOffset(startOffset),
             })
           }
@@ -505,11 +510,11 @@ export function validateExpression(
       if (node.type === 'ArrayExpression' && node.isBraced && node.loc) {
         const isIncludeDataAttr = context?.tagName === 'b:include' && (context?.attributeName === 'data' || context?.attributeName === 'expr:data')
         if (!isIncludeDataAttr) {
-          const diagRule = catalog.getDiagnostic('BX1046')
-          pushDiagnostic(diagnostics, catalog, 'BX1046', fakeToken, {
+          const diag = catalog.getDiagnosticByName('NON_STANDARD_BRACED_COLLECTION')!
+          pushDiagnostic(diagnostics, catalog, diag.code, fakeToken, {
             attribute: context?.attributeName,
             end: baseStart + mapOffset(node.loc.end.offset ?? 0),
-            message: diagRule?.message ?? 'Using curly braces \'{ ... }\' for array/set collections is non-standard in Blogger. Use bracket notation \'[ ... ]\' instead to ensure future compatibility.',
+            message: diag.rule.message,
             start: baseStart + mapOffset(node.loc.start.offset ?? 0),
           })
         }
@@ -534,13 +539,13 @@ export function validateExpression(
       if (node.type === 'ObjectExpression') {
         for (const prop of node.properties) {
           if (prop.hasWhitespaceAfterColon === false) {
-            const diagRule = catalog.getDiagnostic('BX1049')
+            const diag = catalog.getDiagnosticByName('OBJECT_LITERAL_COLON_WHITESPACE_MISSING')!
             const colonOffset = prop.colonLoc?.start.offset ?? node.loc?.start.offset ?? 0
             const colonEndOffset = prop.colonLoc?.end.offset ?? colonOffset + 1
-            pushDiagnostic(diagnostics, catalog, 'BX1049', fakeToken, {
+            pushDiagnostic(diagnostics, catalog, diag.code, fakeToken, {
               attribute: context?.attributeName,
               end: baseStart + mapOffset(colonEndOffset),
-              message: diagRule?.message ?? 'Whitespace is required after colons in object literals { key: value } to avoid namespace collisions.',
+              message: diag.rule.message,
               start: baseStart + mapOffset(colonOffset),
               suggestedReplacement: ': ',
             })

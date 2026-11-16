@@ -45,64 +45,6 @@ function isSameUrlOrPath(candidate: string | undefined, target: string | undefin
   }
 }
 
-interface BuildBlogNavMessageOptions {
-  type: 'query' | 'label' | 'archive'
-  query?: string
-  label?: string
-  archiveMessage?: string
-  byDate?: boolean
-  maxResults?: number | string
-  homepageUrl: string
-  searchUrl: string
-  locale?: string
-}
-
-function buildBlogNavMessage(options: BuildBlogNavMessageOptions): string {
-  const isEs = options.locale?.toLowerCase().startsWith('es')
-  const homepage = options.homepageUrl.endsWith('/') ? options.homepageUrl : `${options.homepageUrl}/`
-  const showAllText = isEs ? 'Mostrar todas las entradas' : 'Show all posts'
-  const showAllLink = `<a href="${homepage}">${showAllText}</a>`
-
-  if (options.type === 'query' && options.query) {
-    const qEnc = encodeURIComponent(options.query)
-    const maxResults = options.maxResults || 20
-    const byDate = Boolean(options.byDate)
-    const searchBase = options.searchUrl
-
-    if (!byDate) {
-      const text = isEs
-        ? `Mostrando entradas ordenadas por relevancia para la consulta <b>${options.query}</b>. `
-        : `Showing posts sorted by relevance for query <b>${options.query}</b>. `
-      const sortUrl = `${searchBase}?q=${qEnc}&amp;max-results=${maxResults}&amp;by-date=true`
-      const sortText = isEs ? 'Ordenar por fecha' : 'Sort by date'
-      const sortLink = `<a href="${sortUrl}">${sortText}</a>`
-      return `${text}${sortLink} ${showAllLink}`
-    }
-    else {
-      const text = isEs
-        ? `Mostrando entradas ordenadas por fecha para la consulta <b>${options.query}</b>. `
-        : `Showing posts sorted by date for query <b>${options.query}</b>. `
-      const sortUrl = `${searchBase}?q=${qEnc}&amp;max-results=${maxResults}`
-      const sortText = isEs ? 'Ordenar por relevancia' : 'Sort by relevance'
-      const sortLink = `<a href="${sortUrl}">${sortText}</a>`
-      return `${text}${sortLink} ${showAllLink}`
-    }
-  }
-
-  if (options.type === 'label' && options.label) {
-    const text = isEs
-      ? `Mostrando las entradas con la etiqueta <b>${options.label}</b>. `
-      : `Showing posts with label <b>${options.label}</b>. `
-    return `${text}${showAllLink}`
-  }
-
-  if (options.type === 'archive' && options.archiveMessage) {
-    return `${options.archiveMessage}. ${showAllLink}`
-  }
-
-  return ''
-}
-
 function createCleanBaseContext(
   viewId: BloggerViewId,
   locale: string,
@@ -754,11 +696,12 @@ export async function resolveBloggerContext(
       context.view.searchQuery = q
       const byDate = searchParams?.get('by-date') === 'true'
       const searchUrl = mapper.mapUrl(`${context.blog.homepageUrl.replace(/\/$/, '')}/search`)
-      blog1.navMessage = buildBlogNavMessage({
+      const defaultSearchPageSize = spec.getBlogPagination()?.searchPageSize ?? 20
+      blog1.navMessage = spec.buildBlogNavMessage({
         type: 'query',
         query: q,
         byDate,
-        maxResults: searchParams?.get('max-results') || 20,
+        maxResults: searchParams?.get('max-results') || defaultSearchPageSize,
         homepageUrl: context.blog.homepageUrl,
         searchUrl,
         locale: blogLocale,
@@ -770,7 +713,7 @@ export async function resolveBloggerContext(
       context.view.search = context.view.search || {}
       context.view.search.label = lbl
       context.view.searchLabel = lbl
-      blog1.navMessage = buildBlogNavMessage({
+      blog1.navMessage = spec.buildBlogNavMessage({
         type: 'label',
         label: lbl,
         homepageUrl: context.blog.homepageUrl,
@@ -1052,21 +995,17 @@ export async function resolveBloggerContext(
       context.view.search = context.view.search || {}
       context.view.search.query = effectiveQ
       context.view.searchQuery = effectiveQ
-      const isEs = blogLocale.toLowerCase().startsWith('es')
-      context.view.search.resultsMessage = isEs
-        ? `Mostrando entradas que coinciden con la búsqueda de ${effectiveQ}`
-        : `Showing posts matching the search for ${effectiveQ}`
-      context.view.search.resultsMessageHtml = isEs
-        ? `Mostrando entradas que coinciden con la búsqueda de <b>${effectiveQ}</b>`
-        : `Showing posts matching the search for <b>${effectiveQ}</b>`
+      context.view.search.resultsMessage = spec.getSearchQueryResultsMessage(effectiveQ, blogLocale, false)
+      context.view.search.resultsMessageHtml = spec.getSearchQueryResultsMessage(effectiveQ, blogLocale, true)
 
       const byDate = searchParams?.get('by-date') === 'true'
       const searchUrl = mapper.mapUrl(`${context.blog.homepageUrl.replace(/\/$/, '')}/search`)
-      blog1.navMessage = buildBlogNavMessage({
+      const defaultSearchPageSize = spec.getBlogPagination()?.searchPageSize ?? 20
+      blog1.navMessage = spec.buildBlogNavMessage({
         type: 'query',
         query: effectiveQ,
         byDate,
-        maxResults: searchParams?.get('max-results') || 20,
+        maxResults: searchParams?.get('max-results') || defaultSearchPageSize,
         homepageUrl: context.blog.homepageUrl,
         searchUrl,
         locale: blogLocale,
@@ -1101,7 +1040,7 @@ export async function resolveBloggerContext(
       )
 
       if (!blog1.navMessage) {
-        blog1.navMessage = buildBlogNavMessage({
+        blog1.navMessage = spec.buildBlogNavMessage({
           type: 'label',
           label: effectiveLabel,
           homepageUrl: context.blog.homepageUrl,
@@ -1138,7 +1077,7 @@ export async function resolveBloggerContext(
       context.view.archive.rangeMessage = spec.getArchiveRangeMessage(effectiveArchiveYear, effectiveArchiveMonth, blogLocale)
 
       if (!blog1.navMessage) {
-        blog1.navMessage = buildBlogNavMessage({
+        blog1.navMessage = spec.buildBlogNavMessage({
           type: 'archive',
           archiveMessage: context.view.archive.rangeMessage,
           homepageUrl: context.blog.homepageUrl,

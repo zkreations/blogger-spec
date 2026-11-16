@@ -1,5 +1,6 @@
 import type { BirAttrValue, BirIncludable, BirWithBinding } from '../types.js'
 import type { MutationTarget } from './dom-mutation-pipeline.js'
+import { getSpecCatalog } from '../../catalogs/spec-catalog.js'
 import { parseExpression } from '../../parser/expr-parser.js'
 import { evaluateExpression } from '../../parser/index.js'
 import { unescapeXmlEntities } from '../../parser/lexer.js'
@@ -120,7 +121,7 @@ export function bindWidgetScope(
   }
   if (title !== undefined) {
     widgetData.title = typeof title === 'string'
-      ? title.replace(/\s*\((?:Header|Cabecera|En-tête|Kopfzeile|Cabeçalho)\)$/i, '').trim()
+      ? getSpecCatalog().stripDefaultWidgetTypeSuffix(title, widgetType)
       : title
   }
 

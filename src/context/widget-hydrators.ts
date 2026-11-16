@@ -233,7 +233,7 @@ export function hydrateHeaderWidget(ctx: HydrateWidgetContext, baseWidget?: Reco
     || ctx.spec.getWidgetDefaultTitle('Header', ctx.blogLocale)
 
   const title = typeof rawTitle === 'string'
-    ? rawTitle.replace(/\s*\((?:Header|Cabecera|En-tête|Kopfzeile|Cabeçalho)\)$/i, '').trim()
+    ? ctx.spec.stripDefaultWidgetTypeSuffix(rawTitle, 'Header')
     : rawTitle
 
   const description = instanceOverrides?.description

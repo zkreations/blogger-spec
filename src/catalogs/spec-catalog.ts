@@ -154,6 +154,7 @@ export class SpecCatalog {
   private readonly operatorBindingPowerMap = new Map<string, number>()
   private readonly operatorAssociativityMap = new Map<string, 'left-to-right' | 'right-to-left' | 'inner-to-outer' | 'non-associative'>()
   private readonly diagnosticMap = new Map<string, BloggerDiagnosticRule>()
+  private readonly diagnosticByNameMap = new Map<string, { code: BloggerDiagnosticCode, rule: BloggerDiagnosticRule }>()
   private readonly grammarGroupMap = new Map<string, string[]>()
   private readonly expandedValidChildrenMap = new Map<string, Set<string>>()
   private readonly expandedValidParentsMap = new Map<string, Set<string>>()
@@ -357,7 +358,11 @@ export class SpecCatalog {
   private indexDiagnostics(): void {
     const rules = (this.store.getCatalog('diagnostics') as BloggerDiagnosticsCatalog).rules || {}
     for (const [code, rule] of Object.entries(rules)) {
-      this.diagnosticMap.set(code, { ...rule, code: (rule.code ?? code) as BloggerDiagnosticCode })
+      const entry = { ...rule, code: (rule.code ?? code) as BloggerDiagnosticCode }
+      this.diagnosticMap.set(code, entry)
+      if (rule.name) {
+        this.diagnosticByNameMap.set(rule.name, { code: entry.code, rule: entry })
+      }
     }
   }
 
@@ -1019,6 +1024,18 @@ export class SpecCatalog {
     return result
   }
 
+  getDiagnosticByName(name: string): { code: BloggerDiagnosticCode, rule: BloggerDiagnosticRule } | undefined {
+    return this.diagnosticByNameMap.get(name)
+  }
+
+  getDiagnosticCodeByName(name: string): BloggerDiagnosticCode {
+    const entry = this.diagnosticByNameMap.get(name)
+    if (!entry) {
+      throw new Error(`Diagnostic rule with name '${name}' not found in diagnostics catalog`)
+    }
+    return entry.code
+  }
+
   isWidget(name: string): name is BloggerWidgetType {
     return this.widgetMap.has(name)
   }
@@ -1256,6 +1273,96 @@ export class SpecCatalog {
     const entry = this.localesCatalog?.translations?.widgets?.[widgetType]?.defaultTitle
       ?? this.localesCatalog?.translations?.widgets?.[widgetType]?.name
     return this.lookupLocaleValue<string>(entry?.values, locale) ?? entry?.default ?? widgetType
+  }
+
+  stripDefaultWidgetTypeSuffix(title: string, widgetType: string): string {
+    if (!title || typeof title !== 'string') {
+      return title
+    }
+    const entry = this.localesCatalog?.translations?.widgets?.[widgetType]?.defaultTitle
+      ?? this.localesCatalog?.translations?.widgets?.[widgetType]?.name
+    const suffixes = new Set<string>()
+    if (entry?.default) {
+      suffixes.add(entry.default)
+    }
+    if (entry?.values) {
+      for (const val of Object.values(entry.values)) {
+        if (typeof val === 'string' && val.trim()) {
+          suffixes.add(val.trim())
+        }
+      }
+    }
+    if (widgetType === 'Header') {
+      suffixes.add('Header')
+      suffixes.add('Cabecera')
+      suffixes.add('En-tête')
+      suffixes.add('Kopfzeile')
+      suffixes.add('Cabeçalho')
+    }
+    else if (suffixes.size === 0) {
+      suffixes.add(widgetType)
+    }
+    const pattern = Array.from(suffixes)
+      .map(s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      .join('|')
+    const regex = new RegExp(`\\s*\\((?:${pattern})\\)$`, 'i')
+    return title.replace(regex, '').trim()
+  }
+
+  buildBlogNavMessage(options: BuildBlogNavMessageOptions, locale?: string): string {
+    const loc = locale ?? options.locale ?? this.getDefaultLocale()
+    const isEs = loc.toLowerCase().startsWith('es')
+    const homepage = options.homepageUrl.endsWith('/') ? options.homepageUrl : `${options.homepageUrl}/`
+    const showAllText = isEs ? 'Mostrar todas las entradas' : 'Show all posts'
+    const showAllLink = `<a href="${homepage}">${showAllText}</a>`
+    const defaultPageSize = this.getBlogPagination()?.searchPageSize ?? 20
+
+    if (options.type === 'query' && options.query) {
+      const qEnc = encodeURIComponent(options.query)
+      const maxResults = options.maxResults || defaultPageSize
+      const byDate = Boolean(options.byDate)
+      const searchBase = options.searchUrl
+
+      if (!byDate) {
+        const text = isEs
+          ? `Mostrando entradas ordenadas por relevancia para la consulta <b>${options.query}</b>. `
+          : `Showing posts sorted by relevance for query <b>${options.query}</b>. `
+        const sortUrl = `${searchBase}?q=${qEnc}&amp;max-results=${maxResults}&amp;by-date=true`
+        const sortText = isEs ? 'Ordenar por fecha' : 'Sort by date'
+        const sortLink = `<a href="${sortUrl}">${sortText}</a>`
+        return `${text}${sortLink} ${showAllLink}`
+      }
+      else {
+        const text = isEs
+          ? `Mostrando entradas ordenadas por fecha para la consulta <b>${options.query}</b>. `
+          : `Showing posts sorted by date for query <b>${options.query}</b>. `
+        const sortUrl = `${searchBase}?q=${qEnc}&amp;max-results=${maxResults}`
+        const sortText = isEs ? 'Ordenar por relevancia' : 'Sort by relevance'
+        const sortLink = `<a href="${sortUrl}">${sortText}</a>`
+        return `${text}${sortLink} ${showAllLink}`
+      }
+    }
+
+    if (options.type === 'label' && options.label) {
+      const text = isEs
+        ? `Mostrando las entradas con la etiqueta <b>${options.label}</b>. `
+        : `Showing posts with label <b>${options.label}</b>. `
+      return `${text}${showAllLink}`
+    }
+
+    if (options.type === 'archive' && options.archiveMessage) {
+      return `${options.archiveMessage}. ${showAllLink}`
+    }
+
+    return ''
+  }
+
+  getSearchQueryResultsMessage(query: string, locale = 'en', isHtml = false): string {
+    const isEs = locale.toLowerCase().startsWith('es')
+    const q = isHtml ? `<b>${query}</b>` : query
+    return isEs
+      ? `Mostrando entradas que coinciden con la búsqueda de ${q}`
+      : `Showing posts matching the search for ${q}`
   }
 
   getFormattedGlobalMessage(key: string, locale = 'en', params: Record<string, string> = {}): string {
@@ -2288,4 +2395,36 @@ export function getMockContext(
   }
 
   return cloned
+}
+
+export interface BuildBlogNavMessageOptions {
+  type: 'query' | 'label' | 'archive'
+  query?: string
+  label?: string
+  archiveMessage?: string
+  byDate?: boolean
+  maxResults?: number | string
+  homepageUrl: string
+  searchUrl: string
+  locale?: string
+}
+
+export function getDiagnosticByName(name: string, catalog: SpecCatalog = getSpecCatalog()): { code: BloggerDiagnosticCode, rule: BloggerDiagnosticRule } | undefined {
+  return catalog.getDiagnosticByName(name)
+}
+
+export function getDiagnosticCodeByName(name: string, catalog: SpecCatalog = getSpecCatalog()): BloggerDiagnosticCode {
+  return catalog.getDiagnosticCodeByName(name)
+}
+
+export function stripDefaultWidgetTypeSuffix(title: string, widgetType: string, catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.stripDefaultWidgetTypeSuffix(title, widgetType)
+}
+
+export function buildBlogNavMessage(options: BuildBlogNavMessageOptions, locale?: string, catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.buildBlogNavMessage(options, locale)
+}
+
+export function getSearchQueryResultsMessage(query: string, locale = 'en', isHtml = false, catalog: SpecCatalog = getSpecCatalog()): string {
+  return catalog.getSearchQueryResultsMessage(query, locale, isHtml)
 }

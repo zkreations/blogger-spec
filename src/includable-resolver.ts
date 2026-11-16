@@ -273,7 +273,7 @@ export function resolveIncludable(
     targetId,
     tier: 'unresolved',
     resolved: false,
-    diagnostic: 'BX1037',
+    diagnostic: catalog.getInclusionDiagnostic('unresolved_inclusion'),
     failureComment,
   }
 }
