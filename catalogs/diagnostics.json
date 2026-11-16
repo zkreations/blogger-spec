@@ -586,6 +586,15 @@
       "message": "Non-recommended value for root attribute on <html>; the expected value prevents unmanaged platform resource injection.",
       "evidence": "observed",
       "verified_at": "2026-10-28"
+    },
+    "BX1063": {
+      "code": "BX1063",
+      "name": "PROHIBITED_OBJECT_BRACKET_INDEXING",
+      "category": "expressions",
+      "severity": "warning",
+      "message": "Dynamic bracket indexing is prohibited on objects in Blogger expressions and evaluates to undefined. Bracket indexing is reserved exclusively for collections/arrays; use member dot access (data:obj.key) instead.",
+      "evidence": "observed",
+      "verified_at": "2026-11-16"
     }
   }
 }

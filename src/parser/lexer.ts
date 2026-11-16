@@ -185,6 +185,7 @@ export type TokenType
     | 'RBRACE'
     | 'COMMA'
     | 'DOT'
+    | 'DOT_DOT'
     | 'EOF'
 
 export interface TokenPosition {
@@ -363,6 +364,10 @@ export class Lexer {
         this.advance(1)
         return this.makeToken('COMMA', ',', startPos)
       case '.':
+        if (this.source[this.pos + 1] === '.') {
+          this.advance(2)
+          return this.makeToken('DOT_DOT', '..', startPos)
+        }
         this.advance(1)
         return this.makeToken('DOT', '.', startPos)
     }

@@ -357,6 +357,112 @@
         "value": 0
       },
       "verified_at": "2026-10-14"
+    },
+    {
+      "id": "expressions/coercion/elvis-functional-variadic",
+      "title": "Elvis Operator Functional Variadic Cascade",
+      "evidence": "observed",
+      "covers": [
+        "operator:?:",
+        "semantics:coercion-nullish"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "?:(data:missing1, data:missing2, \"Fallback\")",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Fallback"
+      },
+      "verified_at": "2026-11-16"
+    },
+    {
+      "id": "expressions/coercion/elvis-preserves-false",
+      "title": "Elvis Operator Preserves Boolean False Without Triggering Fallback",
+      "evidence": "observed",
+      "covers": [
+        "operator:?:",
+        "semantics:coercion-nullish"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "false ?: \"Fallback\"",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": false
+      },
+      "verified_at": "2026-11-16"
+    },
+    {
+      "id": "expressions/coercion/object-bracket-indexing-prohibited-string",
+      "title": "Prohibited Object Bracket Indexing Returns Undefined and Triggers Fallback",
+      "evidence": "observed",
+      "covers": [
+        "operator:?:",
+        "type:object"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:mapa[\"clave\"] ?: \"No leido\"",
+        "context": {
+          "mapa": {
+            "clave": "valor_ok"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "No leido"
+      },
+      "verified_at": "2026-11-16"
+    },
+    {
+      "id": "expressions/coercion/object-bracket-indexing-prohibited-numeric",
+      "title": "Prohibited Object Numeric Bracket Indexing Returns Undefined and Triggers Fallback",
+      "evidence": "observed",
+      "covers": [
+        "operator:?:",
+        "type:object"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:mapa[0] ?: \"No leido\"",
+        "context": {
+          "mapa": {
+            "clave": "valor_ok"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "No leido"
+      },
+      "verified_at": "2026-11-16"
+    },
+    {
+      "id": "expressions/coercion/datapath-redundant-dots-collapsed",
+      "title": "DataPath Collapses Redundant Dots",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:runtime_coercion"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:blog..title",
+        "context": {
+          "blog": {
+            "title": "Desarrollo"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "value",
+        "value": "Desarrollo"
+      },
+      "verified_at": "2026-11-16"
     }
   ]
 }

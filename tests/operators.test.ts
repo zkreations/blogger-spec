@@ -51,7 +51,7 @@ describe('modular operators suite', () => {
     it('evaluates call arithmetic correctly', () => {
       expect(evaluateCallArithmetic('+', [1, 2, 3])).toBe(6)
       expect(evaluateCallArithmetic('-', [10, 3, 2])).toBe(5)
-      expect(evaluateCallArithmetic('-', [7])).toBe(-7)
+      expect(evaluateCallArithmetic('-', [7])).toBe(7)
       expect(evaluateCallArithmetic('*', [2, 3, 4])).toBe(24)
       expect(evaluateCallArithmetic('/', [20, 2, 2])).toBe(5)
       expect(evaluateCallArithmetic('%', [10, 3])).toBe(1)

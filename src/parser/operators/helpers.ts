@@ -175,19 +175,21 @@ export function applyModifier(target: any, modifier: string): any {
     return undefined
   }
 
+  const modLower = modifier.toLowerCase()
+
   if (isStringLike(target)) {
     const str = String(target)
-    switch (modifier) {
+    switch (modLower) {
       case 'length':
       case 'size':
         return str.length
       case 'escaped':
         return escapeHtml(str)
-      case 'jsEscaped':
+      case 'jsescaped':
         return escapeJs(str)
-      case 'jsonEscaped':
+      case 'jsonescaped':
         return escapeJson(str)
-      case 'cssEscaped':
+      case 'cssescaped':
         return escapeCss(str)
       case 'canonical': {
         const base = str.split('#')[0]!
@@ -210,12 +212,11 @@ export function applyModifier(target: any, modifier: string): any {
         return str.replace(/^https:/i, 'http:')
       case 'https':
         return str.replace(/^http:/i, 'https:')
-      case 'isResizable':
+      case 'isresizable':
         return /googleusercontent\.com|blogspot\.com|ggpht\.com/i.test(str)
-      case 'isYouTube':
-      case 'isYoutube':
+      case 'isyoutube':
         return /youtube\.com|youtu\.be|ytimg\.com/i.test(str)
-      case 'youtubeMaxResDefaultUrl': {
+      case 'youtubemaxresdefaulturl': {
         const videoId = extractYouTubeVideoId(str)
         return videoId ? `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg` : false
       }
@@ -225,7 +226,7 @@ export function applyModifier(target: any, modifier: string): any {
       case 'day': {
         const trimmed = str.trim()
         if (!trimmed) {
-          return modifier === 'iso8601' ? '' : undefined
+          return modLower === 'iso8601' ? '' : undefined
         }
         const hasTz = /(?:Z|[+-]\d{2}:?\d{2})$/i.test(trimmed)
         const rawDate = hasTz
@@ -234,7 +235,7 @@ export function applyModifier(target: any, modifier: string): any {
         if (Number.isNaN(rawDate.getTime())) {
           return undefined
         }
-        if (modifier === 'iso8601') {
+        if (modLower === 'iso8601') {
           if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})$/i.test(trimmed)) {
             return trimmed.replace(/\.\d{3,}/, '')
           }
@@ -247,9 +248,9 @@ export function applyModifier(target: any, modifier: string): any {
           const offsetMs = sign * (Number.parseInt(offsetMatch[2]!, 10) * 60 + Number.parseInt(offsetMatch[3]!, 10)) * 60000
           calDate = new Date(rawDate.getTime() + offsetMs)
         }
-        if (modifier === 'year')
+        if (modLower === 'year')
           return calDate.getUTCFullYear()
-        if (modifier === 'month')
+        if (modLower === 'month')
           return calDate.getUTCMonth() + 1
         return calDate.getUTCDate()
       }
@@ -257,7 +258,7 @@ export function applyModifier(target: any, modifier: string): any {
   }
 
   if (Array.isArray(target)) {
-    switch (modifier) {
+    switch (modLower) {
       case 'length':
       case 'size':
         return target.length
@@ -266,15 +267,16 @@ export function applyModifier(target: any, modifier: string): any {
       case 'last':
         return target[target.length - 1]
       case 'empty':
+      case 'isempty':
         return target.length === 0
-      case 'notEmpty':
+      case 'notempty':
       case 'any':
         return target.length > 0
     }
   }
 
   if (typeof target === 'object') {
-    switch (modifier) {
+    switch (modLower) {
       case 'variant':
         return target.variant ?? ''
       case 'script':
@@ -292,6 +294,14 @@ export function applyModifier(target: any, modifier: string): any {
         return target.width
       case 'height':
         return target.height
+      case 'isresizable':
+        return typeof target.url === 'string' ? /googleusercontent\.com|blogspot\.com|ggpht\.com/i.test(target.url) : false
+      case 'isyoutube':
+        return typeof target.url === 'string' ? /youtube\.com|youtu\.be|ytimg\.com/i.test(target.url) : false
+      case 'youtubemaxresdefaulturl': {
+        const videoId = typeof target.url === 'string' ? extractYouTubeVideoId(target.url) : null
+        return videoId ? `https://i.ytimg.com/vi/${videoId}/maxresdefault.jpg` : false
+      }
     }
   }
 

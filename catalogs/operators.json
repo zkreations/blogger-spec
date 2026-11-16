@@ -556,6 +556,21 @@
             }
           ],
           "return_type": "number"
+        },
+        {
+          "signature": "-(a)",
+          "description": "Unary functional identity invocation (evaluates to operand value)",
+          "operands": [
+            {
+              "name": "value",
+              "types": [
+                "number"
+              ],
+              "required": true,
+              "description": "Value evaluated as identity"
+            }
+          ],
+          "return_type": "number"
         }
       ],
       "anti_patterns": [
@@ -569,6 +584,11 @@
           "expression": "10 - 4",
           "result": "6",
           "description": "Binary subtraction"
+        },
+        {
+          "expression": "-(5)",
+          "result": "5",
+          "description": "Unary functional identity invocation"
         }
       ],
       "grammar_aliases": [],
@@ -576,7 +596,7 @@
         "minus"
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-11-16"
     },
     "*": {
       "family": "arithmetic",
@@ -1587,7 +1607,7 @@
         "supports_functional": false,
         "functional_identifier": null,
         "variadic": false,
-        "infix": "start to end",
+        "infix": "start to end | start..end",
         "functional": null
       },
       "precedence_level": 5,
@@ -1610,7 +1630,9 @@
         }
       ],
       "return_type": "array[number]",
-      "aliases": [],
+      "aliases": [
+        ".."
+      ],
       "allowed_contexts": [
         "values"
       ],
@@ -1622,12 +1644,29 @@
           "expression": "1 to 10",
           "result": "[1, 2, ..., 10]",
           "description": "Loop integer range"
+        },
+        {
+          "expression": "1..5",
+          "result": "[1, 2, 3, 4, 5]",
+          "description": "Double-dot range alias"
+        },
+        {
+          "expression": "-2..2",
+          "result": "[-2, -1, 0, 1, 2]",
+          "description": "Negative range sequence"
+        },
+        {
+          "expression": "5..1",
+          "result": "[5, 4, 3, 2, 1]",
+          "description": "Descending range sequence"
         }
       ],
-      "grammar_aliases": [],
+      "grammar_aliases": [
+        ".."
+      ],
       "doc_aliases": [],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-11-16"
     },
     "any": {
       "family": "lambda",
@@ -1974,14 +2013,14 @@
     },
     "?:": {
       "family": "elvis",
-      "description": "Primary nullish coalescence operator. Returns fallback value if left operand evaluates to null or missing/undefined data (note: non-null values such as empty strings '', numeric zero 0, boolean false, and empty arrays [] do not trigger the fallback).",
+      "description": "Primary nullish coalescence operator. Supports multi-argument variadic cascade in functional syntax ?:(a, b, c, ...) returning the first non-null argument. Non-null values such as empty strings '', numeric zero 0, boolean false, and empty arrays [] are preserved and do not trigger fallback.",
       "syntax": {
         "supports_infix": true,
         "supports_functional": true,
         "functional_identifier": "?:",
         "variadic": true,
         "infix": "a ?: b",
-        "functional": "?:(a, b)"
+        "functional": "?:(a, b, ...)"
       },
       "precedence_level": 2,
       "operands": [
@@ -2012,6 +2051,16 @@
           "expression": "data:post.title ?: data:messages.noTitle",
           "result": "any",
           "description": "Nullish fallback"
+        },
+        {
+          "expression": "?:(data:missing1, data:missing2, \"Fallback\")",
+          "result": "\"Fallback\"",
+          "description": "Multi-argument variadic cascade"
+        },
+        {
+          "expression": "\"\" ?: \"Fallback\"",
+          "result": "\"\"",
+          "description": "Empty string preserved (not null)"
         }
       ],
       "grammar_aliases": [],
@@ -2020,7 +2069,7 @@
         "elvis"
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-11-16"
     },
     "? :": {
       "family": "ternary",
@@ -2068,7 +2117,8 @@
         "ternary"
       ],
       "anti_patterns": [
-        "Concatenation '+' binds tighter than ternary; always wrap ternary in parentheses when concatenating."
+        "Concatenation '+' binds tighter than ternary; always wrap ternary in parentheses when concatenating.",
+        "Condition requires a boolean expression; literal numbers (e.g. 0 ? 'a' : 'b') trigger an 'Invalid expression' compilation error in Blogger."
       ],
       "examples": [
         {
@@ -2084,7 +2134,7 @@
         "ternary"
       ],
       "evidence": "official",
-      "verified_at": "2026-10-10"
+      "verified_at": "2026-11-16"
     },
     "path": {
       "family": "url",
@@ -2187,7 +2237,8 @@
         }
       ],
       "diagnostics": {
-        "object_literal_colon_whitespace_missing": "BX1049"
+        "object_literal_colon_whitespace_missing": "BX1049",
+        "prohibited_object_bracket_indexing": "BX1063"
       },
       "grammar_aliases": [],
       "doc_aliases": [],

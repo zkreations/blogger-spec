@@ -1374,6 +1374,31 @@
         "stage": "linter"
       },
       "verified_at": "2026-10-28"
+    },
+    {
+      "id": "diagnostics/negative_syntax/object-bracket-indexing-prohibited",
+      "title": "Prohibited Object Bracket Indexing in Expression",
+      "evidence": "observed",
+      "covers": [
+        "rule:BX1063"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "data:mapa[\"clave\"]",
+        "context": {
+          "mapa": {
+            "clave": "valor_ok"
+          }
+        }
+      },
+      "expected": {
+        "outcome": "rejected",
+        "diagnosticCodes": [
+          "BX1063"
+        ],
+        "stage": "linter"
+      },
+      "verified_at": "2026-11-16"
     }
   ]
 }

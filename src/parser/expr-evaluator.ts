@@ -101,6 +101,9 @@ export class ExpressionEvaluator {
 
         let propName: any
         if (node.computed) {
+          if (!Array.isArray(obj)) {
+            return undefined
+          }
           propName = this.evaluate(node.property as BloggerExpressionNode, context, locals)
         }
         else {
@@ -252,6 +255,10 @@ export class ExpressionEvaluator {
         return undefined
 
       const m = members[i]
+      if (m.computed && !Array.isArray(current)) {
+        return undefined
+      }
+
       const propKey = m.computed
         ? this.evaluate(m.expression as BloggerExpressionNode, context, locals)
         : m.property

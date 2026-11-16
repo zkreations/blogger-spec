@@ -9,7 +9,7 @@ export function evaluateBinaryCollection(op: string, leftVal: any, rightVal: any
     return Array.isArray(leftVal) ? leftVal.slice(count) : []
   }
 
-  if (op === 'to') {
+  if (op === 'to' || op === '..') {
     const start = Number(leftVal)
     const end = Number(rightVal)
     const result: number[] = []

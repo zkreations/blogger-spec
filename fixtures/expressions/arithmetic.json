@@ -211,6 +211,25 @@
         "value": 5
       },
       "verified_at": "2026-10-19"
+    },
+    {
+      "id": "expressions/arithmetic/functional-unary-identity",
+      "title": "Functional Unary Minus Acts As Identity Function",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:arithmetic",
+        "operator:-"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "-(5)",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": 5
+      },
+      "verified_at": "2026-11-16"
     }
   ]
 }

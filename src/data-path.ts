@@ -331,9 +331,10 @@ export function resolveDataPath(
         continue
       }
 
-      if (seg === 'size' || seg === 'length') {
+      const segLower = seg.toLowerCase()
+      if (segLower === 'size' || segLower === 'length') {
         currentType = 'number'
-        currentDef = catalog.getType('array')?.modifiers?.[seg]
+        currentDef = catalog.getType('array')?.modifiers?.size ?? catalog.getType('array')?.modifiers?.length
         syncMetadata(currentDef)
         sourceCatalog = 'types'
         isCollection = false
@@ -341,9 +342,11 @@ export function resolveDataPath(
         continue
       }
 
-      if (seg === 'empty' || seg === 'notEmpty' || seg === 'any') {
+      if (segLower === 'empty' || segLower === 'isempty' || segLower === 'notempty' || segLower === 'any') {
         currentType = 'boolean'
         currentDef = catalog.getType('array')?.modifiers?.[seg]
+          ?? catalog.getType('array')?.modifiers?.isEmpty
+          ?? catalog.getType('array')?.modifiers?.empty
         syncMetadata(currentDef)
         sourceCatalog = 'types'
         isCollection = false
@@ -461,9 +464,10 @@ export function resolveDataPath(
     }
 
     const modifiers = getTypeModifiers(currentType, catalog)
-    if (modifiers[seg]) {
-      const mod = modifiers[seg]!
-      const outType = resolveModifierReturnType(currentType, seg, catalog)
+    const matchingModKey = modifiers[seg] ? seg : Object.keys(modifiers).find(k => k.toLowerCase() === seg.toLowerCase())
+    if (matchingModKey && modifiers[matchingModKey]) {
+      const mod = modifiers[matchingModKey]!
+      const outType = resolveModifierReturnType(currentType, matchingModKey, catalog)
       currentType = outType
       currentDef = mod
       syncMetadata(currentDef)

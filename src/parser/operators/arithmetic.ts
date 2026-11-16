@@ -80,7 +80,7 @@ export function evaluateCallArithmetic(
 
   if (fn === '-') {
     if (args.length === 1)
-      return -Number(args[0])
+      return Number(args[0])
     return args.slice(1).reduce((acc, curr) => acc - Number(curr), Number(args[0]))
   }
 

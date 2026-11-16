@@ -553,12 +553,50 @@ export function validateExpression(
         }
       }
 
+      if (node.type === 'MemberExpression' && node.computed) {
+        if (node.object.type === 'ObjectExpression' || (node.property.type === 'Literal' && typeof node.property.value === 'string')) {
+          const diag = catalog.getDiagnosticByName('PROHIBITED_OBJECT_BRACKET_INDEXING')
+          if (diag) {
+            const startOffset = node.loc?.start.offset ?? 0
+            const endOffset = node.loc?.end.offset ?? startOffset + 1
+            pushDiagnostic(diagnostics, catalog, diag.code, fakeToken, {
+              attribute: context?.attributeName,
+              end: baseStart + mapOffset(endOffset),
+              message: diag.rule.message,
+              start: baseStart + mapOffset(startOffset),
+            })
+          }
+        }
+      }
+
       if (node.type === 'DataPath') {
         const raw = node.raw || ''
         const startOffset = node.loc?.start.offset ?? 0
         const endOffset = node.loc?.end.offset ?? startOffset + raw.length
         const baseAbsStart = baseStart + mapOffset(startOffset)
         const baseAbsEnd = baseStart + mapOffset(endOffset)
+
+        // BX1063: Prohibited object bracket indexing
+        for (let idx = 0; idx < node.members.length; idx++) {
+          const m = node.members[idx]!
+          if (m.computed) {
+            const subPath = node.members.slice(0, idx).map(x => x.property).join('.')
+            const parentResolved = subPath ? resolveDataPath(subPath, { catalog, widgetType: context?.widgetType }) : undefined
+            const isTargetObject = parentResolved?.type === 'object' || (m.expression?.type === 'Literal' && typeof m.expression.value === 'string')
+            if (isTargetObject) {
+              const diag = catalog.getDiagnosticByName('PROHIBITED_OBJECT_BRACKET_INDEXING')
+              if (diag) {
+                pushDiagnostic(diagnostics, catalog, diag.code, fakeToken, {
+                  attribute: context?.attributeName,
+                  end: baseAbsEnd,
+                  message: diag.rule.message,
+                  start: baseAbsStart,
+                })
+              }
+              break
+            }
+          }
+        }
 
         // BX1054: Dot syntax in data:skin.vars.
         if (raw.startsWith('data:skin.vars.') || raw.startsWith('skin.vars.')) {

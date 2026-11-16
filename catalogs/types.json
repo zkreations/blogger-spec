@@ -423,13 +423,13 @@
     },
     "object": {
       "category": "base",
-      "description": "Key-value associative maps, member projection, and heterogeneous nested datasets. Evaluating an object directly in scalar output contexts (<data:.../> or <b:eval/>) emits <!--Substitution is not a singleton for tag [...]-->; in boolean contexts (cond='...') it evaluates truthiness.",
+      "description": "Key-value associative maps, member projection, and heterogeneous nested datasets. Evaluating an object directly in scalar output contexts (<data:.../> or <b:eval/>) emits <!--Substitution is not a singleton for tag [...]-->; in boolean contexts (cond='...') it evaluates truthiness. Dynamic bracket indexing (e.g. data:mapa[\"clave\"] or data:mapa[0]) is prohibited on objects and evaluates to undefined (bracket syntax is exclusive to collections/arrays).",
       "parent_type": null,
       "user_constructible": true,
       "ts_type": "Record<string, any>",
       "modifiers": {},
       "evidence": "official",
-      "verified_at": "2026-10-26"
+      "verified_at": "2026-11-16"
     },
     "array": {
       "category": "base",
@@ -479,6 +479,22 @@
           "expr_syntax": "([expr]).empty",
           "example": "data:posts.empty"
         },
+        "isEmpty": {
+          "description": "True if the collection contains zero elements (canonical camelCase name, case-insensitive).",
+          "output_type": "boolean",
+          "syntax": ".isEmpty",
+          "direct_syntax": "<data:array.isEmpty/>",
+          "expr_syntax": "([expr]).isEmpty",
+          "example": "data:posts.isEmpty"
+        },
+        "isempty": {
+          "description": "True if the collection contains zero elements (lowercase alias for .isEmpty).",
+          "output_type": "boolean",
+          "syntax": ".isempty",
+          "direct_syntax": "<data:array.isempty/>",
+          "expr_syntax": "([expr]).isempty",
+          "example": "data:posts.isempty"
+        },
         "notEmpty": {
           "description": "True if the collection contains 1 or more elements.",
           "output_type": "boolean",
@@ -488,7 +504,7 @@
           "example": "data:posts.notEmpty"
         },
         "any": {
-          "description": "Alias for .notEmpty; true if collection has at least one element.",
+          "description": "Alias for .notEmpty; evaluates presence (collection size > 0), not item truthiness.",
           "output_type": "boolean",
           "syntax": ".any",
           "direct_syntax": "<data:array.any/>",
@@ -513,7 +529,7 @@
         }
       },
       "evidence": "official",
-      "verified_at": "2026-10-26"
+      "verified_at": "2026-11-16"
     },
     "image_variant": {
       "category": "subtype",

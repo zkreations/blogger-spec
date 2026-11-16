@@ -625,6 +625,141 @@
         ]
       },
       "verified_at": "2026-10-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-range-double-dot",
+      "title": "Collection Range Double Dot Operator Generates Inclusive Sequence",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:to"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "1..5",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "verified_at": "2026-11-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-range-negative",
+      "title": "Collection Range Double Dot Supports Negative Bounds",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:to"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "-2..2",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          -2,
+          -1,
+          0,
+          1,
+          2
+        ]
+      },
+      "verified_at": "2026-11-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-range-descending",
+      "title": "Collection Range Double Dot Supports Descending Bounds",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "operator:to"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "5..1",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": [
+          5,
+          4,
+          3,
+          2,
+          1
+        ]
+      },
+      "verified_at": "2026-11-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-modifier-is-empty-camel",
+      "title": "Array isEmpty Modifier Evaluates Empty Collection",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "modifier:isEmpty",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "[].isEmpty",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-11-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-modifier-is-empty-lower",
+      "title": "Array isempty Modifier Evaluates Lowercase Variant",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "modifier:isempty",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "[].isempty",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-11-16"
+    },
+    {
+      "id": "expressions/collections_and_lambdas/collection-modifier-any-presence",
+      "title": "Array any Modifier Evaluates Presence Not Truthiness",
+      "evidence": "observed",
+      "covers": [
+        "subsystem:collections_and_lambdas",
+        "modifier:any",
+        "type:array"
+      ],
+      "input": {
+        "kind": "expression",
+        "source": "[false].any",
+        "context": {}
+      },
+      "expected": {
+        "outcome": "value",
+        "value": true
+      },
+      "verified_at": "2026-11-16"
     }
   ]
 }

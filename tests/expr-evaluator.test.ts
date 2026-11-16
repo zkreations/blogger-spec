@@ -91,8 +91,8 @@ describe('runtime expression evaluator', () => {
       },
     })
 
-    expect(report.total).toBe(176)
-    expect(report.passed).toBe(176)
+    expect(report.total).toBe(189)
+    expect(report.passed).toBe(189)
     expect(report.failed).toBe(0)
     expect(report.skipped).toBe(0)
   })
@@ -247,5 +247,40 @@ describe('runtime expression evaluator', () => {
     expect(evaluateExpression('data:widgets any (w => w.sectionId contains "footer-column-")', ctx)).toBe(true)
     expect(evaluateExpression('data:widgets any (w => w.sectionId contains "nonexistent-")', ctx)).toBe(false)
     expect(evaluateExpression('data:widgets count (w => w.sectionId contains "footer-column-")', ctx)).toBe(2)
+  })
+
+  it('conforms to empirical findings for ranges, elvis, modifiers, and object indexing', () => {
+    // 1. Double-dot range operator
+    expect(evaluateExpression('1..5', {})).toEqual([1, 2, 3, 4, 5])
+    expect(evaluateExpression('-2..2', {})).toEqual([-2, -1, 0, 1, 2])
+    expect(evaluateExpression('5..1', {})).toEqual([5, 4, 3, 2, 1])
+
+    // 2. Functional unary minus identity
+    expect(evaluateExpression('-(5)', {})).toBe(5)
+
+    // 3. Elvis nullish semantics & variadic cascade
+    expect(evaluateExpression('?:(data:m1, data:m2, "fallback")', {})).toBe('fallback')
+    expect(evaluateExpression('"" ?: "fallback"', {})).toBe('')
+    expect(evaluateExpression('false ?: "fallback"', {})).toBe(false)
+    expect(evaluateExpression('0 ?: "fallback"', {})).toBe(0)
+
+    // 4. Object bracket indexing returns undefined
+    expect(evaluateExpression('data:mapa["clave"]', { mapa: { clave: 'ok' } })).toBeUndefined()
+    expect(evaluateExpression('data:mapa[0]', { mapa: { clave: 'ok' } })).toBeUndefined()
+    expect(evaluateExpression('data:mapa["clave"] ?: "No leido"', { mapa: { clave: 'ok' } })).toBe('No leido')
+
+    // 5. Case-insensitive modifiers
+    expect(evaluateExpression('[].isEmpty', {})).toBe(true)
+    expect(evaluateExpression('[].isempty', {})).toBe(true)
+    expect(evaluateExpression('[].ISEMPTY', {})).toBe(true)
+    expect(evaluateExpression('[false].any', {})).toBe(true)
+    const imgCtx = { img: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }
+    expect(evaluateExpression('data:img.isYouTube', imgCtx)).toBe(true)
+    expect(evaluateExpression('data:img.isyoutube', imgCtx)).toBe(true)
+    expect(evaluateExpression('data:img.ISYOUTUBE', imgCtx)).toBe(true)
+
+    // 6. Redundant dot collapsing in datapath
+    expect(evaluateExpression('data:blog..title', { blog: { title: 'Mi Blog' } })).toBe('Mi Blog')
+    expect(evaluateExpression('data:..blog.title', { blog: { title: 'Mi Blog' } })).toBe('Mi Blog')
   })
 })

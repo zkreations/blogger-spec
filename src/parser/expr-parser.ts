@@ -60,6 +60,7 @@ const INFIX_TOKEN_SYMBOLS: Partial<Record<TokenType, string>> = {
   GTE: '>=',
   AND: '&&',
   OR: '||',
+  DOT_DOT: '..',
 }
 
 function toSourcePosition(pos: TokenPosition): BloggerSourcePosition {
@@ -241,20 +242,10 @@ export class ExpressionParser {
           const args = this.parseArgumentList()
           if (this.check('RPAREN')) {
             const closeParen = this.advance()
-            if (args.length !== 1) {
-              const node: BloggerCallExpressionNode = {
-                type: 'CallExpression',
-                callee: '-',
-                arguments: args,
-                loc: makeLoc(opTok.start, closeParen.end),
-              }
-              return node
-            }
-            const node: BloggerUnaryExpressionNode = {
-              type: 'UnaryExpression',
-              operator: '-',
-              argument: args[0]!,
-              prefix: true,
+            const node: BloggerCallExpressionNode = {
+              type: 'CallExpression',
+              callee: '-',
+              arguments: args,
               loc: makeLoc(opTok.start, closeParen.end),
             }
             return node
@@ -547,18 +538,24 @@ export class ExpressionParser {
     const members: BloggerDataPathNode['members'] = []
     let lastEnd = dataPrefixToken.end
 
+    while (this.check('DOT') || this.check('DOT_DOT')) {
+      this.advance()
+    }
+
     if (this.checkPropertyName()) {
       const firstPropToken = this.advance()
       members.push({ property: firstPropToken.value, computed: false })
       lastEnd = firstPropToken.end
     }
-    else if (this.tolerant && !this.check('LBRACKET') && !this.check('DOT')) {
+    else if (this.tolerant && !this.check('LBRACKET') && !this.check('DOT') && !this.check('DOT_DOT')) {
       members.push({ property: '', computed: false })
     }
 
     while (!this.isAtEnd()) {
-      if (this.check('DOT')) {
-        this.advance()
+      if (this.check('DOT') || this.check('DOT_DOT')) {
+        while (this.check('DOT') || this.check('DOT_DOT')) {
+          this.advance()
+        }
         if (this.checkPropertyName()) {
           const memberToken = this.advance()
           members.push({ property: memberToken.value, computed: false })

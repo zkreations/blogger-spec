@@ -65,7 +65,7 @@ export function dispatchBinary(node: BloggerBinaryExpressionNode, ctx: OperatorC
     return evaluateBinaryMembership(op, leftVal, rightVal)
   }
 
-  if (op === 'take' || op === 'skip' || op === 'limit' || op === 'offset' || op === 'to') {
+  if (op === 'take' || op === 'skip' || op === 'limit' || op === 'offset' || op === 'to' || op === '..') {
     const leftVal = ctx.evaluate(node.left, ctx.locals)
     const rightVal = ctx.evaluate(node.right, ctx.locals)
     return evaluateBinaryCollection(op, leftVal, rightVal)
@@ -98,6 +98,16 @@ export function dispatchBinary(node: BloggerBinaryExpressionNode, ctx: OperatorC
 
 export function dispatchCall(node: BloggerCallExpressionNode, ctx: OperatorContext): any {
   const fn = node.callee
+  if (fn === '?:') {
+    for (const arg of node.arguments) {
+      const val = ctx.evaluate(arg, ctx.locals)
+      if (val !== null && val !== undefined) {
+        return val
+      }
+    }
+    return undefined
+  }
+
   const args = node.arguments.map((arg: BloggerExpressionNode) => ctx.evaluate(arg, ctx.locals))
 
   if (fn === '$') {
@@ -116,7 +126,7 @@ export function dispatchCall(node: BloggerCallExpressionNode, ctx: OperatorConte
     return evaluateCallMembership(fn, args)
   }
 
-  if (fn === '?' || fn === '?:') {
+  if (fn === '?') {
     return evaluateCallConditional(fn, args)
   }
 
