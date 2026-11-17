@@ -1,4 +1,4 @@
-# blogger-spec (`@bloggerspec`)
+# @bloggerspec
 
 > Monorepo for the Blogger XML template language specification, intermediate representation (BIR v2), and ecosystem tooling.
 
