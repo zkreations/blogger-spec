@@ -360,4 +360,56 @@ describe('bloggerReferenceRenderer', () => {
     expect(html).toContain('<div class="box carousel-cell"><svg class="i i-clock"></svg></div>')
     expect(html).not.toContain('<svg class="i i-clock carousel-cell">')
   })
+
+  it('evaluates dynamic object and array string expressions on expr:data, expr:values, and expr:value', () => {
+    const xml = `<b:section id='aside'>
+  <b:widget id='HTML12' type='HTML' title='Banner'>
+    <b:includable id='main'>
+      <b:include name='m:message' expr:data='data:content'/>
+      <b:include name='m:text' expr:customText='data:rawCustom'/>
+    </b:includable>
+  </b:widget>
+  <b:widget id='HTML13' type='HTML' title='Menu'>
+    <b:includable id='main'>
+      <nav>
+        <b:loop index='i' expr:values='data:content' var='nav'>
+          <a expr:href='data:nav.link'><b:class cond='data:nav.here' name='is-here'/><data:nav.name/></a>
+        </b:loop>
+      </nav>
+      <b:with expr:value='data:content' var='navItems'>
+        <span class='nav-count'><b:eval expr='data:navItems.length'/></span>
+      </b:with>
+    </b:includable>
+  </b:widget>
+</b:section>
+<b:defaultmarkups>
+  <b:defaultmarkup type='Common'>
+    <b:includable id='m:message'>
+      <a class='msg' expr:href='data:link'><span><data:title/></span><em><data:snippet/></em></a>
+    </b:includable>
+    <b:includable id='m:text'>
+      <p class='raw-custom'><data:customText/></p>
+    </b:includable>
+  </b:defaultmarkup>
+</b:defaultmarkups>`
+
+    const html = renderer.render(xml, {
+      view: { isHomepage: true },
+      widgetData: {
+        HTML12: {
+          content: '{ title: "Grupo de telegram", snippet: "@getdevs", link: "https://t.me/test" }',
+          rawCustom: '{ keep: "as literal string" }',
+        },
+        HTML13: {
+          content: '[{ name: "Inicio", link: "/", here: data:view.isHomepage }, { name: "Contacto", link: "/p/contacto.html", here: false }]',
+        },
+      },
+    })
+
+    expect(html).toContain('<a class="msg" href="https://t.me/test"><span>Grupo de telegram</span><em>@getdevs</em></a>')
+    expect(html).toContain('<p class="raw-custom">{ keep: "as literal string" }</p>')
+    expect(html).toContain('<a class="is-here" href="/">Inicio</a>')
+    expect(html).toContain('<a href="/p/contacto.html">Contacto</a>')
+    expect(html).toContain('<span class="nav-count">2</span>')
+  })
 })

@@ -32,6 +32,62 @@ export function bindLoopScope(
   return loopCtx
 }
 
+function readDottedPath(root: unknown, segments: readonly string[]): unknown {
+  let curr: any = root
+  for (const seg of segments) {
+    if (curr === null || curr === undefined) {
+      return undefined
+    }
+    curr = curr[seg]
+  }
+  return curr
+}
+
+/**
+ * Resolves second-level dynamic dereferencing for `native_expression` attributes
+ * prefixed with `expr:` (`expr:value`, `expr:data`, `expr:values`).
+ */
+export function resolveDynamicDereference(
+  val: unknown,
+  ctx: Record<string, any>,
+  localData?: Record<string, any>,
+): unknown {
+  if (typeof val !== 'string') {
+    return val
+  }
+
+  if (val.startsWith('data:')) {
+    const cleanPath = val.slice(5)
+    const segments = cleanPath.split('.').map(s => s.trim()).filter(Boolean)
+    if (segments.length === 0) {
+      return undefined
+    }
+    const dataScope = localData ?? (ctx.data && typeof ctx.data === 'object' && !Array.isArray(ctx.data) ? ctx.data : undefined)
+    if (dataScope && segments[0]! in dataScope) {
+      return readDottedPath(dataScope, segments)
+    }
+    if (segments[0]! in ctx) {
+      return readDottedPath(ctx, segments)
+    }
+    return undefined
+  }
+
+  const trimmed = unescapeXmlEntities(val.trim())
+  const isObjectOrBraced = trimmed.startsWith('{') && trimmed.endsWith('}')
+  const isArrayLiteral = trimmed.startsWith('[') && trimmed.endsWith(']')
+  if (isObjectOrBraced || isArrayLiteral) {
+    try {
+      const parsed = parseExpression(trimmed)
+      return evaluateExpression(parsed, ctx)
+    }
+    catch {
+      return val
+    }
+  }
+
+  return val
+}
+
 export function bindWithScope(
   bindings: readonly BirWithBinding[],
   parentCtx: Record<string, unknown>,
@@ -43,49 +99,8 @@ export function bindWithScope(
   const withData = { ...parentData }
   for (const b of bindings) {
     let val = evaluateExpression(b.value, withCtx as Record<string, any>)
-    if (b.isDynamicDereference && typeof val === 'string') {
-      if (val.startsWith('data:')) {
-        const cleanPath = val.slice(5)
-        const segments = cleanPath.split('.').map(s => s.trim()).filter(Boolean)
-        let resolved: any
-        if (segments.length > 0) {
-          if (segments[0]! in withData) {
-            let curr: any = withData
-            for (const seg of segments) {
-              if (curr === null || curr === undefined) {
-                curr = undefined
-                break
-              }
-              curr = curr[seg]
-            }
-            resolved = curr
-          }
-          else if (segments[0]! in withCtx) {
-            let curr: any = withCtx
-            for (const seg of segments) {
-              if (curr === null || curr === undefined) {
-                curr = undefined
-                break
-              }
-              curr = curr[seg]
-            }
-            resolved = curr
-          }
-        }
-        val = resolved
-      }
-      else {
-        const trimmed = unescapeXmlEntities(val.trim())
-        if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
-          try {
-            const parsed = parseExpression(trimmed)
-            val = evaluateExpression(parsed, withCtx as Record<string, any>)
-          }
-          catch {
-            // Keep original string if not a valid Blogger object expression
-          }
-        }
-      }
+    if (b.isDynamicDereference) {
+      val = resolveDynamicDereference(val, withCtx as Record<string, any>, withData)
     }
     withCtx[b.var] = val
     withData[b.var] = val
@@ -167,9 +182,12 @@ export function bindIncludeScope(
     if (argName === 'cond') {
       continue
     }
-    const val = argVal.kind === 'static'
+    let val = argVal.kind === 'static'
       ? argVal.value
       : evaluateExpression(argVal.expr, parentCtx as Record<string, any>)
+    if (argVal.kind === 'expr' && argVal.isDynamicDereference) {
+      val = resolveDynamicDereference(val, parentCtx as Record<string, any>)
+    }
 
     if (argName === 'data' || argName === 'var') {
       hasExplicitPayload = true

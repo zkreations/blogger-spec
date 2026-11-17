@@ -3,7 +3,7 @@ import type { BirLoop } from '../../types.js'
 import type { DirectiveLowerContext, DirectiveRenderContext, FlowDirectiveHandler } from '../types.js'
 import { isBloggerTruthy as isTruthyValue } from '../../../core/common.js'
 import { evaluateExpression } from '../../../parser/index.js'
-import { bindLoopScope } from '../../renderer/scope-binder.js'
+import { bindLoopScope, resolveDynamicDereference } from '../../renderer/scope-binder.js'
 
 export function lowerLoopDirective(
   node: BloggerDirectiveNode,
@@ -17,6 +17,7 @@ export function lowerLoopDirective(
   return {
     children: ctx.lowerNodes(ctx.filterContainerChildren(node.children)),
     ...(indexAttr?.value ? { index: String(indexAttr.value) } : {}),
+    ...(valuesAttr?.name === 'expr:values' ? { isDynamicDereference: true } : {}),
     kind: 'loop',
     ...(isTruthyValue(reverseAttr?.value) ? { reverse: true } : {}),
     values: ctx.ensureExpression(valuesAttr?.value),
@@ -29,7 +30,10 @@ export function renderLoopDirective(
   ctx: Record<string, any>,
   renderCtx: DirectiveRenderContext,
 ): string {
-  const evaluated = evaluateExpression(node.values, ctx)
+  let evaluated = evaluateExpression(node.values, ctx)
+  if (node.isDynamicDereference) {
+    evaluated = resolveDynamicDereference(evaluated, ctx)
+  }
   if (evaluated === null || evaluated === undefined || evaluated === false || evaluated === '') {
     return ''
   }

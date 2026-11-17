@@ -193,10 +193,41 @@ export function hydrateLabelWidget(ctx: HydrateWidgetContext, baseWidget?: Recor
     blogLocale: ctx.blogLocale,
   })
 
-  const sorting = (base.sorting || ctx.instanceOverrides?.sorting || 'ALPHA').toUpperCase()
+  const showType = String(
+    ctx.instanceOverrides?.showType
+    ?? ctx.templateSettings?.showType
+    ?? ctx.instanceConfig?.showType
+    ?? base.showType
+    ?? 'ALL',
+  ).toUpperCase()
+  const selectedLabelsList = String(
+    ctx.instanceOverrides?.selectedLabelsList
+    ?? ctx.templateSettings?.selectedLabelsList
+    ?? ctx.instanceConfig?.selectedLabelsList
+    ?? base.selectedLabelsList
+    ?? '',
+  )
   let labels = ctx.normalizedLabels
+
+  if (showType === 'USER_SELECTED') {
+    const selectedSet = new Set(
+      selectedLabelsList
+        .split(',')
+        .map(s => s.trim())
+        .filter(Boolean),
+    )
+    labels = labels.filter((label: any) => selectedSet.has(label.name))
+  }
+
+  const sorting = String(
+    ctx.instanceOverrides?.sorting
+    ?? ctx.templateSettings?.sorting
+    ?? ctx.instanceConfig?.sorting
+    ?? base.sorting
+    ?? 'ALPHA',
+  ).toUpperCase()
   if (sorting === 'FREQUENCY') {
-    labels = [...ctx.normalizedLabels].sort((a: any, b: any) => (b.count ?? 0) - (a.count ?? 0) || a.name.localeCompare(b.name))
+    labels = [...labels].sort((a: any, b: any) => (b.count ?? 0) - (a.count ?? 0) || a.name.localeCompare(b.name))
   }
   const showFreqNumbers = base.showFreqNumbers ?? (ctx.instanceOverrides?.showFreqNumbers ?? false)
 

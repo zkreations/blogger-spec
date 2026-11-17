@@ -8,7 +8,7 @@ import type { BloggerIncludableResolutionTier, BloggerLayoutVersion } from '../t
 
 export type BirAttrValue
   = | { readonly kind: 'static', readonly value: string }
-    | { readonly kind: 'expr', readonly expr: BloggerExpressionNode }
+    | { readonly kind: 'expr', readonly expr: BloggerExpressionNode, readonly isDynamicDereference?: boolean }
 
 export interface BirAttribute {
   readonly name: string
@@ -54,6 +54,7 @@ export interface BirIf {
 export interface BirLoop {
   readonly kind: 'loop'
   readonly values: BloggerExpressionNode
+  readonly isDynamicDereference?: boolean
   readonly var: string
   readonly index?: string
   readonly reverse?: boolean

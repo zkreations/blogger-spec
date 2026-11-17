@@ -8,6 +8,7 @@ import {
   hydrateContentWidget,
   hydrateFeaturedPostWidget,
   hydrateImageWidget,
+  hydrateLabelWidget,
   hydrateProfileWidget,
 } from '../src/context/widget-hydrators.js'
 
@@ -292,6 +293,65 @@ describe('widget-hydrators', () => {
     })
 
     expect(res.content).toBe('Text content')
+  })
+
+  it('filters Label widget labels when showType is USER_SELECTED and preserves sorting', () => {
+    const sampleLabels = [
+      { name: 'api', count: 2, url: '/search/label/api' },
+      { name: 'blogger', count: 22, url: '/search/label/blogger' },
+      { name: 'bots', count: 3, url: '/search/label/bots' },
+      { name: 'css', count: 3, url: '/search/label/css' },
+      { name: 'tutorial', count: 6, url: '/search/label/tutorial' },
+    ]
+
+    const baseCtx = {
+      widgetId: 'Label1',
+      widget: { id: 'Label1', type: 'Label' } as any,
+      type: 'Label',
+      merged: {},
+      catalogDefaults: {},
+      context: { widgetData: {} } as any,
+      spec,
+      mapper,
+      blogLocale: 'en',
+      blogTimeZone: 'UTC',
+      normalizedPages: [],
+      normalizedLabels: sampleLabels,
+      normalizedPosts: [],
+      activePosts: [],
+      headerData: {},
+      blog1: {},
+      blogAuthor: baseAuthor,
+    }
+
+    const alphaFiltered = hydrateLabelWidget({
+      ...baseCtx,
+      templateSettings: {
+        showType: 'USER_SELECTED',
+        selectedLabelsList: 'tutorial, bots, nonexistent, blogger',
+        sorting: 'ALPHA',
+      },
+    })
+    expect(alphaFiltered.labels.map((l: any) => l.name)).toEqual(['blogger', 'bots', 'tutorial'])
+
+    const freqFiltered = hydrateLabelWidget({
+      ...baseCtx,
+      templateSettings: {
+        showType: 'USER_SELECTED',
+        selectedLabelsList: 'tutorial, bots, blogger',
+        sorting: 'FREQUENCY',
+      },
+    })
+    expect(freqFiltered.labels.map((l: any) => l.name)).toEqual(['blogger', 'tutorial', 'bots'])
+
+    const emptySelected = hydrateLabelWidget({
+      ...baseCtx,
+      templateSettings: {
+        showType: 'USER_SELECTED',
+        selectedLabelsList: '',
+      },
+    })
+    expect(emptySelected.labels).toEqual([])
   })
 })
 

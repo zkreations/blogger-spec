@@ -8,7 +8,7 @@ import { evaluateExpression } from '../../../parser/index.js'
 import { parseTemplate } from '../../../parser/template-parser.js'
 import { isTruthy } from '../../../type-system.js'
 import { formatGadgetAbortComment } from '../../../types.js'
-import { bindIncludeScope } from '../../renderer/scope-binder.js'
+import { bindIncludeScope, resolveDynamicDereference } from '../../renderer/scope-binder.js'
 
 export function lowerIncludeDirective(
   node: BloggerDirectiveNode,
@@ -16,19 +16,26 @@ export function lowerIncludeDirective(
 ): BirInclude {
   const nameAttr = node.attributes.find(a => a.name === 'name')
   const exprNameAttr = node.attributes.find(a => a.name === 'expr:name')
+  const includeDef = (context.catalog ?? getSpecCatalog()).getDirective('b:include')
 
   const args: Record<string, BirAttrValue> = {}
   for (const attr of node.attributes) {
     if (attr.name === 'name' || attr.name === 'expr:name') {
       continue
     }
-    const cleanName = attr.name.startsWith('expr:') ? attr.name.slice(5) : attr.name
-    const isExpr = attr.name.startsWith('expr:') || attr.isExpression || attr.name === 'data' || attr.name === 'var'
+    const hasExprPrefix = attr.name.startsWith('expr:')
+    const cleanName = hasExprPrefix ? attr.name.slice(5) : attr.name
+    const isNativeExprAttr = includeDef?.attributes?.[cleanName]?.attribute_kind === 'native_expression'
+    const isExpr = hasExprPrefix || attr.isExpression || attr.name === 'data' || attr.name === 'var'
     if (isExpr) {
       const expr = typeof attr.value === 'string'
         ? parseExpression(attr.value, { catalog: context.catalog })
         : (attr.value as BloggerExpressionNode)
-      args[cleanName] = { kind: 'expr', expr }
+      args[cleanName] = {
+        kind: 'expr',
+        expr,
+        ...(hasExprPrefix && isNativeExprAttr ? { isDynamicDereference: true } : {}),
+      }
     }
     else {
       args[cleanName] = context.toBirAttrValue(attr)
@@ -106,9 +113,12 @@ export function renderIncludeDirective(
   renderCtx: DirectiveRenderContext,
 ): string {
   if (node.args.cond) {
-    const condVal = node.args.cond.kind === 'static'
+    let condVal = node.args.cond.kind === 'static'
       ? (node.args.cond.value === 'true' || node.args.cond.value === 'yes')
       : evaluateExpression(node.args.cond.expr, ctx)
+    if (node.args.cond.kind === 'expr' && node.args.cond.isDynamicDereference) {
+      condVal = resolveDynamicDereference(condVal, ctx)
+    }
     if (!isTruthy(condVal)) {
       return ''
     }

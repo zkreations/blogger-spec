@@ -56,7 +56,8 @@
           "required": ["kind", "expr"],
           "properties": {
             "kind": { "const": "expr" },
-            "expr": { "$ref": "#/$defs/expression" }
+            "expr": { "$ref": "#/$defs/expression" },
+            "isDynamicDereference": { "type": "boolean" }
           }
         }
       ]
@@ -217,6 +218,7 @@
       "properties": {
         "kind": { "const": "loop" },
         "values": { "$ref": "#/$defs/expression" },
+        "isDynamicDereference": { "type": "boolean" },
         "var": { "type": "string", "minLength": 1 },
         "index": { "type": "string" },
         "reverse": { "type": "boolean" },
