@@ -1,0 +1,17 @@
+{
+  "extends": "../../tooling/tsconfig/library.json",
+  "compilerOptions": {
+    "rootDir": "."
+  },
+  "references": [
+    { "path": "../spec" }
+  ],
+  "include": [
+    "src/**/*",
+    "tsdown.config.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

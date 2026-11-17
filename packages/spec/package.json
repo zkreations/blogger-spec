@@ -1,0 +1,147 @@
+{
+  "name": "@bloggerspec/spec",
+  "type": "module",
+  "version": "0.32.0",
+  "description": "Canonical single source of truth for the Blogger XML template and expression language specification, types, and conformance fixtures.",
+  "author": "Blogger Spec Authors & Contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/zkreations/blogger-spec#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zkreations/blogger-spec.git",
+    "directory": "packages/spec"
+  },
+  "bugs": {
+    "url": "https://github.com/zkreations/blogger-spec/issues"
+  },
+  "keywords": [
+    "blogger",
+    "blogspot",
+    "template",
+    "specification",
+    "ast",
+    "schema",
+    "linter"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./ast": {
+      "types": "./dist/ast.d.ts",
+      "default": "./dist/ast.js"
+    },
+    "./catalogs": {
+      "types": "./dist/catalogs/index.d.ts",
+      "default": "./dist/catalogs/index.js"
+    },
+    "./parser": {
+      "types": "./dist/parser/index.d.ts",
+      "default": "./dist/parser/index.js"
+    },
+    "./quota": {
+      "types": "./dist/quota.d.ts",
+      "default": "./dist/quota.js"
+    },
+    "./data-path": {
+      "types": "./dist/data-path.d.ts",
+      "default": "./dist/data-path.js"
+    },
+    "./scope": {
+      "types": "./dist/scope.d.ts",
+      "default": "./dist/scope.js"
+    },
+    "./type-system": {
+      "types": "./dist/type-system.d.ts",
+      "default": "./dist/type-system.js"
+    },
+    "./version": {
+      "types": "./dist/version.d.ts",
+      "default": "./dist/version.js"
+    },
+    "./inclusion-expander": {
+      "types": "./dist/inclusion-expander.d.ts",
+      "default": "./dist/inclusion-expander.js"
+    },
+    "./includable-resolver": {
+      "types": "./dist/includable-resolver.d.ts",
+      "default": "./dist/includable-resolver.js"
+    },
+    "./skin-compiler": {
+      "types": "./dist/skin-compiler.d.ts",
+      "default": "./dist/skin-compiler.js"
+    },
+    "./ir": {
+      "types": "./dist/ir/index.d.ts",
+      "default": "./dist/ir/index.js"
+    },
+    "./context": {
+      "types": "./dist/context/index.d.ts",
+      "default": "./dist/context/index.js"
+    },
+    "./schemas/*": "./catalogs/schemas/*",
+    "./directives": "./catalogs/directives.json",
+    "./operators": "./catalogs/operators.json",
+    "./types": "./catalogs/types.json",
+    "./widgets": "./catalogs/widgets.json",
+    "./settings": "./catalogs/settings.json",
+    "./globals": "./catalogs/globals.json",
+    "./messages": "./catalogs/messages.json",
+    "./scopes": "./catalogs/scopes.json",
+    "./diagnostics": "./catalogs/diagnostics.json",
+    "./inclusions": "./catalogs/inclusions.json",
+    "./locales": "./catalogs/locales.json",
+    "./fixtures": "./fixtures/index.json",
+    "./contexts/*": "./fixtures/contexts/*",
+    "./runner": {
+      "types": "./dist/runner.d.ts",
+      "default": "./dist/runner.js"
+    },
+    "./node": {
+      "types": "./dist/node.d.ts",
+      "default": "./dist/node.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "README.md",
+    "catalogs",
+    "dist",
+    "fixtures"
+  ],
+  "scripts": {
+    "codegen": "tsx src/tooling/build.ts --target=codegen",
+    "build": "pnpm run codegen && tsdown",
+    "prepare": "pnpm run build",
+    "test": "vitest run",
+    "test:fast": "vitest run --no-isolate",
+    "test:watch": "vitest",
+    "test:spec": "tsx src/tooling/validate-spec.ts",
+    "check:hermetic": "tsx src/tooling/check-hermetic.ts",
+    "sync:feeds": "tsx src/tooling/sync-feeds.ts",
+    "sync:contexts": "tsx src/tooling/sync-contexts.ts",
+    "sync:golden": "tsx src/tooling/sync-golden-views.ts",
+    "sync:samples": "tsx src/tooling/sync-samples.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@bloggerspec/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "ajv": "catalog:spec",
+    "ajv-formats": "catalog:spec",
+    "tsdown": "catalog:",
+    "tsx": "catalog:tooling",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

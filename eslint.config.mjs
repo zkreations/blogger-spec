@@ -1,5 +1,3 @@
-import antfu from '@antfu/eslint-config'
+import { createEslintConfig } from '@bloggerspec/eslint'
 
-export default antfu({
-  ignores: ['**/*.generated.ts'],
-})
+export default createEslintConfig()

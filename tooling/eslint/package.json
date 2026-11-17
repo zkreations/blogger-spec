@@ -1,0 +1,14 @@
+{
+  "name": "@bloggerspec/eslint",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "exports": {
+    ".": "./index.js"
+  },
+  "dependencies": {
+    "@antfu/eslint-config": "catalog:tooling",
+    "eslint": "catalog:tooling"
+  }
+}

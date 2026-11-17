@@ -1,0 +1,34 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "codegen": {
+      "inputs": ["catalogs/**", "fixtures/**", "src/tooling/**"],
+      "outputs": ["src/generated/**", "fixtures/index.json"]
+    },
+    "build": {
+      "dependsOn": ["codegen", "^build"],
+      "inputs": ["src/**", "catalogs/**", "tsdown.config.ts", "tsconfig.json", "package.json"],
+      "outputs": ["dist/**"]
+    },
+    "typecheck": {
+      "dependsOn": ["codegen"],
+      "inputs": ["src/**", "tests/**", "tsconfig*.json", "package.json"],
+      "outputs": ["node_modules/.cache/tsbuildinfo.json"]
+    },
+    "test": {
+      "dependsOn": ["build"],
+      "inputs": ["src/**", "tests/**", "fixtures/**", "vitest.config.*", "package.json"],
+      "outputs": []
+    },
+    "lint": {
+      "dependsOn": ["codegen"],
+      "inputs": ["src/**", "tests/**", "*.json", "package.json"],
+      "outputs": []
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

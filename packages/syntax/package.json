@@ -1,0 +1,24 @@
+{
+  "name": "blogger-syntax",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "description": "VS Code extension and LSP for Blogger XML templates powered by @bloggerspec/spec.",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@bloggerspec/spec": "workspace:*"
+  },
+  "devDependencies": {
+    "@bloggerspec/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

@@ -13,10 +13,10 @@ import type {
   BloggerTypesCatalog,
   BloggerWidgetsCatalog,
 } from '../types.js'
-import { embeddedCatalogs, embeddedSchemas } from '../generated/embedded.generated.js'
+import { embeddedCatalogs, embeddedSchemas } from '../generated/embedded-catalogs.generated.js'
 import { CATALOG_NAMES } from './constants.js'
 
-export { embeddedContexts } from '../generated/embedded.generated.js'
+export { embeddedContexts } from '../generated/embedded-contexts.generated.js'
 export { CATALOG_NAMES } from './constants.js'
 
 export interface CatalogStore {

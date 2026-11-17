@@ -1,65 +1,32 @@
-# Blogger Spec — Agent Guidelines
+# Blogger Spec — Monorepo Guidelines
 
-Zero-runtime-dependency specification authority and execution engine for Blogger XML templates and expressions. Houses canonical catalogs, parser, type system, compiler quota, and empirical conformance fixtures.
+Modular TypeScript monorepo (`@bloggerspec`) built with pnpm workspaces, Turborepo, `tsdown`, TypeScript Project References (`tsc -b`), and Changesets.
 
-## Architecture
+## Workspace Topology
 
-- `catalogs/*.json`: **Single Source of Truth** (SSOT for all 11 domains). Never hardcode catalog domain knowledge in `src/`.
-- `catalogs/schemas/`: Draft 2020-12 canonical validation schemas.
-- `fixtures/`: Empirical test suite (`expressions/`, `templates/`, `diagnostics/`).
-- `src/`: Engine implementation and validation logic.
-- **Generated artifacts**: `dist/`, `fixtures/index.json`, `src/generated/` are gitignored and never edited directly; generated automatically via `pnpm run build` (or `pnpm install` via `prepare`).
+- `packages/spec` (`@bloggerspec/spec`): Canonical Single Source of Truth (SSOT) — 11 master JSON catalogs, Draft 2020-12 schemas, AST parsers, expression evaluator, context resolver, BIR v2 lowering, and conformance harness. **Zero runtime dependencies (`dependencies: {}`).** See `packages/spec/AGENTS.md` for spec-internal invariants.
+- `packages/render` (`@bloggerspec/render`): *[Scaffold]* Future BIR v2 → HTML rendering engine (streaming & sync).
+- `packages/builder` (`@bloggerspec/builder`): *[Scaffold]* Future Handlebars-based Blogger XML template builder.
+- `packages/syntax` (`blogger-syntax`): *[Scaffold, private]* Future VS Code extension & LSP powered by `@bloggerspec/spec`.
+- `packages/cli` (`@bloggerspec/cli`): *[Scaffold]* Future unified CLI entrypoint (`check`, `render`, `build`, `dev`).
+- `tooling/tsconfig`, `tooling/eslint`: Shared workspace TypeScript and ESLint (`@antfu/eslint-config`) presets.
+
+## Architectural Rules
+
+- **Strict Acyclic DAG**: `@bloggerspec/spec` is the root dependency and must NEVER depend (runtime or dev) on `render`, `builder`, `syntax`, or `cli`.
+- **SSOT Reuse**: Consumer packages must consume catalogs, parsers, validators, types, and context resolution from `@bloggerspec/spec` rather than duplicating domain logic.
+- **Breaking Changes Policy**: Breaking API and boundary changes are permitted when justified by SOLID principles, tighter cohesion, lower coupling, or elimination of technical debt.
+- **Transitional Renderer Boundary**: `BloggerReferenceRenderer` currently remains inside `packages/spec` as a transitional oracle (`@deprecated`) until `@bloggerspec/render` is implemented and certified 0-diff in its dedicated plan.
+- **Generated Artifacts & Private Workbench**: `packages/*/dist/`, `packages/spec/src/generated/`, `packages/spec/fixtures/index.json`, and `.turbo/` are gitignored and generated via `pnpm run build` / `codegen`. `.workbench/` is private and must never be referenced from `packages/*`.
 
 ## Verification Loop
 
 Run via `pnpm.cmd` on Windows (`pnpm` on POSIX):
 
 ```bash
-pnpm.cmd run build           # Compile dist/, generated artifacts & sync fixtures manifest
-pnpm.cmd run test:spec       # Validate schemas (AJV Draft 2020-12), integrity & .d.ts freshness
-pnpm.cmd run check:hermetic  # Validate test isolation & absence of unversioned local paths
-pnpm.cmd run typecheck       # Strict TypeScript check (tsc --noEmit)
-pnpm.cmd run lint            # ESLint check (@antfu/eslint-config)
-pnpm.cmd run test            # Vitest conformance suite
-pnpm.cmd run sync:samples    # Synchronize canonical external template samples (hamlet.xml)
+pnpm.cmd run build           # Run codegen & tsdown across workspace packages
+pnpm.cmd run verify          # Run check:hermetic, test:spec, typecheck (tsc -b), lint & test
+pnpm.cmd run typecheck       # Incremental Project References check (tsc -b)
+pnpm.cmd run lint            # Unified ESLint check across the monorepo
+pnpm.cmd run test            # Vitest suites across workspace packages
 ```
-
-## Invariants
-
-- **Architectural boundary**: `blogger-spec` is the SSOT authority, full AST parser (`parseTemplate`, `parseExpression`), and expression execution engine (`evaluateExpression`). It is NOT a full HTML page compiler, web server, or previewer. Compiling and rendering the AST into final HTML belongs to consumers (builders, previewers, linters).
-- **Template parser & AST**: `parseTemplate(xml, options)` parses full Blogger XML templates into a strongly typed `BloggerDocumentNode` AST, strictly enforcing XML well-formedness, entity references, and attribute expression parsing without external dependencies.
-- **Expression evaluation**: `evaluateExpression(node, context)` provides safe runtime evaluation of expression ASTs with null-safety, canonical equality (`isEqual`), variadic functional operators (`+`, `and`, `or`, `?:`), 3-operand infix chaining (`resizeImage`, `sourceSet`), collection lambdas (`select` = `map`, `where` = `filter`), and canonical comparison aliases (`eq`, `neq`, `lt`, `gt`, `lte`, `gte`; `ne`, `le`, `ge` do not exist).
-- **Mock contexts & Fixtures**: Canonical mock fixtures for all 12 views reside in `fixtures/contexts/` and are accessed via `getMockContext(viewId, overrides)` strictly for isolated tests and offline fallback without configuration or template. Production/live resolution (`resolveBloggerContext`) builds pure canonical contexts from catalogs, feeds, and configurations without mock inheritance.
-- **Includable resolution**: 6-tier ontological specificity chain (`local_widget` -> `gadget_specific` -> `universal_widget` -> `shared_common` -> `platform_server` -> `unresolved`) with `last_block_wins` collision handling per `catalogs/directives.json`.
-- **BIR v2 (`birVersion: '2'`)**: `lowerTemplate` / `compileToIR` lowers `<b:skin>` and `<b:template-skin>` to `BirSkinStyle`, differentiates `BirOutput` by `source: 'data' | 'eval' | 'message'` (`<data:*/>` emits `<!--Can't find substitution for tag [...]-->` on null/undefined; `<b:eval/>` emits `""`), prefixes `symbolTable` keys (`widget:${widgetId}:${id}`, `gadget:${gadgetType}:${id}`, `all:${id}`, `common:${id}`, `server:${id}`), hydrates `<b:widget-settings>` via `catalogs/settings.json` (including `LinkList`/`TextList` patterns), and preserves directive children inside HTML5 void elements and `<b:tag>`.
-- **DOM mutation pipeline**: `b:class` (accumulate) and `b:attr` (upsert_or_omit) hoist through containers (`b:if`, `b:loop`, `b:tag[cond=false]`) and subroutines (`b:include`), supporting `b:whitespace='remove'`. Dynamic attributes (`expr:*`) and text outputs preserve literal `&` without double-escaping `&amp;` (`&amp;amp;`).
-- **Root HTML attributes**: Modern templates enforce `b:css='false'`, `b:js='false'`, `b:defaultwidgetversion='2'`, `b:layoutsVersion='3'` (`BX1061`, `BX1062`).
-- **Catalog edit cycle**: Edit `catalogs/<catalog>.json` -> `pnpm.cmd run build` -> `pnpm.cmd run test:spec`.
-- **Fixture contract**: Conforms to `BloggerFixture` union (`input.kind`, `expected.outcome`, `covers[]`, `verified_at`).
-- **Zero runtime dependencies & Universal ESM**: Production export strictly maintains `"dependencies": {}`. Root (`blogger-spec`), `blogger-spec/ir`, and `blogger-spec/context` are 100% browser/Edge-safe with zero `node:*` imports. Node filesystem utilities (`FsCatalogStore`, `loadFixturesManifest`, `getWorkspacePaths`) reside exclusively in `blogger-spec/node` (`src/node.ts`).
-- **Type & skin ontology**: Platform subtypes inherit directly from `string` (depth 1). Theme variables (`skin:*`) are strictly isolated (`parent_type: null`) and never receive template string modifiers (`.length`, `.escaped`). Inside `<b:skin>` CDATA, `compileSkinCss` evaluates XML flow directives (`<b:if>`, `<b:switch>`, `<b:with>`) and exposes `.size`, `.family`, `.weight`, `.style` (on `font`) plus `.color`, `.image`, `.repeat`, `.attachment`, `.position` (on `background`), whereas outside-skin `data:skin.vars.*` exposes only `.size`/`.family` and `.color`/`.image`.
-- **Layout versioning**: Layouts v1, v2, v3 metadata resides in `catalogs/directives.json`. Detection runs via `detectTemplateVersion(xmlText)` with explicit attribute precedence and fallback to Layouts v3.
-- **Directive scanning**: Tokenizer (`directive-scanner.ts`) maintains exact byte offsets by whitespace-masking comments and non-variable CDATA blocks in a unified single pass without heap string cloning.
-- **Parser recursion limit**: Expression parser (`expr-parser.ts`) enforces `maxDepth: 50` preventing call stack exhaustion (`RangeError`) on deeply nested expressions in strict and tolerant modes.
-- **Directive nesting**: Rules reside in `catalogs/directives.json` (`valid_parents`, `valid_children`, `invalid_nesting_policy`). Content models map via `@flow_instructions`, `@flow_containers`, `@template_markup`, `@any_container`. Validation returns `DirectiveNestingViolation` with recovery actions (`reject`, `strip`, `ignore`).
-- **Section parents**: `<b:section>` is permitted only under `<body>`, `<b:tag>`, structural HTML containers (`html:*`), and conditional/scoping containers (`<b:if>`, `<b:with>`, `<b:switch>`); forbidden under `<head>`, widgets, loops, or nested sections (`BX1035`).
-- **Skin variables**: Theme Designer tags (`<Variable>`, `<Group>`) reside strictly within `<b:skin>` CDATA; forbidden in `<b:template-skin>`, generic CDATA, or `<body>` (`BX1023`).
-- **Boolean values**: Exactly 4 valid values: `yes`, `no`, `true`, `false` (`yes`/`true` = truthy; `no`/`false` = falsy). Boolean attributes accept only these four.
-- **Data path navigation**: `resolveDataPath` provides canonical deep member traversal across globals, widgets, types, modifiers, variables, and Theme Designer skin variables (`skinVariables`, `data:skin.vars.*`) without editor AST coupling.
-- **Scope environment**: `ScopeEnvironment` strictly enforces `resolution_precedence` (`lambda` -> `loop` -> `with` -> `includable` -> `widget` -> `global`) and shadowing (`local-wins`) per `catalogs/scopes.json`. Lambda iterators prohibit `data:` prefix (`BX1019`).
-- **Snippet quotation**: Directive XML attributes default to single quotes (`'...'`) to avoid collisions with double-quoted string literals (`expr='data:title ?: "Default"'`). CDATA Theme Designer tags (`<Variable>`, `<Group>`) strictly use double quotes (`"..."`).
-- **Template expression validation**: `validateTemplateExpressions` scans dynamic expression attributes (`expr:*`, `cond`, `values`, `value`) across directives and HTML elements, reporting diagnostics (`BX1017`, `BX1018`, `BX1019`, `BX1020`, `BX1021`, `BX1026`, `BX1030`, `BX1038`, `BX1044`, `BX1045`, `BX1046`, `BX1049`, `BX1055`) and automated fix suggestions (`suggestedReplacement`).
-- **Empirical authority**: Catalogs and schemas must never include external documentation links (`documentation_urls`, `references`). Canonical truth is proven exclusively via empirical fixtures (`fixtures/`) and self-contained syntax examples.
-- **Context resolution & normalization**: `resolveBloggerContext` provides unified online/offline context mapping across the 12 canonical views without sample ID dependencies (Hamlet or other blogs). Defaults for blog metadata and messages are populated dynamically from `locales.json` and `messages.json`. In online mode `blogId` is mandatory; in offline mode it is derived cleanly from configuration or fallback derivations.
-- **Dynamic secondary widgets & Template Discovery**: Secondary widgets (`BlogArchive`, `PopularPosts`, `FeaturedPost`, `PageList`, `Label`, `LinkList`) are synthesized only if discovered in the template AST/XML or explicitly configured in `config.widgets`. In headless/standalone mode without template, `discoverWidgets` safely defaults to instances present in data feeds. `buildArchiveHierarchy` and `buildPopularPostsData` synthesize `BlogArchive` and `PopularPosts` structures deterministically from post dates and metadata.
-- **XML entity unescaping in BIR lowering**: Text nodes lowered to BIR decode W3C XML character entities (`unescapeXmlEntities`). Templates generating markup across conditional branches (e.g. `&lt;li class=&quot;nav-item...&quot;&gt;` and `&lt;/li&gt;`) emit native unescaped HTML elements matching Blogger native runtime output.
-- **Blog1 Byline Setting Reactivity & Title Links**: `allBylineItems` dynamically omits items whose setting (`showAuthor`, `showTimestamp`, `showLabels`, etc.) is `false`, exposing entries both as an array and as named properties (`data:allBylineItems.author` or `data:show.author`). `data:posts[].link` represents the post Title Link injected via `blogger.config.json` (`entries[id].link`) and never conflated with syndication media enclosures (`rel="enclosure"` in `feedLinks`). In runtime expressions, `resizeImage` sorts responsive dimension arrays ascending (`[300, 400, 700]`).
-- **Canonical widget ID invariant (`BX1047`) & Dynamic hydration**: Every `<b:widget>` `id` canonically matches `^[Type](?:[1-9][0-9]{0,2}|1000)$` (`BX1047`) with runtime integer parsing supporting `[-2147483648, 1000]`, allowing deterministic type inference. `resolveBloggerContext` dynamically discovers instances from `templateXml`/AST and configuration, resolving in cascade (`Settings Catalog Defaults` -> `config.widgets[type]` -> `config.widgets[id]` -> `b:widget-settings / widget attributes` -> `overrides.widgetData[id]`). Default titles and strings come strictly from `spec.getWidgetDefaultTitle` and `catalogs/locales.json`.
-- **Reference renderer & recursion limit**: `BloggerReferenceRenderer` serves as the zero-dependency canonical reference implementation and testing oracle, enforcing `maxIncludeDepth: 43` and dictionary stack ceiling `max_scope_dictionary_depth: 43` (from `catalogs/directives.json` `compiler_limits`) to guard against circular subroutine invocations and scope overflows (43 at root level, 40 within widgets with 3 base frames).
-- **Canonical widget settings deserializer (`src/widget-settings.ts`)**: `src/widget-settings.ts` (`deserializeWidgetSettings`, `hydrateWidgetSettings`) is the sole SSOT for parsing and coercing `<b:widget-setting>` tags into typed records for both IR lowering (`src/ir/directives/containers/b-widget-settings.ts`) and context extraction (`src/context/widget-extractor.ts`). Never duplicate XML setting parsing, boolean coercion, or list/JSON deserialization logic elsewhere in `src/`.
-- **SSOT catalog values & no hardcoded constants**: Numerical defaults, pagination limits, and snippet thresholds in `src/` must always derive from catalogs (`spec.getBlogPagination()`, `spec.getBlogSnippets()`, `spec.getWidgetSettings(type)` from `catalogs/settings.json`), never hardcoded magic numbers. Localized UI fallbacks, notice banners, and labels must resolve dynamically via `spec.getLocalizedMessage(key, locale)` and `catalogs/locales.json` / `catalogs/messages.json`, never hardcoded English strings. Date replacement tokens (such as in `archiveRangeMessage`) must use Unicode-aware matching (`/\p{L}/u`, `\p{N}`) to support non-Latin scripts.
-- **Strict type system & widget isolation**: In `src/type-system.ts`, `src/data-path.ts`, and `src/scope.ts`, member resolution and directive inference strictly isolate widget members: when `context.widgetType` or the active scope frame is omitted, symbols must never implicitly default to `'Blog'` or leak widget-specific properties into global scopes. Lambda collection iterators (`select`, `where`) inherit the element type derived from the callee collection.
-- **Semantic diagnostic lookups**: In modular template validation rules (`src/parser/validation/rules/`) and `src/parser/template-validator.ts`, diagnostic codes must resolve semantically via `spec.getStandardDiagnostic(...)`, `spec.getInclusionDiagnostic(...)`, or `spec.getMessageDiagnostic(...)`, never raw string literals with type casts (`'BX1056' as BloggerDiagnosticCode`). Casts like `as any` are strictly prohibited when traversing typed AST nodes (`BloggerDataPathNode`, `BloggerWidgetDefinition`, `BloggerTypeModifierDefinition`).
-- **Sample isolation**: Sample-specific providers (e.g. Hamlet) reside strictly under `tests/helpers/` or `fixtures/`, never exported in the production `src/` runtime.
-- **Empirical edge cases & compiler traps**: Before modifying BIR lowering (`src/ir/directives/`), `<b:skin>` compilation (`src/skin-compiler.ts`), or runtime coercion (`src/parser/operators/`, `src/parser/expr-evaluator.ts`), consult the engine documentation (`docs/content/docs/engine/renderer.md`, `docs/content/docs/engine/bir.md`) and empirical test fixtures (`fixtures/`).
-

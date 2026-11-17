@@ -54,7 +54,9 @@ export interface BloggerReferenceRendererOptions extends BloggerCompileIROptions
 
 /**
  * Canonical Reference Implementation and hermetic HTML renderer for Blogger Intermediate Representation (BIR).
- * Serves as an empirical testing oracle and local evaluation engine for blogger-spec.
+ * Serves as an empirical testing oracle and local evaluation engine for `@bloggerspec/spec`.
+ *
+ * @deprecated Transitional: will be extracted to `@bloggerspec/render` in its dedicated plan.
  */
 export class BloggerReferenceRenderer {
   private currentIr?: BloggerIRDocument

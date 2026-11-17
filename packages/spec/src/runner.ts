@@ -74,7 +74,7 @@ export function runConformance(
     }
   }
   else {
-    throw new Error('Fixtures must be provided via options.fixtures (use loadFixturesManifest() from "blogger-spec/node" in Node.js environments).')
+    throw new Error('Fixtures must be provided via options.fixtures (use loadFixturesManifest() from "@bloggerspec/spec/node" in Node.js environments).')
   }
 
   if (options?.filter) {

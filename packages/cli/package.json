@@ -1,0 +1,32 @@
+{
+  "name": "@bloggerspec/cli",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Unified CLI entrypoint for @bloggerspec ecosystem.",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@bloggerspec/builder": "workspace:*",
+    "@bloggerspec/render": "workspace:*",
+    "@bloggerspec/spec": "workspace:*"
+  },
+  "devDependencies": {
+    "@bloggerspec/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

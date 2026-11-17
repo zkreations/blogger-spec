@@ -37,7 +37,7 @@ export async function syncFeeds(): Promise<boolean> {
       if (!res.ok) {
         throw new Error(`Failed to fetch ${item.name}: ${res.status} ${res.statusText}`)
       }
-      const data = await res.json()
+      const data = await res.json() as { feed?: { entry?: unknown[] } }
       const entriesCount = data.feed?.entry?.length ?? 0
       console.log(`   Received ${entriesCount} entries for ${item.name}`)
 

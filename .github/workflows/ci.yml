@@ -28,5 +28,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build monorepo
+        run: pnpm run build
+
       - name: Verify
         run: pnpm run verify

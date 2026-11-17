@@ -1,8 +1,13 @@
 # Dependencies & Build artifacts
 node_modules/
 dist/
-src/generated/
-fixtures/index.json
+packages/*/dist/
+packages/*/node_modules/
+packages/spec/src/generated/
+packages/spec/fixtures/index.json
+*.tsbuildinfo
+*.vsix
+.turbo/
 
 # Local Workbench (Research, Captures, Audits, Private Samples & Plans)
 .workbench/
@@ -14,8 +19,3 @@ fixtures/index.json
 .DS_Store
 __pycache__/
 *.pyc
-
-# Documentation site build artifacts (Hugo)
-docs/public/
-docs/resources/
-docs/.hugo_build.lock

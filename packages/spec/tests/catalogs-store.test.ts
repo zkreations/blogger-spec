@@ -1,4 +1,4 @@
-import { rmSync, writeFileSync } from 'node:fs'
+import { readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -95,7 +95,8 @@ import {
 } from '../src/catalogs/index.js'
 import { embeddedCatalogs, embeddedSchemas } from '../src/generated/embedded.generated.js'
 import * as RootExports from '../src/index.js'
-import { generateDomainTypes, generateDts } from '../src/tooling/compiler.js'
+import { getWorkspacePaths } from '../src/node.js'
+import { generateDomainTypes } from '../src/tooling/compiler.js'
 import { validateSpec } from '../src/tooling/validator.js'
 
 describe('catalogs and store formal verification suite', () => {
@@ -1191,14 +1192,10 @@ describe('catalogs and store formal verification suite', () => {
     })
 
     it('generates clean, non-duplicate type definitions in dist/index.d.ts', () => {
-      const dtsContent = generateDts()
-      // Should re-export from modular declaration files
-      expect(dtsContent).toContain('export * from \'./types.js\';')
-      expect(dtsContent).toContain('export * from \'./ast.js\';')
-      expect(dtsContent).toContain('export * from \'./catalogs/index.js\';')
-      expect(dtsContent).toContain('export declare const catalogs:')
-      expect(dtsContent).toContain('export * from \'./inclusion-expander.js\';')
+      const dtsContent = readFileSync(getWorkspacePaths().dts, 'utf-8')
+      expect(dtsContent).toContain('catalogs')
       expect(dtsContent).toContain('getCommonWidget')
+      expect(dtsContent).toContain('inclusion-expander')
       // Should not contain duplicate inline declarations of domain union types or manual models
       expect(dtsContent).not.toContain('export type BloggerDirectiveName =')
       expect(dtsContent).not.toContain('export type BloggerDiagnosticCode =')

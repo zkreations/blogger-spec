@@ -1,19 +1,49 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
-  contents: read
+  contents: write
+  id-token: write
+  pull-requests: write
 
 jobs:
-  publish:
+  verify:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
+    if: "${{ !contains(github.event.head_commit.message, '[ci] release') }}"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build monorepo
+        run: pnpm run build
+
+      - name: Verify
+        run: pnpm run verify
+
+  publish:
+    needs: [verify]
+    runs-on: ubuntu-latest
+    if: "${{ !contains(github.event.head_commit.message, '[ci] release') }}"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,11 +61,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build
-        run: pnpm run build
-
-      - name: Verification
-        run: pnpm run verify
-
-      - name: Publish to npm (OIDC Trusted Publishing)
-        run: pnpm publish --provenance --access public --no-git-checks
+      - name: Create Release Pull Request or Publish Packages
+        uses: changesets/action@v1
+        with:
+          commit: '[ci] release'
+          title: '[ci] release'
+          version: pnpm run version-packages
+          publish: pnpm run release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

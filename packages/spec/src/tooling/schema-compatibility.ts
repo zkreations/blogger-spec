@@ -199,15 +199,26 @@ export function verifySchemasBackwardCompatibility(
       continue
     }
 
-    try {
-      const baseSchemaContent = execSync(`git show ${gitRef}:catalogs/schemas/${file}`, {
-        stdio: ['pipe', 'pipe', 'pipe'],
-        encoding: 'utf-8',
-      })
-      oldSchemasMap[file] = JSON.parse(baseSchemaContent)
+    let baseSchemaContent: string | undefined
+    for (const gitPath of [`packages/spec/catalogs/schemas/${file}`, `catalogs/schemas/${file}`]) {
+      try {
+        baseSchemaContent = execSync(`git show ${gitRef}:${gitPath}`, {
+          stdio: ['pipe', 'pipe', 'pipe'],
+          encoding: 'utf-8',
+        })
+        break
+      }
+      catch {
+        // Try fallback path when comparing against pre-monorepo commits
+      }
     }
-    catch {
-      // New schema file not present in gitRef is permissible
+    if (baseSchemaContent) {
+      try {
+        oldSchemasMap[file] = JSON.parse(baseSchemaContent)
+      }
+      catch {
+        // Ignore unparseable historical schema
+      }
     }
   }
 

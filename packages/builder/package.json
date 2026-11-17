@@ -1,0 +1,32 @@
+{
+  "name": "@bloggerspec/builder",
+  "type": "module",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Handlebars-based Blogger XML template builder validated against @bloggerspec/spec.",
+  "license": "MIT",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@bloggerspec/render": "workspace:*",
+    "@bloggerspec/spec": "workspace:*"
+  },
+  "devDependencies": {
+    "@bloggerspec/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "tsdown": "catalog:",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}
