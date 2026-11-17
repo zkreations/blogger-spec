@@ -304,8 +304,17 @@ export class Lexer {
       return this.makeToken('DATA_PREFIX', 'data:', startPos)
     }
 
-    // Number literals (including decimal point if starts with digit)
+    // Number literals (or digit-prefixed identifiers such as 1x / 2x)
     if (/\d/.test(ch)) {
+      let lookahead = this.pos
+      while (lookahead < this.length && /\d/.test(this.source[lookahead]!)) {
+        lookahead++
+      }
+      if (lookahead < this.length && /[a-z_$]/i.test(this.source[lookahead]!)) {
+        const token = this.readIdentifier(startPos)
+        this.lastToken = token
+        return token
+      }
       const token = this.readNumber(startPos)
       this.lastToken = token
       return token

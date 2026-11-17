@@ -642,14 +642,39 @@ export class ExpressionParser {
     return this.parseBracedArrayExpressionRest(startTok)
   }
 
-  private isBracedObject(): boolean {
-    const firstTok = this.peek()
-    const isPotentialKey = firstTok.type === 'IDENTIFIER' || firstTok.type === 'STRING' || firstTok.type === 'BOOLEAN' || firstTok.type === 'NULL'
-    if (!isPotentialKey) {
+  private isUnquotedKeyPart(tok: Token | undefined): boolean {
+    if (!tok) {
       return false
     }
-    const nextTok = this.tokens[this.current + 1]
-    return nextTok !== undefined && nextTok.type === 'COLON'
+    return tok.type === 'IDENTIFIER' || tok.type === 'NUMBER' || tok.type === 'BOOLEAN' || tok.type === 'NULL'
+  }
+
+  private isBracedObject(): boolean {
+    const firstTok = this.peek()
+    if (firstTok.type === 'STRING') {
+      const nextTok = this.tokens[this.current + 1]
+      return nextTok !== undefined && nextTok.type === 'COLON'
+    }
+
+    let idx = this.current
+    if (!this.isUnquotedKeyPart(this.tokens[idx])) {
+      return false
+    }
+    idx++
+
+    while (idx < this.tokens.length) {
+      const prev = this.tokens[idx - 1]!
+      const curr = this.tokens[idx]!
+      if (curr.type === 'COLON') {
+        return true
+      }
+      const isAdjacent = prev.end.line === curr.start.line && prev.end.column === curr.start.column
+      if (!isAdjacent || (curr.type !== 'MINUS' && !this.isUnquotedKeyPart(curr))) {
+        return false
+      }
+      idx++
+    }
+    return false
   }
 
   private parseObjectExpressionRest(startTok: Token): BloggerObjectExpressionNode {
@@ -697,9 +722,23 @@ export class ExpressionParser {
     const keyTok = this.peek()
     let key = ''
 
-    if (keyTok.type === 'IDENTIFIER' || keyTok.type === 'STRING' || keyTok.type === 'BOOLEAN' || keyTok.type === 'NULL') {
+    if (keyTok.type === 'STRING') {
       this.advance()
       key = keyTok.value
+    }
+    else if (this.isUnquotedKeyPart(keyTok)) {
+      this.advance()
+      key = keyTok.value
+      while (!this.check('COLON') && !this.isAtEnd()) {
+        const prev = this.tokens[this.current - 1]!
+        const curr = this.peek()
+        const isAdjacent = prev.end.line === curr.start.line && prev.end.column === curr.start.column
+        if (!isAdjacent || (curr.type !== 'MINUS' && !this.isUnquotedKeyPart(curr))) {
+          break
+        }
+        this.advance()
+        key += curr.value
+      }
     }
     else {
       if (this.tolerant) {

@@ -838,5 +838,27 @@ describe('canonical pratt expression parser (blogger-spec/ast)', () => {
       expect(expr.body.right.type).toBe('ArrayExpression')
       expect(expr.body.right.isBraced).toBe(true)
     })
+
+    it('parses digit-prefixed and hyphenated unquoted object keys and digit-prefixed data members', () => {
+      const srcsetObj = parseExpression('{ 1x: "a", 2x: "b", }') as any
+      expect(srcsetObj.type).toBe('ObjectExpression')
+      expect(srcsetObj.properties.map((p: any) => p.key)).toEqual(['1x', '2x'])
+
+      const memberExpr = parseExpression('data:images.1x') as any
+      expect(memberExpr.type).toBe('DataPath')
+      expect(memberExpr.members.map((m: any) => m.property)).toEqual(['images', '1x'])
+
+      const paramsExpr = parseExpression('data:label.url params { max-results: 8, by-date: false }') as any
+      expect(paramsExpr.type).toBe('BinaryExpression')
+      expect(paramsExpr.operator).toBe('params')
+      expect(paramsExpr.right.type).toBe('ObjectExpression')
+      expect(paramsExpr.right.properties.map((p: any) => p.key)).toEqual(['max-results', 'by-date'])
+
+      const bracedDiff = parseExpression('{ a - b }') as any
+      expect(bracedDiff.type).toBe('ArrayExpression')
+      expect(bracedDiff.isBraced).toBe(true)
+      expect(bracedDiff.elements[0].type).toBe('BinaryExpression')
+      expect(bracedDiff.elements[0].operator).toBe('-')
+    })
   })
 })
