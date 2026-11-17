@@ -6,16 +6,17 @@ labels: ["enhancement", "catalog"]
 ---
 
 ### Entity Type
-- [ ] Directive or Attribute (`catalogs/directives.json`)
-- [ ] Expression Operator (`catalogs/operators.json`)
-- [ ] Data Type or Modifier (`catalogs/types.json`)
-- [ ] Widget Definition or Gadget Schema (`catalogs/widgets.json`)
-- [ ] Widget Setting (`catalogs/settings.json`)
-- [ ] Global Data Object (`catalogs/globals.json`)
-- [ ] Localized UI Message (`catalogs/messages.json`)
-- [ ] Scope Definition (`catalogs/scopes.json`)
-- [ ] Diagnostic Rule (`catalogs/diagnostics.json`)
-- [ ] System Inclusion (`catalogs/inclusions.json`)
+- [ ] Directive or Attribute (`packages/spec/catalogs/directives.json`)
+- [ ] Expression Operator (`packages/spec/catalogs/operators.json`)
+- [ ] Data Type or Modifier (`packages/spec/catalogs/types.json`)
+- [ ] Widget Definition or Gadget Schema (`packages/spec/catalogs/widgets.json`)
+- [ ] Widget Setting (`packages/spec/catalogs/settings.json`)
+- [ ] Global Data Object (`packages/spec/catalogs/globals.json`)
+- [ ] Localized UI Message (`packages/spec/catalogs/messages.json`)
+- [ ] Locale Translation (`packages/spec/catalogs/locales.json`)
+- [ ] Scope Definition (`packages/spec/catalogs/scopes.json`)
+- [ ] Diagnostic Rule (`packages/spec/catalogs/diagnostics.json`)
+- [ ] System Inclusion (`packages/spec/catalogs/inclusions.json`)
 - [ ] Other
 
 ### Discovered Syntax & Signature

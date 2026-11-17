@@ -1,130 +1,74 @@
-# Contributing to blogger-spec
+# Contributing to blogger-spec (`@bloggerspec`)
 
-`blogger-spec` is the canonical, standalone, zero-runtime-dependency specification authority and execution engine for Blogger XML templates and expressions.
+`blogger-spec` is the `@bloggerspec` monorepo housing the canonical specification (`@bloggerspec/spec`) and ecosystem tooling for Blogger XML templates and expressions.
 
 ---
 
 ## Core Invariants
 
-1. **Catalogs are the SSOT**: All directive grammar, operator precedence tiers, types, globals, and system inclusion rules live in [`catalogs/<catalog>.json`](catalogs/). Never hardcode domain knowledge in `src/`.
-2. **Never Edit Generated Artifacts Directly**: Generated artifacts (`dist/`, `fixtures/index.json`, `src/generated/`) are ignored by Git and generated automatically on `pnpm install` (via `prepare`) or `pnpm run build`. Do not edit them manually or force-commit them.
-3. **Zero Runtime Dependencies**: Production exports must strictly maintain `"dependencies": {}` in `package.json`.
-4. **Empirical Verification**: Any spec change or fix requires empirical verification against the Google Blogger production engine and a corresponding test fixture under [`fixtures/`](fixtures/) with evidence attribution (`official` or `observed`).
-5. **Flat Type Hierarchy & Skin Variable Isolation**: Platform subtypes (`url`, `image`, `date`, `locale`, `message`) inherit directly from `string` (1-level depth). Theme variables (`skin:*`) have `parent_type: null` and must remain strictly isolated from template string modifiers (`.length`, `.escaped`).
-6. **Declarative Directive Grammar & Symbolic Groups**: Directive nesting rules (`valid_parents`, `valid_children`) and recovery behaviors (`invalid_nesting_policy` with `reject`, `strip`, `ignore`) reside in [`catalogs/directives.json`](catalogs/directives.json). Do not hardcode tag hierarchy assumptions in validators; query via `canNest` and `validateDirectiveNesting`.
-7. **No External Documentation Links**: Catalogs and schemas must never include external links (`documentation_urls`, `references`). Official documentation is obsolete and community sources are frozen; all canonical behavior is self-contained and verified via empirical fixtures (`fixtures/`).
-8. **Architectural Boundary**: `blogger-spec` is the specification authority, full AST parser (`parseTemplate`, `parseExpression`), and atomic expression evaluator (`evaluateExpression`). It produces strongly typed ASTs and evaluates expressions, but does not act as a full HTML compiler, server, or site builder. End-to-end AST compilation into final HTML belongs to consumer projects.
+1. **Catalogs are the SSOT**: All directive grammar, operator precedence tiers, types, globals, diagnostics, and system inclusion rules live in [`packages/spec/catalogs/<catalog>.json`](packages/spec/catalogs/). Never hardcode domain knowledge in `src/`.
+2. **Never Edit Generated Artifacts Directly**: Generated artifacts (`packages/*/dist/`, `packages/spec/fixtures/index.json`, `packages/spec/src/generated/`, `.turbo/`) are gitignored and generated via `pnpm run codegen` or `pnpm run build` (or `pnpm install` via `prepare`).
+3. **Zero Runtime Dependencies in `@bloggerspec/spec`**: Production exports in `packages/spec/package.json` must strictly maintain `"dependencies": {}` and Universal ESM compatibility (no `node:*` imports outside `packages/spec/src/node/` and `src/node.ts`).
+4. **Strict Acyclic DAG**: `@bloggerspec/spec` is the root dependency and must never depend (runtime or dev) on `@bloggerspec/render`, `@bloggerspec/builder`, `blogger-syntax`, or `@bloggerspec/cli`.
+5. **Empirical Verification**: Any spec change or fix requires empirical verification against the Blogger production engine and a corresponding test fixture under [`packages/spec/fixtures/`](packages/spec/fixtures/) with evidence attribution (`official` or `observed`).
+6. **Flat Type Hierarchy & Skin Variable Isolation**: Platform subtypes (`url`, `image`, `date`, `locale`, `message`) inherit directly from `string` (1-level depth). Theme variables (`skin:*`) have `parent_type: null` and remain strictly isolated from template string modifiers (`.length`, `.escaped`).
+7. **Declarative Directive Grammar**: Directive nesting rules (`valid_parents`, `valid_children`) and recovery behaviors (`invalid_nesting_policy`: `reject`, `strip`, `ignore`) reside in [`packages/spec/catalogs/directives.json`](packages/spec/catalogs/directives.json). Query via `canNest` and `validateDirectiveNesting`.
+8. **No External Documentation Links**: Catalogs and schemas must never include external links (`documentation_urls`, `references`). Canonical behavior is self-contained and verified via empirical fixtures.
+9. **Transitional Renderer Boundary**: `BloggerReferenceRenderer` currently resides in `packages/spec/src/ir/reference-renderer.ts` as a transitional oracle (`@deprecated`) until `@bloggerspec/render` is implemented and certified 0-diff.
 
 ---
 
-## Architecture Overview
+## Monorepo Overview
 
-```
+```text
 blogger-spec/
-├── catalogs/                 # Canonical Single Source of Truth (11 Master JSON Catalogs)
-│   ├── directives.json       # b:* tags, attributes, closure modes, constraints, layout versions
-│   ├── operators.json        # Operators, 10 precedence tiers, dual syntax, token costs
-│   ├── types.json            # Types ontology, modifiers, truthiness matrix, coercion rules
-│   ├── widgets.json          # Widget definitions, schema declarations, allowed sections
-│   ├── settings.json         # Widget settings configuration dictionaries
-│   ├── globals.json          # Global data objects (data:blog, data:view, data:skin...)
-│   ├── messages.json         # Localized UI string definitions (data:messages.*)
-│   ├── scopes.json           # Variable scope resolution rules & precedence
-│   ├── diagnostics.json      # Diagnostic compiler/linter rules (BX1001-BX1060)
-│   ├── inclusions.json       # System inclusions, layouts versions 1-3, super.* prefix
-│   ├── locales.json          # Locale metadata and canonical UI translations
-│   └── schemas/              # Draft 2020-12 canonical JSON schemas
-├── fixtures/                 # Empirical conformance test cases
-│   ├── contexts/             # Canonical mock data contexts for all 12 Blogger views
-│   ├── expressions/          # Expression evaluation fixtures
-│   ├── templates/            # Template rendering fixtures
-│   ├── diagnostics/          # Negative validation fixtures (rejected by Blogger)
-│   └── index.json            # Compiled fixtures manifest (generated)
-├── src/                      # Spec modules, runtime helpers, parser, and tooling
-│   ├── index.ts              # Canonical package entry point (ESM exports)
-│   ├── ast.ts                # Formal AST interfaces and parseExpression / parseTemplate exports
-│   ├── data-path.ts          # Canonical deep data path navigator (resolveDataPath)
-│   ├── scope.ts              # Formalized ScopeEnvironment symbol table & scope stack
-│   ├── version.ts            # Canonical template layout version detector (v1, v2, v3)
-│   ├── quota.ts              # Canonical token quota calculator (BX1021 rules)
-│   ├── type-system.ts        # Type assignability, modifiers, and operator compatibility
-│   ├── skin-compiler.ts      # Theme Designer CSS & font compiler (compileSkinCss)
-│   ├── inclusion-expander.ts # Server platform macro expansion & inlining
-│   ├── includable-resolver.ts# 6-tier ontological includable resolution
-│   ├── widget-settings.ts    # Canonical widget settings deserializer & coercion SSOT
-│   ├── context/              # Context resolution, routing, and feed normalizers
-│   │   ├── resolver.ts       # Unified online/offline Blogger context resolution
-│   │   ├── routing.ts        # Canonical route resolver and CANONICAL_VIEWS
-│   │   ├── normalizer.ts     # Atom/JSON feed entity normalization
-│   │   ├── client.ts         # In-memory Blogger feed client
-│   │   └── archive-tree.ts   # Canonical BlogArchive hierarchy builder
-│   ├── ir/                   # Intermediate Representation (BIR v2) & renderer
-│   │   ├── lowering.ts       # Template AST to BIR lowering orchestrator
-│   │   ├── reference-renderer.ts # Reference HTML renderer (maxIncludeDepth: 43)
-│   │   └── directives/       # Modular directive lower handlers
-│   │       ├── flow/         # b:if, b:loop, b:with, b:switch
-│   │       ├── dom/          # b:class, b:attr, b:tag
-│   │       ├── output/       # data:*, b:eval, b:message
-│   │       ├── subroutines/  # b:include, b:defaultmarkups, b:includable
-│   │       └── containers/   # b:section, b:widget, b:widget-settings
-│   ├── parser/               # Template and expression parsers, scanner, lexer, validator
-│   │   ├── lexer.ts          # Deterministic expression lexer with loc tracking
-│   │   ├── expr-parser.ts    # Pratt parser guided by operators.json precedence
-│   │   ├── expr-evaluator.ts # Expression evaluator facade coordinating operator modules
-│   │   ├── operators/        # Modular operator evaluators (arithmetic, logical, etc.)
-│   │   ├── template-parser.ts# Full XML template to AST parser (strict & tolerant)
-│   │   ├── directive-scanner.ts # Fault-tolerant XML directive & tag tokenizer
-│   │   ├── template-validator.ts # Facade re-exporting modular validation rules
-│   │   └── validation/       # Modular validator rules (nesting, section, widget, expr)
-│   ├── catalogs/             # Typed CatalogStore and SpecCatalog domain models
-│   ├── paths.ts              # Workspace path resolution utilities
-│   ├── runner.ts             # Conformance test runner engine
-│   ├── tooling/              # Build pipeline, schema validator, and compiler
-│   └── types.ts              # Canonical models, catalog types, and fixture interfaces
-└── dist/                     # ESM bundles and generated type definitions
+├── packages/
+│   ├── spec/                 # @bloggerspec/spec — Canonical SSOT, parsers, IR & fixtures
+│   │   ├── catalogs/         # 11 master JSON catalogs + Draft 2020-12 schemas/
+│   │   ├── fixtures/         # Empirical test cases (contexts, expressions, templates, diagnostics)
+│   │   ├── src/              # ast, catalogs, context, core, ir, node, parser, tooling
+│   │   └── tests/            # Hermetic Vitest suite
+│   ├── render/               # @bloggerspec/render — [Scaffold] BIR v2 → HTML renderer
+│   ├── builder/              # @bloggerspec/builder — [Scaffold] Handlebars theme builder
+│   ├── syntax/               # blogger-syntax — [Scaffold, private] VS Code extension & LSP
+│   └── cli/                  # @bloggerspec/cli — [Scaffold] Unified CLI entrypoint
+├── tooling/
+│   ├── tsconfig/             # @bloggerspec/tsconfig — Shared TypeScript presets
+│   └── eslint/               # @bloggerspec/eslint — Shared @antfu/eslint-config preset
+├── .changeset/               # Changesets versioning and changelog config
+├── turbo.json                # Turborepo task graph
+└── pnpm-workspace.yaml       # Workspace packages, catalogs, and supply-chain policies
 ```
 
 ---
 
 ## Contribution Workflow
 
-### 1. Catalog Changes
-- **Directives & Attributes**: Edit [`catalogs/directives.json`](catalogs/directives.json).
-- **Operators & Precedence**: Edit [`catalogs/operators.json`](catalogs/operators.json). Ensure both `precedence_hierarchy` and the `operators` dictionary remain synchronized.
-- **Data Types & Modifiers**: Edit [`catalogs/types.json`](catalogs/types.json).
-- **Widgets**: Edit [`catalogs/widgets.json`](catalogs/widgets.json).
-- **Widget Settings**: Edit [`catalogs/settings.json`](catalogs/settings.json).
-- **Globals**: Edit [`catalogs/globals.json`](catalogs/globals.json).
-- **Messages**: Edit [`catalogs/messages.json`](catalogs/messages.json).
-- **Scopes**: Edit [`catalogs/scopes.json`](catalogs/scopes.json).
-- **Diagnostics**: Edit [`catalogs/diagnostics.json`](catalogs/diagnostics.json).
-- **System Inclusions**: Edit [`catalogs/inclusions.json`](catalogs/inclusions.json).
-- **Schemas**: If metadata structures change, update [`catalogs/schemas/`](catalogs/schemas/).
+### 1. Catalog Changes (`packages/spec/catalogs/`)
+Edit the target catalog (`directives.json`, `operators.json`, `types.json`, `widgets.json`, `settings.json`, `globals.json`, `messages.json`, `scopes.json`, `diagnostics.json`, `inclusions.json`, `locales.json`) and update [`packages/spec/catalogs/schemas/`](packages/spec/catalogs/schemas/) if metadata structures change. Keep schema backward compatibility intact.
 
-### 2. Engine & Parser Changes
-- **Expression Parser & Evaluators**: If grammar, lexing, recursion limits, or operator binding power changes, update [`src/parser/lexer.ts`](src/parser/lexer.ts), [`src/parser/expr-parser.ts`](src/parser/expr-parser.ts), and [`src/parser/expr-evaluator.ts`](src/parser/expr-evaluator.ts). Specialized operator evaluation logic lives in modular domain handlers under [`src/parser/operators/`](src/parser/operators/) (`arithmetic.ts`, `comparison.ts`, `logical.ts`, `conditional.ts`, `collections.ts`, `bitwise.ts`, `string-url.ts`, `lambda.ts`).
-- **IR Compilation & Directives Lowering**: The BIR lowering pipeline translates AST nodes into normalized intermediate instructions. Lowering logic is modularized by directive category under [`src/ir/directives/`](src/ir/directives/) (`flow/`, `dom/`, `output/`, `subroutines/`, `containers/`). Update the corresponding directive handler rather than introducing monolithic branching in `src/ir/lowering.ts`.
-- **Context Resolution & Routing**: Canonical view routing and context resolution reside in [`src/context/`](src/context/) (`routing.ts`, `resolver.ts`, `normalizer.ts`). Route matching is governed by `resolveBloggerRoute` and `CANONICAL_VIEWS`.
-- **Template Parser**: If XML well-formedness rules, entity handling, or AST node construction changes, update [`src/parser/template-parser.ts`](src/parser/template-parser.ts) and [`src/ast.ts`](src/ast.ts).
-- **Directive Scanner**: If XML tag tokenization, attribute parsing, or CDATA/comment masking changes, update [`src/parser/directive-scanner.ts`](src/parser/directive-scanner.ts).
-- **Data Path Navigator & Scope Environment**: If deep data path traversal or scope stack resolution semantics change, update [`src/data-path.ts`](src/data-path.ts) and [`src/scope.ts`](src/scope.ts).
-- **Layout Versions**: If layout version heuristics change, update `domain_metadata.layout_versions` in [`catalogs/directives.json`](catalogs/directives.json) and [`src/version.ts`](src/version.ts).
-- **Token Quota**: If token cost rules or quota thresholds change, update [`src/quota.ts`](src/quota.ts).
-- **Type Checking**: If coercion matrices, truthiness, or assignability change, update [`src/type-system.ts`](src/type-system.ts).
-- **Structural Validation & Expression Audits**: If directive nesting, grammar groups, expression attribute validation, or snippet generators change, update [`catalogs/directives.json`](catalogs/directives.json), [`src/catalogs/spec-catalog.ts`](src/catalogs/spec-catalog.ts), and modular rules under [`src/parser/validation/rules/`](src/parser/validation/rules/) (`nesting-rules.ts`, `section-rules.ts`, `widget-rules.ts`, `expression-rules.ts`, `attributes-rules.ts`, `skin-rules.ts`). [`src/parser/template-validator.ts`](src/parser/template-validator.ts) serves as the unified facade re-exporting validation APIs. Ensure `canNest`, `validateDirectiveNesting`, and `validateTemplateExpressions` reflect canonical policies.
+### 2. Spec Engine & Parser Changes (`packages/spec/src/`)
+- **Expression Parser & Evaluators**: [`lexer.ts`](packages/spec/src/parser/lexer.ts), [`expr-parser.ts`](packages/spec/src/parser/expr-parser.ts), [`expr-evaluator.ts`](packages/spec/src/parser/expr-evaluator.ts), and modular handlers under [`packages/spec/src/parser/operators/`](packages/spec/src/parser/operators/).
+- **Template Parser & Validation**: [`template-parser.ts`](packages/spec/src/parser/template-parser.ts), [`directive-scanner.ts`](packages/spec/src/parser/directive-scanner.ts), [`template-validator.ts`](packages/spec/src/parser/template-validator.ts), and rules under [`packages/spec/src/parser/validation/rules/`](packages/spec/src/parser/validation/rules/).
+- **IR Lowering (BIR v2)**: [`lowering.ts`](packages/spec/src/ir/lowering.ts) and directive handlers under [`packages/spec/src/ir/directives/`](packages/spec/src/ir/directives/) (`flow/`, `dom/`, `output/`, `subroutines/`, `containers/`).
+- **Context Resolution & Routing**: [`packages/spec/src/context/`](packages/spec/src/context/) (`resolver.ts`, `routing.ts`, `normalizer.ts`, `pipeline/`).
+- **Core Domain Modules**: [`ast.ts`](packages/spec/src/ast.ts), [`data-path.ts`](packages/spec/src/data-path.ts), [`scope.ts`](packages/spec/src/scope.ts), [`type-system.ts`](packages/spec/src/type-system.ts), [`quota.ts`](packages/spec/src/quota.ts), [`version.ts`](packages/spec/src/version.ts), [`widget-settings.ts`](packages/spec/src/widget-settings.ts), and [`skin-compiler.ts`](packages/spec/src/skin-compiler.ts).
 
 ### 3. Add Conformance Fixtures
-Add empirical test cases under [`fixtures/`](fixtures/) adhering to the `BloggerFixture` discriminated union contract (`input.kind`, `expected.outcome`, `covers[]`, `verified_at`).
+Add empirical test cases under [`packages/spec/fixtures/`](packages/spec/fixtures/) adhering to the `BloggerFixture` discriminated union contract (`input.kind`, `expected.outcome`, `covers[]`, `verified_at`).
 
 ### 4. Build & Verify Loop
-Run the complete verification pipeline before submitting any changes:
+Run the full monorepo verification pipeline before submitting changes:
 
 ```bash
-pnpm run build        # Compiles dist/, src/generated/, and fixtures manifest
-pnpm run test:spec    # Validates schemas (AJV Draft 2020-12), referential integrity & d.ts
-pnpm run typecheck    # Strict TypeScript typecheck (tsc --noEmit)
-pnpm run lint         # ESLint code style check
-pnpm run test         # Runs Vitest unit and conformance test suites
+pnpm run build        # Runs codegen & tsdown across workspace packages
+pnpm run verify       # Runs check:hermetic, test:spec, typecheck (tsc -b), lint & test
+```
+
+If your changes affect a published package API or behavior, record a changeset:
+
+```bash
+pnpm run changeset
 ```
 
 ---
@@ -133,7 +77,7 @@ pnpm run test         # Runs Vitest unit and conformance test suites
 
 Use the GitHub Issue templates when submitting reports:
 
-- **[Specification Inconsistency](.github/ISSUE_TEMPLATE/spec_inconsistency.md)**: Discrepancies between `blogger-spec` and the actual Blogger engine behavior.
+- **[Specification Inconsistency](.github/ISSUE_TEMPLATE/spec_inconsistency.md)**: Discrepancies between `@bloggerspec/spec` and the actual Blogger engine behavior.
 - **[New Spec Entity Discovery](.github/ISSUE_TEMPLATE/new_spec_entity.md)**: Newly discovered operators, directive attributes, inclusions, or globals.
 
 ---
@@ -142,10 +86,9 @@ Use the GitHub Issue templates when submitting reports:
 
 Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
-- `feat(catalog)`: New directive, operator, type, or system inclusion.
-- `feat(parser)`: Parser enhancements or grammar features.
-- `feat(type-system)`: Type assignability, modifiers, or coercion rules.
-- `fix(catalog)`: Correction to an existing attribute, precedence level, or constraint.
+- `feat(spec)` / `feat(catalog)`: New directive, operator, type, inclusion, or parser/IR capability.
+- `feat(render)` / `feat(builder)` / `feat(syntax)` / `feat(cli)`: Features in ecosystem packages.
+- `fix(spec)` / `fix(catalog)`: Correction to an existing attribute, precedence level, or constraint.
 - `test(fixtures)`: New or updated conformance fixtures.
 - `docs`: Documentation updates.
-- `chore`: Tooling or build pipeline maintenance.
+- `chore(monorepo)`: Workspace, tooling, or CI/build pipeline maintenance.

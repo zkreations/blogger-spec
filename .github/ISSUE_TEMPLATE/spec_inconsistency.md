@@ -1,12 +1,12 @@
 ---
 name: Specification Inconsistency
-about: Report a discrepancy between blogger-spec and Google Blogger's actual behavior
+about: Report a discrepancy between @bloggerspec/spec and Google Blogger's actual behavior
 title: "[Inconsistency]: "
 labels: ["bug", "catalog"]
 ---
 
 ### Summary of Inconsistency
-<!-- Describe the difference between blogger-spec and Blogger engine behavior -->
+<!-- Describe the difference between @bloggerspec/spec and Blogger engine behavior -->
 
 ### Evidence Level
 - [ ] `official` (documented in official Google Blogger resources)
@@ -26,14 +26,16 @@ labels: ["bug", "catalog"]
 <!-- Error message, rendered output, or silent fallback -->
 
 ### Expected Spec Behavior
-<!-- What should blogger-spec permit, reject, parse, or declare instead -->
+<!-- What should @bloggerspec/spec permit, reject, parse, or declare instead -->
 
 ### Affected Component / Catalog
-- [ ] Canonical Catalog (`catalogs/<catalog>.json`)
-- [ ] Expression Parser & AST (`src/parser/expr-parser.ts`, `src/ast.ts`)
-- [ ] Directive Scanner & Structural Validator (`src/parser/directive-scanner.ts`, `src/parser/validation/`)
-- [ ] Template Layouts Version Detection (`src/version.ts`)
-- [ ] Type System & Coercion (`src/type-system.ts`)
-- [ ] Token Quota Engine (`src/quota.ts`)
-- [ ] Test Fixtures (`fixtures/`)
+- [ ] Canonical Catalog (`packages/spec/catalogs/<catalog>.json`)
+- [ ] Expression Parser & AST (`packages/spec/src/parser/expr-parser.ts`, `packages/spec/src/ast.ts`)
+- [ ] Directive Scanner & Structural Validator (`packages/spec/src/parser/directive-scanner.ts`, `packages/spec/src/parser/validation/`)
+- [ ] BIR v2 Lowering (`packages/spec/src/ir/`)
+- [ ] Context Resolution (`packages/spec/src/context/`)
+- [ ] Template Layouts Version Detection (`packages/spec/src/version.ts`)
+- [ ] Type System & Coercion (`packages/spec/src/type-system.ts`)
+- [ ] Token Quota Engine (`packages/spec/src/quota.ts`)
+- [ ] Test Fixtures (`packages/spec/fixtures/`)
 - **Entity / Rule**: <!-- e.g. operator:?:, directive:b:loop, type:image, BX1021 -->
