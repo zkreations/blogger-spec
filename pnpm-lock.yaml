@@ -177,28 +177,6 @@ importers:
         specifier: 'catalog:'
         version: 5.0.3(@types/node@24.19.2)(vite@8.3.8)
 
-  packages/syntax:
-    dependencies:
-      '@bloggerspec/spec':
-        specifier: workspace:*
-        version: link:../spec
-    devDependencies:
-      '@bloggerspec/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/tsconfig
-      '@types/node':
-        specifier: 'catalog:'
-        version: 24.19.2
-      tsdown:
-        specifier: 'catalog:'
-        version: 0.23.7(tsx@4.23.15)(typescript@6.0.3)
-      typescript:
-        specifier: 'catalog:'
-        version: 6.0.3
-      vitest:
-        specifier: 'catalog:'
-        version: 5.0.3(@types/node@24.19.2)(vite@8.3.8)
-
   tooling/eslint:
     dependencies:
       '@antfu/eslint-config':

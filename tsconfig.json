@@ -3,7 +3,6 @@
     { "path": "packages/spec" },
     { "path": "packages/render" },
     { "path": "packages/builder" },
-    { "path": "packages/syntax" },
     { "path": "packages/cli" }
   ],
   "files": []

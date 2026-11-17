@@ -9,7 +9,7 @@
 1. **Catalogs are the SSOT**: All directive grammar, operator precedence tiers, types, globals, diagnostics, and system inclusion rules live in [`packages/spec/catalogs/<catalog>.json`](packages/spec/catalogs/). Never hardcode domain knowledge in `src/`.
 2. **Never Edit Generated Artifacts Directly**: Generated artifacts (`packages/*/dist/`, `packages/spec/fixtures/index.json`, `packages/spec/src/generated/`, `.turbo/`) are gitignored and generated via `pnpm run codegen` or `pnpm run build` (or `pnpm install` via `prepare`).
 3. **Zero Runtime Dependencies in `@bloggerspec/spec`**: Production exports in `packages/spec/package.json` must strictly maintain `"dependencies": {}` and Universal ESM compatibility (no `node:*` imports outside `packages/spec/src/node/` and `src/node.ts`).
-4. **Strict Acyclic DAG**: `@bloggerspec/spec` is the root dependency and must never depend (runtime or dev) on `@bloggerspec/render`, `@bloggerspec/builder`, `blogger-syntax`, or `@bloggerspec/cli`.
+4. **Strict Acyclic DAG**: `@bloggerspec/spec` is the root dependency and must never depend (runtime or dev) on `@bloggerspec/render`, `@bloggerspec/builder`, or `@bloggerspec/cli`.
 5. **Empirical Verification**: Any spec change or fix requires empirical verification against the Blogger production engine and a corresponding test fixture under [`packages/spec/fixtures/`](packages/spec/fixtures/) with evidence attribution (`official` or `observed`).
 6. **Flat Type Hierarchy & Skin Variable Isolation**: Platform subtypes (`url`, `image`, `date`, `locale`, `message`) inherit directly from `string` (1-level depth). Theme variables (`skin:*`) have `parent_type: null` and remain strictly isolated from template string modifiers (`.length`, `.escaped`).
 7. **Declarative Directive Grammar**: Directive nesting rules (`valid_parents`, `valid_children`) and recovery behaviors (`invalid_nesting_policy`: `reject`, `strip`, `ignore`) reside in [`packages/spec/catalogs/directives.json`](packages/spec/catalogs/directives.json). Query via `canNest` and `validateDirectiveNesting`.
@@ -30,7 +30,6 @@ blogger-spec/
 │   │   └── tests/            # Hermetic Vitest suite
 │   ├── render/               # @bloggerspec/render — [Scaffold] BIR v2 → HTML renderer
 │   ├── builder/              # @bloggerspec/builder — [Scaffold] Handlebars theme builder
-│   ├── syntax/               # blogger-syntax — [Scaffold, private] VS Code extension & LSP
 │   └── cli/                  # @bloggerspec/cli — [Scaffold] Unified CLI entrypoint
 ├── tooling/
 │   ├── tsconfig/             # @bloggerspec/tsconfig — Shared TypeScript presets

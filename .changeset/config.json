@@ -7,7 +7,7 @@
   "commit": false,
   "fixed": [],
   "linked": [],
-  "ignore": ["blogger-syntax"],
+  "ignore": [],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch"

@@ -11,7 +11,6 @@
 | [`@bloggerspec/spec`](packages/spec/README.md) | Active | Canonical SSOT catalogs, schemas, XML/expression parser, evaluator, context resolver, BIR v2 compiler, and conformance fixtures (zero runtime dependencies). |
 | `@bloggerspec/render` | Planned | BIR v2 to HTML rendering engine (streaming & synchronous SSR). |
 | `@bloggerspec/builder` | Planned | Handlebars-based Blogger XML template builder validated against `@bloggerspec/spec`. |
-| `blogger-syntax` | Planned | VS Code extension and LSP powered by `@bloggerspec/spec`. |
 | `@bloggerspec/cli` | Planned | Unified CLI (`check`, `render`, `build`, `dev`). |
 
 ## Development
