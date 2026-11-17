@@ -1,10 +1,13 @@
 name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -22,8 +25,20 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
+
+      - name: Cache Turborepo and Vitest
+        uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.vitest-cache
+          key: ${{ runner.os }}-ci-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-ci-${{ github.ref_name }}-
+            ${{ runner.os }}-ci-main-
+            ${{ runner.os }}-ci-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

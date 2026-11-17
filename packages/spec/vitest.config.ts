@@ -5,5 +5,6 @@ export default defineConfig({
     testTimeout: 15000,
     include: ['tests/**/*.test.ts'],
     environment: 'node',
+    fsModuleCache: true,
   },
 })

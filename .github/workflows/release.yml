@@ -7,7 +7,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 permissions:
   contents: write
@@ -28,8 +28,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
+
+      - name: Cache Turborepo and Vitest
+        uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.vitest-cache
+          key: ${{ runner.os }}-release-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-release-
+            ${{ runner.os }}-ci-main-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -54,9 +65,17 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: pnpm
           registry-url: https://registry.npmjs.org
+
+      - name: Restore Turborepo cache
+        uses: actions/cache/restore@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-release-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-release-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -70,3 +89,4 @@ jobs:
           publish: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
