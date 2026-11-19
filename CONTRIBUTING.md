@@ -34,9 +34,10 @@ blogger-spec/
 ├── tooling/
 │   ├── tsconfig/             # @bloggerspec/tsconfig — Shared TypeScript presets
 │   └── eslint/               # @bloggerspec/eslint — Shared @antfu/eslint-config preset
-├── .changeset/               # Changesets versioning and changelog config
-├── turbo.json                # Turborepo task graph
-└── pnpm-workspace.yaml       # Workspace packages, catalogs, and supply-chain policies
+├── release-please-config.json      # Release Please versioning and changelog config
+├── .release-please-manifest.json   # Tracked released package versions
+├── turbo.json                      # Turborepo task graph
+└── pnpm-workspace.yaml             # Workspace packages, catalogs, and supply-chain policies
 ```
 
 ---
@@ -64,11 +65,7 @@ pnpm run build        # Runs codegen & tsdown across workspace packages
 pnpm run verify       # Runs check:hermetic, test:spec, typecheck (tsc -b), lint & test
 ```
 
-If your changes affect a published package API or behavior, record a changeset:
-
-```bash
-pnpm run changeset
-```
+Versioning and `CHANGELOG.md` updates are derived automatically from [Conventional Commits](https://www.conventionalcommits.org/) via Release Please.
 
 ---
 

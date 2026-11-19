@@ -13,17 +13,12 @@
     "test": "turbo run test",
     "test:spec": "pnpm --filter @bloggerspec/spec run test:spec",
     "check:hermetic": "pnpm --filter @bloggerspec/spec run check:hermetic",
-    "verify": "pnpm run check:hermetic && pnpm run test:spec && pnpm run typecheck && pnpm run lint && pnpm run test",
-    "changeset": "changeset",
-    "version-packages": "changeset version",
-    "release": "pnpm run build && changeset publish"
+    "verify": "pnpm run check:hermetic && pnpm run test:spec && pnpm run typecheck && pnpm run lint && pnpm run test"
   },
   "devDependencies": {
     "@antfu/eslint-config": "catalog:tooling",
     "@bloggerspec/eslint": "workspace:*",
     "@bloggerspec/tsconfig": "workspace:*",
-    "@changesets/changelog-github": "catalog:tooling",
-    "@changesets/cli": "catalog:tooling",
     "eslint": "catalog:tooling",
     "turbo": "catalog:tooling",
     "typescript": "catalog:"

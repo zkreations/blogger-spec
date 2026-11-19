@@ -10,14 +10,38 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write
-  id-token: write
-  pull-requests: write
+  contents: read
 
 jobs:
   verify:
+    uses: ./.github/workflows/_verify.yml
+    with:
+      cache-scope: release
+
+  release:
+    needs: [verify]
     runs-on: ubuntu-latest
-    if: "${{ !contains(github.event.head_commit.message, '[ci] release') }}"
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      releases_created: ${{ steps.release.outputs.releases_created }}
+    steps:
+      - name: Run Release Please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  publish:
+    needs: [verify, release]
+    if: ${{ needs.release.outputs.releases_created == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,16 +55,14 @@ jobs:
           node-version: 24
           cache: pnpm
 
-      - name: Cache Turborepo and Vitest
-        uses: actions/cache@v4
+      - name: Restore Turborepo cache
+        uses: actions/cache/restore@v4
         with:
-          path: |
-            .turbo
-            node_modules/.vitest-cache
-          key: ${{ runner.os }}-release-${{ github.sha }}
+          path: .turbo
+          key: ${{ runner.os }}-release-${{ github.ref_name }}-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-release-${{ github.ref_name }}-
             ${{ runner.os }}-release-
-            ${{ runner.os }}-ci-main-
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -48,45 +70,5 @@ jobs:
       - name: Build monorepo
         run: pnpm run build
 
-      - name: Verify
-        run: pnpm run verify
-
-  publish:
-    needs: [verify]
-    runs-on: ubuntu-latest
-    if: "${{ !contains(github.event.head_commit.message, '[ci] release') }}"
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-          registry-url: https://registry.npmjs.org
-
-      - name: Restore Turborepo cache
-        uses: actions/cache/restore@v4
-        with:
-          path: .turbo
-          key: ${{ runner.os }}-release-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-release-
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Create Release Pull Request or Publish Packages
-        uses: changesets/action@v1
-        with:
-          commit: '[ci] release'
-          title: '[ci] release'
-          version: pnpm run version-packages
-          publish: pnpm run release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true
+      - name: Publish packages to npm
+        run: pnpm -r publish --access public --provenance --no-git-checks

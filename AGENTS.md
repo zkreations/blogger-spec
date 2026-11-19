@@ -1,6 +1,6 @@
 # Blogger Spec — Monorepo Guidelines
 
-Modular TypeScript monorepo (`@bloggerspec`) built with pnpm workspaces, Turborepo, `tsdown`, TypeScript Project References (`tsc -b`), and Changesets.
+Modular TypeScript monorepo (`@bloggerspec`) built with pnpm workspaces, Turborepo, `tsdown`, TypeScript Project References (`tsc -b`), and Release Please.
 
 ## Workspace Topology
 

@@ -29,8 +29,6 @@ catalogs:
     ajv-formats: ^3.0.1
   tooling:
     '@antfu/eslint-config': ^9.5.1
-    '@changesets/changelog-github': ^1.0.1
-    '@changesets/cli': ^3.0.2
     eslint: ^10.12.0
     tsx: ^4.23.15
 

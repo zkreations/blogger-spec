@@ -1,0 +1,48 @@
+name: Verify
+
+on:
+  workflow_call:
+    inputs:
+      cache-scope:
+        required: false
+        type: string
+        default: ci
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Cache Turborepo and Vitest
+        uses: actions/cache@v4
+        with:
+          path: |
+            .turbo
+            node_modules/.vitest-cache
+          key: ${{ runner.os }}-${{ inputs.cache-scope }}-${{ github.ref_name }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-${{ inputs.cache-scope }}-${{ github.ref_name }}-
+            ${{ runner.os }}-${{ inputs.cache-scope }}-main-
+            ${{ runner.os }}-ci-main-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build monorepo
+        run: pnpm run build
+
+      - name: Verify
+        run: pnpm run verify
