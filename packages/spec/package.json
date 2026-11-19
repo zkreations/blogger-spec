@@ -1,7 +1,7 @@
 {
   "name": "@bloggerspec/spec",
   "type": "module",
-  "version": "0.32.0",
+  "version": "0.33.0",
   "description": "Canonical single source of truth for the Blogger XML template and expression language specification, types, and conformance fixtures.",
   "author": "Blogger Spec Authors & Contributors",
   "license": "MIT",
