@@ -13,6 +13,10 @@ packages:
   - 'packages/*'
   - 'tooling/*'
 
+overrides:
+  fast-uri: '>=3.1.9'
+  katex: '>=0.18.2'
+
 allowBuilds:
   esbuild: true
   rolldown: true
